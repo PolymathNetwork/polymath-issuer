@@ -9,12 +9,12 @@ export default class HomePage extends Component {
       <DocumentTitle title='Polymath'>
         <div className='bx--row'>
           <div className='bx--col-xs-8'>
-            <p className='bx--type-mega'>The Next Mega-Trend in Crypto is the Emergence of Security Tokens</p>
+            <h1 className='bx--type-mega'>The Next Mega-Trend in Crypto is the Emergence of Security Tokens</h1>
             <p>&nbsp;</p>
-            <p className='bx--type-beta'>
+            <h3 className='bx--type-beta'>
               Polymath empowers trillions of dollars of financial securities
               to effortlessly migrate to the blockchain.
-            </p>
+            </h3>
             <p>&nbsp;</p>
             <p>
               <Link to='/signup'>

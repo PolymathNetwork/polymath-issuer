@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import Contract from 'polymath.js_v2'
 
 import 'carbon-components/css/carbon-components.min.css'
@@ -24,6 +25,9 @@ class App extends Component {
     network: PropTypes.object.isRequired,
     txHash: PropTypes.func.isRequired,
     txEnd: PropTypes.func.isRequired,
+    isLoading: PropTypes.bool.isRequired,
+    loadingMessage: PropTypes.string,
+    miningTxHash: PropTypes.string,
   }
 
   componentWillMount () {
@@ -36,6 +40,21 @@ class App extends Component {
   }
 
   render () {
+    if (this.props.isLoading) {
+      const hash = this.props.miningTxHash
+      return (
+        <div className='bx--grid'>
+          <h3 className='bx--type-beta'>{this.props.loadingMessage}</h3>
+          {hash ? (
+            <p>
+              <br />
+              Transaction hash:{' '}
+              <Link to={'https://ropsten.etherscan.io/tx/' + hash}>{hash}</Link>
+            </p>
+          ) : ''}
+        </div>
+      )
+    }
     return (
       <div className='bx--grid'>
         {renderRoutes(this.props.route.routes)}
@@ -46,6 +65,9 @@ class App extends Component {
 
 const mapStateToProps = (state) => ({
   network: state.network,
+  isLoading: state.ui.isLoading,
+  loadingMessage: state.ui.loadingMessage,
+  miningTxHash: state.ui.txHash,
 })
 
 const mapDispatchToProps = (dispatch) => ({
