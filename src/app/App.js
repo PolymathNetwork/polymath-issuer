@@ -4,6 +4,7 @@ import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
 import Contract from 'polymath.js_v2'
 
+import 'carbon-components/css/carbon-components.min.css'
 import './style.css'
 
 import { setupHistory, txHash, txEnd } from './ui/actions'
@@ -36,7 +37,7 @@ class App extends Component {
 
   render () {
     return (
-      <div>
+      <div className='bx--grid'>
         {renderRoutes(this.props.route.routes)}
       </div>
     )
