@@ -20,7 +20,6 @@ export default (state = defaultState, action) => {
         ...state,
         isLoading: true,
         loadingMessage: action.message,
-        txHash: '0x8a72b5d3cb39c37030bbbe00e29f30b76ec862bdfe24ff056553a87e0e413396', // TODO @bshevchenko: remove this demo string
       }
     case a.UI_TX_HASH:
       return {
@@ -32,6 +31,11 @@ export default (state = defaultState, action) => {
         ...state,
         txReceipt: action.receipt,
         txHash: null,
+        isLoading: false,
+      }
+    case a.UI_TX_FAILED:
+      return {
+        ...state,
         isLoading: false,
       }
     default:

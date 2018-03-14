@@ -61,6 +61,8 @@ class SignUpForm extends Component {
 
 export default reduxForm({
   form: formName,
+  destroyOnUnmount: false,
+  forceUnregisterOnUnmount: true,
   asyncValidate: async (values) => {
     // async validation doesn't work properly with field-level validation, so we need to describe sync rules here
     const v = values.ticker

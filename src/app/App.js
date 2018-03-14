@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import DocumentTitle from 'react-document-title'
 import Contract from 'polymath.js_v2'
 
 import 'carbon-components/css/carbon-components.min.css'
@@ -43,16 +44,18 @@ class App extends Component {
     if (this.props.isLoading) {
       const hash = this.props.miningTxHash
       return (
-        <div className='bx--grid'>
-          <h3 className='bx--type-beta'>{this.props.loadingMessage}</h3>
-          {hash ? (
-            <p>
-              <br />
-              Transaction hash:{' '}
-              <Link to={'https://ropsten.etherscan.io/tx/' + hash}>{hash}</Link>
-            </p>
-          ) : ''}
-        </div>
+        <DocumentTitle title={this.props.loadingMessage}>
+          <div className='bx--grid'>
+            <h3 className='bx--type-beta'>{this.props.loadingMessage}</h3>
+            {hash ? (
+              <p>
+                <br />
+                Transaction hash:{' '}
+                <Link to={'https://ropsten.etherscan.io/tx/' + hash}>{hash}</Link>
+              </p>
+            ) : ''}
+          </div>
+        </DocumentTitle>
       )
     }
     return (
