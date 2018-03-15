@@ -10,30 +10,34 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
   switch (action.type) {
-    case a.UI_SETUP_HISTORY:
+    case a.SETUP_HISTORY:
       return {
         ...state,
         history: action.history,
       }
-    case a.UI_TX_START:
+    case a.TX_START:
+    case a.FETCHING:
       return {
         ...state,
         isLoading: true,
+        txReceipt: null,
         loadingMessage: action.message,
       }
-    case a.UI_TX_HASH:
+    case a.TX_HASH:
       return {
         ...state,
         txHash: action.hash,
       }
-    case a.UI_TX_END:
+    case a.TX_END:
       return {
         ...state,
         txReceipt: action.receipt,
         txHash: null,
         isLoading: false,
       }
-    case a.UI_TX_FAILED:
+    case a.TX_FAILED:
+    case a.FETCHING_FAILED:
+    case a.FETCHED:
       return {
         ...state,
         isLoading: false,

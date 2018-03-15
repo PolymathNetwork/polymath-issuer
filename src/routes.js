@@ -2,12 +2,10 @@ import App from './app/App'
 import HomePage from './app/HomePage'
 import NotFoundPage from './app/NotFoundPage'
 import SignUpPage from './app/signup/SignUpPage'
+import DashboardPage from './app/dashboard/DashboardPage'
+import TokenPage from './app/dashboard/TokenPage'
 
 // TODO @bshevchenko: from asana
-// /index (splash/ landing)
-// /signup (Symbol registration)
-// /dashboard (dashboard main screen)
-// /dashboard/token
 // /dashboard/sto
 // /dashboard/whitelist
 
@@ -23,6 +21,16 @@ export default [
       {
         path: '/signup',
         component: SignUpPage,
+        exact: true,
+      },
+      {
+        path: '/dashboard',
+        component: DashboardPage,
+        exact: true,
+      },
+      {
+        path: '/dashboard/token/:id',
+        component: TokenPage,
         exact: true,
       },
       {

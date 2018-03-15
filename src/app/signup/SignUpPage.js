@@ -49,7 +49,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  change: (value) => dispatch(change(formName, 'address', value)),
+  change: (value) => dispatch(change(formName, 'owner', value)),
   signup: () => dispatch(signup()),
 })
 

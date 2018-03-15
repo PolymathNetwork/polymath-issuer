@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 import DocumentTitle from 'react-document-title'
 import Contract from 'polymath.js_v2'
 
@@ -10,6 +9,7 @@ import 'carbon-components/css/carbon-components.min.css'
 import './style.css'
 
 import { setupHistory, txHash, txEnd } from './ui/actions'
+import { etherscanTx } from './helpers'
 
 class App extends Component {
   static propTypes = {
@@ -51,7 +51,7 @@ class App extends Component {
               <p>
                 <br />
                 Transaction hash:{' '}
-                <Link to={'https://ropsten.etherscan.io/tx/' + hash}>{hash}</Link>
+                { etherscanTx(hash, true) }
               </p>
             ) : ''}
           </div>

@@ -23,7 +23,7 @@ class SignUpForm extends Component {
 
   render () {
     return (
-      <Form onSubmit={this.props.handleSubmit} className='pt-form-group'>
+      <Form onSubmit={this.props.handleSubmit}>
         <Field
           name='ticker'
           component={TextInput}
@@ -38,7 +38,7 @@ class SignUpForm extends Component {
           validate={[required, maxLength100]}
         />
         <Field
-          name='address'
+          name='owner'
           component={TextInput}
           label='Ethereum address'
           disabled
