@@ -27,6 +27,9 @@ export const notify = (
   caption: ?any,
   isPinned: boolean = false,
 ) => async (dispatch) => {
+  // eslint-disable-next-line
+  console.warn('notify', title, isSuccess ? 'success' : 'error', subtitle, caption, isPinned ? 'pinned' : '')
+
   dispatch({
     type: NOTIFY,
     payload: {
@@ -37,9 +40,6 @@ export const notify = (
       isPinned,
     },
   })
-
-  // eslint-disable-next-line
-  console.warn('notify', title, isSuccess ? 'success' : 'error', subtitle, caption, isPinned ? 'pinned' : '')
 }
 
 export const txFailed = (e: Error) => async (dispatch, getState) => {
