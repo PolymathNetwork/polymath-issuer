@@ -9,6 +9,7 @@ export const TX_FAILED = 'ui/TX_FAILED'
 export const FETCHING = 'ui/FETCHING'
 export const FETCHING_FAILED = 'ui/FETCHING_FAILED'
 export const FETCHED = 'ui/FETCHED'
+export const NOTIFY = 'ui/NOTIFY'
 
 export const setupHistory = actionGen(SETUP_HISTORY)
 export const fetching = (message: string) => ({ type: FETCHING, message })
@@ -25,7 +26,18 @@ export const notify = (
   subtitle: ?string,
   caption: ?any,
   isPinned: boolean = false,
-) => async () => {
+) => async (dispatch) => {
+  dispatch({
+    type: NOTIFY,
+    payload: {
+      title,
+      isSuccess,
+      subtitle,
+      caption,
+      isPinned,
+    },
+  })
+
   // eslint-disable-next-line
   console.warn('notify', title, isSuccess ? 'success' : 'error', subtitle, caption, isPinned ? 'pinned' : '')
 }

@@ -4,7 +4,9 @@ import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import Contract from 'polymath.js_v2'
+import { Toaster, ToasterContainer } from 'polymath-ui'
 
+import 'polymath-ui/dist/style.css'
 import 'carbon-components/css/carbon-components.min.css'
 import './style.css'
 
@@ -29,6 +31,13 @@ class App extends Component {
     isLoading: PropTypes.bool.isRequired,
     loadingMessage: PropTypes.string,
     miningTxHash: PropTypes.string,
+    notify: PropTypes.shape({
+      title: PropTypes.string,
+      subtitle: PropTypes.node,
+      caption: PropTypes.node,
+      isSuccess: PropTypes.bool,
+      isPinned: PropTypes.bool,
+    }),
   }
 
   componentWillMount () {
@@ -40,27 +49,47 @@ class App extends Component {
     }
   }
 
-  render () {
-    if (this.props.isLoading) {
-      const hash = this.props.miningTxHash
-      return (
-        <DocumentTitle title={this.props.loadingMessage}>
-          <div className='bx--grid'>
-            <h3 className='bx--type-beta'>{this.props.loadingMessage}</h3>
-            {hash ? (
-              <p>
-                <br />
-                Transaction hash:{' '}
-                { etherscanTx(hash, true) }
-              </p>
-            ) : ''}
-          </div>
-        </DocumentTitle>
-      )
+  componentWillReceiveProps (nextProps) {
+    const notify = nextProps.notify
+
+    if (notify !== this.props.notify && this.toaster) {
+      this.toaster.show({
+        title: notify.title || '',
+        subtitle: notify.subtitle || '',
+        caption: notify.caption || null,
+        kind: notify.isSuccess ? 'success' : 'error',
+      }, notify.isPinned ? 0 : 4000)
     }
+  }
+
+  referenceToaster = (toaster) => this.toaster = toaster
+
+  render () {
+    const hash = this.props.miningTxHash
+
     return (
-      <div className='bx--grid'>
-        {renderRoutes(this.props.route.routes)}
+      <div>
+        <ToasterContainer>
+          <Toaster ref={this.referenceToaster} />
+        </ToasterContainer>
+        {this.props.isLoading ? (
+          <DocumentTitle title={this.props.loadingMessage}>
+            <div className='bx--grid'>
+              <h3 className='bx--type-beta'>{this.props.loadingMessage}</h3>
+              {hash ? (
+                <p>
+                  <br />
+                  Transaction hash:{' '}
+                  { etherscanTx(hash, true) }
+                </p>
+              ) : ''}
+            </div>
+          </DocumentTitle>
+        ) : (
+          <div className='bx--grid'>
+            {renderRoutes(this.props.route.routes)}
+          </div>
+        )}
       </div>
     )
   }
@@ -71,6 +100,7 @@ const mapStateToProps = (state) => ({
   isLoading: state.ui.isLoading,
   loadingMessage: state.ui.loadingMessage,
   miningTxHash: state.ui.txHash,
+  notify: state.ui.notify,
 })
 
 const mapDispatchToProps = (dispatch) => ({

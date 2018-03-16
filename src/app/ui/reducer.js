@@ -6,6 +6,7 @@ const defaultState = {
   loadingMessage: null,
   txHash: null,
   txReceipt: null,
+  notify: null,
 }
 
 export default (state = defaultState, action) => {
@@ -41,6 +42,11 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         isLoading: false,
+      }
+    case a.NOTIFY:
+      return {
+        ...state,
+        notify: action.payload,
       }
     default:
       return state
