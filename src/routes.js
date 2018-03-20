@@ -4,6 +4,7 @@ import NotFoundPage from './app/NotFoundPage'
 import SignUpPage from './app/signup/SignUpPage'
 import DashboardPage from './app/dashboard/DashboardPage'
 import TokenPage from './app/dashboard/TokenPage'
+import WhitelistPage from './app/dashboard/whitelist/WhiteListPage'
 
 // TODO @bshevchenko: from asana
 // /dashboard/sto
@@ -31,6 +32,11 @@ export default [
       {
         path: '/dashboard/token/:id',
         component: TokenPage,
+        exact: true,
+      },
+      {
+        path: '/dashboard/whitelist',
+        component: WhitelistPage,
         exact: true,
       },
       {
