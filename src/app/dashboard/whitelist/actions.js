@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { PolyToken } from 'polymath.js_v2' //TODO: @davekaj update to the actual polymathjs when it is ready
 // import * as ui from '../ui/actions'
 // import { etherscanTx } from '../helpers'
@@ -26,9 +25,9 @@ export const uploadCSV = (e) => async (dispatch) =>  {
   if (file.type.match(textType)) {
     let reader = new FileReader()
     reader.readAsText(file)
-    reader.onload = function (e) {
+    reader.onload = function () {
       let parsedData = parseCSV(reader.result)
-      console.log(parsedData)
+      // console.log(parsedData)
       dispatch({ type: UPLOAD_CSV, csvMessage: "CSV upload was successful!", addresses: parsedData[0], sell: parsedData[1], buy: parsedData[2], modalShowing: true })
     }
   } else {
@@ -46,7 +45,7 @@ const parseCSV = (csvResult) =>  {
   let buyRestriction = []
 
   let allTextLines = csvResult.split(/\r\n|\n/)
-  console.log(allTextLines)
+  // console.log(allTextLines)
 
   let zeroX = "0x"
 
@@ -54,7 +53,7 @@ const parseCSV = (csvResult) =>  {
     let entry = allTextLines[i]
     if (entry.includes(zeroX)) {
       let splitArray = entry.split(",", 4)
-      console.log(splitArray)
+      // console.log(splitArray)
       //splitArray[0] is ignored, because it is just a blank string. 
       let address = splitArray[1]
       let sell = splitArray[2]
@@ -75,8 +74,11 @@ const parseCSV = (csvResult) =>  {
 
 //Update gives the ability to update time on a user for trading and buying. This is the same function to delete/remove of a user, because this is
 //done by calling the same function, except instead of giving a unix timestamp of 1511000000 or something, we pass it 0 in the smart contract, meaning they cant trade
-export const updateSelectedInvestors = (e) => async (dispatch) =>  {
-  console.log("update selected investors connect made")
+// export const updateSelectedInvestors = (e) => async (dispatch) =>  {
+//   console.log("update selected investors connect made", e, dispatch)
+// }
+
+export const updateSelectedInvestors = () => async () =>  {
 }
 
 export const submit = actionGen('submitCSV')

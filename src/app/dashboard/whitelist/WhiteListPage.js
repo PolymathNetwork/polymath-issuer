@@ -5,47 +5,40 @@ import {
   FileUploader,
   Button,
   DataTable,
-  Search,
   PaginationV2,
-  Modal,
   ModalWrapper,
 } from "carbon-components-react"
-
-import PropTypes from 'prop-types'
 
 import { uploadCSV, updateSelectedInvestors } from './actions'
 import { FakeTableData, FakeTableHeaders } from './fakedata'
 
-const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow, TableSelectAll, TableSelectRow, TableToolbar, TableBatchAction, TableBatchActions, batchActionClick, TableToolbarSearch, TableToolbarContent, TableToolbarAction } = DataTable
+const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
+  TableSelectAll, TableSelectRow, TableToolbar, TableBatchAction, TableBatchActions,
+  batchActionClick, TableToolbarSearch, TableToolbarContent, TableToolbarAction } = DataTable
 
 class WhiteListPage extends Component {
-  static propTypes = {
-    addresses: PropTypes.array.isRequired,
-    sell: PropTypes.array.isRequired,
-    buy: PropTypes.array.isRequired,
-    fakedata: PropTypes.array.isRequired,
-    csvMessage: PropTypes.string.isRequired,
-    upload: PropTypes.func.isRequired,
-  }
+
+  // handleUpload = () => {
+  //   // this.props.upload()
+  //   // onClick: this.props.updateSelectedInvestors,
+
+  //   // this.setState({ modalShowing: true })
+  // };
 
   // handles the button to send to blockchain the csv data within the modal 
-  onFormSubmit = (e) => {
+  onFormSubmit = () => {
     //   e.preventDefault() // Stop form submit
 
     //   //send to the blockchain here functionality 
 
   }
 
-  handleUpload = () => {
-    // this.props.upload()
-    // onClick: this.props.updateSelectedInvestors,
-
-    // this.setState({ modalShowing: true })
-  };
-
-  //*TODO: Functionality to add a single address by user input ****
-  //*TODO: Have Submit submit the CSV data to fakeData, which is getting rendered by the app . this should be connected to the blockchain, but for now just have it loop itself
+  //*TODO: commit by passing all precommit issues
+  //*TODO: Functionality to add a single address by user input **** (connect to the blockchain, fake connection)
+  //*TODO: Have Submit submit the CSV data to fakeData, which is getting rendered by the app . this should be connected to the blockchain, but for now just have it loop itself (fake connection)
   //*TODO: Start end period (do this last) ****
+
+  //call API.put and store any json we want, and then call it back. this is off chain storage . will have to update the database in the three ways that we update the whitelist
 
   //TODO: Functionality to remove a single address from the list , or modify its date
   //TODO: Exportable list
@@ -65,7 +58,7 @@ class WhiteListPage extends Component {
                 buttonLabel='IMPORT WHITELIST'
                 filenameStatus='edit'
                 accept={[".csv"]}
-                onChange={this.props.upload}
+                onChange={this.props.handleUpload}
                 multiple
               />
               {/* <Button
@@ -119,7 +112,7 @@ class WhiteListPage extends Component {
               getSelectionProps,
               getBatchActionProps,
               onInputChange,
-              selectedRows,
+              // selectedRows,
             }) => (
               <TableContainer title='DataTable with batch actions'>
                 <TableToolbar>
@@ -153,8 +146,8 @@ class WhiteListPage extends Component {
                       iconDescription='Settings'
                       // onClick={action('TableToolbarAction - Settings')}
                     />
-                    <Button 
-                    // onClick={action('Add new row')} 
+                    <Button
+                      // onClick={action('Add new row')} 
                       small
                       kind='primary'
                     >
@@ -209,7 +202,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  upload: (e) => dispatch(uploadCSV(e)),
+  handleUpload: (e) => dispatch(uploadCSV(e)),
   update: () => dispatch(updateSelectedInvestors()),
 })
 

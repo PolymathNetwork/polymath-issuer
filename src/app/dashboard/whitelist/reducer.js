@@ -1,5 +1,5 @@
 import * as a from './actions'
-import { FakeData, FakeTableData, FakeTableHeaders } from './fakedata'
+import { FakeData } from './fakedata'
 
 const defaultState = {
   addresses: ["No addresses uploaded"],
