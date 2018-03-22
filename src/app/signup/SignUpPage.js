@@ -14,9 +14,15 @@ class SignUpPage extends Component {
     account: PropTypes.string.isRequired,
     change: PropTypes.func.isRequired,
     signup: PropTypes.func.isRequired,
+    isSignedUp: PropTypes.bool.isRequired,
+    // eslint-disable-next-line
+    history: PropTypes.object.isRequired,
   }
 
   componentWillMount () {
+    if (this.props.isSignedUp) {
+      this.props.history.push('/dashboard')
+    }
     this.props.change(this.props.account)
   }
 
@@ -46,6 +52,7 @@ class SignUpPage extends Component {
 
 const mapStateToProps = (state) => ({
   account: state.network.account,
+  isSignedUp: !!state.dashboard.token,
 })
 
 const mapDispatchToProps = (dispatch) => ({

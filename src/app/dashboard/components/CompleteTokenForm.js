@@ -17,9 +17,7 @@ export const formName = 'complete_token'
 
 const maxLength100 = maxLength(100)
 const minValue0 = minValue(0)
-const minValue1 = minValue(1)
 const maxValue24 = maxValue(24)
-const maxValue1000000000000 = maxValue(1000000000000)
 
 class CompleteTokenForm extends Component {
   static propTypes = {
@@ -35,13 +33,6 @@ class CompleteTokenForm extends Component {
           label='Token name'
           placeholder='Polymath Utility Token'
           validate={[required, maxLength100]}
-        />
-        <Field
-          name='totalSupply'
-          component={TextInput}
-          label='Total supply'
-          validate={[required, integer, minValue1, maxValue1000000000000]}
-          placeholder='For example: 1000000'
         />
         <Field
           name='decimals'
