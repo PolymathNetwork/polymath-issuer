@@ -7,10 +7,15 @@ import {
   DataTable,
   PaginationV2,
   ModalWrapper,
+  Form,
+  FormGroup,
+  TextInput,
 } from "carbon-components-react"
 
-import { uploadCSV, updateSelectedInvestors } from './actions'
-import { FakeTableData, FakeTableHeaders } from './fakedata'
+import { uploadCSV, multiUserSubmit, oneUserSubmit, getWhiteList } from './actions'
+import { FakeTableData } from './fakedata'
+import { TableHeaders } from './tableHeaders'
+import InvestorForm from './userForm'
 
 const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
   TableSelectAll, TableSelectRow, TableToolbar, TableBatchAction, TableBatchActions,
@@ -18,22 +23,24 @@ const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, Tab
 
 class WhiteListPage extends Component {
 
-  // handleUpload = () => {
-  //   // this.props.upload()
-  //   // onClick: this.props.updateSelectedInvestors,
-
-  //   // this.setState({ modalShowing: true })
-  // };
-
-  // handles the button to send to blockchain the csv data within the modal 
-  onFormSubmit = () => {
-    //   e.preventDefault() // Stop form submit
-
-    //   //send to the blockchain here functionality 
-
+  componentWillMount () {
+    //call the function to load the events from blcokchain
+    this.props.getWhiteList()
   }
 
-  //*TODO: commit by passing all precommit issues
+  handleInvestorSubmit = () => {
+    this.props.singleSubmit()
+  }
+
+  handleMultiSubmit = () => {
+    this.props.multiSubmit()
+    console.log(this.props.investors)
+  }
+
+  changePages = () => {
+    console.log("gotta figureout how to change pages")
+  }
+
   //*TODO: Functionality to add a single address by user input **** (connect to the blockchain, fake connection)
   //*TODO: Have Submit submit the CSV data to fakeData, which is getting rendered by the app . this should be connected to the blockchain, but for now just have it loop itself (fake connection)
   //*TODO: Start end period (do this last) ****
@@ -46,6 +53,7 @@ class WhiteListPage extends Component {
   //TODO: put the contracts on testrpc and get it to work (see adam dossa instructions)
 
   render () {
+    console.log(this.props.investors)
     return (
       <DocumentTitle title='Sign Up – Polymath'>
 
@@ -81,7 +89,7 @@ class WhiteListPage extends Component {
                 buttonTriggerText='Submit CSV to Blockchain'
                 modalLabel='Submit CSV to Blockchain'
                 modalHeading='Submit CSV to Blockchain'
-                // handleSubmit={handleSubmit()}
+                handleSubmit={this.handleMultiSubmit}
                 shouldCloseAfterSubmit
               >
                 <p className='bx--modal-content__text'>
@@ -89,10 +97,10 @@ class WhiteListPage extends Component {
                 </p>
                 <br />
                 {this.props.addresses.map((user, i) => (
-                  <div>
+                  <div key={i}>
                     <div>Address: {this.props.addresses[i]}</div>
-                    <div>Sell Expiry Time: {this.props.sell[i]} months</div>
-                    <div>Buy Expiry Time: {this.props.buy[i]} months</div>
+                    <div>Sell Expiry Time: {this.props.sell[i]}</div>
+                    <div>Buy Expiry Time: {this.props.buy[i]}</div>
                     <br />
                   </div>
                 ))}
@@ -103,8 +111,8 @@ class WhiteListPage extends Component {
 
           <br /> <br /> <br />
           <DataTable
-            rows={FakeTableData}
-            headers={FakeTableHeaders}
+            rows={this.props.investors} //wtf why wont this render???
+            headers={TableHeaders}
             render={({
               rows,
               headers,
@@ -120,13 +128,10 @@ class WhiteListPage extends Component {
                   <TableBatchActions {...getBatchActionProps()}>
                     {/* inside of you batch actinos, you can include selectedRows */}
                     <TableBatchAction >
-                        Ghost
+                        Remove Investor
                     </TableBatchAction>
                     <TableBatchAction >
-                        Ghost
-                    </TableBatchAction>
-                    <TableBatchAction >
-                        Ghost
+                        Modify Restriction Dates
                     </TableBatchAction>
                   </TableBatchActions>
                   <TableToolbarSearch onChange={onInputChange} />
@@ -146,13 +151,21 @@ class WhiteListPage extends Component {
                       iconDescription='Settings'
                       // onClick={action('TableToolbarAction - Settings')}
                     />
-                    <Button
-                      // onClick={action('Add new row')} 
-                      small
-                      kind='primary'
+                    <ModalWrapper
+                      // modalProps={{ onBlur: { onBlur() }, onClick: { onClick() }, onFocus: { onFocus() }, …}}
+                      id='transactional-modal'
+                      buttonTriggerText='Add New'
+                      // modalLabel='Add New Investor'
+                      modalHeading='Add New Investor'
+                      onSubmit={this.handleInvestorSubmit}
+                      shouldCloseAfterSubmit
                     >
-                        Add new
-                    </Button>
+                      <p className='bx--modal-content__text'>
+                          Please enter the information below to add a single investor.
+                      </p>
+                      <br />
+                      <InvestorForm onSubmit={this.handleInvestorSubmit} />
+                    </ModalWrapper>
                   </TableToolbarContent>
                 </TableToolbar>
                 <Table>
@@ -181,9 +194,11 @@ class WhiteListPage extends Component {
             )}
           />
           <PaginationV2
-            // onChange={onChange()}
-            pageSizes={[10, 20, 30]}
-            totalItems={103}
+            // onChange={this.changePages()}
+            pageSizes={[10]}
+            // pageInputDisabled
+            totalItems={this.props.investors.length}
+
           />
         </div >
       </DocumentTitle >
@@ -196,14 +211,17 @@ const mapStateToProps = (state) => ({
   addresses: state.whitelist.addresses,
   sell: state.whitelist.sell,
   buy: state.whitelist.buy,
-  fakedata: state.whitelist.fakedata,
+  investors: state.whitelist.investors,
   csvMessage: state.whitelist.csvMessage,
   modalShowing: state.whitelist.modalShowing,
 })
 
 const mapDispatchToProps = (dispatch) => ({
   handleUpload: (e) => dispatch(uploadCSV(e)),
-  update: () => dispatch(updateSelectedInvestors()),
+  multiSubmit: () => dispatch(multiUserSubmit()),
+  singleSubmit: () => dispatch(oneUserSubmit()),
+  getWhiteList: () => dispatch(getWhiteList()),
+
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(WhiteListPage)
