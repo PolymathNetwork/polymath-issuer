@@ -1,3 +1,5 @@
+// @flow
+
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -7,21 +9,21 @@ import { Breadcrumb, BreadcrumbItem } from 'carbon-components-react'
 import { change } from 'redux-form'
 
 import SignUpForm, { formName } from './components/SignUpForm'
-import { signup } from './actions'
+import { signUp } from './actions'
 
-class SignUpPage extends Component {
-  static propTypes = {
-    account: PropTypes.string.isRequired,
-    change: PropTypes.func.isRequired,
-    signup: PropTypes.func.isRequired,
-  }
+type Props = {
+  account: string,
+  change: (newAccount: string) => void,
+  signUp: () => void,
+}
 
+class SignUpPage extends Component<Props> {
   componentWillMount () {
     this.props.change(this.props.account)
   }
 
   handleSubmit = () => {
-    this.props.signup()
+    this.props.signUp()
   }
 
   render () {
@@ -48,9 +50,9 @@ const mapStateToProps = (state) => ({
   account: state.network.account,
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  change: (value) => dispatch(change(formName, 'owner', value)),
-  signup: () => dispatch(signup()),
-})
+const mapDispatchToProps = {
+  change: (value) => change(formName, 'owner', value, false, false),
+  signUp,
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUpPage)

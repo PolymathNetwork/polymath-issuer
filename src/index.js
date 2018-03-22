@@ -1,3 +1,5 @@
+// @flow
+
 import React  from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
@@ -22,5 +24,5 @@ render(
       </BrowserRouter>
     </PolymathAuth>
   </Provider>,
-  document.getElementById('root')
+  ((document.getElementById('root'): any): HTMLElement)
 )

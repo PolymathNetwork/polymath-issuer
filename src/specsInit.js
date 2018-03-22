@@ -1,3 +1,5 @@
+// @flow
+
 import Web3 from 'web3'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
@@ -31,7 +33,7 @@ beforeAll(async (done) => {
     if (result) {
       snapshotId = web3.utils.toDecimal(result.result)
     }
-    done(err)
+    done.fail()
   })
 })
 
@@ -42,7 +44,7 @@ afterAll((done) => {
     id: new Date().getTime(),
     params: [snapshotId],
   }, (err) => {
-    done(err)
+    done.fail()
   })
 })
 

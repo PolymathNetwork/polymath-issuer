@@ -1,3 +1,5 @@
+// @flow
+
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form'
@@ -21,11 +23,11 @@ const minValue1 = minValue(1)
 const maxValue24 = maxValue(24)
 const maxValue1000000000000 = maxValue(1000000000000)
 
-class CompleteTokenForm extends Component {
-  static propTypes = {
-    handleSubmit: PropTypes.func.isRequired,
-  }
+type Props = {
+  handleSubmit: () => void,
+}
 
+class CompleteTokenForm extends Component<Props> {
   render () {
     return (
       <Form onSubmit={this.props.handleSubmit}>

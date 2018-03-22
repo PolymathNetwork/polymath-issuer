@@ -1,3 +1,5 @@
+// @flow
+
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form'
@@ -16,11 +18,11 @@ export const formName = 'signup'
 
 const maxLength100 = maxLength(100)
 
-class SignUpForm extends Component {
-  static propTypes = {
-    handleSubmit: PropTypes.func.isRequired,
-  }
+type Props = {
+  handleSubmit: () => void,
+}
 
+class SignUpForm extends Component<Props> {
   render () {
     return (
       <Form onSubmit={this.props.handleSubmit}>

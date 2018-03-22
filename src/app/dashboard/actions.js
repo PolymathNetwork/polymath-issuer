@@ -1,40 +1,40 @@
+// @flow
+
 import BigNumber from 'bignumber.js'
+import type { DispatchAPI } from 'redux'
 import { PolyToken } from 'polymath.js_v2'
 
 import * as ui from '../ui/actions'
 import { etherscanTx } from '../helpers'
+import { GetState } from '../../redux/state.types'
+import type { ExtractReturn } from '../../redux/helpers'
 import { formName as completeTokenFormName } from './components/CompleteTokenForm'
 
-export const TOKEN_DETAILS = 'dashboard/TOKEN'
+export const TOKEN_DETAILS = 'dashboard/TOKEN_DETAILS'
+export const tokenDetails = (token: SecurityToken) => ({ type: "dashboard/TOKEN_DETAILS", token })
+
+export type DashboardAction =
+  | ExtractReturn<typeof tokenDetails>
 
 // TODO @bshevchenko: extract into the polymath.js_v2
-class Type {
-  constructor (data) {
-    Object.keys(data).forEach((i) => {
-      this[i] = data[i]
-    })
-  }
-}
-
-// TODO @bshevchenko: extract into the polymath.js_v2
-export class SecurityToken extends Type {
-  ticker: string
-  contactName: string
-  contactEmail: string
-  owner: string
-  address: ?string
-  name: ?string
-  totalSupply: ?number
-  decimals: ?number
-  website: ?string
+export type SecurityToken = {
+  ticker: string,
+  contactName: string,
+  contactEmail: string,
+  owner: string,
+  address: ?string,
+  name: ?string,
+  totalSupply: number,
+  decimals: number,
+  website: ?string,
 }
 
 // TODO @bshevchenko: isMockCompleted param is only for tests
 // eslint-disable-next-line
-export const tokenDetails = (ticker: string, isMockCompleted: boolean = false) => async (dispatch) => {
+export const fetchTokenByTicker = (ticker: string, isMockCompleted: boolean = false) => async (dispatch: DispatchAPI<*>) => {
   dispatch(ui.fetching('Retrieving token details...'))
   try {
-    const token = new SecurityToken({ // TODO @bshevchenko: await SecurityTokenRegistrar.getTokenByTicker(ticker)
+    const token: SecurityToken = { // TODO @bshevchenko: await SecurityTokenRegistrar.getTokenByTicker(ticker)
       ticker,
       contactName: 'Trevor Koverko',
       contactEmail: 'trevor@polymath.network',
@@ -46,15 +46,15 @@ export const tokenDetails = (ticker: string, isMockCompleted: boolean = false) =
         decimals: 12,
         website: 'https://polymath.network',
       } : {}),
-    })
-    dispatch({ type: TOKEN_DETAILS, token })
+    }
+    dispatch(tokenDetails(token))
     dispatch(ui.fetched())
   } catch (e) {
     dispatch(ui.fetchingFailed(e))
   }
 }
 
-export const completeToken = () => async (dispatch, getState) => {
+export const completeToken = () => async (dispatch: DispatchAPI<*>, getState: GetState) => {
   try {
     const completeFee = new BigNumber(250) // TODO @bshevchenko: retrieve fee from the polymath.js
     const balance = await PolyToken.myBalance()
@@ -71,10 +71,10 @@ export const completeToken = () => async (dispatch, getState) => {
       dispatch(ui.txStart('Pre-authorizing security token creation fee of ' + completeFee.toString(10) + ' POLY...'))
       await PolyToken.getTokens(completeFee) // TODO @bshevchenko: await SecurityTokenRegistrar.preAuth()
     }
-    const token: SecurityToken = new SecurityToken({
+    const token: SecurityToken = {
       ...getState().dashboard.token,
       ...getState().form[completeTokenFormName].values,
-    })
+    }
     dispatch(ui.txStart('Issuing ' + token.ticker + ' token...'))
     const receipt = await PolyToken.getTokens(completeFee) // TODO @bshevchenko: await SecurityTokenRegistrar.issueSecurityToken(token)
     dispatch(ui.notify(
@@ -84,7 +84,7 @@ export const completeToken = () => async (dispatch, getState) => {
       etherscanTx(receipt.transactionHash)
     ))
     const isMockCompleted = true // TODO @bshevchenko: this variable is only for tests
-    dispatch(tokenDetails(token.ticker, isMockCompleted))
+    dispatch(fetchTokenByTicker(token.ticker, isMockCompleted))
   } catch (e) {
     dispatch(ui.txFailed(e))
   }

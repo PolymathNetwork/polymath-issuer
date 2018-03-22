@@ -1,38 +1,39 @@
+// @flow
+
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import DocumentTitle from 'react-document-title'
 import { Link } from 'react-router-dom'
+import type { Match } from 'react-router'
 import { Breadcrumb, BreadcrumbItem, InlineNotification } from 'carbon-components-react'
 
-import { tokenDetails, completeToken, SecurityToken } from './actions'
+import { fetchTokenByTicker, completeToken } from './actions'
+import type { SecurityToken } from './actions'
 import NotFoundPage from '../NotFoundPage'
-import { etherscanAddress, etherscanToken, thousandsLimiter } from '../helpers'
+import { etherscanAddress, etherscanToken, thousandsDelimiter } from '../helpers'
+import type { RootState } from '../../redux/state.types'
 import CompleteTokenForm from './components/CompleteTokenForm'
 
 import './style.css'
 
-class TokenPage extends Component {
-  static propTypes = {
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        id: PropTypes.string,
-      }),
-    }).isRequired,
-    init: PropTypes.func.isRequired,
-    complete: PropTypes.func.isRequired,
-    token: PropTypes.instanceOf(SecurityToken),
-    isMainnet: PropTypes.bool.isRequired,
-  }
+type Props = {
+  match: Match,
+  fetchTokenByTicker: (ticker: string) => void,
+  completeToken: () => void,
+  token: ?SecurityToken,
+  isMainnet: boolean,
+}
 
+class TokenPage extends Component<Props> {
   componentWillMount () {
     if (!this.props.token || !this.props.token.address) { // TODO @bshevchenko: this condition is only for tests
-      this.props.init(this.props.match.params.id)
+      this.props.fetchTokenByTicker(this.props.match.params.id || '')
     }
   }
 
   handleCompleteSubmit = () => {
-    this.props.complete()
+    this.props.completeToken()
   }
 
   completeToken (token: SecurityToken) {
@@ -70,7 +71,7 @@ class TokenPage extends Component {
     if (!this.props.token) {
       return <NotFoundPage />
     }
-    const token: SecurityToken = this.props.token
+    const token = this.props.token
     return (
       <DocumentTitle title={token.ticker + ' Token – Polymath'}>
         <div>
@@ -115,7 +116,7 @@ class TokenPage extends Component {
                   </div>
                   <div className='bx--form-item'>
                     <label htmlFor='owner' className='bx--label'>Total supply</label>
-                    <p>{thousandsLimiter(token.totalSupply)}</p>
+                    <p>{thousandsDelimiter(token.totalSupply)}</p>
                   </div>
                   <div className='bx--form-item'>
                     <label htmlFor='owner' className='bx--label'>Decimals</label>
@@ -136,14 +137,14 @@ class TokenPage extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: RootState) => ({
   token: state.dashboard.token,
   isMainnet: state.network.id === 1,
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  init: (ticker) => dispatch(tokenDetails(ticker)),
-  complete: () => dispatch(completeToken()),
-})
+const mapDispatchToProps = {
+  fetchTokenByTicker,
+  completeToken,
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(TokenPage)

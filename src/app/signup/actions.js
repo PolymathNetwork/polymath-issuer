@@ -1,10 +1,15 @@
+// @flow
+
 // import { formName } from './components/SignUpForm'
+import type { DispatchAPI } from 'redux'
 import { PolyToken } from 'polymath.js_v2'
 import { txStart, txFailed, notify } from '../ui/actions'
+import type { UIAction } from '../ui/actions'
 import { etherscanTx } from '../helpers'
+import { GetState } from '../../redux/state.types'
 
 // eslint-disable-next-line
-export const signup = () => async (dispatch, getState) => {
+export const signUp = () => async (dispatch: DispatchAPI<*>, getState: GetState) => {
   dispatch(txStart('Submitting token symbol registration...'))
   try {
     // TODO @bshevchenko: await SecurityTokenRegistrar.createTokenSymbol(getState().form[formName].values)

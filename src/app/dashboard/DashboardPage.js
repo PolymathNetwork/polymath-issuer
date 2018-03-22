@@ -1,7 +1,9 @@
+// @flow
+
 import React, { Component } from 'react'
 import DocumentTitle from 'react-document-title'
 
-export default class DashboardPage extends Component {
+export default class DashboardPage extends Component<{}> {
   render () {
     return (
       <DocumentTitle title='Dashboard – Polymath'>
