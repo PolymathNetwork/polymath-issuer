@@ -4,31 +4,23 @@ import PropTypes from 'prop-types'
 import DocumentTitle from 'react-document-title'
 import { Link } from 'react-router-dom'
 import { Breadcrumb, BreadcrumbItem, InlineNotification } from 'carbon-components-react'
+import { SecurityTokenRegistrar } from 'polymath.js_v2'
+import type { SecurityToken } from 'polymath.js_v2/types'
 
-import { tokenDetails, completeToken, SecurityToken } from './actions'
+import { tokenDetails, completeToken } from './actions'
 import NotFoundPage from '../NotFoundPage'
-import { etherscanAddress, etherscanToken, thousandsLimiter } from '../helpers'
+import { etherscanAddress, etherscanToken } from '../helpers'
 import CompleteTokenForm from './components/CompleteTokenForm'
 
 import './style.css'
 
 class TokenPage extends Component {
   static propTypes = {
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        id: PropTypes.string,
-      }),
-    }).isRequired,
     init: PropTypes.func.isRequired,
     complete: PropTypes.func.isRequired,
-    token: PropTypes.instanceOf(SecurityToken),
+    // eslint-disable-next-line
+    token: PropTypes.object,
     isMainnet: PropTypes.bool.isRequired,
-  }
-
-  componentWillMount () {
-    if (!this.props.token || !this.props.token.address) { // TODO @bshevchenko: this condition is only for tests
-      this.props.init(this.props.match.params.id)
-    }
   }
 
   handleCompleteSubmit = () => {
@@ -36,7 +28,7 @@ class TokenPage extends Component {
   }
 
   completeToken (token: SecurityToken) {
-    const completeFee = 250 // TODO @bshevchenko: retrieve fee from the polymath.js
+    const completeFee = SecurityTokenRegistrar.fee.toNumber()
     return (
       <div>
         <InlineNotification
@@ -80,9 +72,6 @@ class TokenPage extends Component {
                 <BreadcrumbItem>
                   <Link to='/'>Home</Link>
                 </BreadcrumbItem>
-                <BreadcrumbItem>
-                  <Link to='/dashboard'>Dashboard</Link>
-                </BreadcrumbItem>
               </Breadcrumb>
             </div>
           </div>
@@ -94,16 +83,12 @@ class TokenPage extends Component {
                 <p>{etherscanAddress(token.owner)}</p>
               </div>
               <div className='bx--form-item'>
-                <label htmlFor='owner' className='bx--label'>Contact name</label>
-                <p>{token.contactName}</p>
-              </div>
-              <div className='bx--form-item'>
                 <label htmlFor='owner' className='bx--label'>Contact email</label>
-                <p><a href={'mailto://' + token.contactEmail}>{token.contactEmail}</a></p>
+                <p><a href={'mailto://' + token.contact}>{token.contact}</a></p>
               </div>
             </div>
             <div className='bx--col-xs-7'>
-              {token.address ? (
+              {token.isGenerated ? (
                 <div className='completed-token-details'>
                   <div className='bx--form-item'>
                     <label htmlFor='owner' className='bx--label'>Address</label>
@@ -114,16 +99,12 @@ class TokenPage extends Component {
                     <p>{token.name}</p>
                   </div>
                   <div className='bx--form-item'>
-                    <label htmlFor='owner' className='bx--label'>Total supply</label>
-                    <p>{thousandsLimiter(token.totalSupply)}</p>
-                  </div>
-                  <div className='bx--form-item'>
                     <label htmlFor='owner' className='bx--label'>Decimals</label>
                     <p>{token.decimals}</p>
                   </div>
                   <div className='bx--form-item'>
                     <label htmlFor='owner' className='bx--label'>Website</label>
-                    <p><a href={token.website} target='_blank'>{token.website}</a></p>
+                    <p><a href={token.url} target='_blank'>{token.url}</a></p>
                   </div>
                 </div>
               ) : this.completeToken(token)}
@@ -142,7 +123,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  init: (ticker) => dispatch(tokenDetails(ticker)),
+  init: () => dispatch(tokenDetails()),
   complete: () => dispatch(completeToken()),
 })
 

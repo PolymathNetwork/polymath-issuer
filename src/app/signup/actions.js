@@ -1,22 +1,25 @@
-// import { formName } from './components/SignUpForm'
-import { PolyToken } from 'polymath.js_v2'
-import { txStart, txFailed, notify } from '../ui/actions'
+import { TickerRegistrar } from 'polymath.js_v2'
+
+import * as ui from '../ui/actions'
+import { formName } from './components/SignUpForm'
+import { tokenDetails } from '../dashboard/actions'
 import { etherscanTx } from '../helpers'
 
 // eslint-disable-next-line
 export const signup = () => async (dispatch, getState) => {
-  dispatch(txStart('Submitting token symbol registration...'))
+  dispatch(ui.txStart('Submitting token symbol registration...'))
   try {
-    // TODO @bshevchenko: await SecurityTokenRegistrar.createTokenSymbol(getState().form[formName].values)
-    const receipt = await PolyToken.getTokens(200000)
-    dispatch(notify(
+    const { ticker, contact } = getState().form[formName].values
+    const receipt = await TickerRegistrar.registerTicker(ticker, contact)
+    dispatch(ui.notify(
       'Token symbol was successfully registered',
       true,
       'We have already sent you an email. Check your mailbox',
       etherscanTx(receipt.transactionHash)
     ))
-    getState().ui.history.push('/dashboard/token/POLY') // TODO @bshevchenko: put real ticker
+    dispatch(tokenDetails())
+    getState().ui.history.push('/dashboard')
   } catch (e) {
-    dispatch(txFailed(e))
+    dispatch(ui.txFailed(e))
   }
 }

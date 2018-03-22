@@ -9,6 +9,7 @@ import 'carbon-components/css/carbon-components.min.css'
 import './style.css'
 
 import { setupHistory, txHash, txEnd } from './ui/actions'
+import { tokenDetails } from './dashboard/actions'
 import { etherscanTx } from './helpers'
 
 class App extends Component {
@@ -16,16 +17,14 @@ class App extends Component {
     route: PropTypes.shape({
       routes: PropTypes.array,
     }).isRequired,
-    history: PropTypes.shape({
-      location: PropTypes.shape({
-        pathname: PropTypes.string.isRequired,
-      }),
-    }).isRequired,
+    // eslint-disable-next-line
+    history: PropTypes.object.isRequired,
     setupHistory: PropTypes.func.isRequired,
     // eslint-disable-next-line
     network: PropTypes.object.isRequired,
     txHash: PropTypes.func.isRequired,
     txEnd: PropTypes.func.isRequired,
+    tokenDetails: PropTypes.func.isRequired,
     isLoading: PropTypes.bool.isRequired,
     loadingMessage: PropTypes.string,
     miningTxHash: PropTypes.string,
@@ -38,6 +37,7 @@ class App extends Component {
       txHashCallback: (hash) => this.props.txHash(hash),
       txEndCallback: (receipt) => this.props.txEnd(receipt),
     }
+    this.props.tokenDetails()
   }
 
   render () {
@@ -77,6 +77,7 @@ const mapDispatchToProps = (dispatch) => ({
   setupHistory: (history) => dispatch(setupHistory({ history })),
   txHash: (hash) => dispatch(txHash({ hash })),
   txEnd: (receipt) => dispatch(txEnd({ receipt })),
+  tokenDetails: () => dispatch(tokenDetails()),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
