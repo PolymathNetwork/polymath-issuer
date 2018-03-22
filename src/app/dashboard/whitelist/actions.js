@@ -1,9 +1,9 @@
 import uuidv4 from 'uuid/v4'
 
-import { PolyToken } from 'polymath.js_v2' //TODO: @davekaj update to the actual polymathjs when it is ready
+// import { PolyToken } from 'polymath.js_v2' //TODO: @davekaj update to the actual polymathjs when it is ready
 import * as ui from '../../ui/actions'
 // import { etherscanTx } from '../helpers'
-import { actionGen } from "../../../redux/helpers"
+// import { actionGen } from "../../../redux/helpers"
 import { formName as userFormName } from './userForm'
 
 export const UPLOAD_CSV = 'dashboard/whitelist/UPLOAD_CSV'
@@ -86,13 +86,11 @@ export const multiUserSubmit = () => async (dispatch, getState) => {
   let csvAddresses = { ...getState().whitelist.addresses }
   let csvSell = { ...getState().whitelist.sell }
   let csvBuy = { ...getState().whitelist.buy }
-  let account = "TODO!"
-
-  console.log(csvSell)
+  // let account = "TODO!"
 
   for (let i = 0; i < (Object.keys(csvAddresses)).length; i++) {
     let csvRandomID = uuidv4()
-    let owner = "Dave"
+    const owner = "0xdc4d23daf21da6163369940af54e5a1be783497b" //hardcoded temporarily , as i need to link up account from metamask
     let sellTimestamp = Math.round((new Date(csvSell[i])).getTime() / 1000 )
     let buyTimestamp = Math.round((new Date(csvBuy[i])).getTime() / 1000 )
 
@@ -140,7 +138,6 @@ export const multiUserSubmit = () => async (dispatch, getState) => {
 
   //TODO: @davekaj Then , read events and get all addresses and their information, as arrays 
   getWhiteList()
-  console.log("FUCK")
 
 }
 
@@ -205,60 +202,35 @@ export const oneUserSubmit = () => async (dispatch, getState) => {
 
 }
 
-// export const submit = actionGen('submitCSV')
-
-// //functionality to send a tx of all the properly organized csv data to the blockchain
-// export const submitCSV = (addressArray, sellTimeArray, buyTimeArray) => async (dispatch) => {
-//   await PolyToken.methods.modifyWhitelistMulti(addressArray, sellTimeArray, buyTimeArray)
-//     .send({
-//       // from: account //TODO: @davekaj get account
-//       // gas: gasEstimate //TODO: @davekaj code up gasEstimate (will be high if big array)
-//     })
-
-//   //TODO: @davekaj Then , read events and get all addresses and their information, as arrays 
-
-//   let allAddresses
-//   let allSellTime
-//   let allBuyTime
-
-//   dispatch(
-//     submit(
-//       {
-//         addresses: allAddresses,
-//         sell: allSellTime,
-//         buy: allBuyTime,
-//       }
-//     )
-//   )
-// }
-
 export const getWhiteList = () => async (dispatch, getState) => {
 
-  let testing = true
-  console.log("truck")
+  // let testing = true
+  // console.log("truck")
 
-  //temporarily have this fake data?
+  // //temporarily have this fake data?
 
-  if (testing) {
-    console.log("truck")
-    // dispatch({ type: GET_WHITELIST, basicMessage: "Whitelist retrived from blockchain logs", investors: backendData })
+  // if (testing) {
+  //   console.log("truck")
+  //   // dispatch({ type: GET_WHITELIST, basicMessage: "Whitelist retrived from blockchain logs", investors: backendData })
 
-  } else {
-    // let whitelist = await transferManager.getWhitelist() //-will look ike this, need to write poyljs
-    console.log("truck")
+  // } else {
+  //   // let whitelist = await transferManager.getWhitelist() //-will look ike this, need to write poyljs
+  //   console.log("truck")
 
-    //for now we just get state in store, which we originally put up with timestamps, and now we will conver to human
-    //readable dates to mimic when we pull from events
+  //   //for now we just get state in store, which we originally put up with timestamps, and now we will conver to human
+  //   //readable dates to mimic when we pull from events
 
-    let dummyState = { ...getState().whitelist.investors } 
+  //   let dummyState = { ...getState().whitelist.investors } 
 
-    console.log(dummyState)
+  //   console.log(dummyState)
 
-    // dispatch({ type: GET_WHITELIST, basicMessage: "Whitelist retrived from blockchain logs", investors: backendData })
-    // dispatch({ type: GET_WHITELIST_FAILED, csvMessage: "There was an error grabbing the whitelist" })
-  }
+  //   // dispatch({ type: GET_WHITELIST, basicMessage: "Whitelist retrived from blockchain logs", investors: backendData })
+  //   // dispatch({ type: GET_WHITELIST_FAILED, csvMessage: "There was an error grabbing the whitelist" })
+  // }
 
 }
+
+//TODO: @dave - implement the Investor type, as briefly described below
 
 // type Investor = {
 //   address: string,

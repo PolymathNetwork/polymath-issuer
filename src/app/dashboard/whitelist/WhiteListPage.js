@@ -3,13 +3,13 @@ import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import {
   FileUploader,
-  Button,
+  // Button,
   DataTable,
   PaginationV2,
   ModalWrapper,
-  Form,
-  FormGroup,
-  TextInput,
+  // Form,
+  // FormGroup,
+  // TextInput,
 } from "carbon-components-react"
 
 import { uploadCSV, multiUserSubmit, oneUserSubmit, getWhiteList } from './actions'
@@ -32,7 +32,7 @@ class WhiteListPage extends Component {
     this.props.singleSubmit()
   }
 
-  handleMultiSubmit = () => {
+  onHandleMultiSubmit = () => {
     this.props.multiSubmit()
     console.log(this.props.investors)
   }
@@ -89,7 +89,7 @@ class WhiteListPage extends Component {
                 buttonTriggerText='Submit CSV to Blockchain'
                 modalLabel='Submit CSV to Blockchain'
                 modalHeading='Submit CSV to Blockchain'
-                handleSubmit={this.handleMultiSubmit}
+                handleSubmit={this.onHandleMultiSubmit}
                 shouldCloseAfterSubmit
               >
                 <p className='bx--modal-content__text'>
@@ -111,7 +111,7 @@ class WhiteListPage extends Component {
 
           <br /> <br /> <br />
           <DataTable
-            rows={this.props.investors} //wtf why wont this render???
+            rows={FakeTableData} //wtf why wont this render???
             headers={TableHeaders}
             render={({
               rows,
