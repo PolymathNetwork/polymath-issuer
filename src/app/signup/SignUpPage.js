@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { Link } from 'react-router-dom'
+import type { RouterHistory } from 'react-router'
 import { Breadcrumb, BreadcrumbItem } from 'carbon-components-react'
 import { change } from 'redux-form'
 
@@ -12,6 +13,7 @@ import { signUp } from './actions'
 
 type StateProps = {
   account: ?string,
+  isSignedUp: boolean,
 }
 
 type DispatchProps = {
@@ -21,6 +23,7 @@ type DispatchProps = {
 
 const mapStateToProps = (state): StateProps => ({
   account: state.network.account,
+  isSignedUp: !!state.dashboard.token,
 })
 
 const mapDispatchToProps: DispatchProps = {
@@ -28,10 +31,15 @@ const mapDispatchToProps: DispatchProps = {
   signUp,
 }
 
-type Props = StateProps & DispatchProps
+type Props = {
+  history: RouterHistory,
+} & StateProps & DispatchProps
 
 class SignUpPage extends Component<Props> {
   componentWillMount () {
+    if (this.props.isSignedUp) {
+      this.props.history.push('/dashboard')
+    }
     this.props.change(this.props.account)
   }
 

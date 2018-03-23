@@ -12,10 +12,9 @@ import {
   email,
   ethereumAddress,
 } from 'polymath-ui/dist/validate'
+import { TickerRegistrar } from 'polymath.js_v2'
 
 export const formName = 'signup'
-
-const maxLength100 = maxLength(100)
 
 type Props = {
   handleSubmit: () => void,
@@ -32,13 +31,6 @@ class SignUpForm extends Component<Props> {
           placeholder='POLY'
         />
         <Field
-          name='contactName'
-          component={TextInput}
-          label='Contact name'
-          placeholder='Trevor Koverko'
-          validate={[required, maxLength100]}
-        />
-        <Field
           name='owner'
           component={TextInput}
           label='Ethereum address'
@@ -46,7 +38,7 @@ class SignUpForm extends Component<Props> {
           validate={[required, ethereumAddress]}
         />
         <Field
-          name='contactEmail'
+          name='contact'
           component={TextInput}
           label='Contact email'
           validate={[required, email]}
@@ -72,8 +64,7 @@ export default reduxForm({
       // eslint-disable-next-line
       throw {ticker: syncError}
     }
-    // noinspection ConstantIfStatementJS
-    if (false) { // TODO @bshevchenko: await SecurityTokenRegistrar.isTickerExists(v)
+    if (await TickerRegistrar.getDetails(v) !== null) {
       // eslint-disable-next-line
       throw {ticker: 'Specified ticker is already exists.'}
     }

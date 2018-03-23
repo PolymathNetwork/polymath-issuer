@@ -52,7 +52,7 @@ export default (state: UIState = defaultState, action: a.UIAction) => {
         notify: action.notify,
       }
     default:
-      (action.empty)
+      // const ignore = (action.empty)
       return state
   }
 }

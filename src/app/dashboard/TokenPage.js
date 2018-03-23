@@ -6,11 +6,12 @@ import DocumentTitle from 'react-document-title'
 import { Link } from 'react-router-dom'
 import type { Match } from 'react-router'
 import { Breadcrumb, BreadcrumbItem, InlineNotification } from 'carbon-components-react'
+import { SecurityTokenRegistrar } from 'polymath.js_v2'
+import type { SecurityToken } from 'polymath.js_v2/types'
 
-import { fetchTokenByTicker, completeToken } from './actions'
-import type { SecurityToken } from './actions'
+import { completeToken, fetchTokenDetails } from './actions'
 import NotFoundPage from '../NotFoundPage'
-import { etherscanAddress, etherscanToken, thousandsDelimiter } from '../helpers'
+import { etherscanAddress, etherscanToken } from '../helpers'
 import type { RootState } from '../../redux/state.types'
 import CompleteTokenForm from './components/CompleteTokenForm'
 
@@ -22,7 +23,7 @@ type StateProps = {
 }
 
 type DispatchProps = {
-  fetchTokenByTicker: (ticker: string) => any,
+  fetchTokenDetails: (ticker: string) => any, // TODO Unused?
   completeToken: () => any,
 }
 
@@ -32,7 +33,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
 })
 
 const mapDispatchToProps: DispatchProps = {
-  fetchTokenByTicker,
+  fetchTokenDetails,
   completeToken,
 }
 
@@ -41,18 +42,12 @@ type Props = {
 } & StateProps & DispatchProps
 
 class TokenPage extends Component<Props> {
-  componentWillMount () {
-    if (!this.props.token || !this.props.token.address) { // TODO @bshevchenko: this condition is only for tests
-      this.props.fetchTokenByTicker(this.props.match.params.id || '')
-    }
-  }
-
   handleCompleteSubmit = () => {
     this.props.completeToken()
   }
 
   completeToken (token: SecurityToken) {
-    const completeFee = 250 // TODO @bshevchenko: retrieve fee from the polymath.js
+    const completeFee = SecurityTokenRegistrar.fee.toNumber()
     return (
       <div>
         <InlineNotification
@@ -96,9 +91,6 @@ class TokenPage extends Component<Props> {
                 <BreadcrumbItem>
                   <Link to='/'>Home</Link>
                 </BreadcrumbItem>
-                <BreadcrumbItem>
-                  <Link to='/dashboard'>Dashboard</Link>
-                </BreadcrumbItem>
               </Breadcrumb>
             </div>
           </div>
@@ -110,16 +102,12 @@ class TokenPage extends Component<Props> {
                 <p>{etherscanAddress(token.owner)}</p>
               </div>
               <div className='bx--form-item'>
-                <label htmlFor='owner' className='bx--label'>Contact name</label>
-                <p>{token.contactName}</p>
-              </div>
-              <div className='bx--form-item'>
                 <label htmlFor='owner' className='bx--label'>Contact email</label>
-                <p><a href={'mailto://' + token.contactEmail}>{token.contactEmail}</a></p>
+                <p><a href={'mailto://' + token.contact}>{token.contact}</a></p>
               </div>
             </div>
             <div className='bx--col-xs-7'>
-              {token.address ? (
+              {token.isGenerated ? (
                 <div className='completed-token-details'>
                   <div className='bx--form-item'>
                     <label htmlFor='owner' className='bx--label'>Address</label>
@@ -130,16 +118,12 @@ class TokenPage extends Component<Props> {
                     <p>{token.name}</p>
                   </div>
                   <div className='bx--form-item'>
-                    <label htmlFor='owner' className='bx--label'>Total supply</label>
-                    <p>{thousandsDelimiter(token.totalSupply)}</p>
-                  </div>
-                  <div className='bx--form-item'>
                     <label htmlFor='owner' className='bx--label'>Decimals</label>
                     <p>{token.decimals}</p>
                   </div>
                   <div className='bx--form-item'>
                     <label htmlFor='owner' className='bx--label'>Website</label>
-                    <p><a href={token.website} target='_blank'>{token.website}</a></p>
+                    <p><a href={token.url} target='_blank'>{token.url}</a></p>
                   </div>
                 </div>
               ) : this.completeToken(token)}

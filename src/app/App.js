@@ -13,6 +13,7 @@ import 'carbon-components/css/carbon-components.min.css'
 import './style.css'
 
 import { setupHistory, txHash, txEnd } from './ui/actions'
+import { tokenDetails } from './dashboard/actions'
 import { etherscanTx } from './helpers'
 import type { Notify } from './ui/state.types'
 import type { RootState } from '../redux/state.types'
@@ -29,6 +30,7 @@ type DispatchProps = {
   setupHistory: (history: RouterHistory) => any,
   txHash: (hash: string) => any,
   txEnd: (receipt: any) => any,
+  tokenDetails: () => any,
 }
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -43,6 +45,7 @@ const mapDispatchToProps: DispatchProps = {
   setupHistory,
   txHash,
   txEnd,
+  tokenDetails,
 }
 
 type Props = {
@@ -58,6 +61,7 @@ class App extends Component<Props> {
       txHashCallback: (hash) => this.props.txHash(hash),
       txEndCallback: (receipt) => this.props.txEnd(receipt),
     }
+    this.props.tokenDetails()
   }
 
   componentWillReceiveProps (nextProps) {
@@ -75,7 +79,7 @@ class App extends Component<Props> {
 
   toaster: ?Toaster
 
-  referenceToaster = (toaster) => this.toaster = toaster
+  referenceToaster = (toaster) => { this.toaster = toaster }
 
   render () {
     const hash = this.props.miningTxHash

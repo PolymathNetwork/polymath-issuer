@@ -5,6 +5,7 @@
 .*incomplete\.js
 
 [include]
+../polymath.js_v2
 
 [libs]
 
