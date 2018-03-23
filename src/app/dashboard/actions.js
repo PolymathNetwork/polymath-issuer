@@ -1,24 +1,33 @@
+// @flow
+
+import type { DispatchAPI } from 'redux'
 import { PolyToken, SecurityTokenRegistrar } from 'polymath.js_v2'
 import type { SecurityToken } from 'polymath.js_v2/types'
 
 import * as ui from '../ui/actions'
 import { etherscanTx } from '../helpers'
+import type { GetState } from '../../redux/state.types'
+import type { ExtractReturn } from '../../redux/helpers'
 import { formName as completeTokenFormName } from './components/CompleteTokenForm'
 
-export const TOKEN_DETAILS = 'dashboard/TOKEN'
+export const TOKEN_DETAILS = 'dashboard/TOKEN_DETAILS'
+export const tokenDetails = (token: SecurityToken) => ({ type: "dashboard/TOKEN_DETAILS", token })
 
-export const tokenDetails = () => async (dispatch) => {
+export type DashboardAction =
+  | ExtractReturn<typeof tokenDetails>
+
+export const fetchTokenDetails = () => async (dispatch: DispatchAPI<*>) => {
   dispatch(ui.fetching('Loading...'))
   try {
     let token = await SecurityTokenRegistrar.getMyToken()
-    dispatch({ type: TOKEN_DETAILS, token })
+    dispatch(tokenDetails(token))
     dispatch(ui.fetched())
   } catch (e) {
     dispatch(ui.fetchingFailed(e))
   }
 }
 
-export const completeToken = () => async (dispatch, getState) => {
+export const completeToken = () => async (dispatch: DispatchAPI<*>, getState: GetState) => {
   try {
     const completeFee = SecurityTokenRegistrar.fee
     const balance = await PolyToken.myBalance()
@@ -47,7 +56,7 @@ export const completeToken = () => async (dispatch, getState) => {
       'We have already sent you an email. Check your mailbox',
       etherscanTx(receipt.transactionHash)
     ))
-    dispatch(tokenDetails())
+    dispatch(fetchTokenDetails())
   } catch (e) {
     dispatch(ui.txFailed(e))
   }

@@ -1,24 +1,41 @@
+// @flow
+
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import DocumentTitle from 'react-document-title'
 import { Link } from 'react-router-dom'
+import type { RouterHistory } from 'react-router'
 import { Breadcrumb, BreadcrumbItem } from 'carbon-components-react'
 import { change } from 'redux-form'
 
 import SignUpForm, { formName } from './components/SignUpForm'
-import { signup } from './actions'
+import { signUp } from './actions'
 
-class SignUpPage extends Component {
-  static propTypes = {
-    account: PropTypes.string.isRequired,
-    change: PropTypes.func.isRequired,
-    signup: PropTypes.func.isRequired,
-    isSignedUp: PropTypes.bool.isRequired,
-    // eslint-disable-next-line
-    history: PropTypes.object.isRequired,
-  }
+type StateProps = {
+  account: ?string,
+  isSignedUp: boolean,
+}
 
+type DispatchProps = {
+  change: (?string) => any,
+  signUp: () => any,
+}
+
+const mapStateToProps = (state): StateProps => ({
+  account: state.network.account,
+  isSignedUp: !!state.dashboard.token,
+})
+
+const mapDispatchToProps: DispatchProps = {
+  change: (value) => change(formName, 'owner', value, false, false),
+  signUp,
+}
+
+type Props = {
+  history: RouterHistory,
+} & StateProps & DispatchProps
+
+class SignUpPage extends Component<Props> {
   componentWillMount () {
     if (this.props.isSignedUp) {
       this.props.history.push('/dashboard')
@@ -27,7 +44,7 @@ class SignUpPage extends Component {
   }
 
   handleSubmit = () => {
-    this.props.signup()
+    this.props.signUp()
   }
 
   render () {
@@ -49,15 +66,5 @@ class SignUpPage extends Component {
     )
   }
 }
-
-const mapStateToProps = (state) => ({
-  account: state.network.account,
-  isSignedUp: !!state.dashboard.token,
-})
-
-const mapDispatchToProps = (dispatch) => ({
-  change: (value) => dispatch(change(formName, 'owner', value)),
-  signup: () => dispatch(signup()),
-})
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUpPage)

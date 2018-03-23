@@ -1,4 +1,5 @@
-import PropTypes from 'prop-types'
+// @flow
+
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form'
 
@@ -15,11 +16,11 @@ import { TickerRegistrar } from 'polymath.js_v2'
 
 export const formName = 'signup'
 
-class SignUpForm extends Component {
-  static propTypes = {
-    handleSubmit: PropTypes.func.isRequired,
-  }
+type Props = {
+  handleSubmit: () => void,
+}
 
+class SignUpForm extends Component<Props> {
   render () {
     return (
       <Form onSubmit={this.props.handleSubmit}>

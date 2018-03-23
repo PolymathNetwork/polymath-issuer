@@ -1,4 +1,7 @@
+// @flow
+
 import * as a from './actions'
+import type { UIState } from './state.types'
 
 const defaultState = {
   history: null,
@@ -6,9 +9,10 @@ const defaultState = {
   loadingMessage: null,
   txHash: null,
   txReceipt: null,
+  notify: null,
 }
 
-export default (state = defaultState, action) => {
+export default (state: UIState = defaultState, action: a.UIAction) => {
   switch (action.type) {
     case a.SETUP_HISTORY:
       return {
@@ -42,7 +46,13 @@ export default (state = defaultState, action) => {
         ...state,
         isLoading: false,
       }
+    case a.NOTIFY:
+      return {
+        ...state,
+        notify: action.notify,
+      }
     default:
+      // const ignore = (action.empty)
       return state
   }
 }

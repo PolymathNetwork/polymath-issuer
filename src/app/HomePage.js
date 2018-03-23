@@ -1,9 +1,11 @@
+// @flow
+
 import React, { Component } from 'react'
 import DocumentTitle from 'react-document-title'
 import { Link } from 'react-router-dom'
 import { Button } from 'carbon-components-react'
 
-export default class HomePage extends Component {
+export default class HomePage extends Component<{}> {
   render () {
     return (
       <DocumentTitle title='Polymath'>
