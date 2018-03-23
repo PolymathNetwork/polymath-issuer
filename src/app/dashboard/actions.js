@@ -6,7 +6,7 @@ import { PolyToken } from 'polymath.js_v2'
 
 import * as ui from '../ui/actions'
 import { etherscanTx } from '../helpers'
-import { GetState } from '../../redux/state.types'
+import type { GetState } from '../../redux/state.types'
 import type { ExtractReturn } from '../../redux/helpers'
 import { formName as completeTokenFormName } from './components/CompleteTokenForm'
 

@@ -30,10 +30,14 @@ beforeAll(async (done) => {
     method: 'evm_snapshot',
     id: new Date().getTime(),
   }, (err, result) => {
-    if (result) {
-      snapshotId = web3.utils.toDecimal(result.result)
+    if (err || !result) {
+      done.fail()
+      return
     }
-    done.fail()
+
+    snapshotId = web3.utils.toDecimal(result.result)
+
+    // More to come?
   })
 })
 
@@ -44,7 +48,10 @@ afterAll((done) => {
     id: new Date().getTime(),
     params: [snapshotId],
   }, (err) => {
-    done.fail()
+    if (err) {
+      done.fail()
+      return
+    }
   })
 })
 

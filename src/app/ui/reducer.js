@@ -1,7 +1,7 @@
 // @flow
 
 import * as a from './actions'
-import { UIState } from './state.types'
+import type { UIState } from './state.types'
 
 const defaultState = {
   history: null,

@@ -11,6 +11,6 @@ const composedStore = compose(
   window.devToolsExtension ? window.devToolsExtension() : (f) => f,
 )(createStore)
 
-const configureStore = (initialState: RootState) => composedStore(reducer, initialState)
+const configureStore = (initialState?: RootState) => composedStore(reducer, initialState)
 
 export default configureStore

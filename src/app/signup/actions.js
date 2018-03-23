@@ -4,9 +4,8 @@
 import type { DispatchAPI } from 'redux'
 import { PolyToken } from 'polymath.js_v2'
 import { txStart, txFailed, notify } from '../ui/actions'
-import type { UIAction } from '../ui/actions'
 import { etherscanTx } from '../helpers'
-import { GetState } from '../../redux/state.types'
+import type { GetState } from '../../redux/state.types'
 
 // eslint-disable-next-line
 export const signUp = () => async (dispatch: DispatchAPI<*>, getState: GetState) => {
@@ -20,7 +19,11 @@ export const signUp = () => async (dispatch: DispatchAPI<*>, getState: GetState)
       'We have already sent you an email. Check your mailbox',
       etherscanTx(receipt.transactionHash)
     ))
-    getState().ui.history.push('/dashboard/token/POLY') // TODO @bshevchenko: put real ticker
+
+    const history = getState().ui.history
+    if (history) {
+      history.push('/dashboard/token/POLY') // TODO @bshevchenko: put real ticker
+    }
   } catch (e) {
     dispatch(txFailed(e))
   }

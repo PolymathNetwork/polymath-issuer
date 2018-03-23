@@ -1,12 +1,14 @@
-import reducer from './reducer'
-import type { UIState } from './app/ui/state.types'
+// @flow
 
-type RootState = {
+import type { DashboardState } from '../app/dashboard/state.types'
+import type { UIState } from '../app/ui/state.types'
+
+export type RootState = {
   form: any,
   ui: UIState,
-  dashboard: any,
-  [string]: any, // Until polymath-auth exports the type of `authReducers`
+  dashboard: DashboardState,
+  network: any, // Until polymath-auth exports the type of `authReducers`
+  thing: string,
 }
-export default RootState
 
 export type GetState = () => RootState

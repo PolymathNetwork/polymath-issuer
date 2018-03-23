@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import DocumentTitle from 'react-document-title'
 import { Link } from 'react-router-dom'
 import { Breadcrumb, BreadcrumbItem } from 'carbon-components-react'
@@ -11,11 +10,25 @@ import { change } from 'redux-form'
 import SignUpForm, { formName } from './components/SignUpForm'
 import { signUp } from './actions'
 
-type Props = {
-  account: string,
-  change: (newAccount: string) => void,
-  signUp: () => void,
+type StateProps = {
+  account: ?string,
 }
+
+type DispatchProps = {
+  change: (?string) => any,
+  signUp: () => any,
+}
+
+const mapStateToProps = (state): StateProps => ({
+  account: state.network.account,
+})
+
+const mapDispatchToProps: DispatchProps = {
+  change: (value) => change(formName, 'owner', value, false, false),
+  signUp,
+}
+
+type Props = StateProps & DispatchProps
 
 class SignUpPage extends Component<Props> {
   componentWillMount () {
@@ -44,15 +57,6 @@ class SignUpPage extends Component<Props> {
       </DocumentTitle>
     )
   }
-}
-
-const mapStateToProps = (state) => ({
-  account: state.network.account,
-})
-
-const mapDispatchToProps = {
-  change: (value) => change(formName, 'owner', value, false, false),
-  signUp,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUpPage)

@@ -1,7 +1,6 @@
 // @flow
 
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import type { RouterHistory } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
@@ -16,23 +15,42 @@ import './style.css'
 import { setupHistory, txHash, txEnd } from './ui/actions'
 import { etherscanTx } from './helpers'
 import type { Notify } from './ui/state.types'
+import type { RootState } from '../redux/state.types'
 
-type Props = {
-  route: any, // react-router-config doesn't seem to have Flow types.
-  history: RouterHistory,
-  setupHistory: (RouterHistory) => void,
-  network: any, // TODO Adam0000: Use polymath-auth exported type once it exists
-  txHash: (string) => Promise<void>,
-  txEnd: (string) => Promise<void>,
+type StateProps = {
+  network: any,
   isLoading: boolean,
   loadingMessage: ?string,
   miningTxHash: ?string,
   notify: ?Notify,
 }
 
-class App extends Component<Props> {
-  toaster: ?Toaster
+type DispatchProps = {
+  setupHistory: (history: RouterHistory) => any,
+  txHash: (hash: string) => any,
+  txEnd: (receipt: any) => any,
+}
 
+const mapStateToProps = (state: RootState): StateProps => ({
+  network: state.network,
+  isLoading: state.ui.isLoading,
+  loadingMessage: state.ui.loadingMessage,
+  miningTxHash: state.ui.txHash,
+  notify: state.ui.notify,
+})
+
+const mapDispatchToProps: DispatchProps = {
+  setupHistory,
+  txHash,
+  txEnd,
+}
+
+type Props = {
+  route: any, // react-router-config doesn't seem to have Flow types.
+  history: RouterHistory
+} & StateProps & DispatchProps
+
+class App extends Component<Props> {
   componentWillMount () {
     this.props.setupHistory(this.props.history)
     Contract.params = {
@@ -54,6 +72,8 @@ class App extends Component<Props> {
       }, notify.isPinned ? 0 : 4000)
     }
   }
+
+  toaster: ?Toaster
 
   referenceToaster = (toaster) => this.toaster = toaster
 
@@ -86,20 +106,6 @@ class App extends Component<Props> {
       </div>
     )
   }
-}
-
-const mapStateToProps = (state) => ({
-  network: state.network,
-  isLoading: state.ui.isLoading,
-  loadingMessage: state.ui.loadingMessage,
-  miningTxHash: state.ui.txHash,
-  notify: state.ui.notify,
-})
-
-const mapDispatchToProps = {
-  setupHistory,
-  txHash,
-  txEnd,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

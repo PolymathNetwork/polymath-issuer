@@ -1,3 +1,5 @@
+// @flow
+
 import type { RouterHistory } from 'react-router-dom'
 
 export type Notify = {
@@ -9,7 +11,7 @@ export type Notify = {
 }
 
 export type UIState = {
-  history: RouterHistory,
+  history: ?RouterHistory,
   isLoading: bool,
   loadingMessage: ?string,
   txHash: ?string,

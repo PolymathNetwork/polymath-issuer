@@ -1,11 +1,8 @@
 // @flow
 
 import * as a from './actions'
-import type { DashboardAction, SecurityToken } from './actions'
-
-export type DashboardState = {
-  token: ?SecurityToken,
-}
+import type { DashboardAction } from './actions'
+import type { DashboardState } from './state.types'
 
 const defaultState: DashboardState = {
   token: null,

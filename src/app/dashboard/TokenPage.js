@@ -2,7 +2,6 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import DocumentTitle from 'react-document-title'
 import { Link } from 'react-router-dom'
 import type { Match } from 'react-router'
@@ -17,13 +16,29 @@ import CompleteTokenForm from './components/CompleteTokenForm'
 
 import './style.css'
 
-type Props = {
-  match: Match,
-  fetchTokenByTicker: (ticker: string) => void,
-  completeToken: () => void,
+type StateProps = {
   token: ?SecurityToken,
   isMainnet: boolean,
 }
+
+type DispatchProps = {
+  fetchTokenByTicker: (ticker: string) => any,
+  completeToken: () => any,
+}
+
+const mapStateToProps = (state: RootState): StateProps => ({
+  token: state.dashboard.token,
+  isMainnet: state.network.id === 1,
+})
+
+const mapDispatchToProps: DispatchProps = {
+  fetchTokenByTicker,
+  completeToken,
+}
+
+type Props = {
+  match: Match
+} & StateProps & DispatchProps
 
 class TokenPage extends Component<Props> {
   componentWillMount () {
@@ -135,16 +150,6 @@ class TokenPage extends Component<Props> {
       </DocumentTitle>
     )
   }
-}
-
-const mapStateToProps = (state: RootState) => ({
-  token: state.dashboard.token,
-  isMainnet: state.network.id === 1,
-})
-
-const mapDispatchToProps = {
-  fetchTokenByTicker,
-  completeToken,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TokenPage)
