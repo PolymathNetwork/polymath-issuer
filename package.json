@@ -61,7 +61,7 @@
     "test": "react-scripts test --useStderr --forceExit --runInBand",
     "precommit": "lint-staged && npm run typecheck",
     "build": "npm run build-css && react-scripts build && cp build/index.html build/404.html",
-    "contracts": "cd node_modules/polymath-core_v2 && npm install && node ../truffle/build/cli.bundled.js migrate --reset --all --network development"
+    "contracts": "cd node_modules/polymath-core_v2 && yarn && node ../truffle/build/cli.bundled.js migrate --reset --all --network development"
   },
   "lint-staged": {
     "src/**/*.js": [

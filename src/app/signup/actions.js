@@ -1,4 +1,3 @@
-import type { DispatchAPI } from 'redux'
 import { TickerRegistrar } from 'polymath.js_v2'
 
 import * as ui from '../ui/actions'
@@ -8,7 +7,7 @@ import { etherscanTx } from '../helpers'
 import type { GetState } from '../../redux/state.types'
 
 // eslint-disable-next-line
-export const signUp = () => async (dispatch: DispatchAPI<*>, getState: GetState) => {
+export const signUp = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.txStart('Submitting token symbol registration...'))
   try {
     const { ticker, contact } = getState().form[formName].values

@@ -40,11 +40,15 @@ export default (state: UIState = defaultState, action: a.UIAction) => {
         isLoading: false,
       }
     case a.TX_FAILED:
-    case a.FETCHING_FAILED:
     case a.FETCHED:
       return {
         ...state,
         isLoading: false,
+      }
+    case a.FETCHING_FAILED:
+      return {
+        ...state,
+        loadingMessage: action.message,
       }
     case a.NOTIFY:
       return {
@@ -52,7 +56,6 @@ export default (state: UIState = defaultState, action: a.UIAction) => {
         notify: action.notify,
       }
     default:
-      // const ignore = (action.empty)
       return state
   }
 }
