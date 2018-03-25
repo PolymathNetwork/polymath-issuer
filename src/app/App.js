@@ -13,7 +13,7 @@ import 'carbon-components/css/carbon-components.min.css'
 import './style.css'
 
 import { setupHistory, txHash, txEnd } from './ui/actions'
-import { tokenDetails } from './dashboard/actions'
+import { fetchTokenDetails } from './dashboard/actions'
 import { etherscanTx } from './helpers'
 import type { Notify } from './ui/state.types'
 import type { RootState } from '../redux/state.types'
@@ -30,7 +30,7 @@ type DispatchProps = {
   setupHistory: (history: RouterHistory) => any,
   txHash: (hash: string) => any,
   txEnd: (receipt: any) => any,
-  tokenDetails: () => any,
+  fetchTokenDetails: () => any,
 }
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -45,11 +45,11 @@ const mapDispatchToProps: DispatchProps = {
   setupHistory,
   txHash,
   txEnd,
-  tokenDetails,
+  fetchTokenDetails,
 }
 
 type Props = {
-  route: any, // react-router-config doesn't seem to have Flow types.
+  route: any, // react-router-config doesn't seem to have Flow types
   history: RouterHistory
 } & StateProps & DispatchProps
 
@@ -61,7 +61,7 @@ class App extends Component<Props> {
       txHashCallback: (hash) => this.props.txHash(hash),
       txEndCallback: (receipt) => this.props.txEnd(receipt),
     }
-    this.props.tokenDetails()
+    this.props.fetchTokenDetails()
   }
 
   componentWillReceiveProps (nextProps) {

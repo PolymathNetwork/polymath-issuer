@@ -1,3 +1,3 @@
-# Security Token Issuer + STO Launcher
+# Security Token Issuer + STO Launcher + Whitelist Manager
 
-TODO
+After cloning, run `yarn` to install all dependencies.
