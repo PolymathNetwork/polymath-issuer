@@ -62,7 +62,7 @@
     "precommit": "lint-staged && npm run typecheck",
     "build": "npm run build-css && react-scripts build && cp build/index.html build/404.html",
     "contracts": "cd node_modules/polymath-core_v2 && yarn && node ../truffle/build/cli.bundled.js migrate --reset --all --network development",
-    "tconsole": "cd node_modules/polymath-core_v2 && node ../truffle/build/cli.bundled.js console"
+    "tconsole": "cd node_modules/polymath-core_v2 && yarn && node ../truffle/build/cli.bundled.js console"
   },
   "lint-staged": {
     "src/**/*.js": [
