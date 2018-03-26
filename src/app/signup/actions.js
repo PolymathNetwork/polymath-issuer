@@ -1,4 +1,4 @@
-import { TickerRegistrar } from 'polymath.js_v2'
+import { TickerRegistry } from 'polymath.js_v2'
 
 import * as ui from '../ui/actions'
 import { formName } from './components/SignUpForm'
@@ -11,7 +11,7 @@ export const signUp = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.txStart('Submitting token symbol registration...'))
   try {
     const { ticker, contact } = getState().form[formName].values
-    const receipt = await TickerRegistrar.registerTicker(ticker, contact)
+    const receipt = await TickerRegistry.registerTicker(ticker, contact)
     dispatch(ui.notify(
       'Token symbol was successfully registered',
       true,

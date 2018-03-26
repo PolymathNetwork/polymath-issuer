@@ -12,7 +12,7 @@ import {
   email,
   ethereumAddress,
 } from 'polymath-ui/dist/validate'
-import { TickerRegistrar } from 'polymath.js_v2'
+import { TickerRegistry } from 'polymath.js_v2'
 
 export const formName = 'signup'
 
@@ -64,7 +64,7 @@ export default reduxForm({
       // eslint-disable-next-line
       throw { ticker: syncError }
     }
-    if (await TickerRegistrar.getDetails(v) !== null) {
+    if (await TickerRegistry.getDetails(v) !== null) {
       // eslint-disable-next-line
       throw { ticker: 'Specified ticker is already exists.' }
     }

@@ -6,7 +6,7 @@ import DocumentTitle from 'react-document-title'
 import { Link } from 'react-router-dom'
 import type { Match } from 'react-router'
 import { Breadcrumb, BreadcrumbItem, InlineNotification } from 'carbon-components-react'
-import { SecurityTokenRegistrar } from 'polymath.js_v2'
+import { SecurityTokenRegistry } from 'polymath.js_v2'
 import type { SecurityToken } from 'polymath.js_v2/types'
 
 import { completeToken, fetchTokenDetails } from './actions'
@@ -47,7 +47,7 @@ class TokenPage extends Component<Props> {
   }
 
   completeToken (token: SecurityToken) {
-    const completeFee = SecurityTokenRegistrar.fee.toNumber()
+    const completeFee = SecurityTokenRegistry.fee.toNumber()
     return (
       <div>
         <InlineNotification
@@ -107,7 +107,7 @@ class TokenPage extends Component<Props> {
               </div>
             </div>
             <div className='bx--col-xs-7'>
-              {token.isGenerated ? (
+              {token.address ? (
                 <div className='completed-token-details'>
                   <div className='bx--form-item'>
                     <label htmlFor='owner' className='bx--label'>Address</label>
