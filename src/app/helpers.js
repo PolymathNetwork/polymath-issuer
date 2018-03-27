@@ -1,3 +1,5 @@
+// @flow
+
 import React from 'react'
 
 const etherscan = (type: string, value: string, label: string) => {
@@ -20,5 +22,5 @@ export const etherscanToken = (address: string) => {
   return etherscan('token', address, address)
 }
 
-export const thousandsLimiter = (v) =>
+export const thousandsDelimiter = (v: number) =>
   v.toString(10).replace(/\B(?=(\d{3})+(?!\d))/g, ',')

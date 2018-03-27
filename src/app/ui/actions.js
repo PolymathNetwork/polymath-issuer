@@ -1,36 +1,67 @@
-import { actionGen } from '../../redux/helpers'
+// @flow
+
+import type { RouterHistory } from 'react-router-dom'
+
 import { etherscanTx } from '../helpers'
+import type { Notify } from './state.types'
+import type { GetState } from '../../redux/state.types'
+import type { ExtractReturn } from '../../redux/helpers'
 
 export const SETUP_HISTORY = 'ui/SETUP_HISTORY'
+export const setupHistory = (history: RouterHistory) => ({ type: 'ui/SETUP_HISTORY', history })
+
 export const TX_START = 'ui/TX_START'
+export const txStart = (message: string) => ({ type: 'ui/TX_START', message })
+
 export const TX_HASH = 'ui/TX_HASH'
+export const txHash = (hash: string) => ({ type: 'ui/TX_HASH', hash })
+
 export const TX_END = 'ui/TX_END'
+export const txEnd = (receipt: any) => ({ type: 'ui/TX_END', receipt })
+
 export const TX_FAILED = 'ui/TX_FAILED'
+const txFailedAction = () => ({ type: 'ui/TX_FAILED' })
+
 export const FETCHING = 'ui/FETCHING'
+export const fetching = (message: string) => ({ type: 'ui/FETCHING', message })
+
 export const FETCHING_FAILED = 'ui/FETCHING_FAILED'
+const fetchingFailedAction = (message: string) => ({ type: 'ui/FETCHING_FAILED', message })
+
 export const FETCHED = 'ui/FETCHED'
+export const fetched = () => ({ type: 'ui/FETCHED' })
 
-export const setupHistory = actionGen(SETUP_HISTORY)
-export const fetching = (message: string) => ({ type: FETCHING, message })
-export const fetched = actionGen(FETCHED)
-export const txStart = (message: string) => ({ type: TX_START, message })
-export const txHash = actionGen(TX_HASH)
-export const txEnd = actionGen(TX_END)
+export const NOTIFY = 'ui/NOTIFY'
+const notifyAction = (notify: Notify) => ({ type: 'ui/NOTIFY', notify })
 
-// TODO @bshevchenko: write notify body
-// eslint-disable-next-line
+export type UIAction =
+  | ExtractReturn<typeof setupHistory>
+  | ExtractReturn<typeof txStart>
+  | ExtractReturn<typeof txHash>
+  | ExtractReturn<typeof txEnd>
+  | ExtractReturn<typeof txFailedAction>
+  | ExtractReturn<typeof fetching>
+  | ExtractReturn<typeof fetchingFailedAction>
+  | ExtractReturn<typeof fetched>
+  | ExtractReturn<typeof notifyAction>
+
 export const notify = (
   title: string,
   isSuccess: boolean = true,
   subtitle: ?string,
   caption: ?any,
   isPinned: boolean = false,
-) => async () => {
-  // eslint-disable-next-line
-  console.warn('notify', title, isSuccess ? 'success' : 'error', subtitle, caption, isPinned ? 'pinned' : '')
+) => async (dispatch: Function) => {
+  dispatch(notifyAction({
+    title,
+    isSuccess,
+    subtitle,
+    caption,
+    isPinned,
+  }))
 }
 
-export const txFailed = (e: Error) => async (dispatch, getState) => {
+export const txFailed = (e: Error) => async (dispatch: Function, getState: GetState) => {
   // eslint-disable-next-line
   console.error('Transaction failed', e)
   let caption
@@ -40,11 +71,11 @@ export const txFailed = (e: Error) => async (dispatch, getState) => {
     isPinned = true
   }
   dispatch(notify('Transaction failed', false, e.message, caption, isPinned))
-  dispatch({ type: TX_FAILED })
+  dispatch(txFailedAction())
 }
 
-export const fetchingFailed = (e: Error) => async (dispatch) => {
+export const fetchingFailed = (e: Error) => async (dispatch: Function) => {
   // eslint-disable-next-line
   console.error('Fetching failed', e)
-  dispatch({ type: FETCHING_FAILED })
+  dispatch(fetchingFailedAction(e.message))
 }

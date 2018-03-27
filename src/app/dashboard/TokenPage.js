@@ -1,34 +1,53 @@
+// @flow
+
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import DocumentTitle from 'react-document-title'
 import { Link } from 'react-router-dom'
+import type { Match } from 'react-router'
 import { Breadcrumb, BreadcrumbItem, InlineNotification } from 'carbon-components-react'
-import { SecurityTokenRegistrar } from 'polymath.js_v2'
+import { SecurityTokenRegistry } from 'polymath.js_v2'
 import type { SecurityToken } from 'polymath.js_v2/types'
 
-import { tokenDetails, completeToken } from './actions'
+import { completeToken, fetchTokenDetails } from './actions'
 import NotFoundPage from '../NotFoundPage'
 import { etherscanAddress, etherscanToken } from '../helpers'
+import type { RootState } from '../../redux/state.types'
 import CompleteTokenForm from './components/CompleteTokenForm'
 
 import './style.css'
 
-class TokenPage extends Component {
-  static propTypes = {
-    init: PropTypes.func.isRequired,
-    complete: PropTypes.func.isRequired,
-    // eslint-disable-next-line
-    token: PropTypes.object,
-    isMainnet: PropTypes.bool.isRequired,
-  }
+type StateProps = {
+  token: ?SecurityToken,
+  isMainnet: boolean,
+}
 
+type DispatchProps = {
+  fetchTokenDetails: (ticker: string) => any, // TODO Unused?
+  completeToken: () => any,
+}
+
+const mapStateToProps = (state: RootState): StateProps => ({
+  token: state.dashboard.token,
+  isMainnet: state.network.id === 1,
+})
+
+const mapDispatchToProps: DispatchProps = {
+  fetchTokenDetails,
+  completeToken,
+}
+
+type Props = {
+  match: Match
+} & StateProps & DispatchProps
+
+class TokenPage extends Component<Props> {
   handleCompleteSubmit = () => {
-    this.props.complete()
+    this.props.completeToken()
   }
 
   completeToken (token: SecurityToken) {
-    const completeFee = SecurityTokenRegistrar.fee.toNumber()
+    const completeFee = SecurityTokenRegistry.fee.toNumber()
     return (
       <div>
         <InlineNotification
@@ -62,7 +81,7 @@ class TokenPage extends Component {
     if (!this.props.token) {
       return <NotFoundPage />
     }
-    const token: SecurityToken = this.props.token
+    const token = this.props.token
     return (
       <DocumentTitle title={token.ticker + ' Token – Polymath'}>
         <div>
@@ -88,7 +107,7 @@ class TokenPage extends Component {
               </div>
             </div>
             <div className='bx--col-xs-7'>
-              {token.isGenerated ? (
+              {token.address ? (
                 <div className='completed-token-details'>
                   <div className='bx--form-item'>
                     <label htmlFor='owner' className='bx--label'>Address</label>
@@ -116,15 +135,5 @@ class TokenPage extends Component {
     )
   }
 }
-
-const mapStateToProps = (state) => ({
-  token: state.dashboard.token,
-  isMainnet: state.network.id === 1,
-})
-
-const mapDispatchToProps = (dispatch) => ({
-  init: () => dispatch(tokenDetails()),
-  complete: () => dispatch(completeToken()),
-})
 
 export default connect(mapStateToProps, mapDispatchToProps)(TokenPage)

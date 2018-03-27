@@ -1,3 +1,5 @@
+// @flow
+
 import App from './app/App'
 import HomePage from './app/HomePage'
 import NotFoundPage from './app/NotFoundPage'

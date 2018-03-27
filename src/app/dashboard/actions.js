@@ -1,26 +1,34 @@
-import { PolyToken, SecurityTokenRegistrar } from 'polymath.js_v2'
+// @flow
+
+import { PolyToken, SecurityTokenRegistry } from 'polymath.js_v2'
 import type { SecurityToken } from 'polymath.js_v2/types'
 
 import * as ui from '../ui/actions'
 import { etherscanTx } from '../helpers'
 import { formName as completeTokenFormName } from './components/CompleteTokenForm'
+import type { GetState } from '../../redux/state.types'
+import type { ExtractReturn } from '../../redux/helpers'
 
-export const TOKEN_DETAILS = 'dashboard/TOKEN'
+export const TOKEN_DETAILS = 'dashboard/TOKEN_DETAILS'
+export const tokenDetails = (token: SecurityToken) => ({ type: "dashboard/TOKEN_DETAILS", token })
 
-export const tokenDetails = () => async (dispatch) => {
+export type DashboardAction =
+  | ExtractReturn<typeof tokenDetails>
+
+export const fetchTokenDetails = () => async (dispatch: Function) => {
   dispatch(ui.fetching('Loading...'))
   try {
-    let token = await SecurityTokenRegistrar.getMyToken()
-    dispatch({ type: TOKEN_DETAILS, token })
+    let token = await SecurityTokenRegistry.getMyToken()
+    dispatch(tokenDetails(token))
     dispatch(ui.fetched())
   } catch (e) {
     dispatch(ui.fetchingFailed(e))
   }
 }
 
-export const completeToken = () => async (dispatch, getState) => {
+export const completeToken = () => async (dispatch: Function, getState: GetState) => {
   try {
-    const completeFee = SecurityTokenRegistrar.fee
+    const completeFee = SecurityTokenRegistry.fee
     const balance = await PolyToken.myBalance()
     if (!balance.gte(completeFee)) {
       if (getState().network.id === 1) {
@@ -30,24 +38,24 @@ export const completeToken = () => async (dispatch, getState) => {
         await PolyToken.getTokens(completeFee)
       }
     }
-    const isPreAuth = await SecurityTokenRegistrar.isPreAuth()
+    const isPreAuth = await SecurityTokenRegistry.isPreAuth()
     if (!isPreAuth) {
       dispatch(ui.txStart('Pre-authorizing security token creation fee of ' + completeFee.toString(10) + ' POLY...'))
-      await SecurityTokenRegistrar.preAuth()
+      await SecurityTokenRegistry.preAuth()
     }
     const token: SecurityToken = {
       ...getState().dashboard.token,
       ...getState().form[completeTokenFormName].values,
     }
     dispatch(ui.txStart('Issuing ' + token.ticker + ' token...'))
-    const receipt = await SecurityTokenRegistrar.generateSecurityToken(token)
+    const receipt = await SecurityTokenRegistry.generateSecurityToken(token)
+    dispatch(fetchTokenDetails())
     dispatch(ui.notify(
       token.ticker + ' token was successfully issued',
       true,
       'We have already sent you an email. Check your mailbox',
       etherscanTx(receipt.transactionHash)
     ))
-    dispatch(tokenDetails())
   } catch (e) {
     dispatch(ui.txFailed(e))
   }

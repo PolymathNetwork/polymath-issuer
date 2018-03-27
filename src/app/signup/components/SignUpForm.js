@@ -1,4 +1,5 @@
-import PropTypes from 'prop-types'
+// @flow
+
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form'
 
@@ -11,15 +12,15 @@ import {
   email,
   ethereumAddress,
 } from 'polymath-ui/dist/validate'
-import { TickerRegistrar } from 'polymath.js_v2'
+import { TickerRegistry } from 'polymath.js_v2'
 
 export const formName = 'signup'
 
-class SignUpForm extends Component {
-  static propTypes = {
-    handleSubmit: PropTypes.func.isRequired,
-  }
+type Props = {
+  handleSubmit: () => void,
+}
 
+class SignUpForm extends Component<Props> {
   render () {
     return (
       <Form onSubmit={this.props.handleSubmit}>
@@ -56,16 +57,16 @@ export default reduxForm({
   destroyOnUnmount: false,
   forceUnregisterOnUnmount: true,
   asyncValidate: async (values) => {
-    // async validation doesn't work properly with field-level validation, so we need to describe sync rules here
+    // async validation doesn't work properly with field-level validation, so we need to specify sync rules here
     const v = values.ticker
     const syncError = required(v) || maxLength(4)(v) || alphanumeric(v)
     if (syncError) {
       // eslint-disable-next-line
-      throw {ticker: syncError}
+      throw { ticker: syncError }
     }
-    if (await TickerRegistrar.getDetails(v) !== null) {
+    if (await TickerRegistry.getDetails(v) !== null) {
       // eslint-disable-next-line
-      throw {ticker: 'Specified ticker is already exists.'}
+      throw { ticker: 'Specified ticker is already exists.' }
     }
   },
   asyncBlurFields: ['ticker'],
