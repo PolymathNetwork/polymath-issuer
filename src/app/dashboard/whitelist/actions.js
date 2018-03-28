@@ -5,7 +5,6 @@ import * as ui from '../../ui/actions'
 // import { etherscanTx } from '../helpers'
 // import { actionGen } from "../../../redux/helpers"
 import { formName as userFormName } from './userForm'
-import { single } from 'rxjs/operator/single'
 
 export const UPLOAD_CSV = 'dashboard/whitelist/UPLOAD_CSV'
 export const UPLOAD_CSV_FAILED = 'dashboard/whitelist/UPLOAD_CSV_FAILED'
@@ -20,6 +19,7 @@ export const GET_WHITELIST = 'dashboard/whitelist/ADD_SINGLE_ENTRY'
 export const GET_WHITELIST_FAILED = 'dashboard/whitelist/ADD_SINGLE_ENTRY_FAILED'
 
 export const PAGINATION_DIVIDER = 'dashboard/whitelist/PAGINATION_DIVDER'
+export const LIST_LENGTH = 'dashboard/whitelist/LIST_LENGTH'
 
 //same as editing
 export const REMOVE_SINGLE_ENTRY = 'dashboard/whitelist/REMOVE_SINGLE_ENTRY'
@@ -107,7 +107,7 @@ export const multiUserSubmit = () => async (dispatch, getState) => {
     }
     tableData.push(backendData)
   }
-  console.log(tableData)
+  // console.log(tableData)
 
   dispatch({ type: ADD_MULTI_ENTRY, investors: tableData })
 
@@ -146,25 +146,26 @@ export const multiUserSubmit = () => async (dispatch, getState) => {
 
 export const paginationDivider = () => async (dispatch, getState) => {
   const fullInvestorList = [...getState().whitelist.investors]
-  console.log(fullInvestorList)
   let holdsDivisons = []
   let singlePage = []
-  let listLength = 10
-  console.log
+  let listLength = getState().whitelist.listLength
+  
   for (let i = 0; i < fullInvestorList.length; i++) {
 
     singlePage.push(fullInvestorList[i])
-    console.log(singlePage.length)
-    if (singlePage.length == listLength || i == (fullInvestorList.length - 1)) {
-      console.log(singlePage)
+    if (singlePage.length === listLength || i === (fullInvestorList.length - 1)) {
 
       holdsDivisons.push(singlePage)
       singlePage = []
     }
   }
-  console.log(holdsDivisons)
+  // console.log(holdsDivisons)
   dispatch({ type: PAGINATION_DIVIDER, paginatedInvestors: holdsDivisons })
 
+}
+
+export const listLength = (e) => async (dispatch, getState) => {
+  dispatch({ type: LIST_LENGTH, listLength: e })
 }
 
 //TODO - where is owner coming from?
@@ -173,7 +174,7 @@ export const oneUserSubmit = () => async (dispatch, getState) => {
   let randomID = uuidv4()
 
   const user = { ...getState().form[userFormName].values }
-  console.log(user)
+  // console.log(user)
   const owner = "0xdc4d23daf21da6163369940af54e5a1be783497b" //hardcoded temporarily , as i need to link up account from metamask
   let sellTimestamp = Math.round((new Date(user.sell)).getTime() / 1000)
   let buyTimestamp = Math.round((new Date(user.buy)).getTime() / 1000)
@@ -215,7 +216,7 @@ export const oneUserSubmit = () => async (dispatch, getState) => {
     dispatch(ui.txFailed(e))
   }
 
-  getWhiteList()
+  // getWhiteList()
 
   //these will actually get deleted or changed complete, becasue we shouldnt be sending to the store direcrly from the app. 
   //we need to go user input ---> blockchain ---> events ---> getWhitelist grabs events ----> populates our store
@@ -230,29 +231,29 @@ export const oneUserSubmit = () => async (dispatch, getState) => {
 
 export const getWhiteList = () => async (dispatch, getState) => {
 
-  // let testing = true
-  // console.log("truck")
+// let testing = true
+// console.log("truck")
 
-  // //temporarily have this fake data?
+// //temporarily have this fake data?
 
-  // if (testing) {
-  //   console.log("truck")
-  //   // dispatch({ type: GET_WHITELIST, basicMessage: "Whitelist retrived from blockchain logs", investors: backendData })
+// if (testing) {
+//   console.log("truck")
+//   // dispatch({ type: GET_WHITELIST, basicMessage: "Whitelist retrived from blockchain logs", investors: backendData })
 
-  // } else {
-  //   // let whitelist = await transferManager.getWhitelist() //-will look ike this, need to write poyljs
-  //   console.log("truck")
+// } else {
+//   // let whitelist = await transferManager.getWhitelist() //-will look ike this, need to write poyljs
+//   console.log("truck")
 
-  //   //for now we just get state in store, which we originally put up with timestamps, and now we will conver to human
-  //   //readable dates to mimic when we pull from events
+//   //for now we just get state in store, which we originally put up with timestamps, and now we will conver to human
+//   //readable dates to mimic when we pull from events
 
-  //   let dummyState = { ...getState().whitelist.investors } 
+//   let dummyState = { ...getState().whitelist.investors } 
 
-  //   console.log(dummyState)
+//   console.log(dummyState)
 
-  //   // dispatch({ type: GET_WHITELIST, basicMessage: "Whitelist retrived from blockchain logs", investors: backendData })
-  //   // dispatch({ type: GET_WHITELIST_FAILED, csvMessage: "There was an error grabbing the whitelist" })
-  // }
+//   // dispatch({ type: GET_WHITELIST, basicMessage: "Whitelist retrived from blockchain logs", investors: backendData })
+//   // dispatch({ type: GET_WHITELIST_FAILED, csvMessage: "There was an error grabbing the whitelist" })
+// }
 
 }
 

@@ -10,6 +10,7 @@ const defaultState = {
   //fake data is used to display the whole list, so this gets updated by the blockchain events, or the backend, or both 
   investors: [],
   investorsPaginated: [[]],
+  listLength: 10,
 
   csvMessage: "Please upload a CSV file",
   basicMessage: "",
@@ -55,6 +56,11 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         investorsPaginated: action.paginatedInvestors,
+      }
+    case a.LIST_LENGTH:
+      return {
+        ...state,
+        listLength: action.listLength,
       }
     case a.GET_WHITELIST:
       return {

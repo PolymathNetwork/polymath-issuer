@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
+import uuidv4 from 'uuid/v4'
 import {
   FileUploader,
   // Button,
@@ -12,8 +13,7 @@ import {
   // TextInput,
 } from "carbon-components-react"
 
-import { uploadCSV, multiUserSubmit, oneUserSubmit, getWhiteList, paginationDivider } from './actions'
-import { FakeTableData } from './fakedata'
+import { uploadCSV, multiUserSubmit, oneUserSubmit, getWhiteList, paginationDivider, listLength } from './actions'
 import { TableHeaders } from './tableHeaders'
 import InvestorForm from './userForm'
 
@@ -40,11 +40,13 @@ class WhiteListPage extends Component {
 
   onHandleMultiSubmit = () => {
     this.props.multiSubmit()
-    console.log(this.props.investors)
+    // console.log(this.props.investors)
     this.props.paginationDivider()
   }
 
   changePages = (e) => {
+    this.props.updateListLength(e.pageSize)
+    this.props.paginationDivider()
     this.setState({
       page: (e.page - 1),
     })
@@ -62,7 +64,7 @@ class WhiteListPage extends Component {
   //TODO: put the contracts on testrpc and get it to work (see adam dossa instructions)
 
   render () {
-    console.log(this.props.investors)
+    // console.log(this.props.investors)
     return (
       <DocumentTitle title='Sign Up – Polymath'>
 
@@ -106,7 +108,7 @@ class WhiteListPage extends Component {
                 </p>
                 <br />
                 {this.props.addresses.map((user, i) => (
-                  <div key={i}>
+                  <div key={uuidv4()}>
                     <div>Address: {this.props.addresses[i]}</div>
                     <div>Sell Expiry Time: {this.props.sell[i]}</div>
                     <div>Buy Expiry Time: {this.props.buy[i]}</div>
@@ -204,7 +206,7 @@ class WhiteListPage extends Component {
           />
           <PaginationV2
             onChange={(e) => this.changePages(e)}
-            pageSizes={[10]}
+            pageSizes={[10,20,30,40,50]}
             // pageInputDisabled
             totalItems={this.props.investors.length}
 
@@ -232,6 +234,7 @@ const mapDispatchToProps = (dispatch) => ({
   singleSubmit: () => dispatch(oneUserSubmit()),
   getWhiteList: () => dispatch(getWhiteList()),
   paginationDivider: () => dispatch(paginationDivider()),
+  updateListLength: (e) => dispatch(listLength(e)),
 
 })
 
