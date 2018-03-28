@@ -12,7 +12,7 @@ import {
   // TextInput,
 } from "carbon-components-react"
 
-import { uploadCSV, multiUserSubmit, oneUserSubmit, getWhiteList } from './actions'
+import { uploadCSV, multiUserSubmit, oneUserSubmit, getWhiteList, paginationDivider } from './actions'
 import { FakeTableData } from './fakedata'
 import { TableHeaders } from './tableHeaders'
 import InvestorForm from './userForm'
@@ -23,6 +23,12 @@ const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, Tab
 
 class WhiteListPage extends Component {
 
+  constructor () {
+    super()
+
+    this.state = { page: 0 }
+
+  }
   componentWillMount () {
     //call the function to load the events from blcokchain
     this.props.getWhiteList()
@@ -35,10 +41,13 @@ class WhiteListPage extends Component {
   onHandleMultiSubmit = () => {
     this.props.multiSubmit()
     console.log(this.props.investors)
+    this.props.paginationDivider()
   }
 
-  changePages = () => {
-    console.log("gotta figureout how to change pages")
+  changePages = (e) => {
+    this.setState({
+      page: (e.page - 1),
+    })
   }
 
   //*TODO: Functionality to add a single address by user input **** (connect to the blockchain, fake connection)
@@ -111,7 +120,7 @@ class WhiteListPage extends Component {
 
           <br /> <br /> <br />
           <DataTable
-            rows={this.props.investors} //wtf why wont this render???
+            rows={this.props.investorsPaginated[this.state.page]} //wtf why wont this render???
             headers={TableHeaders}
             render={({
               rows,
@@ -194,7 +203,7 @@ class WhiteListPage extends Component {
             )}
           />
           <PaginationV2
-            // onChange={this.changePages()}
+            onChange={(e) => this.changePages(e)}
             pageSizes={[10]}
             // pageInputDisabled
             totalItems={this.props.investors.length}
@@ -212,6 +221,7 @@ const mapStateToProps = (state) => ({
   sell: state.whitelist.sell,
   buy: state.whitelist.buy,
   investors: state.whitelist.investors,
+  investorsPaginated: state.whitelist.investorsPaginated,
   csvMessage: state.whitelist.csvMessage,
   modalShowing: state.whitelist.modalShowing,
 })
@@ -221,6 +231,7 @@ const mapDispatchToProps = (dispatch) => ({
   multiSubmit: () => dispatch(multiUserSubmit()),
   singleSubmit: () => dispatch(oneUserSubmit()),
   getWhiteList: () => dispatch(getWhiteList()),
+  paginationDivider: () => dispatch(paginationDivider()),
 
 })
 
