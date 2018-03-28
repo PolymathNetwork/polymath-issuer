@@ -111,7 +111,7 @@ class WhiteListPage extends Component {
 
           <br /> <br /> <br />
           <DataTable
-            rows={FakeTableData} //wtf why wont this render???
+            rows={this.props.investors} //wtf why wont this render???
             headers={TableHeaders}
             render={({
               rows,

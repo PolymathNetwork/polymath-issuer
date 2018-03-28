@@ -1825,9 +1825,9 @@ capture-stack-trace@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/capture-stack-trace/-/capture-stack-trace-1.0.0.tgz#4a6fa07399c26bba47f0b2496b4d0fb408c5550d"
 
-carbon-components-react@5.31.1:
-  version "5.31.1"
-  resolved "https://registry.yarnpkg.com/carbon-components-react/-/carbon-components-react-5.31.1.tgz#afaa4dc5d8f457f261fee20c42ebfef44ddb27ac"
+carbon-components-react@5.32.0:
+  version "5.32.0"
+  resolved "https://registry.yarnpkg.com/carbon-components-react/-/carbon-components-react-5.32.0.tgz#15dd0af15eb819ac4b432dd2b050d99b2189b44f"
   dependencies:
     classnames "2.2.5"
     downshift "^1.23.2"
@@ -7815,9 +7815,9 @@ polymath-auth@0.1.7:
     web3-core-method "github:bshevchenko/web3-core-method#master"
     web3-eth-contract "1.0.0-beta.30"
 
-polymath-core_v2@0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/polymath-core_v2/-/polymath-core_v2-0.1.6.tgz#8bcf01c7d83e952fd2a813b8400c310e1bdd5540"
+polymath-core_v2@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/polymath-core_v2/-/polymath-core_v2-0.2.0.tgz#016afafdd3437f338051e52b8e81e53f25988e03"
   dependencies:
     babel-polyfill "6.26.0"
     babel-preset-es2015 "6.24.1"
@@ -7842,13 +7842,13 @@ polymath-ui@0.1.9:
     react-dom "^16.2.0"
     react-transition-group "^2.2.1"
 
-polymath.js_v2@0.2.7:
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/polymath.js_v2/-/polymath.js_v2-0.2.7.tgz#0fc4954c26c69b820f126a26a62abc8d62f7070f"
+polymath.js_v2@0.2.8:
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/polymath.js_v2/-/polymath.js_v2-0.2.8.tgz#40a076767b6d4622a60c7dfe8cc52746fbd26388"
   dependencies:
     axios "0.16.2"
     bignumber.js "5.0.0"
-    polymath-core_v2 "0.1.6"
+    polymath-core_v2 "0.2.0"
     redux "3.7.2"
     redux-thunk "2.2.0"
     web3 "1.0.0-beta.30"
@@ -10455,7 +10455,7 @@ uuid@^2.0.1, uuid@^2.0.2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
 
-uuid@^3.0.0, uuid@^3.1.0:
+uuid@^3.0.0, uuid@^3.1.0, uuid@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.2.1.tgz#12c528bb9d58d0b9265d9a2f6f0fe8be17ff1f14"
 
