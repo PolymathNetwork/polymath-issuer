@@ -8,12 +8,13 @@ import {
   DataTable,
   PaginationV2,
   ModalWrapper,
+  Modal,
   // Form,
   // FormGroup,
   // TextInput,
 } from "carbon-components-react"
 
-import { uploadCSV, multiUserSubmit, oneUserSubmit, getWhiteList, paginationDivider, listLength } from './actions'
+import { uploadCSV, multiUserSubmit, oneUserSubmit, getWhiteList, paginationDivider, listLength, showModal2 } from './actions'
 import { TableHeaders } from './tableHeaders'
 import InvestorForm from './userForm'
 
@@ -36,6 +37,10 @@ class WhiteListPage extends Component {
 
   handleInvestorSubmit = () => {
     this.props.singleSubmit()
+  }
+
+  onHandleMultiSubmitModal1 = () => {
+    this.props.showModal2()
   }
 
   onHandleMultiSubmit = () => {
@@ -71,16 +76,27 @@ class WhiteListPage extends Component {
         <div className='bx--grid'>
           <div className='bx--row'>
             <div className='bx--col-xs-6'>
-              <FileUploader
-                labelTitle={this.props.csvMessage}
-                labelDescription='Add multiple addresses to the whitelist by uploading a comma seperated CSV file. The format should be as follows: Eth Address (address to whitelist), date mm/dd/yyyy)'
-                buttonLabel='IMPORT WHITELIST'
-                filenameStatus='edit'
-                accept={[".csv"]}
-                onChange={this.props.handleUpload}
-                multiple
-              />
-              {/* <Button
+              <h2>Whitelist</h2>
+              <br />
+              <ModalWrapper
+                // modalProps={{ onBlur: { onBlur() }, onClick: { onClick() }, onFocus: { onFocus() }, …}}
+                id='transactional-modal'
+                buttonTriggerText='Import Whitelist'
+                modalLabel='Import Whitelist'
+                modalHeading='Import Whitelist'
+                handleSubmit={this.onHandleMultiSubmitModal1}
+                shouldCloseAfterSubmit
+              >
+                <FileUploader
+                  labelTitle={this.props.csvMessage}
+                  labelDescription='Add multiple addresses to the whitelist by uploading a comma seperated CSV file. The format should be as follows: Eth Address (address to whitelist), date mm/dd/yyyy)'
+                  buttonLabel='IMPORT WHITELIST'
+                  filenameStatus='edit'
+                  accept={[".csv"]}
+                  onChange={this.props.handleUpload}
+                  multiple
+                />
+                {/* <Button
                 kind='secondary'
                 small
                 style={{ marginTop: "1rem" }}
@@ -88,20 +104,25 @@ class WhiteListPage extends Component {
               >
                 Clear File
               </Button> */}
+              </ModalWrapper>
+
             </div>
           </div>
           <br />
           {this.props.modalShowing ?
             <div>
               <div>Please click the button below to review your csv upload, and submit the addresses to the Polymath Smart contracts</div>
-              <ModalWrapper
+              <Modal
                 // modalProps={{ onBlur: { onBlur() }, onClick: { onClick() }, onFocus: { onFocus() }, …}}
-                id='transactional-modal'
-                buttonTriggerText='Submit CSV to Blockchain'
-                modalLabel='Submit CSV to Blockchain'
-                modalHeading='Submit CSV to Blockchain'
+                open
+                transactional
+                modalHeading='Modal heading'
+                modalLabel='Optional label'
+                primaryButtonText='Yes, Submit to Blockchain'
+                secondaryButtonText='No, I see an error'
                 handleSubmit={this.onHandleMultiSubmit}
-                shouldCloseAfterSubmit
+                onRequestClose
+                className='some-class'
               >
                 <p className='bx--modal-content__text'>
                   Below is the data you will be sending to the blockchain, please confirm it is correct
@@ -116,7 +137,7 @@ class WhiteListPage extends Component {
                   </div>
                 ))}
 
-              </ModalWrapper>
+              </Modal>
             </div>
             : null}
 
@@ -206,7 +227,7 @@ class WhiteListPage extends Component {
           />
           <PaginationV2
             onChange={(e) => this.changePages(e)}
-            pageSizes={[10,20,30,40,50]}
+            pageSizes={[10, 20, 30, 40, 50]}
             // pageInputDisabled
             totalItems={this.props.investors.length}
 
@@ -235,6 +256,7 @@ const mapDispatchToProps = (dispatch) => ({
   getWhiteList: () => dispatch(getWhiteList()),
   paginationDivider: () => dispatch(paginationDivider()),
   updateListLength: (e) => dispatch(listLength(e)),
+  showModal2: () => dispatch(showModal2()),
 
 })
 

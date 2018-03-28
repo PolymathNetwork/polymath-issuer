@@ -20,6 +20,7 @@ export const GET_WHITELIST_FAILED = 'dashboard/whitelist/ADD_SINGLE_ENTRY_FAILED
 
 export const PAGINATION_DIVIDER = 'dashboard/whitelist/PAGINATION_DIVDER'
 export const LIST_LENGTH = 'dashboard/whitelist/LIST_LENGTH'
+export const SHOW_MODAL_2 = 'dashboard/whitelist/SHOW_MODAL_2'
 
 //same as editing
 export const REMOVE_SINGLE_ENTRY = 'dashboard/whitelist/REMOVE_SINGLE_ENTRY'
@@ -41,7 +42,7 @@ export const uploadCSV = (e) => async (dispatch) => {
       let parsedData = parseCSV(reader.result)
       // console.log(parsedData)
 
-      dispatch({ type: UPLOAD_CSV, csvMessage: "CSV upload was successful!", addresses: parsedData[0], sell: parsedData[1], buy: parsedData[2], modalShowing: true })
+      dispatch({ type: UPLOAD_CSV, csvMessage: "CSV upload was successful!", addresses: parsedData[0], sell: parsedData[1], buy: parsedData[2] })
 
     }
   } else {
@@ -164,8 +165,12 @@ export const paginationDivider = () => async (dispatch, getState) => {
 
 }
 
-export const listLength = (e) => async (dispatch, getState) => {
+export const listLength = (e) => async (dispatch) => {
   dispatch({ type: LIST_LENGTH, listLength: e })
+}
+
+export const showModal2 = () => async (dispatch) => {
+  dispatch({ type: SHOW_MODAL_2, modalShowing: true })
 }
 
 //TODO - where is owner coming from?
@@ -229,7 +234,7 @@ export const oneUserSubmit = () => async (dispatch, getState) => {
 
 }
 
-export const getWhiteList = () => async (dispatch, getState) => {
+export const getWhiteList = () => async (dispatch) => {
 
 // let testing = true
 // console.log("truck")

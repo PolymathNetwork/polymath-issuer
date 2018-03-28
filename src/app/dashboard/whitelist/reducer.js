@@ -62,6 +62,11 @@ export default (state = defaultState, action) => {
         ...state,
         listLength: action.listLength,
       }
+    case a.SHOW_MODAL_2:
+      return {
+        ...state,
+        modalShowing: action.modalShowing,
+      }
     case a.GET_WHITELIST:
       return {
         ...state,
