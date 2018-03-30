@@ -7815,9 +7815,9 @@ polymath-auth@0.1.7:
     web3-core-method "github:bshevchenko/web3-core-method#master"
     web3-eth-contract "1.0.0-beta.30"
 
-polymath-core_v2@0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/polymath-core_v2/-/polymath-core_v2-0.1.6.tgz#8bcf01c7d83e952fd2a813b8400c310e1bdd5540"
+polymath-core_v2@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/polymath-core_v2/-/polymath-core_v2-0.2.0.tgz#016afafdd3437f338051e52b8e81e53f25988e03"
   dependencies:
     babel-polyfill "6.26.0"
     babel-preset-es2015 "6.24.1"
@@ -7830,7 +7830,7 @@ polymath-core_v2@0.1.6:
     web3 "^1.0.0-beta.30"
     zeppelin-solidity "1.7.0"
 
-polymath-ui@0.1.9:
+polymath-ui@0.1.10:
   version "0.1.9"
   resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-0.1.9.tgz#dfca822e8ce82c5b9b656e505ad499ddb8ae6a0b"
   dependencies:
@@ -7842,13 +7842,13 @@ polymath-ui@0.1.9:
     react-dom "^16.2.0"
     react-transition-group "^2.2.1"
 
-polymath.js_v2@0.2.7:
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/polymath.js_v2/-/polymath.js_v2-0.2.7.tgz#0fc4954c26c69b820f126a26a62abc8d62f7070f"
+polymath.js_v2@0.2.8:
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/polymath.js_v2/-/polymath.js_v2-0.2.8.tgz#40a076767b6d4622a60c7dfe8cc52746fbd26388"
   dependencies:
     axios "0.16.2"
     bignumber.js "5.0.0"
-    polymath-core_v2 "0.1.6"
+    polymath-core_v2 "0.2.0"
     redux "3.7.2"
     redux-thunk "2.2.0"
     web3 "1.0.0-beta.30"

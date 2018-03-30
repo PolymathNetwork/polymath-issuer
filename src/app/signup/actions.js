@@ -1,4 +1,5 @@
 import { TickerRegistry } from 'polymath.js_v2'
+import { notify } from 'polymath-ui'
 
 import * as ui from '../ui/actions'
 import { formName } from './components/SignUpForm'
@@ -12,12 +13,12 @@ export const signUp = () => async (dispatch: Function, getState: GetState) => {
   try {
     const { ticker, contact } = getState().form[formName].values
     const receipt = await TickerRegistry.registerTicker(ticker, contact)
-    dispatch(ui.notify(
-      'Token symbol was successfully registered',
-      true,
-      'We have already sent you an email. Check your mailbox',
-      etherscanTx(receipt.transactionHash)
-    ))
+    dispatch(notify({
+      title: 'Token symbol was successfully registered',
+      isSuccess: true,
+      subtitle: 'We have already sent you an email. Check your mailbox',
+      caption: etherscanTx(receipt.transactionHash),
+    }))
     dispatch(fetchTokenDetails())
 
     const history = getState().ui.history

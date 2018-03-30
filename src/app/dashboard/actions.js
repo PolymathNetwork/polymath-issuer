@@ -2,6 +2,7 @@
 
 import { PolyToken, SecurityTokenRegistry } from 'polymath.js_v2'
 import type { SecurityToken } from 'polymath.js_v2/types'
+import { notify } from 'polymath-ui'
 
 import * as ui from '../ui/actions'
 import { etherscanTx } from '../helpers'
@@ -50,12 +51,12 @@ export const completeToken = () => async (dispatch: Function, getState: GetState
     dispatch(ui.txStart('Issuing ' + token.ticker + ' token...'))
     const receipt = await SecurityTokenRegistry.generateSecurityToken(token)
     dispatch(fetchTokenDetails())
-    dispatch(ui.notify(
-      token.ticker + ' token was successfully issued',
-      true,
-      'We have already sent you an email. Check your mailbox',
-      etherscanTx(receipt.transactionHash)
-    ))
+    dispatch(notify({
+      title: token.ticker + ' token was successfully issued',
+      isSuccess: true,
+      subtitle: 'We have already sent you an email. Check your mailbox',
+      caption: etherscanTx(receipt.transactionHash),
+    }))
   } catch (e) {
     dispatch(ui.txFailed(e))
   }

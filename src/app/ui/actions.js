@@ -1,9 +1,9 @@
 // @flow
 
 import type { RouterHistory } from 'react-router-dom'
+import { notify } from 'polymath-ui'
 
 import { etherscanTx } from '../helpers'
-import type { Notify } from './state.types'
 import type { GetState } from '../../redux/state.types'
 import type { ExtractReturn } from '../../redux/helpers'
 
@@ -31,9 +31,6 @@ const fetchingFailedAction = (message: string) => ({ type: 'ui/FETCHING_FAILED',
 export const FETCHED = 'ui/FETCHED'
 export const fetched = () => ({ type: 'ui/FETCHED' })
 
-export const NOTIFY = 'ui/NOTIFY'
-const notifyAction = (notify: Notify) => ({ type: 'ui/NOTIFY', notify })
-
 export type UIAction =
   | ExtractReturn<typeof setupHistory>
   | ExtractReturn<typeof txStart>
@@ -43,23 +40,6 @@ export type UIAction =
   | ExtractReturn<typeof fetching>
   | ExtractReturn<typeof fetchingFailedAction>
   | ExtractReturn<typeof fetched>
-  | ExtractReturn<typeof notifyAction>
-
-export const notify = (
-  title: string,
-  isSuccess: boolean = true,
-  subtitle: ?string,
-  caption: ?any,
-  isPinned: boolean = false,
-) => async (dispatch: Function) => {
-  dispatch(notifyAction({
-    title,
-    isSuccess,
-    subtitle,
-    caption,
-    isPinned,
-  }))
-}
 
 export const txFailed = (e: Error) => async (dispatch: Function, getState: GetState) => {
   // eslint-disable-next-line
@@ -70,7 +50,13 @@ export const txFailed = (e: Error) => async (dispatch: Function, getState: GetSt
     caption = etherscanTx(getState().ui.txReceipt.transactionHash)
     isPinned = true
   }
-  dispatch(notify('Transaction failed', false, e.message, caption, isPinned))
+  dispatch(notify({
+    title: 'Transaction failed',
+    isSuccess: false,
+    subtitle: e.message,
+    caption,
+    isPinned,
+  }))
   dispatch(txFailedAction())
 }
 

@@ -6,7 +6,7 @@ import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import Contract from 'polymath.js_v2'
-import { Toaster, ToasterContainer } from 'polymath-ui'
+import { Toaster } from 'polymath-ui'
 
 import 'polymath-ui/dist/style.css'
 import 'carbon-components/css/carbon-components.min.css'
@@ -15,30 +15,27 @@ import './style.css'
 import { setupHistory, txHash, txEnd } from './ui/actions'
 import { fetchTokenDetails } from './dashboard/actions'
 import { etherscanTx } from './helpers'
-import type { Notify } from './ui/state.types'
 import type { RootState } from '../redux/state.types'
 
-type StateProps = {
+type StateProps = {|
   network: any,
   isLoading: boolean,
   loadingMessage: ?string,
   miningTxHash: ?string,
-  notify: ?Notify,
-}
+|}
 
-type DispatchProps = {
+type DispatchProps = {|
   setupHistory: (history: RouterHistory) => any,
   txHash: (hash: string) => any,
   txEnd: (receipt: any) => any,
   fetchTokenDetails: () => any,
-}
+|}
 
 const mapStateToProps = (state: RootState): StateProps => ({
   network: state.network,
   isLoading: state.ui.isLoading,
   loadingMessage: state.ui.loadingMessage,
   miningTxHash: state.ui.txHash,
-  notify: state.ui.notify,
 })
 
 const mapDispatchToProps: DispatchProps = {
@@ -48,10 +45,10 @@ const mapDispatchToProps: DispatchProps = {
   fetchTokenDetails,
 }
 
-type Props = {
+type Props = {|
   route: any, // react-router-config doesn't seem to have Flow types
   history: RouterHistory
-} & StateProps & DispatchProps
+|} & StateProps & DispatchProps
 
 class App extends Component<Props> {
   componentWillMount () {
@@ -64,31 +61,12 @@ class App extends Component<Props> {
     this.props.fetchTokenDetails()
   }
 
-  componentWillReceiveProps (nextProps) {
-    const notify = nextProps.notify
-
-    if (notify && notify !== this.props.notify && this.toaster) {
-      this.toaster.show({
-        title: notify.title || '',
-        subtitle: notify.subtitle || '',
-        caption: notify.caption || null,
-        kind: notify.isSuccess ? 'success' : 'error',
-      }, notify.isPinned ? 0 : 4000)
-    }
-  }
-
-  toaster: ?Toaster
-
-  referenceToaster = (toaster) => { this.toaster = toaster }
-
   render () {
     const hash = this.props.miningTxHash
 
     return (
       <div>
-        <ToasterContainer>
-          <Toaster ref={this.referenceToaster} />
-        </ToasterContainer>
+        <Toaster />
         {this.props.isLoading ? (
           <DocumentTitle title={this.props.loadingMessage}>
             <div className='bx--grid'>
