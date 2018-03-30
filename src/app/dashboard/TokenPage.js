@@ -17,15 +17,15 @@ import CompleteTokenForm from './components/CompleteTokenForm'
 
 import './style.css'
 
-type StateProps = {
+type StateProps = {|
   token: ?SecurityToken,
   isMainnet: boolean,
-}
+|}
 
-type DispatchProps = {
+type DispatchProps = {|
   fetchTokenDetails: (ticker: string) => any, // TODO Unused?
   completeToken: () => any,
-}
+|}
 
 const mapStateToProps = (state: RootState): StateProps => ({
   token: state.dashboard.token,
@@ -37,9 +37,9 @@ const mapDispatchToProps: DispatchProps = {
   completeToken,
 }
 
-type Props = {
+type Props = {|
   match: Match
-} & StateProps & DispatchProps
+|} & StateProps & DispatchProps
 
 class TokenPage extends Component<Props> {
   handleCompleteSubmit = () => {

@@ -20,9 +20,9 @@ const maxLength100 = maxLength(100)
 const minValue0 = minValue(0)
 const maxValue24 = maxValue(24)
 
-type Props = {
+type Props = {|
   handleSubmit: () => void,
-}
+|}
 
 class CompleteTokenForm extends Component<Props> {
   render () {
