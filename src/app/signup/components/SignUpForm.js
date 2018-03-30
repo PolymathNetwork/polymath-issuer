@@ -16,9 +16,9 @@ import { TickerRegistry } from 'polymath.js_v2'
 
 export const formName = 'signup'
 
-type Props = {
+type Props = {|
   handleSubmit: () => void,
-}
+|}
 
 class SignUpForm extends Component<Props> {
   render () {

@@ -9,7 +9,6 @@ const defaultState = {
   loadingMessage: null,
   txHash: null,
   txReceipt: null,
-  notify: null,
 }
 
 export default (state: UIState = defaultState, action: a.UIAction) => {
@@ -49,11 +48,6 @@ export default (state: UIState = defaultState, action: a.UIAction) => {
       return {
         ...state,
         loadingMessage: action.message,
-      }
-    case a.NOTIFY:
-      return {
-        ...state,
-        notify: action.notify,
       }
     default:
       return state

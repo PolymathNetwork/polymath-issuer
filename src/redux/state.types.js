@@ -8,7 +8,6 @@ export type RootState = {
   ui: UIState,
   dashboard: DashboardState,
   network: any, // Until polymath-auth exports the type of `authReducers`
-  thing: string,
 }
 
 export type GetState = () => RootState
