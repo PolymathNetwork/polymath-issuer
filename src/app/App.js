@@ -1,112 +1,67 @@
 // @flow
 
 import React, { Component } from 'react'
-import type { RouterHistory } from 'react-router-dom'
+import Contract from 'polymath.js_v2'
 import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
-import DocumentTitle from 'react-document-title'
-import Contract from 'polymath.js_v2'
-import { Toaster, ToasterContainer } from 'polymath-ui'
+import { PolymathUI, txHash, txEnd } from 'polymath-ui'
+import type { RouterHistory } from 'react-router-dom'
 
 import 'polymath-ui/dist/style.css'
 import 'carbon-components/css/carbon-components.min.css'
 import './style.css'
 
-import { setupHistory, txHash, txEnd } from './ui/actions'
-import { fetchTokenDetails } from './dashboard/actions'
-import { etherscanTx } from './helpers'
-import type { Notify } from './ui/state.types'
-import type { RootState } from '../redux/state.types'
+import { fetch as fetchToken } from './token/actions'
+import type { RootState } from '../redux/reducer'
 
-type StateProps = {
+type StateProps = {|
   network: any,
-  isLoading: boolean,
-  loadingMessage: ?string,
-  miningTxHash: ?string,
-  notify: ?Notify,
-}
+  isTokenFetched: boolean,
+|}
 
-type DispatchProps = {
-  setupHistory: (history: RouterHistory) => any,
+type DispatchProps = {|
   txHash: (hash: string) => any,
   txEnd: (receipt: any) => any,
-  fetchTokenDetails: () => any,
-}
+  fetchToken: () => any,
+|}
 
 const mapStateToProps = (state: RootState): StateProps => ({
   network: state.network,
-  isLoading: state.ui.isLoading,
-  loadingMessage: state.ui.loadingMessage,
-  miningTxHash: state.ui.txHash,
-  notify: state.ui.notify,
+  isTokenFetched: state.token.isFetched,
 })
 
 const mapDispatchToProps: DispatchProps = {
-  setupHistory,
   txHash,
   txEnd,
-  fetchTokenDetails,
+  fetchToken,
 }
 
-type Props = {
-  route: any, // react-router-config doesn't seem to have Flow types
+type Props = {|
+  route: Object,
   history: RouterHistory
-} & StateProps & DispatchProps
+|} & StateProps & DispatchProps
 
 class App extends Component<Props> {
+
   componentWillMount () {
-    this.props.setupHistory(this.props.history)
     Contract.params = {
       ...this.props.network,
       txHashCallback: (hash) => this.props.txHash(hash),
       txEndCallback: (receipt) => this.props.txEnd(receipt),
     }
-    this.props.fetchTokenDetails()
   }
 
-  componentWillReceiveProps (nextProps) {
-    const notify = nextProps.notify
-
-    if (notify && notify !== this.props.notify && this.toaster) {
-      this.toaster.show({
-        title: notify.title || '',
-        subtitle: notify.subtitle || '',
-        caption: notify.caption || null,
-        kind: notify.isSuccess ? 'success' : 'error',
-      }, notify.isPinned ? 0 : 4000)
-    }
+  componentDidMount () {
+    this.props.fetchToken()
   }
-
-  toaster: ?Toaster
-
-  referenceToaster = (toaster) => { this.toaster = toaster }
 
   render () {
-    const hash = this.props.miningTxHash
-
     return (
       <div>
-        <ToasterContainer>
-          <Toaster ref={this.referenceToaster} />
-        </ToasterContainer>
-        {this.props.isLoading ? (
-          <DocumentTitle title={this.props.loadingMessage}>
-            <div className='bx--grid'>
-              <h3 className='bx--type-beta'>{this.props.loadingMessage}</h3>
-              {hash ? (
-                <p>
-                  <br />
-                  Transaction hash:{' '}
-                  { etherscanTx(hash, true) }
-                </p>
-              ) : ''}
-            </div>
-          </DocumentTitle>
-        ) : (
-          <div className='bx--grid'>
-            {renderRoutes(this.props.route.routes)}
-          </div>
-        )}
+        <PolymathUI history={this.props.history} />
+        <div className='bx--grid'>
+          {this.props.isTokenFetched ? renderRoutes(this.props.route.routes) : ''}
+        </div>
       </div>
     )
   }

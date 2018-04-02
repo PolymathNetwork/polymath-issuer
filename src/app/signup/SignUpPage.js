@@ -11,19 +11,21 @@ import { change } from 'redux-form'
 import SignUpForm, { formName } from './components/SignUpForm'
 import { signUp } from './actions'
 
-type StateProps = {
+type StateProps = {|
   account: ?string,
   isSignedUp: boolean,
-}
+  token: Object,
+|}
 
-type DispatchProps = {
+type DispatchProps = {|
   change: (?string) => any,
   signUp: () => any,
-}
+|}
 
 const mapStateToProps = (state): StateProps => ({
   account: state.network.account,
-  isSignedUp: !!state.dashboard.token,
+  isSignedUp: !!state.token.token,
+  token: state.token.token,
 })
 
 const mapDispatchToProps: DispatchProps = {
@@ -31,11 +33,12 @@ const mapDispatchToProps: DispatchProps = {
   signUp,
 }
 
-type Props = {
+type Props = {|
   history: RouterHistory,
-} & StateProps & DispatchProps
+|} & StateProps & DispatchProps
 
 class SignUpPage extends Component<Props> {
+
   componentWillMount () {
     if (this.props.isSignedUp) {
       this.props.history.push('/dashboard')

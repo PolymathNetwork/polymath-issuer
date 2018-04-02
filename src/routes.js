@@ -6,6 +6,8 @@ import NotFoundPage from './app/NotFoundPage'
 import SignUpPage from './app/signup/SignUpPage'
 import TokenPage from './app/dashboard/TokenPage'
 import WhitelistPage from './app/dashboard/whitelist/WhiteListPage'
+import TokenPage from './app/token/TokenPage'
+import STOPage from './app/sto/STOPage'
 
 export default [
   {
@@ -29,6 +31,8 @@ export default [
       {
         path: '/dashboard/whitelist',
         component: WhitelistPage,
+        path: '/dashboard/sto',
+        component: STOPage,
         exact: true,
       },
       {
