@@ -2,19 +2,20 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import uuidv4 from 'uuid/v4'
+// import icons from 'carbon-icons'
 import {
   FileUploader,
-  // Button,
   DataTable,
   PaginationV2,
   ModalWrapper,
   Modal,
-  // Form,
-  // FormGroup,
-  // TextInput,
+  DatePicker,
+  DatePickerInput,
+  Icon,
+  FileUploaderButton,
 } from "carbon-components-react"
 
-import { uploadCSV, multiUserSubmit, oneUserSubmit, getWhiteList, paginationDivider, listLength, showModal2 } from './actions'
+import { uploadCSV, multiUserSubmit, oneUserSubmit, getWhiteList, paginationDivider, listLength } from './actions'
 import { TableHeaders } from './tableHeaders'
 import InvestorForm from './userForm'
 
@@ -39,13 +40,13 @@ class WhiteListPage extends Component {
     this.props.singleSubmit()
   }
 
-  onHandleMultiSubmitModal1 = () => {
-    this.props.showModal2()
-  }
+  // onHandleMultiSubmitModal1 = () => {
+  //   this.props.showModal2()
+  //   this.props.handleUpload()
+  // }
 
   onHandleMultiSubmit = () => {
     this.props.multiSubmit()
-    // console.log(this.props.investors)
     this.props.paginationDivider()
   }
 
@@ -78,72 +79,87 @@ class WhiteListPage extends Component {
             <div className='bx--col-xs-6'>
               <h2>Whitelist</h2>
               <br />
+
               <ModalWrapper
                 // modalProps={{ onBlur: { onBlur() }, onClick: { onClick() }, onFocus: { onFocus() }, …}}
-                id='transactional-modal'
+                id='input-modal'
                 buttonTriggerText='Import Whitelist'
-                modalLabel='Import Whitelist'
+                modalLabel=''
                 modalHeading='Import Whitelist'
-                handleSubmit={this.onHandleMultiSubmitModal1}
+                handleSubmit={this.onHandleMultiSubmit}
+                primaryButtonText='Send To Blockchain'
                 shouldCloseAfterSubmit
               >
-                <FileUploader
-                  labelTitle={this.props.csvMessage}
-                  labelDescription='Add multiple addresses to the whitelist by uploading a comma seperated CSV file. The format should be as follows: Eth Address (address to whitelist), date mm/dd/yyyy)'
-                  buttonLabel='IMPORT WHITELIST'
-                  filenameStatus='edit'
-                  accept={[".csv"]}
+                <div>
+                  Add multiple addresses to the whisstelist by uploading a comma seperated CSV file. The format should be as follows:
+                  <br /><br />
+                  <ul>
+                    <li>Column 1 - Ethereum Address</li>
+                    <li>Column 2 - Sell Restriction (mm/dd/yyyy)</li>
+                    <li>Column 2 - Buy Restriction (mm/dd/yyyy)</li>
+                  </ul>
+                </div>
+                <br />
+                <FileUploaderButton
+                  labelText='Upload From Desktop'
+                  className='bob'
                   onChange={this.props.handleUpload}
+                  accept={[".csv"]}
                   multiple
+                  buttonKind='secondary'
                 />
-                {/* <Button
-                kind='secondary'
-                small
-                style={{ marginTop: "1rem" }}
-              // onClick={onClick()}
-              >
-                Clear File
-              </Button> */}
+
+                {this.props.modalShowing ?
+                  <div>
+                    <p className='bx--modal-content__text'>
+                      <strong>Below is the data you will be sending to the blockchain, please confirm it is correct, and then click the Send button to continue.</strong>
+                    </p>
+                    <br />
+                    {this.props.addresses.map((user, i) => (
+                      <div key={uuidv4()}>
+                        <div>Address: {this.props.addresses[i]}</div>
+                        <div>Sell Expiry Time: {this.props.sell[i]}</div>
+                        <div>Buy Expiry Time: {this.props.buy[i]}</div>
+                        <br />
+                      </div>
+                    ))}
+                  </div>
+                  : null}
               </ModalWrapper>
+              <br />
 
             </div>
           </div>
-          <br />
-          {this.props.modalShowing ?
-            <div>
-              <div>Please click the button below to review your csv upload, and submit the addresses to the Polymath Smart contracts</div>
-              <Modal
-                // modalProps={{ onBlur: { onBlur() }, onClick: { onClick() }, onFocus: { onFocus() }, …}}
-                open
-                transactional
-                modalHeading='Modal heading'
-                modalLabel='Optional label'
-                primaryButtonText='Yes, Submit to Blockchain'
-                secondaryButtonText='No, I see an error'
-                handleSubmit={this.onHandleMultiSubmit}
-                onRequestClose
-                className='some-class'
+          <div className='bx--row'>
+                    
+            <div className='bx--col-xs-2'>
+              <DatePicker
+                id='date-picker'// onChange={}
+                datePickerType='range'
               >
-                <p className='bx--modal-content__text'>
-                  Below is the data you will be sending to the blockchain, please confirm it is correct
-                </p>
-                <br />
-                {this.props.addresses.map((user, i) => (
-                  <div key={uuidv4()}>
-                    <div>Address: {this.props.addresses[i]}</div>
-                    <div>Sell Expiry Time: {this.props.sell[i]}</div>
-                    <div>Buy Expiry Time: {this.props.buy[i]}</div>
-                    <br />
-                  </div>
-                ))}
-
-              </Modal>
+                <DatePickerInput
+                  className='some-class'
+                  labelText='Date Picker label'
+                  // onClick={}//onClick()}
+                  // onChange={}//onInputChange()}
+                  placeholder='mm/dd/yyyy'
+                  id='date-picker-input-id'
+                />
+                <DatePickerInput
+                  className='some-class'
+                  labelText='Date Picker label'
+                  // onClick={}//onClick()}
+                  // onChange={}//onInputChange()}
+                  placeholder='mm/dd/yyyy'
+                  id='date-picker-input-id-2'
+                />
+              </DatePicker>
             </div>
-            : null}
+          </div>
 
-          <br /> <br /> <br />
+          <br /> <br />
           <DataTable
-            rows={this.props.investorsPaginated[this.state.page]} //wtf why wont this render???
+            rows={this.props.investorsPaginated[this.state.page]}
             headers={TableHeaders}
             render={({
               rows,
@@ -154,7 +170,7 @@ class WhiteListPage extends Component {
               onInputChange,
               // selectedRows,
             }) => (
-              <TableContainer title='DataTable with batch actions'>
+              <TableContainer>
                 <TableToolbar>
                   {/* make sure to apply getBatchActionProps so that the bar renders */}
                   <TableBatchActions {...getBatchActionProps()}>
@@ -168,21 +184,6 @@ class WhiteListPage extends Component {
                   </TableBatchActions>
                   <TableToolbarSearch onChange={onInputChange} />
                   <TableToolbarContent>
-                    <TableToolbarAction
-                      iconName='download'
-                      iconDescription='Download'
-                      // onClick={action('TableToolbarAction - Download')}
-                    />
-                    <TableToolbarAction
-                      iconName='edit'
-                      iconDescription='Edit'
-                      // onClick={action('TableToolbarAction - Edit')}
-                    />
-                    <TableToolbarAction
-                      iconName='settings'
-                      iconDescription='Settings'
-                      // onClick={action('TableToolbarAction - Settings')}
-                    />
                     <ModalWrapper
                       // modalProps={{ onBlur: { onBlur() }, onClick: { onClick() }, onFocus: { onFocus() }, …}}
                       id='transactional-modal'
@@ -256,7 +257,7 @@ const mapDispatchToProps = (dispatch) => ({
   getWhiteList: () => dispatch(getWhiteList()),
   paginationDivider: () => dispatch(paginationDivider()),
   updateListLength: (e) => dispatch(listLength(e)),
-  showModal2: () => dispatch(showModal2()),
+  // showModal2: () => dispatch(showModal2()),
 
 })
 

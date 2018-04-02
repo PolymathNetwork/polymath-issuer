@@ -1,7 +1,7 @@
 import uuidv4 from 'uuid/v4'
 
 // import { PolyToken } from 'polymath.js_v2' //TODO: @davekaj update to the actual polymathjs when it is ready
-import * as ui from '../../ui/actions'
+import * as ui from 'polymath-ui'
 // import { etherscanTx } from '../helpers'
 // import { actionGen } from "../../../redux/helpers"
 import { formName as userFormName } from './userForm'
@@ -43,6 +43,7 @@ export const uploadCSV = (e) => async (dispatch) => {
       // console.log(parsedData)
 
       dispatch({ type: UPLOAD_CSV, csvMessage: "CSV upload was successful!", addresses: parsedData[0], sell: parsedData[1], buy: parsedData[2] })
+      dispatch({ type: SHOW_MODAL_2, modalShowing: true })
 
     }
   } else {
@@ -169,9 +170,9 @@ export const listLength = (e) => async (dispatch) => {
   dispatch({ type: LIST_LENGTH, listLength: e })
 }
 
-export const showModal2 = () => async (dispatch) => {
-  dispatch({ type: SHOW_MODAL_2, modalShowing: true })
-}
+// export const showModal2 = () => async (dispatch) => {
+//   dispatch({ type: SHOW_MODAL_2, modalShowing: true })
+// }
 
 //TODO - where is owner coming from?
 export const oneUserSubmit = () => async (dispatch, getState) => {
