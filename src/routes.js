@@ -4,7 +4,8 @@ import App from './app/App'
 import HomePage from './app/HomePage'
 import NotFoundPage from './app/NotFoundPage'
 import SignUpPage from './app/signup/SignUpPage'
-import TokenPage from './app/dashboard/TokenPage'
+import TokenPage from './app/token/TokenPage'
+import STOPage from './app/sto/STOPage'
 
 export default [
   {
@@ -23,6 +24,11 @@ export default [
       {
         path: '/dashboard',
         component: TokenPage,
+        exact: true,
+      },
+      {
+        path: '/dashboard/sto',
+        component: STOPage,
         exact: true,
       },
       {

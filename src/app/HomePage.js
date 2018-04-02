@@ -21,7 +21,7 @@ export default class HomePage extends Component<{}> {
             <p>
               <Link to='/signup'>
                 <Button>
-                  Sign Up
+                  GET STARTED
                 </Button>
               </Link>
             </p>

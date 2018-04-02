@@ -4,49 +4,45 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { Link } from 'react-router-dom'
-import type { Match } from 'react-router'
-import { Breadcrumb, BreadcrumbItem, InlineNotification } from 'carbon-components-react'
+import { Breadcrumb, BreadcrumbItem, InlineNotification, Button } from 'carbon-components-react'
 import { SecurityTokenRegistry } from 'polymath.js_v2'
+import { etherscanAddress, etherscanToken } from 'polymath-ui'
 import type { SecurityToken } from 'polymath.js_v2/types'
 
-import { completeToken, fetchTokenDetails } from './actions'
+import { complete } from './actions'
 import NotFoundPage from '../NotFoundPage'
-import { etherscanAddress, etherscanToken } from '../helpers'
-import type { RootState } from '../../redux/state.types'
 import CompleteTokenForm from './components/CompleteTokenForm'
+import type { RootState } from '../../redux/reducer'
 
 import './style.css'
 
-type StateProps = {
+type StateProps = {|
   token: ?SecurityToken,
   isMainnet: boolean,
-}
+|}
 
-type DispatchProps = {
-  fetchTokenDetails: (ticker: string) => any, // TODO Unused?
-  completeToken: () => any,
-}
+type DispatchProps = {|
+  complete: () => any,
+|}
 
 const mapStateToProps = (state: RootState): StateProps => ({
-  token: state.dashboard.token,
+  token: state.token.token,
   isMainnet: state.network.id === 1,
 })
 
 const mapDispatchToProps: DispatchProps = {
-  fetchTokenDetails,
-  completeToken,
+  complete: complete,
 }
 
-type Props = {
-  match: Match
-} & StateProps & DispatchProps
+type Props = {|
+|} & StateProps & DispatchProps
 
 class TokenPage extends Component<Props> {
   handleCompleteSubmit = () => {
-    this.props.completeToken()
+    this.props.complete()
   }
 
-  completeToken (token: SecurityToken) {
+  complete (token: SecurityToken) {
     const completeFee = SecurityTokenRegistry.fee.toNumber()
     return (
       <div>
@@ -78,10 +74,10 @@ class TokenPage extends Component<Props> {
   }
 
   render () {
-    if (!this.props.token) {
+    const token = this.props.token
+    if (!token) {
       return <NotFoundPage />
     }
-    const token = this.props.token
     return (
       <DocumentTitle title={token.ticker + ' Token – Polymath'}>
         <div>
@@ -105,6 +101,20 @@ class TokenPage extends Component<Props> {
                 <label htmlFor='owner' className='bx--label'>Contact email</label>
                 <p><a href={'mailto://' + token.contact}>{token.contact}</a></p>
               </div>
+              {token.address ? (
+                <div>
+                  <p>&nbsp;</p>
+                  <p>&nbsp;</p>
+                  <p>&nbsp;</p>
+                  <p>
+                    <Link to='/dashboard/sto'>
+                      <Button>
+                        GO TO STO PAGE
+                      </Button>
+                    </Link>
+                  </p>
+                </div>
+              ) : ''}
             </div>
             <div className='bx--col-xs-7'>
               {token.address ? (
@@ -126,7 +136,7 @@ class TokenPage extends Component<Props> {
                     <p><a href={token.url} target='_blank'>{token.url}</a></p>
                   </div>
                 </div>
-              ) : this.completeToken(token)}
+              ) : this.complete(token)}
               <p>&nbsp;</p>
             </div>
           </div>

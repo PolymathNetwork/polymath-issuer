@@ -1,14 +1,27 @@
 // @flow
 
 import { combineReducers } from 'redux'
-import { reducer as reduxForm } from 'redux-form'
+import { reducer as form } from 'redux-form'
 import { reducers as authReducers } from 'polymath-auth'
-import ui from '../app/ui/reducer'
-import dashboard from '../app/dashboard/reducer'
+import { reducer as pui } from 'polymath-ui'
+import token from '../app/token/reducer'
+import sto from '../app/sto/reducer'
+import type { TokenState } from '../app/token/reducer'
+import type { STOState } from '../app/sto/reducer'
 
 export default combineReducers({
   ...authReducers,
-  form: reduxForm,
-  ui,
-  dashboard,
+  form,
+  token,
+  sto,
+  pui,
 })
+
+export type RootState = {
+  form: any,
+  token: TokenState,
+  sto: STOState,
+  network: any, // TODO @bshevchenko: set type https://github.com/PolymathNetwork/polymath-issuer/issues/5
+}
+
+export type GetState = () => RootState

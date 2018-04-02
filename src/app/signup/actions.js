@@ -1,10 +1,9 @@
 import { TickerRegistry } from 'polymath.js_v2'
+import * as ui from 'polymath-ui'
 
-import * as ui from '../ui/actions'
 import { formName } from './components/SignUpForm'
-import { fetchTokenDetails } from '../dashboard/actions'
-import { etherscanTx } from '../helpers'
-import type { GetState } from '../../redux/state.types'
+import { fetch } from '../token/actions'
+import type { GetState } from '../../redux/reducer'
 
 // eslint-disable-next-line
 export const signUp = () => async (dispatch: Function, getState: GetState) => {
@@ -16,14 +15,11 @@ export const signUp = () => async (dispatch: Function, getState: GetState) => {
       'Token symbol was successfully registered',
       true,
       'We have already sent you an email. Check your mailbox',
-      etherscanTx(receipt.transactionHash)
+      ui.etherscanTx(receipt.transactionHash)
     ))
-    dispatch(fetchTokenDetails())
+    dispatch(fetch())
 
-    const history = getState().ui.history
-    if (history) {
-      history.push('/dashboard')
-    }
+    getState().pui.common.history.push('/dashboard')
   } catch (e) {
     dispatch(ui.txFailed(e))
   }

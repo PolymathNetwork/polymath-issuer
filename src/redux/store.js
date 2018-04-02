@@ -3,7 +3,7 @@
 import { compose, applyMiddleware, createStore } from 'redux'
 import thunk from 'redux-thunk'
 
-import type { RootState } from './state.types'
+import type { RootState } from './reducer'
 import reducer from './reducer'
 
 const composedStore = compose(
