@@ -2,7 +2,7 @@
 
 ![Polymath](Polymath.png)
 
-# Polymath Issuer Application
+# Polymath Issuer Application TEST
 
 Allows you to issue your security token and launch its offering.
 
