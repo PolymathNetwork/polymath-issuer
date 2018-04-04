@@ -5,7 +5,6 @@ import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form'
 
 import { Form, Button } from 'carbon-components-react'
-import { FormDatePicker } from './formDatePicker'
 import { TextInput } from 'polymath-ui'
 import {
   required,

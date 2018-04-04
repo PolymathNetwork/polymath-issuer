@@ -5,32 +5,46 @@ import * as ui from 'polymath-ui'
 import { TransferManager, SecurityToken } from 'polymath.js_v2'
 import type { Investor } from 'polymath.js_v2/types'
 import { formName as userFormName } from './userForm'
-import type { GetState } from '../../redux/reducer'
+import type { GetState } from '../../../redux/reducer'
+import type { ExtractReturn } from '../../../redux/helpers'
 
 export const UPLOAD_CSV = 'dashboard/whitelist/UPLOAD_CSV'
+export const csvDispatch = (csvMessage: string, addresses: Array<string>, sell: Array<string>, buy: Array<string>, ) => ({ type: UPLOAD_CSV, csvMessage, addresses, sell, buy })
+
 export const UPLOAD_CSV_FAILED = 'dashboard/whitelist/UPLOAD_CSV_FAILED'
 
 export const ADD_MULTI_ENTRY = 'dashboard/whitelist/ADD_MULTI_ENTRY'
+export const multiEntryDispatch = (investors: Array<EventData>) => ({ type: ADD_MULTI_ENTRY, investors })
+
 export const ADD_MULTI_ENTRY_FAILED = 'dashboard/whitelist/ADD_MULTI_ENTRY_FAILED'
+
+export const PAGINATION_DIVIDER = 'dashboard/whitelist/PAGINATION_DIVDER'
+export const paginationDispatch = (paginatedInvestors: Array<Array<EventData>>) => ({ type: PAGINATION_DIVIDER, paginatedInvestors })
+
+export const LIST_LENGTH = 'dashboard/whitelist/LIST_LENGTH'
+export const listLengthDispatch = (listLength: number) => ({ type: PAGINATION_DIVIDER, listLength })
+
+export const SHOW_MODAL_2 = 'dashboard/whitelist/SHOW_MODAL_2'
 
 export const ADD_SINGLE_ENTRY = 'dashboard/whitelist/ADD_SINGLE_ENTRY'
 export const ADD_SINGLE_ENTRY_FAILED = 'dashboard/whitelist/ADD_SINGLE_ENTRY_FAILED'
 
-export const GET_WHITELIST = 'dashboard/whitelist/ADD_SINGLE_ENTRY'
-export const GET_WHITELIST_FAILED = 'dashboard/whitelist/ADD_SINGLE_ENTRY_FAILED'
+// export const GET_WHITELIST = 'dashboard/whitelist/ADD_SINGLE_ENTRY'
+// export const GET_WHITELIST_FAILED = 'dashboard/whitelist/ADD_SINGLE_ENTRY_FAILED'
 
-export const PAGINATION_DIVIDER = 'dashboard/whitelist/PAGINATION_DIVDER'
-export const LIST_LENGTH = 'dashboard/whitelist/LIST_LENGTH'
-export const SHOW_MODAL_2 = 'dashboard/whitelist/SHOW_MODAL_2'
+// export const REMOVE_SINGLE_ENTRY = 'dashboard/whitelist/REMOVE_SINGLE_ENTRY'
+// export const REMOVE_SINGLE_ENTRY_FAILED = 'dashboard/whitelist/REMOVE_SINGLE_ENTRY_FAILED'
+//
+// export const EXPORT_NEW_LIST = 'dashboard/whitelist/EXPORT_NEW_LIST'
+// export const EXPORT_NEW_LIST_FAILED = 'dashboard/whitelist/EXPORT_NEW_LIST_FAILED'
 
-//same as editing
-export const REMOVE_SINGLE_ENTRY = 'dashboard/whitelist/REMOVE_SINGLE_ENTRY'
-export const REMOVE_SINGLE_ENTRY_FAILED = 'dashboard/whitelist/REMOVE_SINGLE_ENTRY_FAILED'
+export type Action =
+  | ExtractReturn<typeof csvDispatch>
+  | ExtractReturn<typeof multiEntryDispatch>
+  | ExtractReturn<typeof paginationDispatch>
+  | ExtractReturn<typeof listLengthDispatch>
 
-export const EXPORT_NEW_LIST = 'dashboard/whitelist/EXPORT_NEW_LIST'
-export const EXPORT_NEW_LIST_FAILED = 'dashboard/whitelist/EXPORT_NEW_LIST_FAILED'
-
-export type TableData = {
+export type EventData = {
   id: string,
   address: string,
   added: number,
@@ -41,25 +55,25 @@ export type TableData = {
 
 //this will need to be used WHEN the token actually exists in the state
 //when using sto generator i wont have this
-export const fetch = () => async (dispatch: Function, getState: GetState) => {
-  dispatch(ui.fetching())
-  try {
-    const token = getState().token.token
-    console.log("token from state: ", token)
-    if (!token || !token.contract) {
-      return dispatch(ui.fetched())
-    }
-
-    dispatch(ui.fetched())
-  } catch (e) {
-    dispatch(ui.fetchingFailed(e))
-  }
-}
+// export const fetch = () => async (dispatch: Function, getState: GetState) => {
+//   dispatch(ui.fetching())
+//   try {
+//     const token = getState().token.token
+//     console.log("token from state: ", token)
+//     if (!token || !token.contract) {
+//       return dispatch(ui.fetched())
+//     }
+//
+//     dispatch(ui.fetched())
+//   } catch (e) {
+//     dispatch(ui.fetchingFailed(e))
+//   }
+// }
 
 //Uploads the CSV file, reads it with built in js FileReader(), dispatches to the store the csv file information,
 //which can then be sent to the blockchain with multiUserSumbit()
 //QUESTION: @davekaj - Do we need to limit CSV file to 50 or 100, and notify them that it is too long?
-export const uploadCSV = (e) => async (dispatch: Function) => {
+export const uploadCSV = (e: Object) => async (dispatch: Function) => {
   let file = e.target.files[0]
   let textType = /csv.*/
   if (file.type.match(textType)) {
@@ -67,7 +81,7 @@ export const uploadCSV = (e) => async (dispatch: Function) => {
     reader.readAsText(file)
     reader.onload = function () {
       let parsedData = parseCSV(reader.result)
-      dispatch({ type: UPLOAD_CSV, csvMessage: "CSV upload was successful!", addresses: parsedData[0], sell: parsedData[1], buy: parsedData[2] })
+      dispatch(csvDispatch("CSV upload was successful!", parsedData[0], parsedData[1], parsedData[2]))
       dispatch({ type: SHOW_MODAL_2, modalShowing: true })
 
     }
@@ -190,7 +204,7 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: Functi
       'We will present the investor list to you on the next page',
       ui.etherscanTx(receipt.transactionHash)
     ))
-    dispatch(fetch())
+    // dispatch(fetch())
 
     //dont think this is nneed we will see
     // dispatch({ type: SHOW_MODAL_2, modalShowing: true })
@@ -209,6 +223,7 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: Functi
 
 }
 
+//can probably label internal
 export const paginationDivider = () => async (dispatch: Function, getState: Function) => {
   const fullInvestorList = [...getState().whitelist.investors]
   let holdsDivisons = []
@@ -221,11 +236,11 @@ export const paginationDivider = () => async (dispatch: Function, getState: Func
       singlePage = []
     }
   }
-  dispatch({ type: PAGINATION_DIVIDER, paginatedInvestors: holdsDivisons })
+  // dispatch({ type: PAGINATION_DIVIDER, paginatedInvestors: holdsDivisons })
+  dispatch(paginationDispatch(holdsDivisons))
 }
-
-export const listLength = (e) => async (dispatch: Function) => {
-  dispatch({ type: LIST_LENGTH, listLength: e })
+export const listLength = (e: number) => async (dispatch: Function) => {
+  dispatch(listLengthDispatch(e))
 }
 
 // export const showModal2 = () => async (dispatch) => {
@@ -276,9 +291,9 @@ export const oneUserSubmit = () => async (dispatch: Function, getState: Function
   //we need to go user input ---> blockchain ---> events ---> getWhitelist grabs events ----> populates our store
   // at which point we need to change time stamps to human readable dates
   if (true) {
-    dispatch({ type: ADD_SINGLE_ENTRY, basicMessage: "Sent to Polymath Contracts", investors: backendData })
+    dispatch({ type: ADD_SINGLE_ENTRY, investors: backendData })
   } else {
-    dispatch({ type: ADD_SINGLE_ENTRY_FAILED, basicMessage: "There was an error in the data you tried to send to the Polymath Contracts" })
+    dispatch({ type: ADD_SINGLE_ENTRY_FAILED })
   }
 
 }
@@ -299,21 +314,28 @@ export const getWhiteList = () => async (dispatch: Function, getState: Function)
   console.log(receipt)
 
   const transferManager: TransferManager = receipt
+
   const whitelistEvents = await transferManager.getWhitelist()
   console.log(whitelistEvents)
 
   for (let i =0; i < whitelistEvents.length; i++){
     let csvRandomID = uuidv4()
-    let backendData: TableData = {
+    let fromTime = (whitelistEvents[i].from).toDateString()
+    let toTime = (whitelistEvents[i].to).toDateString()
+    let addedTime = (whitelistEvents[i].added).toDateString()
+
+    let backendData: EventData = {
       id: csvRandomID,
       address: whitelistEvents[i].address,
-      added: whitelistEvents[i].added,
+      added: addedTime,
       addedBy: whitelistEvents[i].addedBy,
-      from: whitelistEvents[i].from,
-      to: whitelistEvents[i].to,
+      from: fromTime,
+      to: toTime,
     }
     tableData.push(backendData)
   }
-  dispatch({ type: ADD_MULTI_ENTRY, investors: tableData })
+
+  dispatch(multiEntryDispatch(tableData))
+  paginationDivider()
 
 }

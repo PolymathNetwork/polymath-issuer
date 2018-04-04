@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import uuidv4 from 'uuid/v4'
 import type { Investor } from 'polymath.js_v2/types'
-import type { TableData } from './actions'
+import type { EventData } from './actions'
 
 // import icons from 'carbon-icons'
 import {
@@ -32,8 +32,8 @@ const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, Tab
     addresses: Array<string>,
     sell: Array<number>,
     buy: Array<number>,
-    investors: Array<TableData>,
-    investorsPaginated: Array<Array<TableData>>,
+    investors: Array<EventData>,
+    investorsPaginated: Array<Array<EventData>>,
     csvMessage: string,
     modalShowing: boolean,
   }
@@ -79,10 +79,7 @@ class WhiteListPage extends Component<Props> {
 
   }
   componentWillMount () {
-    //call the function to load the events from blcokchain
     this.props.getWhiteList()
-    this.props.paginationDivider()
-
   }
 
   handleInvestorSubmit = () => {
@@ -96,7 +93,7 @@ class WhiteListPage extends Component<Props> {
 
   onHandleMultiSubmit = () => {
     this.props.multiSubmit()
-    this.props.paginationDivider()
+    // this.props.paginationDivider()
     return true
   }
 
@@ -150,6 +147,7 @@ class WhiteListPage extends Component<Props> {
 
                 {this.props.modalShowing ?
                   <div>
+                    <div>{this.props.csvMessage}</div>
                     <p className='bx--modal-content__text'>
                       <strong>Below is the data you will be sending to the blockchain, please confirm it is correct, and then click the Send button to continue.</strong>
                     </p>
