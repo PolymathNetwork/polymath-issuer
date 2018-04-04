@@ -4,7 +4,7 @@ import * as a from './actions'
 // import { FakeData } from './fakedata'
 import type { TableData } from './actions'
 
-export type WhiteListSTate = {
+export type WhiteListState = {
   addresses: Array<string>,
   sell: Array<number>,
   buy: Array<number>,
@@ -15,7 +15,7 @@ export type WhiteListSTate = {
   basicMessage: string,
 }
 
-const defaultState: WhiteListSTate = {
+const defaultState: WhiteListState = {
   //these are used only for displaying the information
   addresses: ["No addresses uploaded"],
   sell: [0],

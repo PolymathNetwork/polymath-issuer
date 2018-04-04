@@ -28,6 +28,45 @@ const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, Tab
   TableSelectAll, TableSelectRow, TableToolbar, TableBatchAction, TableBatchActions,
   batchActionClick, TableToolbarSearch, TableToolbarContent, TableToolbarAction } = DataTable
 
+  type StateProps = {
+    addresses: Array<string>,
+    sell: Array<number>,
+    buy: Array<number>,
+    investors: Array<TableData>,
+    investorsPaginated: Array<Array<TableData>>,
+    csvMessage: string,
+    modalShowing: boolean,
+  }
+
+  // const mapDispatchToProps = (dispatch: Function) => ({
+  //   handleUpload: () => any,
+  //   multiSubmit: () => any,
+  //   singleSubmit: () => any,
+  //   getWhiteList: () => any,
+  //   paginationDivider: () => any,
+  //   updateListLength: () => any,
+  // })
+
+const mapStateToProps = (state) => ({
+  addresses: state.whitelist.addresses,
+  sell: state.whitelist.sell,
+  buy: state.whitelist.buy,
+  investors: state.whitelist.investors,
+  investorsPaginated: state.whitelist.investorsPaginated,
+  csvMessage: state.whitelist.csvMessage,
+  modalShowing: state.whitelist.modalShowing,
+})
+
+const mapDispatchToProps = (dispatch: Function) => ({
+  handleUpload: (e) => dispatch(uploadCSV(e)),
+  multiSubmit: () => dispatch(multiUserSubmit()),
+  singleSubmit: () => dispatch(oneUserSubmit()),
+  getWhiteList: () => dispatch(getWhiteList()),
+  paginationDivider: () => dispatch(paginationDivider()),
+  updateListLength: (e) => dispatch(listLength(e)),
+  // showModal2: () => dispatch(showModal2()),
+})
+
 type Props = {|
 |} & StateProps & DispatchProps
 
@@ -42,6 +81,8 @@ class WhiteListPage extends Component<Props> {
   componentWillMount () {
     //call the function to load the events from blcokchain
     this.props.getWhiteList()
+    this.props.paginationDivider()
+
   }
 
   handleInvestorSubmit = () => {
@@ -66,17 +107,6 @@ class WhiteListPage extends Component<Props> {
       page: (e.page - 1),
     })
   }
-
-  //*TODO: Functionality to add a single address by user input **** (connect to the blockchain, fake connection)
-  //*TODO: Have Submit submit the CSV data to fakeData, which is getting rendered by the app . this should be connected to the blockchain, but for now just have it loop itself (fake connection)
-  //*TODO: Start end period (do this last) ****
-
-  //call API.put and store any json we want, and then call it back. this is off chain storage . will have to update the database in the three ways that we update the whitelist
-
-  //TODO: Functionality to remove a single address from the list , or modify its date
-  //TODO: Exportable list
-  //TODO: Query the whole list of addresses, from events i believe (i dont belive we are storing our own backend)  (can be fake data for now)
-  //TODO: put the contracts on testrpc and get it to work (see adam dossa instructions)
 
   render () {
     // console.log(this.props.investors)
@@ -248,45 +278,5 @@ class WhiteListPage extends Component<Props> {
     )
   }
 }
-
-type StateProps = {
-  addresses: Array<string>,
-  sell: Array<number>,
-  buy: Array<number>,
-  investors: Array<TableData>,
-  investorsPaginated: Array<string>,
-  csvMessage: string,
-  modalShowing: boolean,
-}
-
-// const mapDispatchToProps = (dispatch: Function) => ({
-//   handleUpload: () => any,
-//   multiSubmit: () => any,
-//   singleSubmit: () => any,
-//   getWhiteList: () => any,
-//   paginationDivider: () => any,
-//   updateListLength: () => any,
-// })
-
-const mapStateToProps = (state) => ({
-  addresses: state.whitelist.addresses,
-  sell: state.whitelist.sell,
-  buy: state.whitelist.buy,
-  investors: state.whitelist.investors,
-  investorsPaginated: state.whitelist.investorsPaginated,
-  csvMessage: state.whitelist.csvMessage,
-  modalShowing: state.whitelist.modalShowing,
-})
-
-const mapDispatchToProps = (dispatch: Function) => ({
-  handleUpload: (e) => dispatch(uploadCSV(e)),
-  multiSubmit: () => dispatch(multiUserSubmit()),
-  singleSubmit: () => dispatch(oneUserSubmit()),
-  getWhiteList: () => dispatch(getWhiteList()),
-  paginationDivider: () => dispatch(paginationDivider()),
-  updateListLength: (e) => dispatch(listLength(e)),
-  // showModal2: () => dispatch(showModal2()),
-
-})
 
 export default connect(mapStateToProps, mapDispatchToProps)(WhiteListPage)

@@ -1,11 +1,11 @@
 //@flow
 
 import uuidv4 from 'uuid/v4'
-
 import * as ui from 'polymath-ui'
-import { TransferManager, SecurityTokenRegistry } from 'polymath.js_v2'
+import { TransferManager, SecurityToken } from 'polymath.js_v2'
 import type { Investor } from 'polymath.js_v2/types'
 import { formName as userFormName } from './userForm'
+import type { GetState } from '../../redux/reducer'
 
 export const UPLOAD_CSV = 'dashboard/whitelist/UPLOAD_CSV'
 export const UPLOAD_CSV_FAILED = 'dashboard/whitelist/UPLOAD_CSV_FAILED'
@@ -33,10 +33,10 @@ export const EXPORT_NEW_LIST_FAILED = 'dashboard/whitelist/EXPORT_NEW_LIST_FAILE
 export type TableData = {
   id: string,
   address: string,
-  addedDate: number,
+  added: number,
   addedBy: string,
-  sell: number,
-  buy: number,
+  from: number,
+  to: number,
 }
 
 //this will need to be used WHEN the token actually exists in the state
@@ -45,12 +45,11 @@ export const fetch = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
   try {
     const token = getState().token.token
+    console.log("token from state: ", token)
     if (!token || !token.contract) {
       return dispatch(ui.fetched())
     }
-    //change to reflect WhiteList
-    // const sto = await token.contract.getSTO()
-    // dispatch(data(sto, sto ? await sto.getDetails() : null))
+
     dispatch(ui.fetched())
   } catch (e) {
     dispatch(ui.fetchingFailed(e))
@@ -120,61 +119,71 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: Functi
   for (let i = 0; i < (Object.keys(csvAddresses)).length; i++) {
     let csvRandomID = uuidv4()
     const owner = "0xdc4d23daf21da6163369940af54e5a1be783497b" //hardcoded temporarily , as i need to link up account from metamask
-    let sellTimestamp = Math.round((new Date(csvSell[i])).getTime() / 1000)
-    let buyTimestamp = Math.round((new Date(csvBuy[i])).getTime() / 1000)
-
-    let backendData: TableData = {
-      id: csvRandomID,
-      address: csvAddresses[i],
-      addedDate: Math.round((new Date()).getTime() / 1000),
-      addedBy: owner,
-      sell: sellTimestamp,
-      buy: buyTimestamp,
-    }
-    tableData.push(backendData)
+    // let sellTimestamp = Math.round((new Date(csvSell[i])).getTime() / 1000)
+    // let buyTimestamp = Math.round((new Date(csvBuy[i])).getTime() / 1000)
+    //
+    let newSellDate = new Date(csvSell[i])
+    let newBuyDate = new Date(csvBuy[i])
+    //
+    // let backendData: TableData = {
+    //   id: csvRandomID,
+    //   address: csvAddresses[i],
+    //   addedDate: Math.round((new Date()).getTime() / 1000),
+    //   addedBy: owner,
+    //   sell: sellTimestamp,
+    //   buy: buyTimestamp,
+    // }
+    // tableData.push(backendData)
 
     let investorData: Investor = {
       address: csvAddresses[i],
       addedBy: owner,
       added: Math.round((new Date()).getTime() / 1000),
-      from: sellTimestamp,
-      to: buyTimestamp,
+      from: newSellDate,
+      to: newBuyDate,
     }
     blockchainData.push(investorData)
   }
   // console.log(tableData)
 
-  dispatch({ type: ADD_MULTI_ENTRY, investors: tableData })
+  // dispatch({ type: ADD_MULTI_ENTRY, investors: tableData })
 
   //right now it is backwards, it populates the table befroe we even send the transaction. however, we need to be reading from events anyways
 
   // need to check whether or not this account exists, however at this point in the app the tokenSymbol would probavly actually be in redux state, here i will
   // hard code for now
 
-  // const token = getState().token
-  // console.log(token)
-  // if (!token || !token.contract) {
-  //   return dispatch(ui.fetched())
-  // }
+  const token = getState().token.token
+  if (!token || !token.contract) {
+    return
+  }
+  dispatch(ui.txStart('Configuring STO'))
+  const contract: SecurityToken = token.contract
+  const receipt = await contract.getTransferManager()
+  console.log(receipt)
 
-  let tokenSymbol = "DAVE"
+  const transferManager: TransferManager = receipt
+
+  //TODO: Temporary, until the full app works
+  // let tokenSymbol = "DAVE"
   // let accounts = await web3.eth.getAccounts()
   // let Issuer = accounts[0]
 
-  dispatch(ui.fetching())
+  // dispatch(ui.fetching())
+  // try {
+  //   const token = await SecurityTokenRegistry.getTokenByTicker(tokenSymbol)
+  //   console.log("getTokenbyTicker: ", token)
+  //   // dispatch(data(token))
+  //   dispatch(ui.fetched())
+  // } catch (e) {
+  //   dispatch(ui.fetchingFailed(e))
+  // }
+  //
+  // dispatch(ui.txStart('Submitting CSV to the blockchain...'))
   try {
-    const token = await SecurityTokenRegistry.getTokenByTicker(tokenSymbol)
-    console.log(token)
-    // dispatch(data(token))
-    dispatch(ui.fetched())
-  } catch (e) {
-    dispatch(ui.fetchingFailed(e))
-  }
 
-  dispatch(ui.txStart('Submitting CSV to the blockchain...'))
-  try {
-
-    const receipt = await TransferManager.modifyWhitelistMulti(blockchainData)
+    const receipt2 = await transferManager.modifyWhitelistMulti(blockchainData)
+    console.log(receipt2)
     dispatch(ui.notify(
       'CSV was successfully uploaded',
       true,
@@ -190,6 +199,9 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: Functi
 
     dispatch(ui.txFailed(e))
   }
+
+  const receipt3 = await transferManager.getWhitelist()
+  console.log(receipt3)
 
   //TODO: @davekaj Then , read events and get all addresses and their information, as arrays
   getWhiteList()
@@ -271,44 +283,37 @@ export const oneUserSubmit = () => async (dispatch: Function, getState: Function
 
 }
 
-export const getWhiteList = () => async (dispatch: Function) => {
+export const getWhiteList = () => async (dispatch: Function, getState: Function) => {
+  let tableData = []
 
-  // let testing = true
-  // console.log("truck")
+  //change to reflect WhiteList
+  // const sto = await token.contract.getSTO()
+  // dispatch(data(sto, sto ? await sto.getDetails() : null))
 
-  // //temporarily have this fake data?
+  const token = getState().token.token
+  if (!token || !token.contract) {
+    return
+  }
+  const contract: SecurityToken = token.contract
+  const receipt = await contract.getTransferManager()
+  console.log(receipt)
 
-  // if (testing) {
-  //   console.log("truck")
-  //   // dispatch({ type: GET_WHITELIST, basicMessage: "Whitelist retrived from blockchain logs", investors: backendData })
+  const transferManager: TransferManager = receipt
+  const whitelistEvents = await transferManager.getWhitelist()
+  console.log(whitelistEvents)
 
-  // } else {
-  //   // let whitelist = await transferManager.getWhitelist() //-will look ike this, need to write poyljs
-  //   console.log("truck")
-
-  //   //for now we just get state in store, which we originally put up with timestamps, and now we will conver to human
-  //   //readable dates to mimic when we pull from events
-
-  //   let dummyState = { ...getState().whitelist.investors }
-
-  //   console.log(dummyState)
-
-  //   // dispatch({ type: GET_WHITELIST, basicMessage: "Whitelist retrived from blockchain logs", investors: backendData })
-  //   // dispatch({ type: GET_WHITELIST_FAILED, csvMessage: "There was an error grabbing the whitelist" })
-  // }
+  for (let i =0; i < whitelistEvents.length; i++){
+    let csvRandomID = uuidv4()
+    let backendData: TableData = {
+      id: csvRandomID,
+      address: whitelistEvents[i].address,
+      added: whitelistEvents[i].added,
+      addedBy: whitelistEvents[i].addedBy,
+      from: whitelistEvents[i].from,
+      to: whitelistEvents[i].to,
+    }
+    tableData.push(backendData)
+  }
+  dispatch({ type: ADD_MULTI_ENTRY, investors: tableData })
 
 }
-// export const fetch = () => async (dispatch: Function, getState: GetState) => {
-// dispatch(ui.fetching())
-// try {
-//   const token = getState().token.token
-//   if (!token || !token.contract) {
-//     return dispatch(ui.fetched())
-//   }
-//   const sto = await token.contract.getSTO()
-//   dispatch(data(sto, sto ? await sto.getDetails() : null))
-//   dispatch(ui.fetched())
-// } catch (e) {
-//   dispatch(ui.fetchingFailed(e))
-// }
-// }
