@@ -1,3 +1,5 @@
+// @flow
+
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form'
@@ -17,7 +19,7 @@ export const formName = 'user_form'
 // const minMonth = minValue(1)
 // const maxMonth = minValue(6)
 
-class InvestorForm extends Component {
+class InvestorForm extends Component<Props> {
   static propTypes = {
     handleSubmit: PropTypes.func.isRequired,
   }

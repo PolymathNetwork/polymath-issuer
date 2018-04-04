@@ -1,22 +1,34 @@
+// @flow
+
 import * as a from './actions'
 // import { FakeData } from './fakedata'
+import type { TableData } from './actions'
 
-const defaultState = {
+export type WhiteListSTate = {
+  addresses: Array<string>,
+  sell: Array<number>,
+  buy: Array<number>,
+  investors: Array<TableData>,
+  investorsPaginated: Array<Array<string>>,
+  listLength: number,
+  csvMessage: string,
+  basicMessage: string,
+}
+
+const defaultState: WhiteListSTate = {
   //these are used only for displaying the information
   addresses: ["No addresses uploaded"],
   sell: [0],
   buy: [0],
-
-  //fake data is used to display the whole list, so this gets updated by the blockchain events, or the backend, or both 
+  //fake data is used to display the whole list, so this gets updated by the blockchain events, or the backend, or both
   investors: [],
   investorsPaginated: [[]],
   listLength: 10,
-
   csvMessage: "Please upload a CSV file",
   basicMessage: "",
 }
 
-export default (state = defaultState, action) => {
+export default (state: WhiteListSTate = defaultState, action: Action) => {
   switch (action.type) {
     case a.UPLOAD_CSV:
       return {
@@ -80,4 +92,3 @@ export default (state = defaultState, action) => {
       return state
   }
 }
-

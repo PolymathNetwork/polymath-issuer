@@ -1,7 +1,12 @@
+//@flow
+
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import uuidv4 from 'uuid/v4'
+import type { Investor } from 'polymath.js_v2/types'
+import type { TableData } from './actions'
+
 // import icons from 'carbon-icons'
 import {
   FileUploader,
@@ -23,7 +28,10 @@ const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, Tab
   TableSelectAll, TableSelectRow, TableToolbar, TableBatchAction, TableBatchActions,
   batchActionClick, TableToolbarSearch, TableToolbarContent, TableToolbarAction } = DataTable
 
-class WhiteListPage extends Component {
+type Props = {|
+|} & StateProps & DispatchProps
+
+class WhiteListPage extends Component<Props> {
 
   constructor () {
     super()
@@ -48,6 +56,7 @@ class WhiteListPage extends Component {
   onHandleMultiSubmit = () => {
     this.props.multiSubmit()
     this.props.paginationDivider()
+    return true
   }
 
   changePages = (e) => {
@@ -131,7 +140,7 @@ class WhiteListPage extends Component {
             </div>
           </div>
           <div className='bx--row'>
-                    
+
             <div className='bx--col-xs-2'>
               <DatePicker
                 id='date-picker'// onChange={}
@@ -233,12 +242,31 @@ class WhiteListPage extends Component {
             totalItems={this.props.investors.length}
 
           />
-        </div >
-      </DocumentTitle >
+        </div>
+      </DocumentTitle>
 
     )
   }
 }
+
+type StateProps = {
+  addresses: Array<string>,
+  sell: Array<number>,
+  buy: Array<number>,
+  investors: Array<TableData>,
+  investorsPaginated: Array<string>,
+  csvMessage: string,
+  modalShowing: boolean,
+}
+
+// const mapDispatchToProps = (dispatch: Function) => ({
+//   handleUpload: () => any,
+//   multiSubmit: () => any,
+//   singleSubmit: () => any,
+//   getWhiteList: () => any,
+//   paginationDivider: () => any,
+//   updateListLength: () => any,
+// })
 
 const mapStateToProps = (state) => ({
   addresses: state.whitelist.addresses,
@@ -250,7 +278,7 @@ const mapStateToProps = (state) => ({
   modalShowing: state.whitelist.modalShowing,
 })
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch: Function) => ({
   handleUpload: (e) => dispatch(uploadCSV(e)),
   multiSubmit: () => dispatch(multiUserSubmit()),
   singleSubmit: () => dispatch(oneUserSubmit()),
