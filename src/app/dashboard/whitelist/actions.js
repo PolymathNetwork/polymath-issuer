@@ -24,8 +24,6 @@ export const paginationDispatch = (paginatedInvestors: Array<Array<EventData>>) 
 export const LIST_LENGTH = 'dashboard/whitelist/LIST_LENGTH'
 export const listLengthDispatch = (listLength: number) => ({ type: PAGINATION_DIVIDER, listLength })
 
-// export const SHOW_MODAL_2 = 'dashboard/whitelist/SHOW_MODAL_2'
-
 export const ADD_SINGLE_ENTRY = 'dashboard/whitelist/ADD_SINGLE_ENTRY'
 export const ADD_SINGLE_ENTRY_FAILED = 'dashboard/whitelist/ADD_SINGLE_ENTRY_FAILED'
 
@@ -80,11 +78,8 @@ export const uploadCSV = (e: Object) => async (dispatch: Function) => {
     let reader = new FileReader()
     reader.readAsText(file)
     reader.onload = function () {
-      console.log(reader.result)
       let parsedData = parseCSV(((reader.result: any): string))
       dispatch(csvDispatch("CSV upload was successful!", parsedData[0], parsedData[1], parsedData[2], true))
-      // dispatch({ type: SHOW_MODAL_2, modalShowing: true })
-
     }
   } else {
     dispatch({ type: UPLOAD_CSV_FAILED, csvMessage: "There was an error uploading the CSV file" })
@@ -123,16 +118,16 @@ const parseCSV = (csvResult: string ) => {
 }
 
 //This takes the CSV data we have stored in the store from uploadCSV, and then submits it to the blockchain
-export const multiUserSubmit = () => async (dispatch: Function, getState: Function) => {
-  let tableData = []
+export const multiUserSubmit = () => async (dispatch: Function, getState: GetState) => {
+  // let tableData = []
   let blockchainData = []
-  let csvAddresses = { ...getState().whitelist.addresses }
-  let csvSell = { ...getState().whitelist.sell }
-  let csvBuy = { ...getState().whitelist.buy }
+  let csvAddresses = getState().whitelist.addresses
+  let csvSell = getState().whitelist.sell
+  let csvBuy = getState().whitelist.buy
   // let account = "TODO!"
 
   for (let i = 0; i < (Object.keys(csvAddresses)).length; i++) {
-    let csvRandomID = uuidv4()
+    // let csvRandomID = uuidv4()
     const owner = "0xdc4d23daf21da6163369940af54e5a1be783497b" //hardcoded temporarily , as i need to link up account from metamask
     // let sellTimestamp = Math.round((new Date(csvSell[i])).getTime() / 1000)
     // let buyTimestamp = Math.round((new Date(csvBuy[i])).getTime() / 1000)
@@ -176,7 +171,7 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: Functi
   dispatch(ui.txStart('Configuring STO'))
   const contract: SecurityToken = token.contract
   const receipt = await contract.getTransferManager()
-  console.log(receipt)
+  // console.log(receipt)
 
   const transferManager: TransferManager = receipt
 
@@ -199,12 +194,12 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: Functi
   try {
 
     const receipt2 = await transferManager.modifyWhitelistMulti(blockchainData)
-    console.log(receipt2)
+    // console.log(receipt2)
     dispatch(ui.notify(
       'CSV was successfully uploaded',
       true,
       'We will present the investor list to you on the next page',
-      ui.etherscanTx(receipt.transactionHash)
+      ui.etherscanTx(receipt2.transactionHash)
     ))
     // dispatch(fetch())
 
@@ -216,8 +211,8 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: Functi
     dispatch(ui.txFailed(e))
   }
 
-  const receipt3 = await transferManager.getWhitelist()
-  console.log(receipt3)
+  // const receipt3 = await transferManager.getWhitelist()
+  // console.log(receipt3)
 
   //TODO: @davekaj Then , read events and get all addresses and their information, as arrays
   getWhitelist()
@@ -226,7 +221,7 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: Functi
 }
 
 //can probably label internal
-export const paginationDivider = () => async (dispatch: Function, getState: Function) => {
+export const paginationDivider = () => async (dispatch: Function, getState: GetState) => {
   const fullInvestorList = [...getState().whitelist.investors]
   let holdsDivisons = []
   let singlePage = []
@@ -250,7 +245,7 @@ export const listLength = (e: number) => async (dispatch: Function) => {
 // }
 
 //TODO - where is owner coming from?
-export const oneUserSubmit = () => async (dispatch: Function, getState: Function) => {
+export const oneUserSubmit = () => async (dispatch: Function, getState: GetState) => {
   let randomID = uuidv4()
   const user = { ...getState().form[userFormName].values }
   const owner = "0xdc4d23daf21da6163369940af54e5a1be783497b" //hardcoded temporarily , as i need to link up account from metamask
@@ -300,7 +295,7 @@ export const oneUserSubmit = () => async (dispatch: Function, getState: Function
 
 }
 
-export const getWhitelist = () => async (dispatch: Function, getState: Function) => {
+export const getWhitelist = () => async (dispatch: Function, getState: GetState) => {
   let tableData = []
 
   //change to reflect Whitelist
@@ -313,12 +308,12 @@ export const getWhitelist = () => async (dispatch: Function, getState: Function)
   }
   const contract: SecurityToken = token.contract
   const receipt = await contract.getTransferManager()
-  console.log(receipt)
+  // console.log(receipt)
 
   const transferManager: TransferManager = receipt
 
   const whitelistEvents = await transferManager.getWhitelist()
-  console.log(whitelistEvents)
+  // console.log(whitelistEvents)
 
   for (let i =0; i < whitelistEvents.length; i++){
     let csvRandomID = uuidv4()

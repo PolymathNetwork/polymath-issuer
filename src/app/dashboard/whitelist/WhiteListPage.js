@@ -4,27 +4,25 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import uuidv4 from 'uuid/v4'
-import type { Investor } from 'polymath.js_v2/types'
-import type { EventData } from './actions'
 import {
-  FileUploader,
   DataTable,
   PaginationV2,
   ModalWrapper,
-  Modal,
   DatePicker,
   DatePickerInput,
-  Icon,
   FileUploaderButton,
 } from "carbon-components-react"
 
+// import type { Investor } from 'polymath.js_v2/types'
+import type { EventData } from './actions'
 import { uploadCSV, multiUserSubmit, oneUserSubmit, getWhitelist, paginationDivider, listLength } from './actions'
 import { TableHeaders } from './tableHeaders'
 import InvestorForm from './userForm'
 
+//might need TableToolbarAction and batchActionClick here
 const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
   TableSelectAll, TableSelectRow, TableToolbar, TableBatchAction, TableBatchActions,
-  batchActionClick, TableToolbarSearch, TableToolbarContent, TableToolbarAction } = DataTable
+  TableToolbarSearch, TableToolbarContent } = DataTable
 
 type StateProps = {|
   addresses: Array<string>,
@@ -62,7 +60,6 @@ const mapDispatchToProps = (dispatch: Function) => ({
   getWhitelist: () => dispatch(getWhitelist()),
   paginationDivider: () => dispatch(paginationDivider()),
   updateListLength: (e) => dispatch(listLength(e)),
-  // showModal2: () => dispatch(showModal2()),
 })
 
 type Props = StateProps & DispatchProps
@@ -84,18 +81,7 @@ class WhitelistPage extends Component<Props, State> {
     this.props.singleSubmit()
   }
 
-  // onHandleMultiSubmitModal1 = () => {
-  //   this.props.showModal2()
-  //   this.props.handleUpload()
-  // }
-
-  onHandleMultiSubmit = () => {
-    this.props.multiSubmit()
-    // this.props.paginationDivider()
-    return true
-  }
-
-  changePages = (e) => {
+  handleChangePages = (e) => {
     this.props.updateListLength(e.pageSize)
     this.props.paginationDivider()
     this.setState({
@@ -103,8 +89,76 @@ class WhitelistPage extends Component<Props, State> {
     })
   }
 
+  onHandleMultiSubmit = () => {
+    this.props.multiSubmit()
+    return true
+  }
+
+  dataTableRender = ({
+    rows,
+    headers,
+    getHeaderProps,
+    getSelectionProps,
+    getBatchActionProps,
+    onInputChange,
+    // selectedRows,
+  }) => (
+    <TableContainer>
+      <TableToolbar>
+        {/* make sure to apply getBatchActionProps so that the bar renders */}
+        <TableBatchActions {...getBatchActionProps()}>
+          {/* inside of you batch actinos, you can include selectedRows */}
+          <TableBatchAction >
+              Remove Investor
+          </TableBatchAction>
+          <TableBatchAction >
+              Modify Restriction Dates
+          </TableBatchAction>
+        </TableBatchActions>
+        <TableToolbarSearch onChange={onInputChange} />
+        <TableToolbarContent>
+          <ModalWrapper
+            // modalProps={{ onBlur: { onBlur() }, onClick: { onClick() }, onFocus: { onFocus() }, …}}
+            id='transactional-modal'
+            buttonTriggerText='Add New'
+            modalHeading='Add New Investor'
+            onSubmit={this.handleInvestorSubmit}
+            shouldCloseAfterSubmit
+          >
+            <p className='bx--modal-content__text'>
+                Please enter the information below to add a single investor.
+            </p>
+            <br />
+            <InvestorForm onSubmit={this.handleInvestorSubmit} />
+          </ModalWrapper>
+        </TableToolbarContent>
+      </TableToolbar>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableSelectAll {...getSelectionProps()} />
+            {headers.map((header) => (
+              <TableHeader {...getHeaderProps({ header })}>
+                {header.header}
+              </TableHeader>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow key={row.id}>
+              <TableSelectRow {...getSelectionProps({ row })} />
+              {row.cells.map((cell) => (
+                <TableCell key={cell.id}>{cell.value}</TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  )
+
   render () {
-    // console.log(this.props.investors)
     return (
       <DocumentTitle title='Sign Up – Polymath'>
 
@@ -169,22 +223,23 @@ class WhitelistPage extends Component<Props, State> {
 
             <div className='bx--col-xs-2'>
               <DatePicker
-                id='date-picker'// onChange={}
+                id='date-picker'
+                // onChange={}
                 datePickerType='range'
               >
                 <DatePickerInput
                   className='some-class'
                   labelText='Date Picker label'
-                  // onClick={}//onClick()}
-                  // onChange={}//onInputChange()}
+                  // onClick={}onClick()}
+                  // onChange={}onInputChange()}
                   placeholder='mm/dd/yyyy'
                   id='date-picker-input-id'
                 />
                 <DatePickerInput
                   className='some-class'
                   labelText='Date Picker label'
-                  // onClick={}//onClick()}
-                  // onChange={}//onInputChange()}
+                  // onClick={}onClick()}
+                  // onChange={}onInputChange()}
                   placeholder='mm/dd/yyyy'
                   id='date-picker-input-id-2'
                 />
@@ -196,73 +251,10 @@ class WhitelistPage extends Component<Props, State> {
           <DataTable
             rows={this.props.investorsPaginated[this.state.page]}
             headers={TableHeaders}
-            render={({
-              rows,
-              headers,
-              getHeaderProps,
-              getSelectionProps,
-              getBatchActionProps,
-              onInputChange,
-              // selectedRows,
-            }) => (
-              <TableContainer>
-                <TableToolbar>
-                  {/* make sure to apply getBatchActionProps so that the bar renders */}
-                  <TableBatchActions {...getBatchActionProps()}>
-                    {/* inside of you batch actinos, you can include selectedRows */}
-                    <TableBatchAction >
-                        Remove Investor
-                    </TableBatchAction>
-                    <TableBatchAction >
-                        Modify Restriction Dates
-                    </TableBatchAction>
-                  </TableBatchActions>
-                  <TableToolbarSearch onChange={onInputChange} />
-                  <TableToolbarContent>
-                    <ModalWrapper
-                      // modalProps={{ onBlur: { onBlur() }, onClick: { onClick() }, onFocus: { onFocus() }, …}}
-                      id='transactional-modal'
-                      buttonTriggerText='Add New'
-                      // modalLabel='Add New Investor'
-                      modalHeading='Add New Investor'
-                      onSubmit={this.handleInvestorSubmit}
-                      shouldCloseAfterSubmit
-                    >
-                      <p className='bx--modal-content__text'>
-                          Please enter the information below to add a single investor.
-                      </p>
-                      <br />
-                      <InvestorForm onSubmit={this.handleInvestorSubmit} />
-                    </ModalWrapper>
-                  </TableToolbarContent>
-                </TableToolbar>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableSelectAll {...getSelectionProps()} />
-                      {headers.map((header) => (
-                        <TableHeader {...getHeaderProps({ header })}>
-                          {header.header}
-                        </TableHeader>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((row) => (
-                      <TableRow key={row.id}>
-                        <TableSelectRow {...getSelectionProps({ row })} />
-                        {row.cells.map((cell) => (
-                          <TableCell key={cell.id}>{cell.value}</TableCell>
-                        ))}
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            )}
+            render={this.dataTableRender}
           />
           <PaginationV2
-            onChange={(e) => this.changePages(e)}
+            onChange={this.handleChangePages}
             pageSizes={[10, 20, 30, 40, 50]}
             // pageInputDisabled
             totalItems={this.props.investors.length}

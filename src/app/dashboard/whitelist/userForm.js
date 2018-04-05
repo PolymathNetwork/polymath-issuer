@@ -1,17 +1,11 @@
 // @flow
 
-import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form'
 
 import { Form, Button } from 'carbon-components-react'
 import { TextInput } from 'polymath-ui'
-import {
-  required,
-  ethereumAddress,
-  // integer,
-  url,
-} from 'polymath-ui/dist/validate'
+import { required, ethereumAddress } from 'polymath-ui/dist/validate'
 
 export const formName = 'user_form'
 

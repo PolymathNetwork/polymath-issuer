@@ -1,8 +1,7 @@
 // @flow
 
 import * as a from './actions'
-import type { EventData } from './actions'
-import type { Action } from './actions'
+import type { EventData, Action } from './actions'
 
 export type WhitelistState = {
   addresses: Array<string>,
@@ -70,11 +69,7 @@ export default (state: WhitelistState = defaultState, action: Action) => {
         ...state,
         listLength: action.listLength,
       }
-    // case a.SHOW_MODAL_2:
-    //   return {
-    //     ...state,
-    //     modalShowing: action.modalShowing,
-    //   }
+    //TODO: make action getter for this
     // case a.GET_WHITELIST:
     //   return {
     //     ...state,
