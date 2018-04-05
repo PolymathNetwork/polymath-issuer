@@ -1,8 +1,9 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import type { STOPurchase } from 'polymath.js_v2'
+import { STOStatus } from 'polymath-ui'
 
 import { fetchPurchases } from '../actions'
 import type { RootState } from '../../../redux/reducer'
@@ -33,8 +34,17 @@ class ConfigureSTO extends Component<Props> {
   }
 
   render () {
-    return <span>Overview</span>
-    // TODO
+    return (
+      <Fragment>
+        <h1 className='bx--type-alpha'>
+          Security Token Overview
+        </h1>
+        <STOStatus />
+        <h3 className='bx--type-beta'>
+          List of Investors
+        </h3>
+      </Fragment>
+    )
   }
 }
 
