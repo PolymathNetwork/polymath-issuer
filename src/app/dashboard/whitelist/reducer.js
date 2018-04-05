@@ -4,7 +4,7 @@ import * as a from './actions'
 import type { EventData } from './actions'
 import type { Action } from './actions'
 
-export type WhiteListState = {
+export type WhitelistState = {
   addresses: Array<string>,
   sell: Array<number>,
   buy: Array<number>,
@@ -14,7 +14,7 @@ export type WhiteListState = {
   csvMessage: string,
 }
 
-const defaultState: WhiteListState = {
+const defaultState: WhitelistState = {
   addresses: ["No addresses uploaded"],
   sell: [],
   buy: [],
@@ -24,7 +24,7 @@ const defaultState: WhiteListState = {
   csvMessage: "Please upload a CSV file",
 }
 
-export default (state: WhiteListState = defaultState, action: Action) => {
+export default (state: WhitelistState = defaultState, action: Action) => {
   switch (action.type) {
     case a.UPLOAD_CSV:
       return {
@@ -70,11 +70,11 @@ export default (state: WhiteListState = defaultState, action: Action) => {
         ...state,
         listLength: action.listLength,
       }
-    case a.SHOW_MODAL_2:
-      return {
-        ...state,
-        modalShowing: action.modalShowing,
-      }
+    // case a.SHOW_MODAL_2:
+    //   return {
+    //     ...state,
+    //     modalShowing: action.modalShowing,
+    //   }
     // case a.GET_WHITELIST:
     //   return {
     //     ...state,

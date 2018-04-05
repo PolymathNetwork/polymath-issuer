@@ -9,7 +9,7 @@ import type { GetState } from '../../../redux/reducer'
 import type { ExtractReturn } from '../../../redux/helpers'
 
 export const UPLOAD_CSV = 'dashboard/whitelist/UPLOAD_CSV'
-export const csvDispatch = (csvMessage: string, addresses: Array<string>, sell: Array<string>, buy: Array<string>, ) => ({ type: UPLOAD_CSV, csvMessage, addresses, sell, buy })
+export const csvDispatch = (csvMessage: string, addresses: Array<string>, sell: Array<string>, buy: Array<string>, modalShowing: boolean, ) => ({ type: UPLOAD_CSV, csvMessage, addresses, sell, buy, modalShowing })
 
 export const UPLOAD_CSV_FAILED = 'dashboard/whitelist/UPLOAD_CSV_FAILED'
 
@@ -24,7 +24,7 @@ export const paginationDispatch = (paginatedInvestors: Array<Array<EventData>>) 
 export const LIST_LENGTH = 'dashboard/whitelist/LIST_LENGTH'
 export const listLengthDispatch = (listLength: number) => ({ type: PAGINATION_DIVIDER, listLength })
 
-export const SHOW_MODAL_2 = 'dashboard/whitelist/SHOW_MODAL_2'
+// export const SHOW_MODAL_2 = 'dashboard/whitelist/SHOW_MODAL_2'
 
 export const ADD_SINGLE_ENTRY = 'dashboard/whitelist/ADD_SINGLE_ENTRY'
 export const ADD_SINGLE_ENTRY_FAILED = 'dashboard/whitelist/ADD_SINGLE_ENTRY_FAILED'
@@ -80,9 +80,10 @@ export const uploadCSV = (e: Object) => async (dispatch: Function) => {
     let reader = new FileReader()
     reader.readAsText(file)
     reader.onload = function () {
-      let parsedData = parseCSV(reader.result)
-      dispatch(csvDispatch("CSV upload was successful!", parsedData[0], parsedData[1], parsedData[2]))
-      dispatch({ type: SHOW_MODAL_2, modalShowing: true })
+      console.log(reader.result)
+      let parsedData = parseCSV(((reader.result: any): string))
+      dispatch(csvDispatch("CSV upload was successful!", parsedData[0], parsedData[1], parsedData[2], true))
+      // dispatch({ type: SHOW_MODAL_2, modalShowing: true })
 
     }
   } else {
@@ -91,7 +92,7 @@ export const uploadCSV = (e: Object) => async (dispatch: Function) => {
 }
 
 //Takes the CSV data, turns it into two arrays, split up by addresses and time they are allowed to trade for , in order
-const parseCSV = (csvResult) => {
+const parseCSV = (csvResult: string ) => {
   let parsedData = []
   let addresses = []
   let sellRestriction = []
@@ -138,6 +139,7 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: Functi
     //
     let newSellDate = new Date(csvSell[i])
     let newBuyDate = new Date(csvBuy[i])
+    let nowTime = new Date()
     //
     // let backendData: TableData = {
     //   id: csvRandomID,
@@ -152,7 +154,7 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: Functi
     let investorData: Investor = {
       address: csvAddresses[i],
       addedBy: owner,
-      added: Math.round((new Date()).getTime() / 1000),
+      added: nowTime,
       from: newSellDate,
       to: newBuyDate,
     }
@@ -218,7 +220,7 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: Functi
   console.log(receipt3)
 
   //TODO: @davekaj Then , read events and get all addresses and their information, as arrays
-  getWhiteList()
+  getWhitelist()
   //  const investors: Array<Investor> = await transferManager.getWhitelist()
 
 }
@@ -286,7 +288,7 @@ export const oneUserSubmit = () => async (dispatch: Function, getState: Function
   } catch (e) {
     dispatch(ui.txFailed(e))
   }
-  // getWhiteList()
+  // getWhitelist()
   //these will actually get deleted or changed complete, becasue we shouldnt be sending to the store direcrly from the app.
   //we need to go user input ---> blockchain ---> events ---> getWhitelist grabs events ----> populates our store
   // at which point we need to change time stamps to human readable dates
@@ -298,10 +300,10 @@ export const oneUserSubmit = () => async (dispatch: Function, getState: Function
 
 }
 
-export const getWhiteList = () => async (dispatch: Function, getState: Function) => {
+export const getWhitelist = () => async (dispatch: Function, getState: Function) => {
   let tableData = []
 
-  //change to reflect WhiteList
+  //change to reflect Whitelist
   // const sto = await token.contract.getSTO()
   // dispatch(data(sto, sto ? await sto.getDetails() : null))
 

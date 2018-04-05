@@ -6,8 +6,6 @@ import DocumentTitle from 'react-document-title'
 import uuidv4 from 'uuid/v4'
 import type { Investor } from 'polymath.js_v2/types'
 import type { EventData } from './actions'
-
-// import icons from 'carbon-icons'
 import {
   FileUploader,
   DataTable,
@@ -20,7 +18,7 @@ import {
   FileUploaderButton,
 } from "carbon-components-react"
 
-import { uploadCSV, multiUserSubmit, oneUserSubmit, getWhiteList, paginationDivider, listLength } from './actions'
+import { uploadCSV, multiUserSubmit, oneUserSubmit, getWhitelist, paginationDivider, listLength } from './actions'
 import { TableHeaders } from './tableHeaders'
 import InvestorForm from './userForm'
 
@@ -28,24 +26,24 @@ const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, Tab
   TableSelectAll, TableSelectRow, TableToolbar, TableBatchAction, TableBatchActions,
   batchActionClick, TableToolbarSearch, TableToolbarContent, TableToolbarAction } = DataTable
 
-  type StateProps = {
-    addresses: Array<string>,
-    sell: Array<number>,
-    buy: Array<number>,
-    investors: Array<EventData>,
-    investorsPaginated: Array<Array<EventData>>,
-    csvMessage: string,
-    modalShowing: boolean,
-  }
+type StateProps = {|
+  addresses: Array<string>,
+  sell: Array<number>,
+  buy: Array<number>,
+  investors: Array<EventData>,
+  investorsPaginated: Array<Array<EventData>>,
+  csvMessage: string,
+  modalShowing: boolean,
+|}
 
-  // const mapDispatchToProps = (dispatch: Function) => ({
-  //   handleUpload: () => any,
-  //   multiSubmit: () => any,
-  //   singleSubmit: () => any,
-  //   getWhiteList: () => any,
-  //   paginationDivider: () => any,
-  //   updateListLength: () => any,
-  // })
+type DispatchProps = {|
+  handleUpload: () => any,
+  multiSubmit: () => any,
+  singleSubmit: () => any,
+  getWhitelist: () => any,
+  paginationDivider: () => any,
+  updateListLength: (any) => any,
+|}
 
 const mapStateToProps = (state) => ({
   addresses: state.whitelist.addresses,
@@ -61,25 +59,25 @@ const mapDispatchToProps = (dispatch: Function) => ({
   handleUpload: (e) => dispatch(uploadCSV(e)),
   multiSubmit: () => dispatch(multiUserSubmit()),
   singleSubmit: () => dispatch(oneUserSubmit()),
-  getWhiteList: () => dispatch(getWhiteList()),
+  getWhitelist: () => dispatch(getWhitelist()),
   paginationDivider: () => dispatch(paginationDivider()),
   updateListLength: (e) => dispatch(listLength(e)),
   // showModal2: () => dispatch(showModal2()),
 })
 
-type Props = {|
-|} & StateProps & DispatchProps
+type Props = StateProps & DispatchProps
 
-class WhiteListPage extends Component<Props> {
+type State = {
+  page: number
+}
 
-  constructor () {
-    super()
-
-    this.state = { page: 0 }
-
+class WhitelistPage extends Component<Props, State> {
+  state = {
+    page: 0,
   }
+
   componentWillMount () {
-    this.props.getWhiteList()
+    this.props.getWhitelist()
   }
 
   handleInvestorSubmit = () => {
@@ -277,4 +275,4 @@ class WhiteListPage extends Component<Props> {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WhiteListPage)
+export default connect(mapStateToProps, mapDispatchToProps)(WhitelistPage)

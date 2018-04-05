@@ -15,13 +15,11 @@ import {
 
 export const formName = 'user_form'
 
-// const minMonth = minValue(1)
-// const maxMonth = minValue(6)
+type Props = {
+  handleSubmit: () => void,
+}
 
 class InvestorForm extends Component<Props> {
-  static propTypes = {
-    handleSubmit: PropTypes.func.isRequired,
-  }
 
   render () {
     return (

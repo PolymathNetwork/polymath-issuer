@@ -7,7 +7,7 @@ import { reducer as pui } from 'polymath-ui'
 import token from '../app/token/reducer'
 import sto from '../app/sto/reducer'
 import whitelist from '../app/dashboard/whitelist/reducer'
-import type { WhiteListState } from '../app/dashboard/whitelist/reducer'
+import type { WhitelistState } from '../app/dashboard/whitelist/reducer'
 import type { TokenState } from '../app/token/reducer'
 import type { STOState } from '../app/sto/reducer'
 
@@ -24,7 +24,7 @@ export type RootState = {
   form: any,
   token: TokenState,
   sto: STOState,
-  whitelist: WhiteListState,
+  whitelist: WhitelistState,
   network: any, // TODO @bshevchenko: set type https://github.com/PolymathNetwork/polymath-issuer/issues/5
 }
 
