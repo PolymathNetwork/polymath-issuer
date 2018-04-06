@@ -8,15 +8,19 @@ import { formName as userFormName } from './userForm'
 import type { GetState } from '../../../redux/reducer'
 import type { ExtractReturn } from '../../../redux/helpers'
 
+export const TRANSFER_MANAGER = 'dashboard/whitelist/TRANSFER_MANAGER'
+export const transferManagerDispatch = (transferManager: TransferManager) => ({ type: TRANSFER_MANAGER, transferManager: transferManager })
+
 export const UPLOAD_CSV = 'dashboard/whitelist/UPLOAD_CSV'
 export const csvDispatch = (csvMessage: string, addresses: Array<string>, sell: Array<string>, buy: Array<string>, modalShowing: boolean, ) => ({ type: UPLOAD_CSV, csvMessage, addresses, sell, buy, modalShowing })
 
 export const UPLOAD_CSV_FAILED = 'dashboard/whitelist/UPLOAD_CSV_FAILED'
 
-export const ADD_MULTI_ENTRY = 'dashboard/whitelist/ADD_MULTI_ENTRY'
-export const multiEntryDispatch = (investors: Array<EventData>) => ({ type: ADD_MULTI_ENTRY, investors })
+//this needs to be renamed , cuz it is not actually from csv multi entry, this is from getWhiteList . this has to do with all whitelist grabbing
+export const GET_WHITELIST = 'dashboard/whitelist/GET_WHITELIST'
+export const getWhitelistDispatch = (investors: Array<EventData>) => ({ type: GET_WHITELIST, investors })
 
-export const ADD_MULTI_ENTRY_FAILED = 'dashboard/whitelist/ADD_MULTI_ENTRY_FAILED'
+export const GET_WHITELIST_FAILED = 'dashboard/whitelist/GET_WHITELIST_FAILED'
 
 export const PAGINATION_DIVIDER = 'dashboard/whitelist/PAGINATION_DIVDER'
 export const paginationDispatch = (paginatedInvestors: Array<Array<EventData>>) => ({ type: PAGINATION_DIVIDER, paginatedInvestors })
@@ -27,18 +31,10 @@ export const listLengthDispatch = (listLength: number) => ({ type: PAGINATION_DI
 export const ADD_SINGLE_ENTRY = 'dashboard/whitelist/ADD_SINGLE_ENTRY'
 export const ADD_SINGLE_ENTRY_FAILED = 'dashboard/whitelist/ADD_SINGLE_ENTRY_FAILED'
 
-// export const GET_WHITELIST = 'dashboard/whitelist/ADD_SINGLE_ENTRY'
-// export const GET_WHITELIST_FAILED = 'dashboard/whitelist/ADD_SINGLE_ENTRY_FAILED'
-
-// export const REMOVE_SINGLE_ENTRY = 'dashboard/whitelist/REMOVE_SINGLE_ENTRY'
-// export const REMOVE_SINGLE_ENTRY_FAILED = 'dashboard/whitelist/REMOVE_SINGLE_ENTRY_FAILED'
-//
-// export const EXPORT_NEW_LIST = 'dashboard/whitelist/EXPORT_NEW_LIST'
-// export const EXPORT_NEW_LIST_FAILED = 'dashboard/whitelist/EXPORT_NEW_LIST_FAILED'
-
 export type Action =
+  | ExtractReturn<typeof transferManagerDispatch>
   | ExtractReturn<typeof csvDispatch>
-  | ExtractReturn<typeof multiEntryDispatch>
+  | ExtractReturn<typeof getWhitelistDispatch>
   | ExtractReturn<typeof paginationDispatch>
   | ExtractReturn<typeof listLengthDispatch>
 
@@ -51,26 +47,22 @@ export type EventData = {
   to: number,
 }
 
-//this will need to be used WHEN the token actually exists in the state
-//when using sto generator i wont have this
-// export const fetch = () => async (dispatch: Function, getState: GetState) => {
-//   dispatch(ui.fetching())
-//   try {
-//     const token = getState().token.token
-//     console.log("token from state: ", token)
-//     if (!token || !token.contract) {
-//       return dispatch(ui.fetched())
-//     }
-//
-//     dispatch(ui.fetched())
-//   } catch (e) {
-//     dispatch(ui.fetchingFailed(e))
-//   }
-// }
+//initialize grabs transferManager , and stores it in state for other functions to easily call
+//It then calls getWhiteList() to populate the table for the user
+export const initialize = () => async (dispatch: Function, getState: GetState) => {
+  const token = getState().token.token
+  if (!token || !token.contract) {
+    return
+  }
+  const contract: SecurityToken = token.contract
+  const transferManager: TransferManager = await contract.getTransferManager()
+  dispatch(transferManagerDispatch(transferManager))
+  dispatch(getWhitelist())
+}
 
 //Uploads the CSV file, reads it with built in js FileReader(), dispatches to the store the csv file information,
 //which can then be sent to the blockchain with multiUserSumbit()
-//QUESTION: @davekaj - Do we need to limit CSV file to 50 or 100, and notify them that it is too long?
+//QUESTION: @davekaj - Do we need to limit CSV file to 50 or 100, and notify them that it is too long? also keep in mind gas limit and WS packet size
 export const uploadCSV = (e: Object) => async (dispatch: Function) => {
   let file = e.target.files[0]
   let textType = /csv.*/
@@ -119,108 +111,128 @@ const parseCSV = (csvResult: string ) => {
 
 //This takes the CSV data we have stored in the store from uploadCSV, and then submits it to the blockchain
 export const multiUserSubmit = () => async (dispatch: Function, getState: GetState) => {
-  // let tableData = []
   let blockchainData = []
   let csvAddresses = getState().whitelist.addresses
   let csvSell = getState().whitelist.sell
   let csvBuy = getState().whitelist.buy
-  // let account = "TODO!"
 
-  for (let i = 0; i < (Object.keys(csvAddresses)).length; i++) {
-    // let csvRandomID = uuidv4()
-    const owner = "0xdc4d23daf21da6163369940af54e5a1be783497b" //hardcoded temporarily , as i need to link up account from metamask
-    // let sellTimestamp = Math.round((new Date(csvSell[i])).getTime() / 1000)
-    // let buyTimestamp = Math.round((new Date(csvBuy[i])).getTime() / 1000)
-    //
+  for (let i = 0; i < csvAddresses.length; i++) {
+    const owner = "0xdc4d23daf21da6163369940af54e5a1be783497b" //TODO: hardcoded temporarily , as i need to link up account from metamask
     let newSellDate = new Date(csvSell[i])
     let newBuyDate = new Date(csvBuy[i])
     let nowTime = new Date()
-    //
-    // let backendData: TableData = {
-    //   id: csvRandomID,
-    //   address: csvAddresses[i],
-    //   addedDate: Math.round((new Date()).getTime() / 1000),
-    //   addedBy: owner,
-    //   sell: sellTimestamp,
-    //   buy: buyTimestamp,
-    // }
-    // tableData.push(backendData)
 
     let investorData: Investor = {
       address: csvAddresses[i],
       addedBy: owner,
-      added: nowTime,
+      added: nowTime, //NOTE: this doesnt actually get used in solidity . added is produced by 'now' from solidity code. but right now, the investor type requires this value
       from: newSellDate,
       to: newBuyDate,
     }
     blockchainData.push(investorData)
   }
-  // console.log(tableData)
 
-  // dispatch({ type: ADD_MULTI_ENTRY, investors: tableData })
-
-  //right now it is backwards, it populates the table befroe we even send the transaction. however, we need to be reading from events anyways
-
-  // need to check whether or not this account exists, however at this point in the app the tokenSymbol would probavly actually be in redux state, here i will
-  // hard code for now
-
-  const token = getState().token.token
-  if (!token || !token.contract) {
-    return
-  }
-  dispatch(ui.txStart('Configuring STO'))
-  const contract: SecurityToken = token.contract
-  const receipt = await contract.getTransferManager()
-  // console.log(receipt)
-
-  const transferManager: TransferManager = receipt
-
-  //TODO: Temporary, until the full app works
-  // let tokenSymbol = "DAVE"
-  // let accounts = await web3.eth.getAccounts()
-  // let Issuer = accounts[0]
-
-  // dispatch(ui.fetching())
-  // try {
-  //   const token = await SecurityTokenRegistry.getTokenByTicker(tokenSymbol)
-  //   console.log("getTokenbyTicker: ", token)
-  //   // dispatch(data(token))
-  //   dispatch(ui.fetched())
-  // } catch (e) {
-  //   dispatch(ui.fetchingFailed(e))
-  // }
-  //
-  // dispatch(ui.txStart('Submitting CSV to the blockchain...'))
+  const transferManager = getState().whitelist.transferManager
+  dispatch(ui.txStart('Submitting CSV to the blockchain...'))
   try {
-
-    const receipt2 = await transferManager.modifyWhitelistMulti(blockchainData)
-    // console.log(receipt2)
+    const receipt = await transferManager.modifyWhitelistMulti(blockchainData)
     dispatch(ui.notify(
       'CSV was successfully uploaded',
       true,
       'We will present the investor list to you on the next page',
-      ui.etherscanTx(receipt2.transactionHash)
+      ui.etherscanTx(receipt.transactionHash)
     ))
-    // dispatch(fetch())
-
-    //dont think this is nneed we will see
-    // dispatch({ type: SHOW_MODAL_2, modalShowing: true })
-
   } catch (e) {
-
     dispatch(ui.txFailed(e))
   }
+  // dispatch(getWhitelist()) TODO: this right now is returning the list PLUS the list, so 14 + 4 = 18 ends up being 14 + 18 = 36
+}
 
-  // const receipt3 = await transferManager.getWhitelist()
-  // console.log(receipt3)
+//TODO - where is owner coming from?
+export const oneUserSubmit = () => async (dispatch: Function, getState: GetState) => {
+  const user = { ...getState().form[userFormName].values }
+  const owner = "0xdc4d23daf21da6163369940af54e5a1be783497b" //hardcoded temporarily , as i need to link up account from metamask
+  let newSellDate = new Date(user.sell)
+  let newBuyDate = new Date(user.buy)
+  let nowTime = new Date()
 
-  //TODO: @davekaj Then , read events and get all addresses and their information, as arrays
-  getWhitelist()
-  //  const investors: Array<Investor> = await transferManager.getWhitelist()
+  let blockchainData: Investor = {
+    address: user.address,
+    addedBy: owner,
+    added: nowTime,
+    from: newSellDate,
+    to: newBuyDate,
+  }
+
+  const transferManager = getState().whitelist.transferManager
+  dispatch(ui.txStart('Submitting CSV to the blockchain...'))
+  try {
+    const receipt = await transferManager.modifyWhitelist(blockchainData)
+    dispatch(ui.notify(
+      'CSV was successfully uploaded',
+      true,
+      'We will present the investor list to you on the next page',
+      ui.etherscanTx(receipt.transactionHash)
+    ))
+  } catch (e) {
+    dispatch(ui.txFailed(e))
+  }
+  // dispatch(getWhitelist()) TODO: this right now is returning the list PLUS the list, so 14 + 4 = 18 ends up being 14 + 18 = 36
 
 }
 
-//can probably label internal
+export const getWhitelist = () => async (dispatch: Function, getState: GetState) => {
+  let tableData = []
+
+  const transferManager = getState().whitelist.transferManager
+  const whitelistEvents = await transferManager.getWhitelist()
+
+  for (let i =0; i < whitelistEvents.length; i++){
+    let csvRandomID = uuidv4()
+    let fromTime = (whitelistEvents[i].from).toDateString()
+    let toTime = (whitelistEvents[i].to).toDateString()
+    let addedTime = (whitelistEvents[i].added).toDateString()
+
+    //TODO: consider edge cases, like when someone uploads updates in the same day. This may have to do with polymath.js, being able to return down to the second, not just day
+    let found = tableData.some(function (el, index, array) {
+      //if true, User already recorded in eventList, so we don't want to make a new entry
+      if( el.address === whitelistEvents[i].address ){
+        // if true, this event is newer than the previous event, so we update the space in the array
+        if (addedTime > el.added){
+          let updateArray: EventData = {
+            id: csvRandomID,
+            address: whitelistEvents[i].address,
+            added: addedTime,
+            addedBy: whitelistEvents[i].addedBy,
+            from: fromTime,
+            to: toTime,
+          }
+          array[index] = updateArray
+          return true
+        }else {
+          return true
+        }
+        //found returns false because it doesn't exist. so we add it below as backendData
+      } else {
+        return false
+      }
+    })
+    if (!found) {
+      let backendData: EventData = {
+        id: csvRandomID,
+        address: whitelistEvents[i].address,
+        added: addedTime,
+        addedBy: whitelistEvents[i].addedBy,
+        from: fromTime,
+        to: toTime,
+      }
+      tableData.push(backendData)
+    }
+  }
+  dispatch(getWhitelistDispatch(tableData))
+  dispatch(paginationDivider())
+}
+
 export const paginationDivider = () => async (dispatch: Function, getState: GetState) => {
   const fullInvestorList = [...getState().whitelist.investors]
   let holdsDivisons = []
@@ -233,106 +245,9 @@ export const paginationDivider = () => async (dispatch: Function, getState: GetS
       singlePage = []
     }
   }
-  // dispatch({ type: PAGINATION_DIVIDER, paginatedInvestors: holdsDivisons })
   dispatch(paginationDispatch(holdsDivisons))
 }
+
 export const listLength = (e: number) => async (dispatch: Function) => {
   dispatch(listLengthDispatch(e))
-}
-
-// export const showModal2 = () => async (dispatch) => {
-//   dispatch({ type: SHOW_MODAL_2, modalShowing: true })
-// }
-
-//TODO - where is owner coming from?
-export const oneUserSubmit = () => async (dispatch: Function, getState: GetState) => {
-  let randomID = uuidv4()
-  const user = { ...getState().form[userFormName].values }
-  const owner = "0xdc4d23daf21da6163369940af54e5a1be783497b" //hardcoded temporarily , as i need to link up account from metamask
-  let sellTimestamp = Math.round((new Date(user.sell)).getTime() / 1000)
-  let buyTimestamp = Math.round((new Date(user.buy)).getTime() / 1000)
-  let backendData = {
-    id: randomID,
-    address: user.address,
-    addedDate: Math.round((new Date()).getTime() / 1000),
-    addedBy: owner,
-    sell: sellTimestamp,
-    buy: buyTimestamp,
-  }
-  //below is the call to the blockchain , above is the store updating
-  try {
-    // const isPreAuth = false
-    // if (!isPreAuth) {
-    //COMMENTED OUT TEMPORARILY
-    //dispatch(ui.txStart('Sending the Single user information to the blockchain'))
-    // await PolyToken.methods.modifyWhitelist(csvAddresses, csvSell, csvBuy)
-    //   .send({
-    //     from: account, //TODO: @davekaj get account
-    //     gas: gasEstimate, //TODO: @davekaj code up gasEstimate (will be high if big array)
-    //   })
-    // // }
-    //then call into the blockchain to verify if the transaction worked, check if an investors time is good
-    //const receipt = await.PolyToken.methods. --- need to check here something that will verify
-    //then notify, if success (failure is in teh catch)
-    // dispatch(ui.notify(
-    //   'csv uploaded to blockcahin'
-    //   true,
-    //   'Please now see the whitelist uploaded to the app',
-    //   etherscanTx(receipt.transactionHash)
-    // ))
-  } catch (e) {
-    dispatch(ui.txFailed(e))
-  }
-  // getWhitelist()
-  //these will actually get deleted or changed complete, becasue we shouldnt be sending to the store direcrly from the app.
-  //we need to go user input ---> blockchain ---> events ---> getWhitelist grabs events ----> populates our store
-  // at which point we need to change time stamps to human readable dates
-  if (true) {
-    dispatch({ type: ADD_SINGLE_ENTRY, investors: backendData })
-  } else {
-    dispatch({ type: ADD_SINGLE_ENTRY_FAILED })
-  }
-
-}
-
-export const getWhitelist = () => async (dispatch: Function, getState: GetState) => {
-  let tableData = []
-
-  //change to reflect Whitelist
-  // const sto = await token.contract.getSTO()
-  // dispatch(data(sto, sto ? await sto.getDetails() : null))
-
-  const token = getState().token.token
-  if (!token || !token.contract) {
-    return
-  }
-  const contract: SecurityToken = token.contract
-  const receipt = await contract.getTransferManager()
-  // console.log(receipt)
-
-  const transferManager: TransferManager = receipt
-
-  const whitelistEvents = await transferManager.getWhitelist()
-  // console.log(whitelistEvents)
-
-  for (let i =0; i < whitelistEvents.length; i++){
-    let csvRandomID = uuidv4()
-    let fromTime = (whitelistEvents[i].from).toDateString()
-    let toTime = (whitelistEvents[i].to).toDateString()
-    let addedTime = (whitelistEvents[i].added).toDateString()
-
-    let backendData: EventData = {
-      id: csvRandomID,
-      address: whitelistEvents[i].address,
-      added: addedTime,
-      addedBy: whitelistEvents[i].addedBy,
-      from: fromTime,
-      to: toTime,
-    }
-    tableData.push(backendData)
-  }
-
-  dispatch(multiEntryDispatch(tableData))
-  paginationDivider()
-
 }

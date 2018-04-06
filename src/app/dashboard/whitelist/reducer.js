@@ -1,9 +1,12 @@
 // @flow
 
+import { TransferManager } from 'polymath.js_v2'
+
 import * as a from './actions'
 import type { EventData, Action } from './actions'
 
 export type WhitelistState = {
+  transferManager: TransferManager,
   addresses: Array<string>,
   sell: Array<number>,
   buy: Array<number>,
@@ -14,7 +17,8 @@ export type WhitelistState = {
 }
 
 const defaultState: WhitelistState = {
-  addresses: ["No addresses uploaded"],
+  transferManager: null,
+  addresses: [],
   sell: [],
   buy: [],
   investors: [],
@@ -25,6 +29,11 @@ const defaultState: WhitelistState = {
 
 export default (state: WhitelistState = defaultState, action: Action) => {
   switch (action.type) {
+    case a.TRANSFER_MANAGER:
+      return {
+        ...state,
+        transferManager: action.transferManager,
+      }
     case a.UPLOAD_CSV:
       return {
         ...state,
@@ -54,7 +63,7 @@ export default (state: WhitelistState = defaultState, action: Action) => {
         sell: action.sell,
         buy: action.buy,
       }
-    case a.ADD_MULTI_ENTRY:
+    case a.GET_WHITELIST:
       return {
         ...state,
         investors: [...state.investors, ...action.investors],
@@ -69,16 +78,6 @@ export default (state: WhitelistState = defaultState, action: Action) => {
         ...state,
         listLength: action.listLength,
       }
-    //TODO: make action getter for this
-    // case a.GET_WHITELIST:
-    //   return {
-    //     ...state,
-    //     investors: [...state.investors, ...action.investors],
-    //   }
-    // case a.GET_WHITELIST_FAILED:
-    //   return {
-    //     ...state,
-    //   }
     default:
       return state
   }

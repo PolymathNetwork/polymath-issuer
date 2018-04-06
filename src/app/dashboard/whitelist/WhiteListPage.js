@@ -14,8 +14,9 @@ import {
 } from "carbon-components-react"
 
 // import type { Investor } from 'polymath.js_v2/types'
+import { TransferManager } from 'polymath.js_v2'
 import type { EventData } from './actions'
-import { uploadCSV, multiUserSubmit, oneUserSubmit, getWhitelist, paginationDivider, listLength } from './actions'
+import { initialize, uploadCSV, multiUserSubmit, oneUserSubmit, getWhitelist, paginationDivider, listLength } from './actions'
 import { TableHeaders } from './tableHeaders'
 import InvestorForm from './userForm'
 
@@ -25,6 +26,7 @@ const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, Tab
   TableToolbarSearch, TableToolbarContent } = DataTable
 
 type StateProps = {|
+  transferManager: TransferManager,
   addresses: Array<string>,
   sell: Array<number>,
   buy: Array<number>,
@@ -35,6 +37,7 @@ type StateProps = {|
 |}
 
 type DispatchProps = {|
+  initialize: () => any,
   handleUpload: () => any,
   multiSubmit: () => any,
   singleSubmit: () => any,
@@ -44,6 +47,7 @@ type DispatchProps = {|
 |}
 
 const mapStateToProps = (state) => ({
+  transferManager: state.whitelist.transferManager,
   addresses: state.whitelist.addresses,
   sell: state.whitelist.sell,
   buy: state.whitelist.buy,
@@ -54,6 +58,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch: Function) => ({
+  initialize: () => dispatch(initialize()),
   handleUpload: (e) => dispatch(uploadCSV(e)),
   multiSubmit: () => dispatch(multiUserSubmit()),
   singleSubmit: () => dispatch(oneUserSubmit()),
@@ -74,7 +79,7 @@ class WhitelistPage extends Component<Props, State> {
   }
 
   componentWillMount () {
-    this.props.getWhitelist()
+    this.props.initialize()
   }
 
   handleInvestorSubmit = () => {
@@ -83,7 +88,7 @@ class WhitelistPage extends Component<Props, State> {
 
   handleChangePages = (e) => {
     this.props.updateListLength(e.pageSize)
-    this.props.paginationDivider()
+    this.props.paginationDivider() //TODO: i dont want to have to call this here, need to rework updateListLength, cuz it falls if i remove this function
     this.setState({
       page: (e.page - 1),
     })
