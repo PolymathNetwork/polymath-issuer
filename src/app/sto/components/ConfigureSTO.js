@@ -5,7 +5,7 @@ import DocumentTitle from 'react-document-title'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Breadcrumb, BreadcrumbItem, Tile } from 'carbon-components-react'
-import type { SecurityToken, STOFactory } from 'polymath.js_v2/types'
+import type { SecurityToken, STOFactory } from 'polymathjs/types'
 
 import NotFoundPage from '../../NotFoundPage'
 import STODetails from './STODetails'

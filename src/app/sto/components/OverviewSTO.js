@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import type { STOPurchase } from 'polymath.js_v2'
+import type { STOPurchase } from 'polymathjs'
 
 import { fetchPurchases } from '../actions'
 import type { RootState } from '../../../redux/reducer'

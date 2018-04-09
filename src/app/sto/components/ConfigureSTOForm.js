@@ -16,6 +16,8 @@ type Props = {
   handleSubmit: () => void,
 }
 
+const defaultCurrency = 'POLY'
+
 class ConfigureSTOForm extends Component<Props> {
   render () {
     return (
@@ -33,7 +35,7 @@ class ConfigureSTOForm extends Component<Props> {
           label='Raise in'
           placeholder='Choose a currency'
           options={[{ value: 'ETH', label: 'ETH' }, { value: 'POLY', label: 'POLY' }]}
-          defaultValue='POLY'
+          defaultValue={defaultCurrency}
         />
         <Field
           name='cap'

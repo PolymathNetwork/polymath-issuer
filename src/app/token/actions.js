@@ -1,8 +1,8 @@
 // @flow
 
-import { PolyToken, SecurityTokenRegistry } from 'polymath.js_v2'
+import { SecurityTokenRegistry } from 'polymathjs'
 import * as ui from 'polymath-ui'
-import type { SecurityToken } from 'polymath.js_v2/types'
+import type { SecurityToken } from 'polymathjs/types'
 
 import { formName as completeFormName } from './components/CompleteTokenForm'
 import type { GetState } from '../../redux/reducer'
@@ -14,10 +14,10 @@ export const data = (token: ?SecurityToken) => ({ type: DATA, token })
 export type Action =
   | ExtractReturn<typeof data>
 
-export const fetch = () => async (dispatch: Function) => {
+export const fetch = (ticker: string) => async (dispatch: Function) => {
   dispatch(ui.fetching())
   try {
-    const token = await SecurityTokenRegistry.getMyToken()
+    const token = await SecurityTokenRegistry.getTokenByTicker(ticker)
     dispatch(data(token))
     dispatch(ui.fetched())
   } catch (e) {
@@ -26,29 +26,18 @@ export const fetch = () => async (dispatch: Function) => {
 }
 
 export const complete = () => async (dispatch: Function, getState: GetState) => {
+  const token = getState().token.token
+  if (!token) {
+    return
+  }
+  dispatch(ui.txStart('Issuing ' + token.ticker + ' token...'))
   try {
-    const completeFee = SecurityTokenRegistry.fee
-    const balance = await PolyToken.myBalance()
-    if (!balance.gte(completeFee)) {
-      if (getState().network.id === 1) {
-        throw new Error('Insufficient POLY balance.')
-      } else {
-        dispatch(ui.txStart('Requesting POLY from the Polymath testnet faucet...'))
-        await PolyToken.getTokens(completeFee)
-      }
-    }
-    const isPreAuth = await SecurityTokenRegistry.isPreAuth()
-    if (!isPreAuth) {
-      dispatch(ui.txStart('Pre-authorizing security token creation fee of ' + completeFee.toString(10) + ' POLY...'))
-      await SecurityTokenRegistry.preAuth()
-    }
     const token: SecurityToken = {
       ...getState().token.token,
       ...getState().form[completeFormName].values,
     }
-    dispatch(ui.txStart('Issuing ' + token.ticker + ' token...'))
-    const receipt = await SecurityTokenRegistry.generateSecurityToken(token)
-    dispatch(fetch())
+    const receipt = await SecurityTokenRegistry.generateSecurityToken(token.name, token.ticker)
+    dispatch(fetch(token.ticker))
     dispatch(ui.notify(
       token.ticker + ' token was successfully issued',
       true,

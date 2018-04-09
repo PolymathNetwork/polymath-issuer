@@ -3,7 +3,7 @@
 import Web3 from 'web3'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import Contract from 'polymath.js_v2'
+import Contract from 'polymathjs'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-15'
 import 'jest-enzyme'
@@ -23,7 +23,7 @@ let snapshotId
 beforeAll(async (done) => {
   const id = await web3.eth.net.getId()
   const [account] = await web3.eth.getAccounts()
-  Contract.params = { id, account, web3, web3WS: web3, txHashCallback: () => {}, txEndCallback: () => {} }
+  Contract.setParams({ id, account, web3, web3WS: web3, txHashCallback: () => {}, txEndCallback: () => {} })
 
   web3.currentProvider.send({
     jsonrpc: '2.0',

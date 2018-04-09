@@ -1,7 +1,7 @@
 // @flow
 
-import { STO } from 'polymath.js_v2'
-import type { STOFactory, STODetails, STOPurchase } from 'polymath.js_v2/types'
+import { STO } from 'polymathjs'
+import type { STOFactory, STODetails, STOPurchase } from 'polymathjs/types'
 
 import * as a from './actions'
 import type { Action } from './actions'

@@ -1,19 +1,36 @@
 // @flow
 
-import PropTypes from 'prop-types'
-import { Component } from 'react'
+import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
+import PolymathAuth from 'polymath-auth'
 
+import Root from './app/Root'
+import SplashPage from './app/SplashPage'
 import routes from './routes'
 
-class RouteLoader extends Component<{}> {
-  static contextTypes = {
-    store: PropTypes.object,
-  };
+type Props = {
+  location: {
+    pathname: string,
+    [any]: any
+  }
+}
+
+class RouteLoader extends Component<Props> {
 
   render () {
-    return renderRoutes(routes)
+    if (this.props.location.pathname === '/') {
+      return (
+        <Root>
+          <SplashPage />
+        </Root>
+      )
+    }
+    return (
+      <PolymathAuth>
+        {renderRoutes(routes)}
+      </PolymathAuth>
+    )
   }
 }
 
