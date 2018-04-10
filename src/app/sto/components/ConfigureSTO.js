@@ -47,27 +47,25 @@ class ConfigureSTO extends Component<Props> {
     }
     return (
       <DocumentTitle title={'Configure ' + token.ticker + ' STO – Polymath'}>
-        <div>
-          <div className='bx--row'>
-            <div className='bx--col-xs-12'>
-              <Breadcrumb>
-                <BreadcrumbItem>
-                  <Link to='/'>Home</Link>
-                </BreadcrumbItem>
-                <BreadcrumbItem>
-                  <Link to='/dashboard/sto'>STO</Link>
-                </BreadcrumbItem>
-              </Breadcrumb>
-              <h3 className='bx--type-mega'>Security Token Offering Configuration</h3><br /><br />
-              <div className='bx--row'>
-                <div className='bx--col-xs-5'>
-                  <Tile>
-                    <ConfigureSTOForm onSubmit={this.handleSubmit}  />
-                  </Tile>
-                </div>
-                <div className='bx--col-xs-7'>
-                  <STODetails item={factory} />
-                </div>
+        <div className='bx--row'>
+          <div className='bx--col-xs-12'>
+            <Breadcrumb>
+              <BreadcrumbItem>
+                <Link to='/'>Home</Link>
+              </BreadcrumbItem>
+              <BreadcrumbItem>
+                <Link to={'/dashboard/' + token.ticker + '/sto'}>STO</Link>
+              </BreadcrumbItem>
+            </Breadcrumb>
+            <h3 className='bx--type-mega'>Security Token Offering Configuration</h3><br /><br />
+            <div className='bx--row'>
+              <div className='bx--col-xs-5'>
+                <Tile>
+                  <ConfigureSTOForm onSubmit={this.handleSubmit}  />
+                </Tile>
+              </div>
+              <div className='bx--col-xs-7'>
+                <STODetails item={factory} />
               </div>
             </div>
           </div>

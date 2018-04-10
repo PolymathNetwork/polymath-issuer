@@ -4492,6 +4492,10 @@ get-caller-file@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/get-caller-file/-/get-caller-file-1.0.2.tgz#f702e63127e7e231c160a80c1554acb70d5047e5"
 
+get-node-dimensions@^1.2.0:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/get-node-dimensions/-/get-node-dimensions-1.2.1.tgz#fb7b4bb57060fb4247dd51c9d690dfbec56b0823"
+
 get-own-enumerable-property-symbols@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/get-own-enumerable-property-symbols/-/get-own-enumerable-property-symbols-2.0.1.tgz#5c4ad87f2834c4b9b4e84549dc1e0650fb38c24b"
@@ -8345,16 +8349,18 @@ polymath-core@0.4.0:
     web3 "^1.0.0-beta.33"
     zeppelin-solidity "1.7.0"
 
-polymath-ui@0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-0.2.4.tgz#23e8e7a1696c0ea97bbb50b17df243a08d956d55"
+polymath-ui@0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-0.2.6.tgz#3baec2978d74bf7482fb1fae9056d08576af726d"
   dependencies:
     babel-runtime "^6.26.0"
+    bignumber.js "^6.0.0"
     carbon-components "^8.16.8"
     carbon-components-react "^5.31.0"
     carbon-icons "^5.1.2"
     react "^16.2.0"
     react-dom "^16.2.0"
+    react-measure "^2.0.2"
     react-redux "^5.0.7"
     react-router-dom "4.1.1"
     react-transition-group "^2.2.1"
@@ -9037,6 +9043,14 @@ react-input-autosize@^2.0.1:
   dependencies:
     prop-types "^15.5.8"
 
+react-measure@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/react-measure/-/react-measure-2.0.2.tgz#072a9a5fafc01dfbadc1fa5fb09fc351037f636c"
+  dependencies:
+    get-node-dimensions "^1.2.0"
+    prop-types "^15.5.10"
+    resize-observer-polyfill "^1.4.2"
+
 react-redux@5.0.6:
   version "5.0.6"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-5.0.6.tgz#23ed3a4f986359d68b5212eaaa681e60d6574946"
@@ -9504,6 +9518,10 @@ require-uncached@^1.0.3:
 requires-port@1.0.x, requires-port@1.x.x, requires-port@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
+
+resize-observer-polyfill@^1.4.2:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.0.tgz#660ff1d9712a2382baa2cad450a4716209f9ca69"
 
 resolve-cwd@^2.0.0:
   version "2.0.0"
