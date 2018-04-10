@@ -1,3 +1,9 @@
+@import 'node_modules/carbon-components/src/globals/scss/spacing';
+
+h1 {
+  margin-bottom: $spacing-lg;
+}
+
 .bx--grid {
   margin-top: 50px;
 }
