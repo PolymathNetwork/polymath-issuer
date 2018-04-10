@@ -78,7 +78,14 @@ export default reduxForm({
       // eslint-disable-next-line
       throw { ticker: syncError }
     }
-    if (await TickerRegistry.getDetails(v) !== null) {
+    let details = null
+    try {
+      details = await TickerRegistry.getDetails(v)
+    } catch (err) {
+      console.error('Error fetching details', err)
+    }
+
+    if (details !== null) {
       // eslint-disable-next-line
       throw { ticker: 'Specified ticker is already exists.' }
     }
