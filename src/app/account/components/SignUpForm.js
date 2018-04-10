@@ -8,13 +8,13 @@ import { TextInput } from 'polymath-ui'
 import {
   required,
   maxLength,
-  alphanumeric,
   email,
   ethereumAddress,
 } from 'polymath-ui/dist/validate'
-import { TickerRegistry } from 'polymath.js_v2'
 
 export const formName = 'signup'
+
+const maxLength100 = maxLength(100)
 
 type Props = {
   handleSubmit: () => void,
@@ -25,23 +25,32 @@ class SignUpForm extends Component<Props> {
     return (
       <Form onSubmit={this.props.handleSubmit}>
         <Field
-          name='ticker'
-          component={TextInput}
-          label='Enter token symbol'
-          placeholder='POLY'
-        />
-        <Field
-          name='owner'
+          name='_account'
           component={TextInput}
           label='Ethereum address'
           disabled
           validate={[required, ethereumAddress]}
         />
         <Field
-          name='contact'
+          name='name'
           component={TextInput}
-          label='Contact email'
+          label='Name'
+          placeholder='Enter your full name'
+          validate={[required, maxLength100]}
+        />
+        <Field
+          name='email'
+          component={TextInput}
+          label='Email'
+          placeholder='Enter your contact email address'
           validate={[required, email]}
+        />
+        <Field
+          name='phone'
+          component={TextInput}
+          label='Phone'
+          placeholder='Enter your contact phone number'
+          validate={[maxLength100]}
         />
         <p>&nbsp;</p>
         <Button type='submit'>
@@ -56,18 +65,4 @@ export default reduxForm({
   form: formName,
   destroyOnUnmount: false,
   forceUnregisterOnUnmount: true,
-  asyncValidate: async (values) => {
-    // async validation doesn't work properly with field-level validation, so we need to specify sync rules here
-    const v = values.ticker
-    const syncError = required(v) || maxLength(4)(v) || alphanumeric(v)
-    if (syncError) {
-      // eslint-disable-next-line
-      throw { ticker: syncError }
-    }
-    if (await TickerRegistry.getDetails(v) !== null) {
-      // eslint-disable-next-line
-      throw { ticker: 'Specified ticker is already exists.' }
-    }
-  },
-  asyncBlurFields: ['ticker'],
 })(SignUpForm)

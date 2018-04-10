@@ -188,7 +188,7 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
   let whitelistEvents = await transferManager.getWhitelist()
 
   //if statement only gets checked if both date picker values have been filled in, and then it will shrink the list down to its needed size
-  if (calenderStart != undefined && calenderEnd != undefined) {
+  if (calenderStart !== undefined && calenderEnd !== undefined) {
     let wlDateRestricted = []
     for (let k =0; k < whitelistEvents.length; k++){
       if (calenderStart.getTime() < whitelistEvents[k].added.getTime() && whitelistEvents[k].added.getTime()  < calenderEnd.getTime() ){
@@ -204,7 +204,7 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
     let csvRandomID = uuidv4()
     let fromTime = (whitelistEvents[i].from).toDateString()
     let toTime = (whitelistEvents[i].to).toDateString()
-    let addedTime = (whitelistEvents[i].added).toDateString()
+    // let addedTime = (whitelistEvents[i].added).toDateString() this is not needed because we still need it in date format 
 
     //TODO: consider edge cases, like when someone uploads updates in the same day. This may have to do with polymath.js, being able to return down to the second, not just day
     //in order to fix this, we need to keep the time accurate throughout to the second, and then do toDateString when you throw away the zero values

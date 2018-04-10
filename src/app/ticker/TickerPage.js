@@ -4,12 +4,12 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { Link } from 'react-router-dom'
-import type { RouterHistory } from 'react-router'
 import { Breadcrumb, BreadcrumbItem } from 'carbon-components-react'
 import { change } from 'redux-form'
+import type { RouterHistory } from 'react-router'
 
-import SignUpForm, { formName } from './components/SignUpForm'
-import { signUp } from './actions'
+import TickerForm, { formName } from './components/TickerForm'
+import { register } from './actions'
 
 type StateProps = {|
   account: ?string,
@@ -19,7 +19,7 @@ type StateProps = {|
 
 type DispatchProps = {|
   change: (?string) => any,
-  signUp: () => any,
+  register: () => any,
 |}
 
 const mapStateToProps = (state): StateProps => ({
@@ -30,29 +30,26 @@ const mapStateToProps = (state): StateProps => ({
 
 const mapDispatchToProps: DispatchProps = {
   change: (value) => change(formName, 'owner', value, false, false),
-  signUp,
+  register,
 }
 
 type Props = {|
   history: RouterHistory,
 |} & StateProps & DispatchProps
 
-class SignUpPage extends Component<Props> {
+class TickerPage extends Component<Props> {
 
   componentWillMount () {
-    if (this.props.isSignedUp) {
-      this.props.history.push('/dashboard')
-    }
     this.props.change(this.props.account)
   }
 
   handleSubmit = () => {
-    this.props.signUp()
+    this.props.register()
   }
 
   render () {
     return (
-      <DocumentTitle title='Sign Up – Polymath'>
+      <DocumentTitle title='Token Symbol Registration – Polymath'>
         <div className='bx--row'>
           <div className='bx--col-xs-12'>
             <Breadcrumb>
@@ -62,7 +59,7 @@ class SignUpPage extends Component<Props> {
             </Breadcrumb>
             <h1 className='bx--type-mega'>Token Symbol Registration</h1>
             <p>&nbsp;</p>
-            <SignUpForm onSubmit={this.handleSubmit} />
+            <TickerForm onSubmit={this.handleSubmit} />
           </div>
         </div>
       </DocumentTitle>
@@ -70,4 +67,4 @@ class SignUpPage extends Component<Props> {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignUpPage)
+export default connect(mapStateToProps, mapDispatchToProps)(TickerPage)

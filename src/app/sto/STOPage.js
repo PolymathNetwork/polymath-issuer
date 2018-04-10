@@ -45,7 +45,7 @@ class STOPage extends Component<Props> {
       case STAGE_OVERVIEW:
         return <OverviewSTO />
       default:
-        return <div />
+        return <span />
     }
   }
 }

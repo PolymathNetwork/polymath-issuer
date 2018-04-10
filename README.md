@@ -27,7 +27,7 @@ npm run build
 By default application works with Ropsten testnet.
 
 ## Working with contracts locally
-### Getting started
+
 To deploy contracts run Ganache CLI >= v6.1.0-beta.0 (lower versions does not support WebSockets) and in a separate terminal:
 ```
 npm run contracts

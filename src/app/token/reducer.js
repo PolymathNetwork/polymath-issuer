@@ -1,6 +1,6 @@
 // @flow
 
-import type { SecurityToken } from 'polymath.js_v2/types'
+import type { SecurityToken } from 'polymathjs/types'
 
 import * as a from './actions'
 import type { Action } from './actions'

@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { Tile, Button, Icon } from 'carbon-components-react'
 import { etherscanAddress } from 'polymath-ui'
-import type { STOFactory } from 'polymath.js_v2/types'
+import type { STOFactory } from 'polymathjs/types'
 
 type Props = {|
   item: STOFactory,

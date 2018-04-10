@@ -78,8 +78,8 @@ type State = {
 class WhitelistPage extends Component<Props, State> {
   state = {
     page: 0,
-    calenderFirstDate: 0,
-    calenderSecondDate: 0,
+    // calenderFirstDate: 0, pretty sure not needed, will delete if i see these again still commented out
+    // calenderSecondDate: 0,
   }
 
   componentWillMount () {
@@ -112,7 +112,7 @@ class WhitelistPage extends Component<Props, State> {
     this.props.removeInvestor(addresses)
   }
 
-  anonymousPicker = (picker) => {
+  handleDatePicker = (picker) => {
     if (picker.length === 2){
       console.log("anony: ", picker)
       this.setState({
@@ -258,7 +258,7 @@ class WhitelistPage extends Component<Props, State> {
           <div className='bx--row'>
 
             <div className='bx--col-xs-2'>
-              <DatePicker id='date-picker' onChange={this.anonymousPicker} datePickerType='range'>
+              <DatePicker id='date-picker' onChange={this.handleDatePicker} datePickerType='range'>
                 <DatePickerInput
                   className='some-class'
                   labelText='Start'

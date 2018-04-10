@@ -1,8 +1,8 @@
 // @flow
 
-import { STO, CappedSTOFactory, SecurityToken } from 'polymath.js_v2'
+import { STO, CappedSTOFactory, SecurityToken } from 'polymathjs'
 import * as ui from 'polymath-ui'
-import type { STOFactory, STODetails, STOPurchase } from 'polymath.js_v2/types'
+import type { STOFactory, STODetails, STOPurchase } from 'polymathjs/types'
 
 import { formName as configureFormName } from './components/ConfigureSTOForm'
 import type { ExtractReturn } from '../../redux/helpers'

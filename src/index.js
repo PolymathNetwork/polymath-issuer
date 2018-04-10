@@ -4,7 +4,6 @@ import React  from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
-import PolymathAuth from 'polymath-auth'
 
 import 'normalize.css/normalize.css'
 
@@ -18,11 +17,9 @@ const store = configureStore()
 
 render(
   <Provider store={store}>
-    <PolymathAuth>
-      <BrowserRouter>
-        <RouteLoader />
-      </BrowserRouter>
-    </PolymathAuth>
+    <BrowserRouter>
+      <RouteLoader />
+    </BrowserRouter>
   </Provider>,
   ((document.getElementById('root'): any): HTMLElement)
 )
