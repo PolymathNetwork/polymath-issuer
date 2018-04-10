@@ -37,6 +37,9 @@ class STOPage extends Component<Props> {
   }
 
   render () {
+    // For testing the static page
+    // return <OverviewSTO />
+
     switch (this.props.stage) {
       case STAGE_SELECT:
         return <SelectSTO />

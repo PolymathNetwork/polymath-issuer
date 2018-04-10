@@ -7,8 +7,8 @@ import { connect } from 'react-redux'
 import { PolymathUI, txHash, txEnd } from 'polymath-ui'
 import type { RouterHistory } from 'react-router-dom'
 
-import 'polymath-ui/dist/style.css'
 import 'carbon-components/css/carbon-components.min.css'
+import 'polymath-ui/dist/style.css'
 import './style.css'
 
 import { fetch as fetchToken } from './token/actions'
