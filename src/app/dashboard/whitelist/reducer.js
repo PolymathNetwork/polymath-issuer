@@ -21,7 +21,14 @@ const defaultState: WhitelistState = {
   addresses: [],
   sell: [],
   buy: [],
-  investors: [],
+  investors: [{
+    id: "",
+    address: "",
+    added: 0,
+    addedBy: "",
+    from: 0,
+    to: 0,
+  }],
   investorsPaginated: [[]],
   listLength: 10,
   csvMessage: "Please upload a CSV file",
@@ -54,7 +61,8 @@ export default (state: WhitelistState = defaultState, action: Action) => {
         addresses: action.address,
         sell: action.sell,
         buy: action.buy,
-        investors: [...state.investors, action.investors],
+        investors: [...state.investors, action.investors], //this should be removed , only getWhitelist updates investors from events of blockchain,
+        //and only pagination updates itself after pulling from investors
       }
     case a.ADD_SINGLE_ENTRY_FAILED:
       return {
@@ -66,7 +74,7 @@ export default (state: WhitelistState = defaultState, action: Action) => {
     case a.GET_WHITELIST:
       return {
         ...state,
-        investors: [...state.investors, ...action.investors],
+        investors: [...action.investors],
       }
     case a.PAGINATION_DIVIDER:
       return {

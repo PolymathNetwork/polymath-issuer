@@ -16,7 +16,7 @@ import {
 // import type { Investor } from 'polymath.js_v2/types'
 import { TransferManager } from 'polymath.js_v2'
 import type { EventData } from './actions'
-import { initialize, uploadCSV, multiUserSubmit, oneUserSubmit, getWhitelist, paginationDivider, listLength } from './actions'
+import { initialize, uploadCSV, multiUserSubmit, oneUserSubmit, getWhitelist, paginationDivider, listLength, removeInvestor } from './actions'
 import { TableHeaders } from './tableHeaders'
 import InvestorForm from './userForm'
 
@@ -41,9 +41,10 @@ type DispatchProps = {|
   handleUpload: () => any,
   multiSubmit: () => any,
   singleSubmit: () => any,
-  getWhitelist: () => any,
+  getWhitelist: (?Date, ?Date) => any,
   paginationDivider: () => any,
   updateListLength: (any) => any,
+  removeInvestor: () => any,
 |}
 
 const mapStateToProps = (state) => ({
@@ -62,9 +63,10 @@ const mapDispatchToProps = (dispatch: Function) => ({
   handleUpload: (e) => dispatch(uploadCSV(e)),
   multiSubmit: () => dispatch(multiUserSubmit()),
   singleSubmit: () => dispatch(oneUserSubmit()),
-  getWhitelist: () => dispatch(getWhitelist()),
+  getWhitelist: (calenderStart, calenderEnd) => dispatch(getWhitelist(calenderStart, calenderEnd)),
   paginationDivider: () => dispatch(paginationDivider()),
   updateListLength: (e) => dispatch(listLength(e)),
+  removeInvestor: (e) => dispatch(removeInvestor(e)),
 })
 
 type Props = StateProps & DispatchProps
@@ -76,6 +78,8 @@ type State = {
 class WhitelistPage extends Component<Props, State> {
   state = {
     page: 0,
+    calenderFirstDate: 0,
+    calenderSecondDate: 0,
   }
 
   componentWillMount () {
@@ -96,8 +100,33 @@ class WhitelistPage extends Component<Props, State> {
 
   onHandleMultiSubmit = () => {
     this.props.multiSubmit()
-    return true
+    return true //needed for the component from carbon to work properly
   }
+
+  removeInvestor = (e) => {
+    let addresses = []
+    for (let i = 0; i < e.length; i++) {
+      addresses.push(e[i].cells[0].value)
+    }
+    console.log(addresses)
+    this.props.removeInvestor(addresses)
+  }
+
+  anonymousPicker = (picker) => {
+    if (picker.length === 2){
+      console.log("anony: ", picker)
+      this.setState({
+        page: 0, //reset to initial page , othewise it might refer to a page that doesnt exist
+      })
+      this.props.getWhitelist(picker[0],picker[1])
+    }
+  }
+  // onClickDatePicker = (e) => {
+  //   console.log("onclick: ", e)
+  // }
+  // onInputChangeDatePicker = (e) => {
+  //   console.log("on input: ", e)
+  // }
 
   dataTableRender = ({
     rows,
@@ -106,14 +135,14 @@ class WhitelistPage extends Component<Props, State> {
     getSelectionProps,
     getBatchActionProps,
     onInputChange,
-    // selectedRows,
+    selectedRows,
   }) => (
     <TableContainer>
       <TableToolbar>
         {/* make sure to apply getBatchActionProps so that the bar renders */}
         <TableBatchActions {...getBatchActionProps()}>
           {/* inside of you batch actinos, you can include selectedRows */}
-          <TableBatchAction >
+          <TableBatchAction onClick={()=> this.removeInvestor(selectedRows)}>
               Remove Investor
           </TableBatchAction>
           <TableBatchAction >
@@ -164,6 +193,8 @@ class WhitelistPage extends Component<Props, State> {
   )
 
   render () {
+    console.log(this.props.investorsPaginated)
+    console.log(this.state.page)
     return (
       <DocumentTitle title='Sign Up – Polymath'>
 
@@ -227,24 +258,20 @@ class WhitelistPage extends Component<Props, State> {
           <div className='bx--row'>
 
             <div className='bx--col-xs-2'>
-              <DatePicker
-                id='date-picker'
-                // onChange={}
-                datePickerType='range'
-              >
+              <DatePicker id='date-picker' onChange={this.anonymousPicker} datePickerType='range'>
                 <DatePickerInput
                   className='some-class'
-                  labelText='Date Picker label'
-                  // onClick={}onClick()}
-                  // onChange={}onInputChange()}
+                  labelText='Start'
+                  // onClick={this.onClickDatePicker}
+                  // onChange={this.onInputChangeDatePicker}
                   placeholder='mm/dd/yyyy'
                   id='date-picker-input-id'
                 />
                 <DatePickerInput
                   className='some-class'
-                  labelText='Date Picker label'
-                  // onClick={}onClick()}
-                  // onChange={}onInputChange()}
+                  labelText='End'
+                  // onClick={this.onClickDatePicker}
+                  // onChange={this.onInputChangeDatePicker}
                   placeholder='mm/dd/yyyy'
                   id='date-picker-input-id-2'
                 />

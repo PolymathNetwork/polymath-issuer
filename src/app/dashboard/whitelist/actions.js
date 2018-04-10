@@ -181,12 +181,25 @@ export const oneUserSubmit = () => async (dispatch: Function, getState: GetState
 
 }
 
-export const getWhitelist = () => async (dispatch: Function, getState: GetState) => {
+export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async (dispatch: Function, getState: GetState) => {
   let tableData = []
 
   const transferManager = getState().whitelist.transferManager
-  const whitelistEvents = await transferManager.getWhitelist()
+  let whitelistEvents = await transferManager.getWhitelist()
 
+  //if statement only gets checked if both date picker values have been filled in, and then it will shrink the list down to its needed size
+  if (calenderStart != undefined && calenderEnd != undefined) {
+    let wlDateRestricted = []
+    for (let k =0; k < whitelistEvents.length; k++){
+      if (calenderStart.getTime() < whitelistEvents[k].added.getTime() && whitelistEvents[k].added.getTime()  < calenderEnd.getTime() ){
+        wlDateRestricted.push(whitelistEvents[k])
+      }
+    }
+    whitelistEvents = wlDateRestricted
+
+  }
+  console.log(whitelistEvents)
+  //yenno, going through this array backwards would probably save some computation time
   for (let i =0; i < whitelistEvents.length; i++){
     let csvRandomID = uuidv4()
     let fromTime = (whitelistEvents[i].from).toDateString()
@@ -194,15 +207,20 @@ export const getWhitelist = () => async (dispatch: Function, getState: GetState)
     let addedTime = (whitelistEvents[i].added).toDateString()
 
     //TODO: consider edge cases, like when someone uploads updates in the same day. This may have to do with polymath.js, being able to return down to the second, not just day
+    //in order to fix this, we need to keep the time accurate throughout to the second, and then do toDateString when you throw away the zero values
     let found = tableData.some(function (el, index, array) {
       //if true, User already recorded in eventList, so we don't want to make a new entry
       if( el.address === whitelistEvents[i].address ){
         // if true, this event is newer than the previous event, so we update the space in the array
-        if (addedTime > el.added){
+        // console.log(whitelistEvents[i].added)
+        // console.log(el.added)
+        if (whitelistEvents[i].added > el.added){
+          // console.log(whitelistEvents[i].added > el.added)
+          // console.log("fucka")
           let updateArray: EventData = {
             id: csvRandomID,
             address: whitelistEvents[i].address,
-            added: addedTime,
+            added: whitelistEvents[i].added,
             addedBy: whitelistEvents[i].addedBy,
             from: fromTime,
             to: toTime,
@@ -221,7 +239,7 @@ export const getWhitelist = () => async (dispatch: Function, getState: GetState)
       let backendData: EventData = {
         id: csvRandomID,
         address: whitelistEvents[i].address,
-        added: addedTime,
+        added: whitelistEvents[i].added,
         addedBy: whitelistEvents[i].addedBy,
         from: fromTime,
         to: toTime,
@@ -229,12 +247,34 @@ export const getWhitelist = () => async (dispatch: Function, getState: GetState)
       tableData.push(backendData)
     }
   }
-  dispatch(getWhitelistDispatch(tableData))
+
+  /////////////////set back to string & get rid of zero values  START
+
+  console.log(tableData)
+
+  let cleanArray = []
+  for (let j = 0; j < tableData.length; j++){
+
+    let cleanInvestor: EventData = {
+      id: tableData[j].id,
+      address: tableData[j].address,
+      added: (tableData[j].added).toDateString(),
+      addedBy: tableData[j].addedBy,
+      from: tableData[j].from,
+      to: tableData[j].to,
+    }
+    cleanArray.push(cleanInvestor)
+  }
+  console.log(cleanArray)
+  /////////////////set back to string & get rid of zero values  END
+
+  dispatch(getWhitelistDispatch(cleanArray))
   dispatch(paginationDivider())
 }
 
 export const paginationDivider = () => async (dispatch: Function, getState: GetState) => {
   const fullInvestorList = [...getState().whitelist.investors]
+  console.log(fullInvestorList)
   let holdsDivisons = []
   let singlePage = []
   let listLength = getState().whitelist.listLength
@@ -245,9 +285,60 @@ export const paginationDivider = () => async (dispatch: Function, getState: GetS
       singlePage = []
     }
   }
+  if (holdsDivisons.length === 0 ) {
+    const noMatch: EventData = {
+      id: "nomatch",
+      address: "No investors exist for these dates",
+      added: null,
+      addedBy: null,
+      from: null,
+      to: null,
+    }
+    holdsDivisons.push([noMatch])
+
+  }
   dispatch(paginationDispatch(holdsDivisons))
 }
 
 export const listLength = (e: number) => async (dispatch: Function) => {
   dispatch(listLengthDispatch(e))
+}
+
+//NOTE: this function only allows complete removal of both sell and buy times. do we need customization to do only single? if so, UI is not showing like this
+//TODO: need to make a function in polymathJS that allows us to remove by just passing a single address, i dont need to do all this on front end, and it doesnt work well from requiring date objects
+export const removeInvestor = (addresses) => async (dispatch: Function, getState: GetState) => {
+  let blockchainData: Array<Investor> = []
+  for (let i = 0; i < addresses.length; i++) {
+    const owner = "0xdc4d23daf21da6163369940af54e5a1be783497b" //TODO: hardcoded temporarily , as i need to link up account from metamask
+    let removeInvestorTime =  new Date('January 1, 1970 00:00:00')
+    console.log(removeInvestorTime)
+    // let newTime = removeInvestorTime.getTime()
+    // console.log(newTime)
+    let nowTime = new Date()
+
+    let removeInvestor: Investor = {
+      address: addresses[i],
+      addedBy: owner,
+      added: nowTime, //NOTE: this doesnt actually get used in solidity . added is produced by 'now' from solidity code. but right now, the investor type requires this value
+      from: removeInvestorTime,
+      to: removeInvestorTime,
+    }
+    blockchainData.push(removeInvestor)
+  }
+  // console.log(blockchainData)
+  const transferManager = getState().whitelist.transferManager
+  dispatch(ui.txStart('Submitting CSV to the blockchain...'))
+  try {
+    const receipt = await transferManager.modifyWhitelistMulti(blockchainData)
+    dispatch(ui.notify(
+      'Investors Removed Successfully',
+      true,
+      'We will present the investor list to you on the next page',
+      ui.etherscanTx(receipt.transactionHash)
+    ))
+  } catch (e) {
+    dispatch(ui.txFailed(e))
+  }
+  // dispatch(getWhitelist()) TODO: this right now is returning the list PLUS the list, so 14 + 4 = 18 ends up being 14 + 18 = 36
+
 }
