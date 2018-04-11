@@ -118,15 +118,10 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: GetSta
   let csvBuy = getState().whitelist.buy
 
   for (let i = 0; i < csvAddresses.length; i++) {
-    const owner = "0xdc4d23daf21da6163369940af54e5a1be783497b" //TODO: hardcoded temporarily , as i need to link up account from metamask
     let newSellDate = new Date(csvSell[i])
     let newBuyDate = new Date(csvBuy[i])
-    let nowTime = new Date()
-
     let investorData: Investor = {
       address: csvAddresses[i],
-      addedBy: owner,
-      added: nowTime, //NOTE: this doesnt actually get used in solidity . added is produced by 'now' from solidity code. but right now, the investor type requires this value
       from: newSellDate,
       to: newBuyDate,
     }
@@ -136,7 +131,6 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: GetSta
   const transferManager = getState().whitelist.transferManager
   dispatch(ui.txStart('Submitting CSV to the blockchain...'))
   try {
-    console.log("multisumbit TEST: ", blockchainData)
     const receipt = await transferManager.modifyWhitelistMulti(blockchainData)
     dispatch(ui.notify(
       'CSV was successfully uploaded',
@@ -153,21 +147,15 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: GetSta
 //TODO - where is owner coming from?
 export const oneUserSubmit = () => async (dispatch: Function, getState: GetState) => {
   const user = { ...getState().form[userFormName].values }
-  const owner = "0xdc4d23daf21da6163369940af54e5a1be783497b" //hardcoded temporarily , as i need to link up account from metamask
   let newSellDate = new Date(user.sell)
   let newBuyDate = new Date(user.buy)
-  let nowTime = new Date()
-
   let blockchainData: Investor = {
     address: user.address,
-    addedBy: owner,
-    added: nowTime,
     from: newSellDate,
     to: newBuyDate,
   }
 
   const transferManager = getState().whitelist.transferManager
-  console.log("TRANSFER MANAGER: ", transferManager)
   dispatch(ui.txStart('Submitting CSV to the blockchain...'))
   try {
     const receipt = await transferManager.modifyWhitelist(blockchainData)
@@ -201,7 +189,7 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
     whitelistEvents = wlDateRestricted
 
   }
-  console.log("WHITELISTEVENTS: ", whitelistEvents)
+  // console.log("WHITELISTEVENTS: ", whitelistEvents)
   //yenno, going through this array backwards would probably save some computation time
   for (let i =0; i < whitelistEvents.length; i++){
     let csvRandomID = uuidv4()
@@ -242,7 +230,7 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
       tableData.push(backendData)
     }
   }
-  console.log("TABLE DATA: ", tableData)
+  // console.log("TABLE DATA: ", tableData)
 
   //removeZeroTimestampArray removes investors that have a zero timestamp, because they are effectively removed
   //from trading and shouldnt be shown on the list to the user
@@ -262,25 +250,7 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
       removeZeroTimestampArray.push(validInvestor)
     }
   }
-  console.log("FINAL ARRAY: ",removeZeroTimestampArray)
-
-  //clean array sets the dates to date strings, for human readability of the table
-  // let cleanArray = []
-  // for (let k = 0; k < tableData.length; k++){
-  //
-  //   let cleanInvestor: EventData = {
-  //     id: tableData[k].id,
-  //     address: tableData[k].address,
-  //     added: (tableData[k].added).toDateString(),
-  //     addedBy: tableData[k].addedBy,
-  //     from: tableData[k].from.toDateString(),
-  //     to: tableData[k].to.toDateString(),
-  //   }
-  //   cleanArray.push(cleanInvestor)
-  // }
-  // console.log("CLEAN ARRAY: ",cleanArray)
-  /////////////////set back to string & get rid of zero values  END
-
+  // console.log("FINAL ARRAY: ",removeZeroTimestampArray)
   dispatch(getWhitelistDispatch(removeZeroTimestampArray))
   dispatch(paginationDivider())
 
@@ -288,7 +258,7 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
 
 export const paginationDivider = () => async (dispatch: Function, getState: GetState) => {
   const fullInvestorList = [...getState().whitelist.investors]
-  console.log("IN PAGINATION: ", fullInvestorList)
+  // console.log("IN PAGINATION: ", fullInvestorList)
   let holdsDivisons = []
   let singlePage = []
   let listLength = getState().whitelist.listLength
@@ -323,30 +293,17 @@ export const listLength = (e: number) => async (dispatch: Function) => {
 export const removeInvestor = (addresses: Array<string>) => async (dispatch: Function, getState: GetState) => {
   let blockchainData: Array<Investor> = []
   for (let i = 0; i < addresses.length; i++) {
-    const owner = "0xdc4d23daf21da6163369940af54e5a1be783497b" //TODO: hardcoded temporarily , as i need to link up account from metamask
-    let removeInvestorTime =  new Date('January 1, 1970 00:00:00')
-    console.log(removeInvestorTime)
-    // let newTime = removeInvestorTime.getTime()
-    // console.log(newTime)
-    let nowTime = new Date()
     let zeroDate = new Date(0)
-    console.log(zeroDate.getTime())
-    console.log(zeroDate)
-
     let removeInvestor: Investor = {
       address: addresses[i],
-      addedBy: owner,
-      added: nowTime, //NOTE: this doesnt actually get used in solidity . added is produced by 'now' from solidity code. but right now, the investor type requires this value
       from: zeroDate,
       to: zeroDate,
     }
     blockchainData.push(removeInvestor)
   }
-  // console.log(blockchainData)
   const transferManager = getState().whitelist.transferManager
   dispatch(ui.txStart('Submitting CSV to the blockchain...'))
   try {
-    console.log(blockchainData)
     const receipt = await transferManager.modifyWhitelistMulti(blockchainData)
     dispatch(ui.notify(
       'Investors Removed Successfully',
@@ -355,8 +312,6 @@ export const removeInvestor = (addresses: Array<string>) => async (dispatch: Fun
       ui.etherscanTx(receipt.transactionHash)
     ))
   } catch (e) {
-    console.log(blockchainData)
-
     dispatch(ui.txFailed(e))
   }
   // dispatch(getWhitelist()) TODO: this right now is returning the list PLUS the list, so 14 + 4 = 18 ends up being 14 + 18 = 36
@@ -366,10 +321,8 @@ export const removeInvestor = (addresses: Array<string>) => async (dispatch: Fun
 export const editInvestors = (addresses: Array<string>) => async (dispatch: Function, getState: GetState) => {
   let investors = []
   const times = { ...getState().form[editInvestorsFormName].values }
-  console.log("ADDRESSES: ", addresses)
   let newSellDate = new Date(times.sell)
   let newBuyDate = new Date(times.buy)
-
   for (let i = 0; i < addresses.length; i ++){
     let blockchainData: Investor = {
       address: addresses[i],

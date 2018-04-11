@@ -5,7 +5,7 @@ import { Field, reduxForm } from 'redux-form'
 
 import { Form, Button } from 'carbon-components-react'
 import { TextInput } from 'polymath-ui'
-import { required, ethereumAddress } from 'polymath-ui/dist/validate'
+import { required } from 'polymath-ui/dist/validate'
 
 export const formName = 'edit_investor_form'
 

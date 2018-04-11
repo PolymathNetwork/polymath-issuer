@@ -107,7 +107,6 @@ class WhitelistPage extends Component<Props, State> {
 
   handleDatePicker = (picker) => {
     if (picker.length === 2){
-      console.log("anony: ", picker)
       this.setState({
         page: 0, //reset to initial page , othewise it might refer to a page that doesnt exist
       })
@@ -115,45 +114,41 @@ class WhitelistPage extends Component<Props, State> {
     }
   }
 
-  removeInvestor = (e) => {
-    let addresses = []
-    for (let i = 0; i < e.length; i++) {
-      addresses.push(e[i].cells[0].value)
-    }
-    console.log(addresses)
-    this.props.removeInvestor(addresses)
-  }
-
-  onHandleMultiSubmit = () => {
-    this.props.multiSubmit()
-    return true //needed for the component from carbon to work properly
-  }
-
   handleEditInvestors = (investors) => {
     let addresses = []
     for (let i = 0; i < investors.length; i++) {
       addresses.push(investors[i].cells[0].value)
     }
-    console.log(addresses)
     this.setState({
       editInvestorsShowing: true,
       editInvestors: addresses,
     })
   }
 
-  onRequestSubmit = () => {
-    console.log("yahhahah")
+  handleRequestSubmit = () => {
     this.props.editInvestors(this.state.editInvestors)
     this.setState({
       editInvestorsShowing: false,
     })
   }
 
-  onRequestClose = () => {
-    console.log("cancelled")
+  handleRequestClose = () => {
     this.setState({
       editInvestorsShowing: false,
     })
+  }
+
+  removeInvestor = (e) => {
+    let addresses = []
+    for (let i = 0; i < e.length; i++) {
+      addresses.push(e[i].cells[0].value)
+    }
+    this.props.removeInvestor(addresses)
+  }
+
+  onHandleMultiSubmit = () => {
+    this.props.multiSubmit()
+    return true //needed for the component from carbon to work properly
   }
 
   dataTableRender = ({
@@ -167,9 +162,7 @@ class WhitelistPage extends Component<Props, State> {
   }) => (
     <TableContainer>
       <TableToolbar>
-        {/* make sure to apply getBatchActionProps so that the bar renders */}
         <TableBatchActions {...getBatchActionProps()}>
-          {/* inside of you batch actinos, you can include selectedRows */}
           <TableBatchAction onClick={()=> this.removeInvestor(selectedRows)}>
               Remove Investor
           </TableBatchAction>
@@ -180,7 +173,6 @@ class WhitelistPage extends Component<Props, State> {
         <TableToolbarSearch onChange={onInputChange} />
         <TableToolbarContent>
           <ModalWrapper
-            // modalProps={{ onBlur: { onBlur() }, onClick: { onClick() }, onFocus: { onFocus() }, …}}
             id='transactional-modal'
             buttonTriggerText='Add New'
             modalHeading='Add New Investor'
@@ -221,7 +213,7 @@ class WhitelistPage extends Component<Props, State> {
   )
 
   render () {
-    console.log("HOW MANY TIMES DOES THIS RENDER????")
+    // console.log("HOW MANY TIMES DOES THIS RENDER????")
     return (
       <DocumentTitle title='Sign Up – Polymath'>
 
@@ -232,7 +224,6 @@ class WhitelistPage extends Component<Props, State> {
               <br />
 
               <ModalWrapper
-                // modalProps={{ onBlur: { onBlur() }, onClick: { onClick() }, onFocus: { onFocus() }, …}}
                 id='input-modal'
                 buttonTriggerText='Import Whitelist'
                 modalLabel=''
@@ -260,7 +251,7 @@ class WhitelistPage extends Component<Props, State> {
                   buttonKind='secondary'
                 />
 
-                {this.props.modalShowing ?
+                {this.props.modalShowing ? (
                   <div>
                     <div>{this.props.csvMessage}</div>
                     <p className='bx--modal-content__text'>
@@ -276,6 +267,7 @@ class WhitelistPage extends Component<Props, State> {
                       </div>
                     ))}
                   </div>
+                )
                   : null}
               </ModalWrapper>
               <br />
@@ -289,16 +281,12 @@ class WhitelistPage extends Component<Props, State> {
                 <DatePickerInput
                   className='some-class'
                   labelText='Start'
-                  // onClick={this.onClickDatePicker}
-                  // onChange={this.onInputChangeDatePicker}
                   placeholder='mm/dd/yyyy'
                   id='date-picker-input-id'
                 />
                 <DatePickerInput
                   className='some-class'
                   labelText='End'
-                  // onClick={this.onClickDatePicker}
-                  // onChange={this.onInputChangeDatePicker}
                   placeholder='mm/dd/yyyy'
                   id='date-picker-input-id-2'
                 />
@@ -315,14 +303,13 @@ class WhitelistPage extends Component<Props, State> {
           <PaginationV2
             onChange={this.handleChangePages}
             pageSizes={[10, 20, 30, 40, 50]}
-            // pageInputDisabled
             totalItems={this.props.investors.length}
 
           />
           {this.state.editInvestorsShowing ? (
             <Modal
-              onRequestSubmit={this.onRequestSubmit}
-              onRequestClose={this.onRequestClose}
+              onRequestSubmit={this.handleRequestSubmit}
+              onRequestClose={this.handleRequestClose}
               className='some-class'
               open
               modalHeading='Edit Exisiting Investors'
@@ -333,7 +320,7 @@ class WhitelistPage extends Component<Props, State> {
                 Please enter the information below to edit the chosen investors.
               </p>
               <br />
-              <EditInvestorsForm onSubmit={this.onRequestSubmit} />
+              <EditInvestorsForm onSubmit={this.handleRequestSubmit} />
             </Modal>
           )
             : null}
