@@ -2,8 +2,8 @@
 
 import uuidv4 from 'uuid/v4'
 import * as ui from 'polymath-ui'
-import { TransferManager, SecurityToken } from 'polymath.js_v2'
-import type { Investor } from 'polymath.js_v2/types'
+import { TransferManager, SecurityToken } from 'polymathjs'
+import type { Investor } from 'polymathjs/types'
 import { formName as userFormName } from './userForm'
 import type { GetState } from '../../../redux/reducer'
 import type { ExtractReturn } from '../../../redux/helpers'
@@ -41,10 +41,10 @@ export type Action =
 export type EventData = {
   id: string,
   address: string,
-  added: number,
-  addedBy: string,
-  from: number,
-  to: number,
+  added: number | null,
+  addedBy: string | null,
+  from: Date | number | string | null,
+  to: Date | number | string | null,
 }
 
 //initialize grabs transferManager , and stores it in state for other functions to easily call
@@ -135,6 +135,7 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: GetSta
   const transferManager = getState().whitelist.transferManager
   dispatch(ui.txStart('Submitting CSV to the blockchain...'))
   try {
+    console.log("multisumbit TEST: ", blockchainData)
     const receipt = await transferManager.modifyWhitelistMulti(blockchainData)
     dispatch(ui.notify(
       'CSV was successfully uploaded',
@@ -160,11 +161,12 @@ export const oneUserSubmit = () => async (dispatch: Function, getState: GetState
     address: user.address,
     addedBy: owner,
     added: nowTime,
-    from: newSellDate,
-    to: newBuyDate,
+    from: new Date(0),
+    to: new Date(0),
   }
 
   const transferManager = getState().whitelist.transferManager
+  console.log("TRANSFER MANAGER: ", transferManager)
   dispatch(ui.txStart('Submitting CSV to the blockchain...'))
   try {
     const receipt = await transferManager.modifyWhitelist(blockchainData)
@@ -198,32 +200,24 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
     whitelistEvents = wlDateRestricted
 
   }
-  console.log(whitelistEvents)
+  console.log("WHITELISTEVENTS: ", whitelistEvents)
   //yenno, going through this array backwards would probably save some computation time
   for (let i =0; i < whitelistEvents.length; i++){
     let csvRandomID = uuidv4()
-    let fromTime = (whitelistEvents[i].from).toDateString()
-    let toTime = (whitelistEvents[i].to).toDateString()
-    // let addedTime = (whitelistEvents[i].added).toDateString() this is not needed because we still need it in date format 
-
     //TODO: consider edge cases, like when someone uploads updates in the same day. This may have to do with polymath.js, being able to return down to the second, not just day
     //in order to fix this, we need to keep the time accurate throughout to the second, and then do toDateString when you throw away the zero values
     let found = tableData.some(function (el, index, array) {
       //if true, User already recorded in eventList, so we don't want to make a new entry
       if( el.address === whitelistEvents[i].address ){
         // if true, this event is newer than the previous event, so we update the space in the array
-        // console.log(whitelistEvents[i].added)
-        // console.log(el.added)
         if (whitelistEvents[i].added > el.added){
-          // console.log(whitelistEvents[i].added > el.added)
-          // console.log("fucka")
           let updateArray: EventData = {
             id: csvRandomID,
             address: whitelistEvents[i].address,
             added: whitelistEvents[i].added,
             addedBy: whitelistEvents[i].addedBy,
-            from: fromTime,
-            to: toTime,
+            from: whitelistEvents[i].from,
+            to: whitelistEvents[i].to,
           }
           array[index] = updateArray
           return true
@@ -241,40 +235,59 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
         address: whitelistEvents[i].address,
         added: whitelistEvents[i].added,
         addedBy: whitelistEvents[i].addedBy,
-        from: fromTime,
-        to: toTime,
+        from: whitelistEvents[i].from,
+        to: whitelistEvents[i].to,
       }
       tableData.push(backendData)
     }
   }
+  console.log("TABLE DATA: ", tableData)
 
-  /////////////////set back to string & get rid of zero values  START
-
-  console.log(tableData)
-
-  let cleanArray = []
+  //removeZeroTimestampArray removes investors that have a zero timestamp, because they are effectively removed
+  //from trading and shouldnt be shown on the list to the user
+  // it also turns the valid investors date objects into strings, for human readability (and react doesnt like objects passed)
+  let removeZeroTimestampArray = []
   for (let j = 0; j < tableData.length; j++){
 
-    let cleanInvestor: EventData = {
-      id: tableData[j].id,
-      address: tableData[j].address,
-      added: (tableData[j].added).toDateString(),
-      addedBy: tableData[j].addedBy,
-      from: tableData[j].from,
-      to: tableData[j].to,
+    if (tableData[j].from.getTime() !== 0 && tableData[j].to.getTime() !== 0 ) {
+      let validInvestor: EventData = {
+        id: tableData[j].id,
+        address: tableData[j].address,
+        added: (tableData[j].added).toDateString(),
+        addedBy: tableData[j].addedBy,
+        from: tableData[j].from.toDateString(),
+        to: tableData[j].to.toDateString(),
+      }
+      removeZeroTimestampArray.push(validInvestor)
     }
-    cleanArray.push(cleanInvestor)
   }
-  console.log(cleanArray)
+  console.log("FINAL ARRAY: ",removeZeroTimestampArray)
+
+  //clean array sets the dates to date strings, for human readability of the table
+  // let cleanArray = []
+  // for (let k = 0; k < tableData.length; k++){
+  //
+  //   let cleanInvestor: EventData = {
+  //     id: tableData[k].id,
+  //     address: tableData[k].address,
+  //     added: (tableData[k].added).toDateString(),
+  //     addedBy: tableData[k].addedBy,
+  //     from: tableData[k].from.toDateString(),
+  //     to: tableData[k].to.toDateString(),
+  //   }
+  //   cleanArray.push(cleanInvestor)
+  // }
+  // console.log("CLEAN ARRAY: ",cleanArray)
   /////////////////set back to string & get rid of zero values  END
 
-  dispatch(getWhitelistDispatch(cleanArray))
+  dispatch(getWhitelistDispatch(removeZeroTimestampArray))
   dispatch(paginationDivider())
+  
 }
 
 export const paginationDivider = () => async (dispatch: Function, getState: GetState) => {
   const fullInvestorList = [...getState().whitelist.investors]
-  console.log(fullInvestorList)
+  console.log("IN PAGINATION: ", fullInvestorList)
   let holdsDivisons = []
   let singlePage = []
   let listLength = getState().whitelist.listLength
@@ -306,7 +319,7 @@ export const listLength = (e: number) => async (dispatch: Function) => {
 
 //NOTE: this function only allows complete removal of both sell and buy times. do we need customization to do only single? if so, UI is not showing like this
 //TODO: need to make a function in polymathJS that allows us to remove by just passing a single address, i dont need to do all this on front end, and it doesnt work well from requiring date objects
-export const removeInvestor = (addresses) => async (dispatch: Function, getState: GetState) => {
+export const removeInvestor = (addresses: Array<string>) => async (dispatch: Function, getState: GetState) => {
   let blockchainData: Array<Investor> = []
   for (let i = 0; i < addresses.length; i++) {
     const owner = "0xdc4d23daf21da6163369940af54e5a1be783497b" //TODO: hardcoded temporarily , as i need to link up account from metamask
@@ -315,13 +328,16 @@ export const removeInvestor = (addresses) => async (dispatch: Function, getState
     // let newTime = removeInvestorTime.getTime()
     // console.log(newTime)
     let nowTime = new Date()
+    let zeroDate = new Date(0)
+    console.log(zeroDate.getTime())
+    console.log(zeroDate)
 
     let removeInvestor: Investor = {
       address: addresses[i],
       addedBy: owner,
       added: nowTime, //NOTE: this doesnt actually get used in solidity . added is produced by 'now' from solidity code. but right now, the investor type requires this value
-      from: removeInvestorTime,
-      to: removeInvestorTime,
+      from: zeroDate,
+      to: zeroDate,
     }
     blockchainData.push(removeInvestor)
   }
@@ -329,6 +345,7 @@ export const removeInvestor = (addresses) => async (dispatch: Function, getState
   const transferManager = getState().whitelist.transferManager
   dispatch(ui.txStart('Submitting CSV to the blockchain...'))
   try {
+    console.log(blockchainData)
     const receipt = await transferManager.modifyWhitelistMulti(blockchainData)
     dispatch(ui.notify(
       'Investors Removed Successfully',
@@ -337,6 +354,8 @@ export const removeInvestor = (addresses) => async (dispatch: Function, getState
       ui.etherscanTx(receipt.transactionHash)
     ))
   } catch (e) {
+    console.log(blockchainData)
+
     dispatch(ui.txFailed(e))
   }
   // dispatch(getWhitelist()) TODO: this right now is returning the list PLUS the list, so 14 + 4 = 18 ends up being 14 + 18 = 36

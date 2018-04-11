@@ -13,8 +13,8 @@ import {
   FileUploaderButton,
 } from "carbon-components-react"
 
-// import type { Investor } from 'polymath.js_v2/types'
-import { TransferManager } from 'polymath.js_v2'
+// import type { Investor } from 'polymathjs/types'
+import { TransferManager } from 'polymathjs'
 import type { EventData } from './actions'
 import { initialize, uploadCSV, multiUserSubmit, oneUserSubmit, getWhitelist, paginationDivider, listLength, removeInvestor } from './actions'
 import { TableHeaders } from './tableHeaders'
@@ -44,7 +44,7 @@ type DispatchProps = {|
   getWhitelist: (?Date, ?Date) => any,
   paginationDivider: () => any,
   updateListLength: (any) => any,
-  removeInvestor: () => any,
+  removeInvestor: (any) => any,
 |}
 
 const mapStateToProps = (state) => ({
@@ -193,8 +193,7 @@ class WhitelistPage extends Component<Props, State> {
   )
 
   render () {
-    console.log(this.props.investorsPaginated)
-    console.log(this.state.page)
+    console.log("HOW MANY TIMES DOES THIS RENDER????")
     return (
       <DocumentTitle title='Sign Up – Polymath'>
 

@@ -1,6 +1,6 @@
 // @flow
 
-import { TransferManager } from 'polymath.js_v2'
+import { TransferManager } from 'polymathjs'
 
 import * as a from './actions'
 import type { EventData, Action } from './actions'

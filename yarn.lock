@@ -1898,6 +1898,20 @@ capture-stack-trace@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/capture-stack-trace/-/capture-stack-trace-1.0.0.tgz#4a6fa07399c26bba47f0b2496b4d0fb408c5550d"
 
+carbon-components-react@5.31.1:
+  version "5.31.1"
+  resolved "https://registry.yarnpkg.com/carbon-components-react/-/carbon-components-react-5.31.1.tgz#afaa4dc5d8f457f261fee20c42ebfef44ddb27ac"
+  dependencies:
+    classnames "2.2.5"
+    downshift "^1.23.2"
+    flatpickr "4.3.0"
+    invariant "^2.2.3"
+    lodash.debounce "^4.0.8"
+    lodash.isequal "^4.5.0"
+    lodash.omit "^4.5.0"
+    warning "3.0.0"
+    window-or-global "^1.0.1"
+
 carbon-components-react@5.32.0:
   version "5.32.0"
   resolved "https://registry.yarnpkg.com/carbon-components-react/-/carbon-components-react-5.32.0.tgz#15dd0af15eb819ac4b432dd2b050d99b2189b44f"
@@ -8360,9 +8374,9 @@ polymath-ui@0.2.4:
     react-transition-group "^2.2.1"
     redux "^3.7.2"
 
-polymathjs@0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-0.4.0.tgz#2249754b5ca0c16ef0e40b8e9d4bd9d935443c56"
+polymathjs@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-0.4.1.tgz#1e75b9fd2fe6c5470e578b9cafec4f817c677124"
   dependencies:
     bignumber.js "5.0.0"
     bs58 "^4.0.1"
@@ -11258,7 +11272,7 @@ web3-core-helpers@1.0.0-beta.33:
     web3-eth-iban "1.0.0-beta.33"
     web3-utils "1.0.0-beta.33"
 
-web3-core-method@1.0.0-beta.30, web3-core-method@bshevchenko/web3-core-method#master, "web3-core-method@github:bshevchenko/web3-core-method#master":
+web3-core-method@1.0.0-beta.30, "web3-core-method@github:bshevchenko/web3-core-method#master":
   version "1.0.0-beta.30"
   resolved "https://codeload.github.com/bshevchenko/web3-core-method/tar.gz/9199df8b1ea8658503ee48ba7ad391fec8e61838"
   dependencies:
