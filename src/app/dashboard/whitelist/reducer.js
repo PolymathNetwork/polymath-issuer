@@ -4,14 +4,15 @@ import { TransferManager } from 'polymathjs'
 
 import * as a from './actions'
 import type { EventData, Action } from './actions'
+import type { Investor } from 'polymathjs/types'
 
 export type WhitelistState = {
   transferManager: TransferManager,
   addresses: Array<string>,
   sell: Array<number>,
   buy: Array<number>,
-  investors: Array<EventData>,
-  investorsPaginated: Array<Array<EventData>>,
+  investors: Array<Investor>,
+  // investorsPaginated: Array<Array<EventData>>,
   listLength: number,
   csvMessage: string,
 }
@@ -22,12 +23,11 @@ const defaultState: WhitelistState = {
   sell: [],
   buy: [],
   investors: [{
-    id: "",
     address: "",
-    added: 0,
+    added: new Date(0),
     addedBy: "",
-    from: 0,
-    to: 0,
+    from: new Date(0),
+    to: new Date(0),
   }],
   investorsPaginated: [[]],
   listLength: 10,
@@ -76,11 +76,11 @@ export default (state: WhitelistState = defaultState, action: Action) => {
         ...state,
         investors: [...action.investors],
       }
-    case a.PAGINATION_DIVIDER:
-      return {
-        ...state,
-        investorsPaginated: action.paginatedInvestors,
-      }
+    // case a.PAGINATION_DIVIDER:
+    //   return {
+    //     ...state,
+    //     investorsPaginated: action.paginatedInvestors,
+    //   }
     case a.LIST_LENGTH:
       return {
         ...state,

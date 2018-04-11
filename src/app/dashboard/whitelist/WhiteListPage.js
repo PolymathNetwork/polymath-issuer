@@ -14,10 +14,10 @@ import {
   FileUploaderButton,
 } from "carbon-components-react"
 
-// import type { Investor } from 'polymathjs/types'
+import type { Investor } from 'polymathjs/types'
 import { TransferManager } from 'polymathjs'
 import type { EventData } from './actions'
-import { initialize, uploadCSV, multiUserSubmit, oneUserSubmit, getWhitelist, paginationDivider, listLength, removeInvestor, editInvestors } from './actions'
+import { initialize, uploadCSV, multiUserSubmit, oneUserSubmit, getWhitelist, listLength, removeInvestor, editInvestors } from './actions'
 import { TableHeaders } from './tableHeaders'
 import InvestorForm from './userForm'
 import EditInvestorsForm from './editInvestorsForm'
@@ -32,10 +32,11 @@ type StateProps = {|
   addresses: Array<string>,
   sell: Array<number>,
   buy: Array<number>,
-  investors: Array<EventData>,
-  investorsPaginated: Array<Array<EventData>>,
+  investors: Array<Investor>,
+  // investorsPaginated: Array<Array<EventData>>,
   csvMessage: string,
   modalShowing: boolean, //TODO: rename this to say previewCSVShowing
+  listLength: number,
 |}
 
 type DispatchProps = {|
@@ -44,7 +45,7 @@ type DispatchProps = {|
   multiSubmit: () => any,
   singleSubmit: () => any,
   getWhitelist: (?Date, ?Date) => any,
-  paginationDivider: () => any,
+  // paginationDivider: () => any,
   updateListLength: (any) => any,
   removeInvestor: (any) => any,
   editInvestors: (any) => any,
@@ -59,6 +60,7 @@ const mapStateToProps = (state) => ({
   investorsPaginated: state.whitelist.investorsPaginated,
   csvMessage: state.whitelist.csvMessage,
   modalShowing: state.whitelist.modalShowing,
+  listLength: state.whitelist.listLength,
 })
 
 const mapDispatchToProps = (dispatch: Function) => ({
@@ -67,7 +69,7 @@ const mapDispatchToProps = (dispatch: Function) => ({
   multiSubmit: () => dispatch(multiUserSubmit()),
   singleSubmit: () => dispatch(oneUserSubmit()),
   getWhitelist: (calenderStart, calenderEnd) => dispatch(getWhitelist(calenderStart, calenderEnd)),
-  paginationDivider: () => dispatch(paginationDivider()),
+  // paginationDivider: () => dispatch(paginationDivider()),
   updateListLength: (e) => dispatch(listLength(e)),
   removeInvestor: (e) => dispatch(removeInvestor(e)),
   editInvestors: (e) => dispatch(editInvestors(e)),
@@ -82,6 +84,12 @@ type State = {
   editInvestors: Array<string>,
 }
 
+const dateFormat = (date: Date) => date.toLocaleDateString('en', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+})
+
 class WhitelistPage extends Component<Props, State> {
   state = {
     page: 0,
@@ -93,13 +101,46 @@ class WhitelistPage extends Component<Props, State> {
     this.props.initialize()
   }
 
+  paginationRendering () {
+    let paginatedArray = []
+    let investors = this.props.investors
+    console.log(investors)
+    let pageNum = this.state.page
+    let listLength = this.props.listLength
+    let startSlice = pageNum*listLength
+    let endSlice = ((pageNum+1)*listLength)
+
+    paginatedArray = this.props.investors.slice(startSlice, endSlice)
+
+    // console.log(paginatedArray)
+
+    let stringifiedArray = []
+    for (let i = 0; i <paginatedArray.length; i++){
+      let csvRandomID = uuidv4() //TODO: only use this function here, which means all other data from before should be investor data
+      let stringifyAdded = dateFormat(paginatedArray[i].added)
+      let stringifyFrom = dateFormat(paginatedArray[i].from)
+      let stringifyTo = dateFormat(paginatedArray[i].to)
+
+      let stringifyInvestor: EventData = {
+        id: csvRandomID,
+        address: paginatedArray[i].address,
+        added: stringifyAdded,
+        addedBy: paginatedArray[i].addedBy,
+        from: stringifyFrom,
+        to: stringifyTo,
+      }
+      stringifiedArray.push(stringifyInvestor)
+    }
+    return stringifiedArray
+  }
+
   handleInvestorSubmit = () => {
     this.props.singleSubmit()
   }
 
   handleChangePages = (e) => {
     this.props.updateListLength(e.pageSize)
-    this.props.paginationDivider() //TODO: i dont want to have to call this here, need to rework updateListLength, cuz it falls if i remove this function
+    // this.props.paginationDivider() //TODO: i dont want to have to call this here, need to rework updateListLength, cuz it falls if i remove this function
     this.setState({
       page: (e.page - 1),
     })
@@ -214,6 +255,11 @@ class WhitelistPage extends Component<Props, State> {
 
   render () {
     // console.log("HOW MANY TIMES DOES THIS RENDER????")
+
+    //function to call at render, that splits up the full investor list and only renders the ten or so needed.
+    // also , apply the date format thing   right here
+    let paginatedRows =  this.paginationRendering()
+    console.log(paginatedRows)
     return (
       <DocumentTitle title='Sign Up – Polymath'>
 
@@ -296,7 +342,7 @@ class WhitelistPage extends Component<Props, State> {
 
           <br /> <br />
           <DataTable
-            rows={this.props.investorsPaginated[this.state.page]}
+            rows={paginatedRows}
             headers={TableHeaders}
             render={this.dataTableRender}
           />

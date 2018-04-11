@@ -19,15 +19,15 @@ export const UPLOAD_CSV_FAILED = 'dashboard/whitelist/UPLOAD_CSV_FAILED'
 
 //this needs to be renamed , cuz it is not actually from csv multi entry, this is from getWhiteList . this has to do with all whitelist grabbing
 export const GET_WHITELIST = 'dashboard/whitelist/GET_WHITELIST'
-export const getWhitelistDispatch = (investors: Array<EventData>) => ({ type: GET_WHITELIST, investors })
+export const getWhitelistDispatch = (investors: Array<Investor>) => ({ type: GET_WHITELIST, investors })
 
 export const GET_WHITELIST_FAILED = 'dashboard/whitelist/GET_WHITELIST_FAILED'
 
-export const PAGINATION_DIVIDER = 'dashboard/whitelist/PAGINATION_DIVDER'
-export const paginationDispatch = (paginatedInvestors: Array<Array<EventData>>) => ({ type: PAGINATION_DIVIDER, paginatedInvestors })
+// export const PAGINATION_DIVIDER = 'dashboard/whitelist/PAGINATION_DIVDER'
+// export const paginationDispatch = (paginatedInvestors: Array<Array<EventData>>) => ({ type: PAGINATION_DIVIDER, paginatedInvestors })
 
 export const LIST_LENGTH = 'dashboard/whitelist/LIST_LENGTH'
-export const listLengthDispatch = (listLength: number) => ({ type: PAGINATION_DIVIDER, listLength })
+export const listLengthDispatch = (listLength: number) => ({ type: LIST_LENGTH, listLength })
 
 export const ADD_SINGLE_ENTRY = 'dashboard/whitelist/ADD_SINGLE_ENTRY'
 export const ADD_SINGLE_ENTRY_FAILED = 'dashboard/whitelist/ADD_SINGLE_ENTRY_FAILED'
@@ -36,16 +36,16 @@ export type Action =
   | ExtractReturn<typeof transferManagerDispatch>
   | ExtractReturn<typeof csvDispatch>
   | ExtractReturn<typeof getWhitelistDispatch>
-  | ExtractReturn<typeof paginationDispatch>
+  // | ExtractReturn<typeof paginationDispatch>
   | ExtractReturn<typeof listLengthDispatch>
 
 export type EventData = {
   id: string,
   address: string,
-  added: number | null,
-  addedBy: string | null,
-  from: Date | number | string | null, //TODO: need to make these more restrictive
-  to: Date | number | string | null, //TODO: need to make these more restrictive
+  added: string,
+  addedBy: string,
+  from: string, //TODO: need to make these more restrictive
+  to: string, //TODO: need to make these more restrictive
 }
 
 //initialize grabs transferManager , and stores it in state for other functions to easily call
@@ -192,7 +192,7 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
   // console.log("WHITELISTEVENTS: ", whitelistEvents)
   //yenno, going through this array backwards would probably save some computation time
   for (let i =0; i < whitelistEvents.length; i++){
-    let csvRandomID = uuidv4()
+    // let csvRandomID = uuidv4()
     //TODO: consider edge cases, like when someone uploads updates in the same day. This may have to do with polymath.js, being able to return down to the second, not just day
     //in order to fix this, we need to keep the time accurate throughout to the second, and then do toDateString when you throw away the zero values
     let found = tableData.some(function (el, index, array) {
@@ -200,8 +200,8 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
       if( el.address === whitelistEvents[i].address ){
         // if true, this event is newer than the previous event, so we update the space in the array
         if (whitelistEvents[i].added > el.added){
-          let updateArray: EventData = {
-            id: csvRandomID,
+          let updateArray: Investor = {
+            // id: csvRandomID,
             address: whitelistEvents[i].address,
             added: whitelistEvents[i].added,
             addedBy: whitelistEvents[i].addedBy,
@@ -219,8 +219,8 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
       }
     })
     if (!found) {
-      let backendData: EventData = {
-        id: csvRandomID,
+      let backendData: Investor = {
+        // id: csvRandomID,
         address: whitelistEvents[i].address,
         added: whitelistEvents[i].added,
         addedBy: whitelistEvents[i].addedBy,
@@ -237,52 +237,53 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
   // it also turns the valid investors date objects into strings, for human readability (and react doesnt like objects passed)
   let removeZeroTimestampArray = []
   for (let j = 0; j < tableData.length; j++){
-
+    // if (tableData[j] !== null && tableData[j] !== string)
     if (tableData[j].from.getTime() !== 0 && tableData[j].to.getTime() !== 0 ) {
-      let validInvestor: EventData = {
-        id: tableData[j].id,
+      let validInvestor: Investor = {
+        // id: tableData[j].id,
         address: tableData[j].address,
-        added: (tableData[j].added).toDateString(),
+        added: (tableData[j].added),
         addedBy: tableData[j].addedBy,
-        from: tableData[j].from.toDateString(),
-        to: tableData[j].to.toDateString(),
+        from: tableData[j].from, //getLocalDateString
+        to: tableData[j].to,
       }
       removeZeroTimestampArray.push(validInvestor)
     }
   }
   // console.log("FINAL ARRAY: ",removeZeroTimestampArray)
   dispatch(getWhitelistDispatch(removeZeroTimestampArray))
-  dispatch(paginationDivider())
+  // dispatch(paginationDivider())
 
 }
 
-export const paginationDivider = () => async (dispatch: Function, getState: GetState) => {
-  const fullInvestorList = [...getState().whitelist.investors]
-  // console.log("IN PAGINATION: ", fullInvestorList)
-  let holdsDivisons = []
-  let singlePage = []
-  let listLength = getState().whitelist.listLength
-  for (let i = 0; i < fullInvestorList.length; i++) {
-    singlePage.push(fullInvestorList[i])
-    if (singlePage.length === listLength || i === (fullInvestorList.length - 1)) {
-      holdsDivisons.push(singlePage)
-      singlePage = []
-    }
-  }
-  if (holdsDivisons.length === 0 ) {
-    const noMatch: EventData = {
-      id: "nomatch",
-      address: "No investors exist for these dates",
-      added: null,
-      addedBy: null,
-      from: null,
-      to: null,
-    }
-    holdsDivisons.push([noMatch])
-
-  }
-  dispatch(paginationDispatch(holdsDivisons))
-}
+//TODO: Evaulate these on render, rather than remaking the array and storing in redux
+// export const paginationDivider = () => async (dispatch: Function, getState: GetState) => {
+//   const fullInvestorList = [...getState().whitelist.investors]
+//   // console.log("IN PAGINATION: ", fullInvestorList)
+//   let holdsDivisons = []
+//   let singlePage = []
+//   let listLength = getState().whitelist.listLength
+//   for (let i = 0; i < fullInvestorList.length; i++) {
+//     singlePage.push(fullInvestorList[i])
+//     if (singlePage.length === listLength || i === (fullInvestorList.length - 1)) {
+//       holdsDivisons.push(singlePage)
+//       singlePage = []
+//     }
+//   }
+//   if (holdsDivisons.length === 0 ) {
+//     const noMatch: EventData = {
+//       id: "nomatch",
+//       address: "No investors exist for these dates",
+//       added: null,
+//       addedBy: null,
+//       from: null,
+//       to: null,
+//     }
+//     holdsDivisons.push([noMatch])
+//
+//   }
+//   dispatch(paginationDispatch(holdsDivisons))
+// }
 
 export const listLength = (e: number) => async (dispatch: Function) => {
   dispatch(listLengthDispatch(e))
