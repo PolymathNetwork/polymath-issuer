@@ -5,6 +5,7 @@ import * as ui from 'polymath-ui'
 import { TransferManager, SecurityToken } from 'polymathjs'
 import type { Investor } from 'polymathjs/types'
 import { formName as userFormName } from './userForm'
+import { formName as editInvestorsFormName } from './editInvestorsForm'
 import type { GetState } from '../../../redux/reducer'
 import type { ExtractReturn } from '../../../redux/helpers'
 
@@ -43,8 +44,8 @@ export type EventData = {
   address: string,
   added: number | null,
   addedBy: string | null,
-  from: Date | number | string | null,
-  to: Date | number | string | null,
+  from: Date | number | string | null, //TODO: need to make these more restrictive
+  to: Date | number | string | null, //TODO: need to make these more restrictive
 }
 
 //initialize grabs transferManager , and stores it in state for other functions to easily call
@@ -161,8 +162,8 @@ export const oneUserSubmit = () => async (dispatch: Function, getState: GetState
     address: user.address,
     addedBy: owner,
     added: nowTime,
-    from: new Date(0),
-    to: new Date(0),
+    from: newSellDate,
+    to: newBuyDate,
   }
 
   const transferManager = getState().whitelist.transferManager
@@ -282,7 +283,7 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
 
   dispatch(getWhitelistDispatch(removeZeroTimestampArray))
   dispatch(paginationDivider())
-  
+
 }
 
 export const paginationDivider = () => async (dispatch: Function, getState: GetState) => {
@@ -356,6 +357,38 @@ export const removeInvestor = (addresses: Array<string>) => async (dispatch: Fun
   } catch (e) {
     console.log(blockchainData)
 
+    dispatch(ui.txFailed(e))
+  }
+  // dispatch(getWhitelist()) TODO: this right now is returning the list PLUS the list, so 14 + 4 = 18 ends up being 14 + 18 = 36
+
+}
+
+export const editInvestors = (addresses: Array<string>) => async (dispatch: Function, getState: GetState) => {
+  let investors = []
+  const times = { ...getState().form[editInvestorsFormName].values }
+  console.log("ADDRESSES: ", addresses)
+  let newSellDate = new Date(times.sell)
+  let newBuyDate = new Date(times.buy)
+
+  for (let i = 0; i < addresses.length; i ++){
+    let blockchainData: Investor = {
+      address: addresses[i],
+      from: newSellDate,
+      to: newBuyDate,
+    }
+    investors.push(blockchainData)
+  }
+  const transferManager = getState().whitelist.transferManager
+  dispatch(ui.txStart('Submitting Investor Updates to the blockchain...'))
+  try {
+    const receipt = await transferManager.modifyWhitelistMulti(investors)
+    dispatch(ui.notify(
+      'Investors Updated Successfully',
+      true,
+      'We will present the investor list to you on the next page',
+      ui.etherscanTx(receipt.transactionHash)
+    ))
+  } catch (e) {
     dispatch(ui.txFailed(e))
   }
   // dispatch(getWhitelist()) TODO: this right now is returning the list PLUS the list, so 14 + 4 = 18 ends up being 14 + 18 = 36

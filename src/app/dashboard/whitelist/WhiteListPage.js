@@ -7,6 +7,7 @@ import uuidv4 from 'uuid/v4'
 import {
   DataTable,
   PaginationV2,
+  Modal,
   ModalWrapper,
   DatePicker,
   DatePickerInput,
@@ -16,9 +17,10 @@ import {
 // import type { Investor } from 'polymathjs/types'
 import { TransferManager } from 'polymathjs'
 import type { EventData } from './actions'
-import { initialize, uploadCSV, multiUserSubmit, oneUserSubmit, getWhitelist, paginationDivider, listLength, removeInvestor } from './actions'
+import { initialize, uploadCSV, multiUserSubmit, oneUserSubmit, getWhitelist, paginationDivider, listLength, removeInvestor, editInvestors } from './actions'
 import { TableHeaders } from './tableHeaders'
 import InvestorForm from './userForm'
+import EditInvestorsForm from './editInvestorsForm'
 
 //might need TableToolbarAction and batchActionClick here
 const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
@@ -33,7 +35,7 @@ type StateProps = {|
   investors: Array<EventData>,
   investorsPaginated: Array<Array<EventData>>,
   csvMessage: string,
-  modalShowing: boolean,
+  modalShowing: boolean, //TODO: rename this to say previewCSVShowing
 |}
 
 type DispatchProps = {|
@@ -45,6 +47,7 @@ type DispatchProps = {|
   paginationDivider: () => any,
   updateListLength: (any) => any,
   removeInvestor: (any) => any,
+  editInvestors: (any) => any,
 |}
 
 const mapStateToProps = (state) => ({
@@ -67,19 +70,23 @@ const mapDispatchToProps = (dispatch: Function) => ({
   paginationDivider: () => dispatch(paginationDivider()),
   updateListLength: (e) => dispatch(listLength(e)),
   removeInvestor: (e) => dispatch(removeInvestor(e)),
+  editInvestors: (e) => dispatch(editInvestors(e)),
+
 })
 
 type Props = StateProps & DispatchProps
 
 type State = {
-  page: number
+  page: number,
+  editInvestorsShowing: boolean,
+  editInvestors: Array<string>,
 }
 
 class WhitelistPage extends Component<Props, State> {
   state = {
     page: 0,
-    // calenderFirstDate: 0, pretty sure not needed, will delete if i see these again still commented out
-    // calenderSecondDate: 0,
+    editInvestorsShowing: false,
+    editInvestors: [],
   }
 
   componentWillMount () {
@@ -98,9 +105,14 @@ class WhitelistPage extends Component<Props, State> {
     })
   }
 
-  onHandleMultiSubmit = () => {
-    this.props.multiSubmit()
-    return true //needed for the component from carbon to work properly
+  handleDatePicker = (picker) => {
+    if (picker.length === 2){
+      console.log("anony: ", picker)
+      this.setState({
+        page: 0, //reset to initial page , othewise it might refer to a page that doesnt exist
+      })
+      this.props.getWhitelist(picker[0],picker[1])
+    }
   }
 
   removeInvestor = (e) => {
@@ -112,21 +124,37 @@ class WhitelistPage extends Component<Props, State> {
     this.props.removeInvestor(addresses)
   }
 
-  handleDatePicker = (picker) => {
-    if (picker.length === 2){
-      console.log("anony: ", picker)
-      this.setState({
-        page: 0, //reset to initial page , othewise it might refer to a page that doesnt exist
-      })
-      this.props.getWhitelist(picker[0],picker[1])
-    }
+  onHandleMultiSubmit = () => {
+    this.props.multiSubmit()
+    return true //needed for the component from carbon to work properly
   }
-  // onClickDatePicker = (e) => {
-  //   console.log("onclick: ", e)
-  // }
-  // onInputChangeDatePicker = (e) => {
-  //   console.log("on input: ", e)
-  // }
+
+  handleEditInvestors = (investors) => {
+    let addresses = []
+    for (let i = 0; i < investors.length; i++) {
+      addresses.push(investors[i].cells[0].value)
+    }
+    console.log(addresses)
+    this.setState({
+      editInvestorsShowing: true,
+      editInvestors: addresses,
+    })
+  }
+
+  onRequestSubmit = () => {
+    console.log("yahhahah")
+    this.props.editInvestors(this.state.editInvestors)
+    this.setState({
+      editInvestorsShowing: false,
+    })
+  }
+
+  onRequestClose = () => {
+    console.log("cancelled")
+    this.setState({
+      editInvestorsShowing: false,
+    })
+  }
 
   dataTableRender = ({
     rows,
@@ -145,8 +173,8 @@ class WhitelistPage extends Component<Props, State> {
           <TableBatchAction onClick={()=> this.removeInvestor(selectedRows)}>
               Remove Investor
           </TableBatchAction>
-          <TableBatchAction >
-              Modify Restriction Dates
+          <TableBatchAction onClick={()=> this.handleEditInvestors(selectedRows)}>
+              Edit Sale/Purchase Lockup Dates
           </TableBatchAction>
         </TableBatchActions>
         <TableToolbarSearch onChange={onInputChange} />
@@ -291,6 +319,24 @@ class WhitelistPage extends Component<Props, State> {
             totalItems={this.props.investors.length}
 
           />
+          {this.state.editInvestorsShowing ? (
+            <Modal
+              onRequestSubmit={this.onRequestSubmit}
+              onRequestClose={this.onRequestClose}
+              className='some-class'
+              open
+              modalHeading='Edit Exisiting Investors'
+              primaryButtonText='Send'
+              secondaryButtonText='Cancle'
+            >
+              <p className='bx--modal-content__text'>
+                Please enter the information below to edit the chosen investors.
+              </p>
+              <br />
+              <EditInvestorsForm onSubmit={this.onRequestSubmit} />
+            </Modal>
+          )
+            : null}
         </div>
       </DocumentTitle>
 
