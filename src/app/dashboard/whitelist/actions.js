@@ -34,6 +34,7 @@ export type Action =
 export const initialize = () => async (dispatch: Function, getState: GetState) => {
   const token = getState().token.token
   if (!token || !token.contract) {
+    //eslint-disable-next-line
     console.error("Contract manager object not found, it did not carry over into the state")
     return
   }
