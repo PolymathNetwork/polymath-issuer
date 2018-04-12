@@ -16,11 +16,10 @@ import {
 
 import type { Investor } from 'polymathjs/types'
 import { TransferManager } from 'polymathjs'
-// import type { EventData } from './actions'
 import { initialize, uploadCSV, multiUserSubmit, oneUserSubmit, getWhitelist, listLength, removeInvestor, editInvestors } from './actions'
 import { TableHeaders } from './tableHeaders'
-import InvestorForm from './userForm'
-import EditInvestorsForm from './editInvestorsForm'
+import InvestorForm from './components/userForm'
+import EditInvestorsForm from './components/editInvestorsForm'
 
 //might need TableToolbarAction and batchActionClick here
 const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
@@ -33,7 +32,6 @@ type StateProps = {|
   sell: Array<number>,
   buy: Array<number>,
   investors: Array<Investor>,
-  // investorsPaginated: Array<Array<EventData>>,
   csvMessage: string,
   modalShowing: boolean, //TODO: rename this to say previewCSVShowing
   listLength: number,
@@ -45,7 +43,6 @@ type DispatchProps = {|
   multiSubmit: () => any,
   singleSubmit: () => any,
   getWhitelist: (?Date, ?Date) => any,
-  // paginationDivider: () => any,
   updateListLength: (any) => any,
   removeInvestor: (any) => any,
   editInvestors: (any) => any,
@@ -57,7 +54,6 @@ const mapStateToProps = (state) => ({
   sell: state.whitelist.sell,
   buy: state.whitelist.buy,
   investors: state.whitelist.investors,
-  investorsPaginated: state.whitelist.investorsPaginated,
   csvMessage: state.whitelist.csvMessage,
   modalShowing: state.whitelist.modalShowing,
   listLength: state.whitelist.listLength,
@@ -65,15 +61,13 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch: Function) => ({
   initialize: () => dispatch(initialize()),
-  handleUpload: (e) => dispatch(uploadCSV(e)),
+  handleUpload: (e) => dispatch(uploadCSV(e.target.files[0])),
   multiSubmit: () => dispatch(multiUserSubmit()),
   singleSubmit: () => dispatch(oneUserSubmit()),
   getWhitelist: (calenderStart, calenderEnd) => dispatch(getWhitelist(calenderStart, calenderEnd)),
-  // paginationDivider: () => dispatch(paginationDivider()),
   updateListLength: (e) => dispatch(listLength(e)),
   removeInvestor: (e) => dispatch(removeInvestor(e)),
   editInvestors: (e) => dispatch(editInvestors(e)),
-
 })
 
 type Props = StateProps & DispatchProps
@@ -110,53 +104,8 @@ class WhitelistPage extends Component<Props, State> {
     this.props.initialize()
   }
 
-  paginationRendering () {
-    let paginatedArray = []
-    let investors = this.props.investors
-    console.log(investors)
-    let pageNum = this.state.page
-    let listLength = this.props.listLength
-    let startSlice = pageNum*listLength
-    let endSlice = ((pageNum+1)*listLength)
-
-    paginatedArray = this.props.investors.slice(startSlice, endSlice)
-
-    // console.log(paginatedArray)
-
-    let stringifiedArray = []
-    for (let i = 0; i <paginatedArray.length; i++){
-      let csvRandomID = uuidv4() //TODO: only use this function here, which means all other data from before should be investor data
-      let stringifyAdded = null
-
-      //QUESTION: is this the best way to get rid of the flow error? I think there must be a better way, as this code doesn't really do anything
-      //because when pulling from events, added will ALWAYS exist, but because we pass the type with a ? it brings flow error
-      //(because the time added is got from 'now' on blockchain, not from user input)
-      if (typeof(paginatedArray[i].added) === 'object'){
-        stringifyAdded = dateFormat(paginatedArray[i].added)
-      }
-      let stringifyFrom = dateFormat(paginatedArray[i].from)
-      let stringifyTo = dateFormat(paginatedArray[i].to)
-
-      let stringifyInvestor: EventData = {
-        id: csvRandomID,
-        address: paginatedArray[i].address,
-        added: stringifyAdded,
-        addedBy: paginatedArray[i].addedBy,
-        from: stringifyFrom,
-        to: stringifyTo,
-      }
-      stringifiedArray.push(stringifyInvestor)
-    }
-    return stringifiedArray
-  }
-
-  handleInvestorSubmit = () => {
-    this.props.singleSubmit()
-  }
-
   handleChangePages = (e) => {
     this.props.updateListLength(e.pageSize)
-    // this.props.paginationDivider() //TODO: i dont want to have to call this here, need to rework updateListLength, cuz it falls if i remove this function
     this.setState({
       page: (e.page - 1),
     })
@@ -165,7 +114,7 @@ class WhitelistPage extends Component<Props, State> {
   handleDatePicker = (picker) => {
     if (picker.length === 2){
       this.setState({
-        page: 0, //reset to initial page , othewise it might refer to a page that doesnt exist
+        page: 0, //reset to initial page , othewise it might refer to a page that doesnt exist //TODO: make sure this is true, im not sure it is
       })
       this.props.getWhitelist(picker[0],picker[1])
     }
@@ -193,6 +142,45 @@ class WhitelistPage extends Component<Props, State> {
     this.setState({
       editInvestorsShowing: false,
     })
+  }
+
+  onHandleInvestorSubmit = () => {
+    this.props.singleSubmit()
+    return true  //needed for the component from carbon to work properly
+  }
+
+  //renders the list by making it date strings and splitting up in pages, at the start of the render function
+  paginationRendering () {
+    let paginatedArray = []
+    let investors = this.props.investors
+    let pageNum = this.state.page
+    let listLength = this.props.listLength
+    let startSlice = pageNum*listLength
+    let endSlice = ((pageNum+1)*listLength)
+    paginatedArray = investors.slice(startSlice, endSlice)
+    let stringifiedArray = []
+    for (let i = 0; i <paginatedArray.length; i++){
+      let csvRandomID = uuidv4()
+      let stringifyAdded = null
+      //QUESTION: is this the best way to get rid of the flow error? I think there must be a better way, as this code doesn't really do anything
+      //because when pulling from events, added will ALWAYS exist, but because we pass the type with a ? it brings flow error
+      //(because the time added is got from 'now' on blockchain, not from user input)
+      if (typeof(paginatedArray[i].added) === 'object'){
+        stringifyAdded = dateFormat(paginatedArray[i].added)
+      }
+      let stringifyFrom = dateFormat(paginatedArray[i].from)
+      let stringifyTo = dateFormat(paginatedArray[i].to)
+      let stringifyInvestor: EventData = {
+        id: csvRandomID,
+        address: paginatedArray[i].address,
+        added: stringifyAdded,
+        addedBy: paginatedArray[i].addedBy,
+        from: stringifyFrom,
+        to: stringifyTo,
+      }
+      stringifiedArray.push(stringifyInvestor)
+    }
+    return stringifiedArray
   }
 
   removeInvestor = (e) => {
@@ -233,14 +221,14 @@ class WhitelistPage extends Component<Props, State> {
             id='transactional-modal'
             buttonTriggerText='Add New'
             modalHeading='Add New Investor'
-            onSubmit={this.handleInvestorSubmit}
+            handleSubmit={this.onHandleInvestorSubmit}
             shouldCloseAfterSubmit
           >
             <p className='bx--modal-content__text'>
                 Please enter the information below to add a single investor.
             </p>
             <br />
-            <InvestorForm onSubmit={this.handleInvestorSubmit} />
+            <InvestorForm />
           </ModalWrapper>
         </TableToolbarContent>
       </TableToolbar>
@@ -270,21 +258,14 @@ class WhitelistPage extends Component<Props, State> {
   )
 
   render () {
-    // console.log("HOW MANY TIMES DOES THIS RENDER????")
-
-    //function to call at render, that splits up the full investor list and only renders the ten or so needed.
-    // also , apply the date format thing   right here
     let paginatedRows =  this.paginationRendering()
-    console.log(paginatedRows)
     return (
       <DocumentTitle title='Sign Up – Polymath'>
-
         <div className='bx--grid'>
           <div className='bx--row'>
             <div className='bx--col-xs-6'>
               <h2>Whitelist</h2>
               <br />
-
               <ModalWrapper
                 id='input-modal'
                 buttonTriggerText='Import Whitelist'
@@ -312,7 +293,6 @@ class WhitelistPage extends Component<Props, State> {
                   multiple
                   buttonKind='secondary'
                 />
-
                 {this.props.modalShowing ? (
                   <div>
                     <div>{this.props.csvMessage}</div>
@@ -333,11 +313,9 @@ class WhitelistPage extends Component<Props, State> {
                   : null}
               </ModalWrapper>
               <br />
-
             </div>
           </div>
           <div className='bx--row'>
-
             <div className='bx--col-xs-2'>
               <DatePicker id='date-picker' onChange={this.handleDatePicker} datePickerType='range'>
                 <DatePickerInput
@@ -355,7 +333,6 @@ class WhitelistPage extends Component<Props, State> {
               </DatePicker>
             </div>
           </div>
-
           <br /> <br />
           <DataTable
             rows={paginatedRows}
@@ -366,7 +343,6 @@ class WhitelistPage extends Component<Props, State> {
             onChange={this.handleChangePages}
             pageSizes={[10, 20, 30, 40, 50]}
             totalItems={this.props.investors.length}
-
           />
           {this.state.editInvestorsShowing ? (
             <Modal
@@ -382,13 +358,12 @@ class WhitelistPage extends Component<Props, State> {
                 Please enter the information below to edit the chosen investors.
               </p>
               <br />
-              <EditInvestorsForm onSubmit={this.handleRequestSubmit} />
+              <EditInvestorsForm />
             </Modal>
           )
             : null}
         </div>
       </DocumentTitle>
-
     )
   }
 }

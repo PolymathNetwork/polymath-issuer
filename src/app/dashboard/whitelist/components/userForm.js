@@ -3,21 +3,26 @@
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form'
 
-import { Form, Button } from 'carbon-components-react'
+import { Form } from 'carbon-components-react'
 import { TextInput } from 'polymath-ui'
-import { required } from 'polymath-ui/dist/validate'
+import { required, ethereumAddress } from 'polymath-ui/dist/validate'
 
-export const formName = 'edit_investor_form'
+export const formName = 'user_form'
 
-type Props = {
-  handleSubmit: () => void,
-}
+type Props = {}
 
-class EditInvestorsForm extends Component<Props> {
+class InvestorForm extends Component<Props> {
 
   render () {
     return (
-      <Form onSubmit={this.props.handleSubmit}>
+      <Form>
+        <Field
+          name='address'
+          component={TextInput}
+          label='Eth Address'
+          placeholder='Investor Address'
+          validate={[required, ethereumAddress]}
+        />
         <Field
           name='sell'
           component={TextInput}
@@ -25,6 +30,7 @@ class EditInvestorsForm extends Component<Props> {
           validate={[required]}
           placeholder='Please type the exact format mm/dd/yyyy'
         />
+
         <Field
           name='buy'
           component={TextInput}
@@ -33,9 +39,6 @@ class EditInvestorsForm extends Component<Props> {
           placeholder='Please type the exact format mm/dd/yyyy'
         />
         <p>&nbsp;</p>
-        <Button type='submit'>
-          Submit
-        </Button>
       </Form>
     )
   }
@@ -45,4 +48,4 @@ export default reduxForm({
   form: formName,
   destroyOnUnmount: false,
   forceUnregisterOnUnmount: true,
-})(EditInvestorsForm)
+})(InvestorForm)

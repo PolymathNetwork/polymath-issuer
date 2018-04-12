@@ -1,43 +1,33 @@
 //@flow
 
-// import uuidv4 from 'uuid/v4'
 import * as ui from 'polymath-ui'
 import { TransferManager, SecurityToken } from 'polymathjs'
 import type { Investor } from 'polymathjs/types'
-import { formName as userFormName } from './userForm'
-import { formName as editInvestorsFormName } from './editInvestorsForm'
+import { formName as userFormName } from './components/userForm'
+import { formName as editInvestorsFormName } from './components/editInvestorsForm'
 import type { GetState } from '../../../redux/reducer'
 import type { ExtractReturn } from '../../../redux/helpers'
 
+//ac_ = actionCreator
 export const TRANSFER_MANAGER = 'dashboard/whitelist/TRANSFER_MANAGER'
-export const transferManagerDispatch = (transferManager: TransferManager) => ({ type: TRANSFER_MANAGER, transferManager: transferManager })
+export const ac_transferManager = (transferManager: TransferManager) => ({ type: TRANSFER_MANAGER, transferManager: transferManager })
 
 export const UPLOAD_CSV = 'dashboard/whitelist/UPLOAD_CSV'
-export const csvDispatch = (csvMessage: string, addresses: Array<string>, sell: Array<string>, buy: Array<string>, modalShowing: boolean, ) => ({ type: UPLOAD_CSV, csvMessage, addresses, sell, buy, modalShowing })
-
+export const ac_csvUpload = (csvMessage: string, addresses: Array<string>, sell: Array<string>, buy: Array<string>, modalShowing: boolean, ) => ({ type: UPLOAD_CSV, csvMessage, addresses, sell, buy, modalShowing })
 export const UPLOAD_CSV_FAILED = 'dashboard/whitelist/UPLOAD_CSV_FAILED'
 
-//this needs to be renamed , cuz it is not actually from csv multi entry, this is from getWhiteList . this has to do with all whitelist grabbing
 export const GET_WHITELIST = 'dashboard/whitelist/GET_WHITELIST'
-export const getWhitelistDispatch = (investors: Array<Investor>) => ({ type: GET_WHITELIST, investors })
-
-export const GET_WHITELIST_FAILED = 'dashboard/whitelist/GET_WHITELIST_FAILED'
-
-// export const PAGINATION_DIVIDER = 'dashboard/whitelist/PAGINATION_DIVDER'
-// export const paginationDispatch = (paginatedInvestors: Array<Array<EventData>>) => ({ type: PAGINATION_DIVIDER, paginatedInvestors })
+export const ac_getWhitelist = (investors: Array<Investor>) => ({ type: GET_WHITELIST, investors })
+// export const GET_WHITELIST_FAILED = 'dashboard/whitelist/GET_WHITELIST_FAILED'
 
 export const LIST_LENGTH = 'dashboard/whitelist/LIST_LENGTH'
-export const listLengthDispatch = (listLength: number) => ({ type: LIST_LENGTH, listLength })
-
-export const ADD_SINGLE_ENTRY = 'dashboard/whitelist/ADD_SINGLE_ENTRY'
-export const ADD_SINGLE_ENTRY_FAILED = 'dashboard/whitelist/ADD_SINGLE_ENTRY_FAILED'
+export const ac_listLength = (listLength: number) => ({ type: LIST_LENGTH, listLength })
 
 export type Action =
-  | ExtractReturn<typeof transferManagerDispatch>
-  | ExtractReturn<typeof csvDispatch>
-  | ExtractReturn<typeof getWhitelistDispatch>
-  // | ExtractReturn<typeof paginationDispatch>
-  | ExtractReturn<typeof listLengthDispatch>
+  | ExtractReturn<typeof ac_transferManager>
+  | ExtractReturn<typeof ac_csvUpload>
+  | ExtractReturn<typeof ac_getWhitelist>
+  | ExtractReturn<typeof ac_listLength>
 
 //initialize grabs transferManager , and stores it in state for other functions to easily call
 //It then calls getWhiteList() to populate the table for the user
@@ -48,22 +38,21 @@ export const initialize = () => async (dispatch: Function, getState: GetState) =
   }
   const contract: SecurityToken = token.contract
   const transferManager: TransferManager = await contract.getTransferManager()
-  dispatch(transferManagerDispatch(transferManager))
+  dispatch(ac_transferManager(transferManager))
   dispatch(getWhitelist())
 }
 
 //Uploads the CSV file, reads it with built in js FileReader(), dispatches to the store the csv file information,
 //which can then be sent to the blockchain with multiUserSumbit()
 //QUESTION: @davekaj - Do we need to limit CSV file to 50 or 100, and notify them that it is too long? also keep in mind gas limit and WS packet size
-export const uploadCSV = (e: Object) => async (dispatch: Function) => {
-  let file = e.target.files[0]
+export const uploadCSV = (file: Object) => async (dispatch: Function) => {
   let textType = /csv.*/
   if (file.type.match(textType)) {
     let reader = new FileReader()
     reader.readAsText(file)
     reader.onload = function () {
       let parsedData = parseCSV(((reader.result: any): string))
-      dispatch(csvDispatch("CSV upload was successful!", parsedData[0], parsedData[1], parsedData[2], true))
+      dispatch(ac_csvUpload("CSV upload was successful!", parsedData[0], parsedData[1], parsedData[2], true))
     }
   } else {
     dispatch({ type: UPLOAD_CSV_FAILED, csvMessage: "There was an error uploading the CSV file" })
@@ -78,7 +67,6 @@ const parseCSV = (csvResult: string ) => {
   let buyRestriction = []
   let allTextLines = csvResult.split(/\r\n|\n/)
   let zeroX = "0x"
-
   for (let i = 0; i < allTextLines.length; i++) {
     let entry = allTextLines[i]
     if (entry.includes(zeroX)) {
@@ -87,17 +75,14 @@ const parseCSV = (csvResult: string ) => {
       let address = splitArray[1]
       let sell = splitArray[2]
       let buy = splitArray[3]
-
       addresses.push(address)
       sellRestriction.push(sell)
       buyRestriction.push(buy)
-
     }
   }
   parsedData.push(addresses)
   parsedData.push(sellRestriction)
   parsedData.push(buyRestriction)
-
   return parsedData
 }
 
@@ -107,7 +92,6 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: GetSta
   let csvAddresses = getState().whitelist.addresses
   let csvSell = getState().whitelist.sell
   let csvBuy = getState().whitelist.buy
-
   for (let i = 0; i < csvAddresses.length; i++) {
     let newSellDate = new Date(csvSell[i])
     let newBuyDate = new Date(csvBuy[i])
@@ -118,7 +102,6 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: GetSta
     }
     blockchainData.push(investorData)
   }
-
   const transferManager = getState().whitelist.transferManager
   dispatch(ui.txStart('Submitting CSV to the blockchain...'))
   try {
@@ -132,10 +115,9 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: GetSta
   } catch (e) {
     dispatch(ui.txFailed(e))
   }
-  // dispatch(getWhitelist()) TODO: this right now is returning the list PLUS the list, so 14 + 4 = 18 ends up being 14 + 18 = 36
+  dispatch(getWhitelist())
 }
 
-//TODO - where is owner coming from?
 export const oneUserSubmit = () => async (dispatch: Function, getState: GetState) => {
   const user = { ...getState().form[userFormName].values }
   let newSellDate = new Date(user.sell)
@@ -145,13 +127,12 @@ export const oneUserSubmit = () => async (dispatch: Function, getState: GetState
     from: newSellDate,
     to: newBuyDate,
   }
-
   const transferManager = getState().whitelist.transferManager
   dispatch(ui.txStart('Submitting CSV to the blockchain...'))
   try {
     const receipt = await transferManager.modifyWhitelist(blockchainData)
     dispatch(ui.notify(
-      'CSV was successfully uploaded',
+      'Investor was submitted to the blockchain',
       true,
       'We will present the investor list to you on the next page',
       ui.etherscanTx(receipt.transactionHash)
@@ -159,16 +140,13 @@ export const oneUserSubmit = () => async (dispatch: Function, getState: GetState
   } catch (e) {
     dispatch(ui.txFailed(e))
   }
-  // dispatch(getWhitelist()) TODO: this right now is returning the list PLUS the list, so 14 + 4 = 18 ends up being 14 + 18 = 36
-
+  dispatch(getWhitelist())
 }
 
 export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async (dispatch: Function, getState: GetState) => {
   let tableData = []
-
   const transferManager = getState().whitelist.transferManager
   let whitelistEvents = await transferManager.getWhitelist()
-
   //if statement only gets checked if both date picker values have been filled in, and then it will shrink the list down to its needed size
   if (calenderStart !== undefined && calenderEnd !== undefined) {
     let wlDateRestricted = []
@@ -178,21 +156,15 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
       }
     }
     whitelistEvents = wlDateRestricted
-
   }
-  // console.log("WHITELISTEVENTS: ", whitelistEvents)
-  //yenno, going through this array backwards would probably save some computation time
+  //TODO EFFICIENCY: going through this array backwards would probably save some computation time
   for (let i =0; i < whitelistEvents.length; i++){
-    // let csvRandomID = uuidv4()
-    //TODO: consider edge cases, like when someone uploads updates in the same day. This may have to do with polymath.js, being able to return down to the second, not just day
-    //in order to fix this, we need to keep the time accurate throughout to the second, and then do toDateString when you throw away the zero values
     let found = tableData.some(function (el, index, array) {
       //if true, User already recorded in eventList, so we don't want to make a new entry
       if( el.address === whitelistEvents[i].address ){
         // if true, this event is newer than the previous event, so we update the space in the array
         if (whitelistEvents[i].added > el.added){
           let updateArray: Investor = {
-            // id: csvRandomID,
             address: whitelistEvents[i].address,
             added: whitelistEvents[i].added,
             addedBy: whitelistEvents[i].addedBy,
@@ -211,7 +183,6 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
     })
     if (!found) {
       let backendData: Investor = {
-        // id: csvRandomID,
         address: whitelistEvents[i].address,
         added: whitelistEvents[i].added,
         addedBy: whitelistEvents[i].addedBy,
@@ -221,67 +192,28 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
       tableData.push(backendData)
     }
   }
-  // console.log("TABLE DATA: ", tableData)
-
-  //removeZeroTimestampArray removes investors that have a zero timestamp, because they are effectively removed
-  //from trading and shouldnt be shown on the list to the user
-  // it also turns the valid investors date objects into strings, for human readability (and react doesnt like objects passed)
+  //removeZeroTimestampArray removes investors that have a zero timestamp, because they are effectively removed from trading and shouldnt be shown on the list to the user
   let removeZeroTimestampArray = []
   for (let j = 0; j < tableData.length; j++){
-    // if (tableData[j] !== null && tableData[j] !== string)
     if (tableData[j].from.getTime() !== 0 && tableData[j].to.getTime() !== 0 ) {
       let validInvestor: Investor = {
-        // id: tableData[j].id,
         address: tableData[j].address,
         added: (tableData[j].added),
         addedBy: tableData[j].addedBy,
-        from: tableData[j].from, //getLocalDateString
+        from: tableData[j].from,
         to: tableData[j].to,
       }
       removeZeroTimestampArray.push(validInvestor)
     }
   }
   // console.log("FINAL ARRAY: ",removeZeroTimestampArray)
-  dispatch(getWhitelistDispatch(removeZeroTimestampArray))
-  // dispatch(paginationDivider())
-
+  dispatch(ac_getWhitelist(removeZeroTimestampArray))
 }
-
-//TODO: Evaulate these on render, rather than remaking the array and storing in redux
-// export const paginationDivider = () => async (dispatch: Function, getState: GetState) => {
-//   const fullInvestorList = [...getState().whitelist.investors]
-//   // console.log("IN PAGINATION: ", fullInvestorList)
-//   let holdsDivisons = []
-//   let singlePage = []
-//   let listLength = getState().whitelist.listLength
-//   for (let i = 0; i < fullInvestorList.length; i++) {
-//     singlePage.push(fullInvestorList[i])
-//     if (singlePage.length === listLength || i === (fullInvestorList.length - 1)) {
-//       holdsDivisons.push(singlePage)
-//       singlePage = []
-//     }
-//   }
-//   if (holdsDivisons.length === 0 ) {
-//     const noMatch: EventData = {
-//       id: "nomatch",
-//       address: "No investors exist for these dates",
-//       added: null,
-//       addedBy: null,
-//       from: null,
-//       to: null,
-//     }
-//     holdsDivisons.push([noMatch])
-//
-//   }
-//   dispatch(paginationDispatch(holdsDivisons))
-// }
 
 export const listLength = (e: number) => async (dispatch: Function) => {
-  dispatch(listLengthDispatch(e))
+  dispatch(ac_listLength(e))
 }
 
-//NOTE: this function only allows complete removal of both sell and buy times. do we need customization to do only single? if so, UI is not showing like this
-//TODO: need to make a function in polymathJS that allows us to remove by just passing a single address, i dont need to do all this on front end, and it doesnt work well from requiring date objects
 export const removeInvestor = (addresses: Array<string>) => async (dispatch: Function, getState: GetState) => {
   let blockchainData: Array<Investor> = []
   for (let i = 0; i < addresses.length; i++) {
@@ -294,7 +226,7 @@ export const removeInvestor = (addresses: Array<string>) => async (dispatch: Fun
     blockchainData.push(removeInvestor)
   }
   const transferManager = getState().whitelist.transferManager
-  dispatch(ui.txStart('Submitting CSV to the blockchain...'))
+  dispatch(ui.txStart('Attempting to remove investors from the blockchain...'))
   try {
     const receipt = await transferManager.modifyWhitelistMulti(blockchainData)
     dispatch(ui.notify(
@@ -306,8 +238,7 @@ export const removeInvestor = (addresses: Array<string>) => async (dispatch: Fun
   } catch (e) {
     dispatch(ui.txFailed(e))
   }
-  // dispatch(getWhitelist()) TODO: this right now is returning the list PLUS the list, so 14 + 4 = 18 ends up being 14 + 18 = 36
-
+  dispatch(getWhitelist())
 }
 
 export const editInvestors = (addresses: Array<string>) => async (dispatch: Function, getState: GetState) => {
@@ -336,6 +267,5 @@ export const editInvestors = (addresses: Array<string>) => async (dispatch: Func
   } catch (e) {
     dispatch(ui.txFailed(e))
   }
-  // dispatch(getWhitelist()) TODO: this right now is returning the list PLUS the list, so 14 + 4 = 18 ends up being 14 + 18 = 36
-
+  dispatch(getWhitelist())
 }
