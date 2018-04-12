@@ -1,6 +1,6 @@
 //@flow
 
-import uuidv4 from 'uuid/v4'
+// import uuidv4 from 'uuid/v4'
 import * as ui from 'polymath-ui'
 import { TransferManager, SecurityToken } from 'polymathjs'
 import type { Investor } from 'polymathjs/types'
@@ -38,15 +38,6 @@ export type Action =
   | ExtractReturn<typeof getWhitelistDispatch>
   // | ExtractReturn<typeof paginationDispatch>
   | ExtractReturn<typeof listLengthDispatch>
-
-export type EventData = {
-  id: string,
-  address: string,
-  added: string,
-  addedBy: string,
-  from: string, //TODO: need to make these more restrictive
-  to: string, //TODO: need to make these more restrictive
-}
 
 //initialize grabs transferManager , and stores it in state for other functions to easily call
 //It then calls getWhiteList() to populate the table for the user

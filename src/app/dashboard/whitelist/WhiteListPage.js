@@ -16,7 +16,7 @@ import {
 
 import type { Investor } from 'polymathjs/types'
 import { TransferManager } from 'polymathjs'
-import type { EventData } from './actions'
+// import type { EventData } from './actions'
 import { initialize, uploadCSV, multiUserSubmit, oneUserSubmit, getWhitelist, listLength, removeInvestor, editInvestors } from './actions'
 import { TableHeaders } from './tableHeaders'
 import InvestorForm from './userForm'
@@ -84,9 +84,18 @@ type State = {
   editInvestors: Array<string>,
 }
 
+ type EventData = {
+  id: string,
+  address: string,
+  added: ?string,
+  addedBy: ?string,
+  from: string,
+  to: string,
+}
+
 const dateFormat = (date: Date) => date.toLocaleDateString('en', {
   year: 'numeric',
-  month: 'long',
+  month: 'short',
   day: 'numeric',
 })
 
@@ -117,7 +126,14 @@ class WhitelistPage extends Component<Props, State> {
     let stringifiedArray = []
     for (let i = 0; i <paginatedArray.length; i++){
       let csvRandomID = uuidv4() //TODO: only use this function here, which means all other data from before should be investor data
-      let stringifyAdded = dateFormat(paginatedArray[i].added)
+      let stringifyAdded = null
+
+      //QUESTION: is this the best way to get rid of the flow error? I think there must be a better way, as this code doesn't really do anything
+      //because when pulling from events, added will ALWAYS exist, but because we pass the type with a ? it brings flow error
+      //(because the time added is got from 'now' on blockchain, not from user input)
+      if (typeof(paginatedArray[i].added) === 'object'){
+        stringifyAdded = dateFormat(paginatedArray[i].added)
+      }
       let stringifyFrom = dateFormat(paginatedArray[i].from)
       let stringifyTo = dateFormat(paginatedArray[i].to)
 
