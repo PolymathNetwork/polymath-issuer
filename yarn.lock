@@ -8024,15 +8024,9 @@ polymath-ui@0.2.6:
     react-transition-group "^2.2.1"
     redux "^3.7.2"
 
-<<<<<<< HEAD
-polymathjs@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-0.4.1.tgz#1e75b9fd2fe6c5470e578b9cafec4f817c677124"
-=======
 polymathjs@0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-0.4.2.tgz#187caf77849e4e6f9aa54319f4ef79db4d947852"
->>>>>>> 45fc32bd177a9f36fe77f6b418104bed65cc531a
   dependencies:
     bignumber.js "5.0.0"
     bs58 "^4.0.1"
