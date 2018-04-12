@@ -14,6 +14,7 @@ export type WhitelistState = {
   investors: Array<Investor>,
   listLength: number,
   csvMessage: string,
+  previewCSVShowing: boolean,
 }
 
 const defaultState: WhitelistState = {
@@ -30,6 +31,7 @@ const defaultState: WhitelistState = {
   }],
   listLength: 10,
   csvMessage: "Please upload a CSV file",
+  previewCSVShowing: false,
 }
 
 export default (state: WhitelistState = defaultState, action: Action) => {
@@ -46,7 +48,7 @@ export default (state: WhitelistState = defaultState, action: Action) => {
         sell: action.sell,
         buy: action.buy,
         csvMessage: action.csvMessage,
-        modalShowing: action.modalShowing,
+        previewCSVShowing: action.previewCSVShowing,
       }
     case a.UPLOAD_CSV_FAILED:
       return {

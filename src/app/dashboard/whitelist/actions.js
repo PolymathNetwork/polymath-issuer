@@ -13,7 +13,7 @@ export const TRANSFER_MANAGER = 'dashboard/whitelist/TRANSFER_MANAGER'
 export const ac_transferManager = (transferManager: TransferManager) => ({ type: TRANSFER_MANAGER, transferManager: transferManager })
 
 export const UPLOAD_CSV = 'dashboard/whitelist/UPLOAD_CSV'
-export const ac_csvUpload = (csvMessage: string, addresses: Array<string>, sell: Array<string>, buy: Array<string>, modalShowing: boolean, ) => ({ type: UPLOAD_CSV, csvMessage, addresses, sell, buy, modalShowing })
+export const ac_csvUpload = (csvMessage: string, addresses: Array<string>, sell: Array<string>, buy: Array<string>, previewCSVShowing: boolean, ) => ({ type: UPLOAD_CSV, csvMessage, addresses, sell, buy, previewCSVShowing })
 export const UPLOAD_CSV_FAILED = 'dashboard/whitelist/UPLOAD_CSV_FAILED'
 
 export const GET_WHITELIST = 'dashboard/whitelist/GET_WHITELIST'
@@ -46,6 +46,7 @@ export const initialize = () => async (dispatch: Function, getState: GetState) =
 //which can then be sent to the blockchain with multiUserSumbit()
 //QUESTION: @davekaj - Do we need to limit CSV file to 50 or 100, and notify them that it is too long? also keep in mind gas limit and WS packet size
 export const uploadCSV = (file: Object) => async (dispatch: Function) => {
+  console.log((file))
   let textType = /csv.*/
   if (file.type.match(textType)) {
     let reader = new FileReader()
@@ -145,7 +146,7 @@ export const oneUserSubmit = () => async (dispatch: Function, getState: GetState
 
 export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async (dispatch: Function, getState: GetState) => {
   let tableData = []
-  const transferManager = getState().whitelist.transferManager
+  const transferManager: TransferManager = getState().whitelist.transferManager
   let whitelistEvents = await transferManager.getWhitelist()
   //if statement only gets checked if both date picker values have been filled in, and then it will shrink the list down to its needed size
   if (calenderStart !== undefined && calenderEnd !== undefined) {
@@ -210,8 +211,8 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
   dispatch(ac_getWhitelist(removeZeroTimestampArray))
 }
 
-export const listLength = (e: number) => async (dispatch: Function) => {
-  dispatch(ac_listLength(e))
+export const listLength = (pageNumber: number) => async (dispatch: Function) => {
+  dispatch(ac_listLength(pageNumber))
 }
 
 export const removeInvestor = (addresses: Array<string>) => async (dispatch: Function, getState: GetState) => {

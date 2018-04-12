@@ -33,7 +33,7 @@ type StateProps = {|
   buy: Array<number>,
   investors: Array<Investor>,
   csvMessage: string,
-  modalShowing: boolean, //TODO: rename this to say previewCSVShowing
+  previewCSVShowing: boolean,
   listLength: number,
 |}
 
@@ -43,9 +43,9 @@ type DispatchProps = {|
   multiSubmit: () => any,
   singleSubmit: () => any,
   getWhitelist: (?Date, ?Date) => any,
-  updateListLength: (any) => any,
-  removeInvestor: (any) => any,
-  editInvestors: (any) => any,
+  updateListLength: (number) => any,
+  removeInvestor: (investors: Array<string>) => any,
+  editInvestors: (investors: Array<string>) => any,
 |}
 
 const mapStateToProps = (state) => ({
@@ -55,19 +55,19 @@ const mapStateToProps = (state) => ({
   buy: state.whitelist.buy,
   investors: state.whitelist.investors,
   csvMessage: state.whitelist.csvMessage,
-  modalShowing: state.whitelist.modalShowing,
+  previewCSVShowing: state.whitelist.previewCSVShowing,
   listLength: state.whitelist.listLength,
 })
 
 const mapDispatchToProps = (dispatch: Function) => ({
   initialize: () => dispatch(initialize()),
-  handleUpload: (e) => dispatch(uploadCSV(e.target.files[0])),
+  handleUpload: (htmlCsv) => dispatch(uploadCSV(htmlCsv.target.files[0])),
   multiSubmit: () => dispatch(multiUserSubmit()),
   singleSubmit: () => dispatch(oneUserSubmit()),
-  getWhitelist: (calenderStart, calenderEnd) => dispatch(getWhitelist(calenderStart, calenderEnd)),
-  updateListLength: (e) => dispatch(listLength(e)),
-  removeInvestor: (e) => dispatch(removeInvestor(e)),
-  editInvestors: (e) => dispatch(editInvestors(e)),
+  getWhitelist: (calenderStart: Date, calenderEnd: Date) => dispatch(getWhitelist(calenderStart, calenderEnd)),
+  updateListLength: (pageNumber: number) => dispatch(listLength(pageNumber)),
+  removeInvestor: (investors: Array<string>) => dispatch(removeInvestor(investors)),
+  editInvestors: (investors: Array<string>) => dispatch(editInvestors(investors)),
 })
 
 type Props = StateProps & DispatchProps
@@ -87,6 +87,13 @@ type State = {
   to: string,
 }
 
+type PageChanger = {
+  page: number,
+  pageSize: number,
+}
+
+type DatePickerType = [Date, Date]
+
 const dateFormat = (date: Date) => date.toLocaleDateString('en', {
   year: 'numeric',
   month: 'short',
@@ -104,14 +111,14 @@ class WhitelistPage extends Component<Props, State> {
     this.props.initialize()
   }
 
-  handleChangePages = (e) => {
-    this.props.updateListLength(e.pageSize)
+  handleChangePages = (pc: PageChanger) => {
+    this.props.updateListLength(pc.pageSize)
     this.setState({
-      page: (e.page - 1),
+      page: (pc.page - 1),
     })
   }
 
-  handleDatePicker = (picker) => {
+  handleDatePicker = (picker: DatePickerType) => {
     if (picker.length === 2){
       this.setState({
         page: 0, //reset to initial page , othewise it might refer to a page that doesnt exist //TODO: make sure this is true, im not sure it is
@@ -120,7 +127,7 @@ class WhitelistPage extends Component<Props, State> {
     }
   }
 
-  handleEditInvestors = (investors) => {
+  handleEditInvestors = (investors: Array<Object>) => {
     let addresses = []
     for (let i = 0; i < investors.length; i++) {
       addresses.push(investors[i].cells[0].value)
@@ -160,7 +167,7 @@ class WhitelistPage extends Component<Props, State> {
     paginatedArray = investors.slice(startSlice, endSlice)
     let stringifiedArray = []
     for (let i = 0; i <paginatedArray.length; i++){
-      let csvRandomID = uuidv4()
+      let csvRandomID: string = uuidv4()
       let stringifyAdded = null
       //QUESTION: is this the best way to get rid of the flow error? I think there must be a better way, as this code doesn't really do anything
       //because when pulling from events, added will ALWAYS exist, but because we pass the type with a ? it brings flow error
@@ -183,10 +190,10 @@ class WhitelistPage extends Component<Props, State> {
     return stringifiedArray
   }
 
-  removeInvestor = (e) => {
+  removeInvestor = (investors: Array<Object>) => {
     let addresses = []
-    for (let i = 0; i < e.length; i++) {
-      addresses.push(e[i].cells[0].value)
+    for (let i = 0; i < investors.length; i++) {
+      addresses.push(investors[i].cells[0].value)
     }
     this.props.removeInvestor(addresses)
   }
@@ -293,7 +300,7 @@ class WhitelistPage extends Component<Props, State> {
                   multiple
                   buttonKind='secondary'
                 />
-                {this.props.modalShowing ? (
+                {this.props.previewCSVShowing ? (
                   <div>
                     <div>{this.props.csvMessage}</div>
                     <p className='bx--modal-content__text'>
