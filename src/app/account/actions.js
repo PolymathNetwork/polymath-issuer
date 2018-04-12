@@ -26,7 +26,7 @@ export const signUp = () => async (dispatch: Function, getState: GetState) => {
   try {
     const data = getState().form[formName].values
     // eslint-disable-next-line no-underscore-dangle
-    data._signature = await getState().network.web3.eth.sign(data, data._account)
+    // data._signature = await getState().network.web3.eth.sign(data, data._account)
     localStorage.setItem('account', JSON.stringify(data)) // TODO @bshevchenko: use API
     dispatch(signedUp(true))
     dispatch(ui.notify(
