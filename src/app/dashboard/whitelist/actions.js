@@ -34,6 +34,7 @@ export type Action =
 export const initialize = () => async (dispatch: Function, getState: GetState) => {
   const token = getState().token.token
   if (!token || !token.contract) {
+    console.error("Contract manager object not found, it did not carry over into the state")
     return
   }
   const contract: SecurityToken = token.contract
@@ -46,7 +47,6 @@ export const initialize = () => async (dispatch: Function, getState: GetState) =
 //which can then be sent to the blockchain with multiUserSumbit()
 //QUESTION: @davekaj - Do we need to limit CSV file to 50 or 100, and notify them that it is too long? also keep in mind gas limit and WS packet size
 export const uploadCSV = (file: Object) => async (dispatch: Function) => {
-  console.log((file))
   let textType = /csv.*/
   if (file.type.match(textType)) {
     let reader = new FileReader()
