@@ -1,8 +1,8 @@
 export const TableHeaders = [
-  { key: "address", header: "INVESTOR ETH ADDRESS" },
-  { key: "added", header: "DATE ADDED" }, 
-  { key: "addedBy", header: "ADDED BY" },
-  { key: "from", header: "SELL RESTRICTION UNTIL" },
-  { key: "to", header: "BUY RESTRICTION UNTIL" },
+  { key: "address", header: "Investor eth address" },
+  { key: "added", header: "Date added" },
+  { key: "addedBy", header: "Added by" },
+  { key: "from", header: "Sale lockup ends" },
+  { key: "to", header: "Purchase lockup ends " },
 
 ]
