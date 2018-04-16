@@ -129,7 +129,6 @@ class WhitelistPage extends Component<Props, State> {
   }
 
   handleEditInvestors = (dataTableRow: Array<Object>) => {
-    console.log('handle edit invesotrs: ', dataTableRow)
     let addresses = []
     for (let i = 0; i < dataTableRow.length; i++) {
       addresses.push(dataTableRow[i].cells[0].value)
