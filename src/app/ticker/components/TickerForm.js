@@ -9,7 +9,6 @@ import {
   required,
   maxLength,
   alphanumeric,
-  ethereumAddress,
 } from 'polymath-ui/dist/validate'
 import { TickerRegistry } from 'polymathjs'
 
@@ -28,39 +27,34 @@ class TickerForm extends Component<Props> {
         <Field
           name='ticker'
           component={TextInput}
-          label='Enter token symbol'
-          placeholder='POLY'
+          label='Token symbol'
+          placeholder='Enter token symbol'
         />
         <Field
           name='name'
           component={TextInput}
-          label='Enter token name'
-          placeholder='Polymath Network Token'
+          label='Token name'
+          placeholder='Enter token name'
           validate={[required, maxLength100]}
-        />
-        <Field
-          name='owner'
-          component={TextInput}
-          label='Owner'
-          disabled
-          validate={[required, ethereumAddress]}
         />
         <Field
           name='company'
           component={TextInput}
           label='Company name'
+          placeholder='Enter company name'
           validate={[maxLength100]}
         />
         <Field
           name='desc'
           component={TextInput}
           label='Company description'
+          placeholder='Enter company description'
           validate={[maxLength100]}
         />
-        <p>&nbsp;</p>
         <Button type='submit'>
-          Submit
+          Register token symbol
         </Button>
+        <p className='pui-input-hint'>By registering your token symbol with Polymath you agree to our Terms and Conditions</p>
       </Form>
     )
   }
@@ -82,6 +76,7 @@ export default reduxForm({
     try {
       details = await TickerRegistry.getDetails(v)
     } catch (err) {
+      // eslint-disable-next-line
       console.error('Error fetching details', err)
     }
 

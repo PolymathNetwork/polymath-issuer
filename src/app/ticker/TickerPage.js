@@ -3,12 +3,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
-import { Link } from 'react-router-dom'
-import { Breadcrumb, BreadcrumbItem } from 'carbon-components-react'
-import { change } from 'redux-form'
 import type { RouterHistory } from 'react-router'
+import { bull } from 'polymath-ui'
 
-import TickerForm, { formName } from './components/TickerForm'
+import TickerForm from './components/TickerForm'
 import { register } from './actions'
 
 type StateProps = {|
@@ -18,7 +16,6 @@ type StateProps = {|
 |}
 
 type DispatchProps = {|
-  change: (?string) => any,
   register: () => any,
 |}
 
@@ -29,7 +26,6 @@ const mapStateToProps = (state): StateProps => ({
 })
 
 const mapDispatchToProps: DispatchProps = {
-  change: (value) => change(formName, 'owner', value, false, false),
   register,
 }
 
@@ -39,10 +35,6 @@ type Props = {|
 
 class TickerPage extends Component<Props> {
 
-  componentWillMount () {
-    this.props.change(this.props.account)
-  }
-
   handleSubmit = () => {
     this.props.register()
   }
@@ -51,15 +43,28 @@ class TickerPage extends Component<Props> {
     return (
       <DocumentTitle title='Token Symbol Registration – Polymath'>
         <div className='bx--row'>
-          <div className='bx--col-xs-12'>
-            <Breadcrumb>
-              <BreadcrumbItem>
-                <Link to='/'>Home</Link>
-              </BreadcrumbItem>
-            </Breadcrumb>
-            <h1 className='bx--type-mega'>Token Symbol Registration</h1>
-            <p>&nbsp;</p>
-            <TickerForm onSubmit={this.handleSubmit} />
+          <div className='bx--col-xs-2' />
+          <div className='bx--col-xs-8'>
+            <div className='pui-single-box'>
+              <div className='bx--row'>
+                <div className='bx--col-xs-8'>
+                  <h1>Token symbol registration</h1>
+                  <h4>
+                    The token symbol and name you choose will be stored on the Ethereum blockchain forever. It will
+                    also be listed on exchanges and other sites. Make sure you choose a symbol and name that helps
+                    investors recognize you.
+                  </h4>
+                </div>
+                <div className='bx--col-xs-4 pui-single-box-bull'>
+                  <img src={bull} alt='Bull' />
+                </div>
+              </div>
+              <div className='bx--row'>
+                <div className='bx--col-xs-12'>
+                  <TickerForm onSubmit={this.handleSubmit} />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </DocumentTitle>
