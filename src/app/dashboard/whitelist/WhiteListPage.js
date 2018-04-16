@@ -21,7 +21,7 @@ import { TableHeaders } from './tableHeaders'
 import InvestorForm from './components/userForm'
 import EditInvestorsForm from './components/editInvestorsForm'
 
-//might need TableToolbarAction and batchActionClick here
+// might need TableToolbarAction and batchActionClick here
 const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
   TableSelectAll, TableSelectRow, TableToolbar, TableBatchAction, TableBatchActions,
   TableToolbarSearch, TableToolbarContent } = DataTable
@@ -119,9 +119,9 @@ class WhitelistPage extends Component<Props, State> {
   }
 
   handleDatePicker = (picker: DatePickerType) => {
-    if (picker.length === 2){
+    if (picker.length === 2) {
       this.setState({
-        page: 0, //reset to initial page , othewise it might refer to a page that doesnt exist //TODO: make sure this is true, im not sure it is
+        page: 0, // TODO @davekaj: make sure that reseting to initial page is truly needed
       })
       this.props.getWhitelist(picker[0],picker[1])
     }
@@ -153,7 +153,7 @@ class WhitelistPage extends Component<Props, State> {
 
   onHandleInvestorSubmit = () => {
     this.props.singleSubmit()
-    return true  //needed for the component from carbon to work properly
+    return true  // Must return true, for the component from carbon to work
   }
 
   //renders the list by making it date strings and splitting up in pages, at the start of the render function
@@ -162,8 +162,8 @@ class WhitelistPage extends Component<Props, State> {
     let investors = this.props.investors
     let pageNum = this.state.page
     let listLength = this.props.listLength
-    let startSlice = pageNum*listLength
-    let endSlice = ((pageNum+1)*listLength)
+    let startSlice = pageNum * listLength
+    let endSlice = ((pageNum+1) * listLength)
     paginatedArray = investors.slice(startSlice, endSlice)
     let stringifiedArray = []
     for (let i = 0; i <paginatedArray.length; i++){
@@ -200,7 +200,7 @@ class WhitelistPage extends Component<Props, State> {
 
   onHandleMultiSubmit = () => {
     this.props.multiSubmit()
-    return true //needed for the component from carbon to work properly
+    return true // Must return true, for the component from carbon to work
   }
 
   dataTableRender = ({
