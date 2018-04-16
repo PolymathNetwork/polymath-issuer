@@ -6,7 +6,7 @@ import type { Investor } from 'polymathjs/types'
 import * as a from './actions'
 import type { Action } from './actions'
 
-export type WhitelistState = {
+export type WhitelistState = {|
   transferManager: TransferManager,
   addresses: Array<string>,
   sell: Array<number>,
@@ -15,7 +15,7 @@ export type WhitelistState = {
   listLength: number,
   csvMessage: string,
   previewCSVShowing: boolean,
-}
+|}
 
 const defaultState: WhitelistState = {
   transferManager: null,
@@ -23,14 +23,14 @@ const defaultState: WhitelistState = {
   sell: [],
   buy: [],
   investors: [{
-    address: "No investors added yet!",
+    address: 'No investors added yet!',
     added: new Date(0),
-    addedBy: "",
+    addedBy: '',
     from: new Date(0),
     to: new Date(0),
   }],
   listLength: 10,
-  csvMessage: "Please upload a CSV file",
+  csvMessage: 'Please upload a CSV file',
   previewCSVShowing: false,
 }
 
