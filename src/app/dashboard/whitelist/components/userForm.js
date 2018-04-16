@@ -2,10 +2,11 @@
 
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form'
-
 import { Form } from 'carbon-components-react'
 import { TextInput } from 'polymath-ui'
 import { required, ethereumAddress } from 'polymath-ui/dist/validate'
+
+import DatePickerSingleInput from './DatePickerSingleInput'
 
 export const formName = 'user_form'
 
@@ -25,18 +26,18 @@ class InvestorForm extends Component<Props> {
         />
         <Field
           name='sell'
-          component={TextInput}
+          component={DatePickerSingleInput}
           label='Sell Restriction Date'
           validate={[required]}
-          placeholder='Please type the exact format mm/dd/yyyy'
+          placeholder='mm/dd/yyyy'
         />
 
         <Field
           name='buy'
-          component={TextInput}
+          component={DatePickerSingleInput}
           label='Buy Restriction Date'
           validate={[required]}
-          placeholder='Please type the exact format mm/dd/yyyy'
+          placeholder='mm/dd/yyyy'
         />
         <p>&nbsp;</p>
       </Form>

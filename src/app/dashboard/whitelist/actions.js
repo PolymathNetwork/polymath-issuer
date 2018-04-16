@@ -3,6 +3,7 @@
 import * as ui from 'polymath-ui'
 import { TransferManager, SecurityToken } from 'polymathjs'
 import type { Investor } from 'polymathjs/types'
+
 import { formName as userFormName } from './components/userForm'
 import { formName as editInvestorsFormName } from './components/editInvestorsForm'
 import type { GetState } from '../../../redux/reducer'
@@ -10,10 +11,11 @@ import type { ExtractReturn } from '../../../redux/helpers'
 
 //ac_ = actionCreator
 export const TRANSFER_MANAGER = 'dashboard/whitelist/TRANSFER_MANAGER'
-export const ac_transferManager = (transferManager: TransferManager) => ({ type: TRANSFER_MANAGER, transferManager: transferManager })
+export const ac_transferManager = (transferManager: TransferManager) => ({ type: TRANSFER_MANAGER, transferManager })
 
 export const UPLOAD_CSV = 'dashboard/whitelist/UPLOAD_CSV'
-export const ac_csvUpload = (csvMessage: string, addresses: Array<string>, sell: Array<string>, buy: Array<string>, previewCSVShowing: boolean, ) => ({ type: UPLOAD_CSV, csvMessage, addresses, sell, buy, previewCSVShowing })
+export const ac_csvUpload = (csvMessage: string, addresses: Array<string>, sell: Array<string>, buy: Array<string>, previewCSVShowing: boolean, ) =>
+  ({ type: UPLOAD_CSV, csvMessage, addresses, sell, buy, previewCSVShowing })
 export const UPLOAD_CSV_FAILED = 'dashboard/whitelist/UPLOAD_CSV_FAILED'
 
 export const GET_WHITELIST = 'dashboard/whitelist/GET_WHITELIST'
@@ -35,7 +37,7 @@ export const initialize = () => async (dispatch: Function, getState: GetState) =
   const token = getState().token.token
   if (!token || !token.contract) {
     //eslint-disable-next-line
-    console.error("Contract manager object not found, it did not carry over into the state")
+    console.error('Contract manager object not found, it did not carry over into the state')
     return
   }
   const contract: SecurityToken = token.contract
@@ -54,10 +56,10 @@ export const uploadCSV = (file: Object) => async (dispatch: Function) => {
     reader.readAsText(file)
     reader.onload = function () {
       let parsedData = parseCSV(((reader.result: any): string))
-      dispatch(ac_csvUpload("CSV upload was successful!", parsedData[0], parsedData[1], parsedData[2], true))
+      dispatch(ac_csvUpload('CSV upload was successful!', parsedData[0], parsedData[1], parsedData[2], true))
     }
   } else {
-    dispatch({ type: UPLOAD_CSV_FAILED, csvMessage: "There was an error uploading the CSV file" })
+    dispatch({ type: UPLOAD_CSV_FAILED, csvMessage: 'There was an error uploading the CSV file' })
   }
 }
 
@@ -68,11 +70,11 @@ const parseCSV = (csvResult: string ) => {
   let sellRestriction = []
   let buyRestriction = []
   let allTextLines = csvResult.split(/\r\n|\n/)
-  let zeroX = "0x"
+  let zeroX = '0x'
   for (let i = 0; i < allTextLines.length; i++) {
     let entry = allTextLines[i]
     if (entry.includes(zeroX)) {
-      let splitArray = entry.split(",", 4)
+      let splitArray = entry.split(',', 4)
       //splitArray[0] is ignored, because it is just a blank string.
       let address = splitArray[1]
       let sell = splitArray[2]
@@ -208,7 +210,7 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
       removeZeroTimestampArray.push(validInvestor)
     }
   }
-  // console.log("FINAL ARRAY: ",removeZeroTimestampArray)
+  // console.log('FINAL ARRAY: ',removeZeroTimestampArray)
   dispatch(ac_getWhitelist(removeZeroTimestampArray))
 }
 

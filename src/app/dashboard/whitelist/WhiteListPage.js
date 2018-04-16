@@ -12,10 +12,11 @@ import {
   DatePicker,
   DatePickerInput,
   FileUploaderButton,
-} from "carbon-components-react"
+} from 'carbon-components-react'
+import { TransferManager } from 'polymathjs'
 
 import type { Investor } from 'polymathjs/types'
-import { TransferManager } from 'polymathjs'
+
 import { initialize, uploadCSV, multiUserSubmit, oneUserSubmit, getWhitelist, listLength, removeInvestor, editInvestors } from './actions'
 import { TableHeaders } from './tableHeaders'
 import InvestorForm from './components/userForm'
@@ -123,14 +124,15 @@ class WhitelistPage extends Component<Props, State> {
       this.setState({
         page: 0, // TODO @davekaj: make sure that reseting to initial page is truly needed
       })
-      this.props.getWhitelist(picker[0],picker[1])
+      this.props.getWhitelist(picker[0], picker[1])
     }
   }
 
-  handleEditInvestors = (investors: Array<Object>) => {
+  handleEditInvestors = (dataTableRow: Array<Object>) => {
+    console.log('handle edit invesotrs: ', dataTableRow)
     let addresses = []
-    for (let i = 0; i < investors.length; i++) {
-      addresses.push(investors[i].cells[0].value)
+    for (let i = 0; i < dataTableRow.length; i++) {
+      addresses.push(dataTableRow[i].cells[0].value)
     }
     this.setState({
       editInvestorsShowing: true,
@@ -169,10 +171,7 @@ class WhitelistPage extends Component<Props, State> {
     for (let i = 0; i <paginatedArray.length; i++){
       let csvRandomID: string = uuidv4()
       let stringifyAdded = null
-      //QUESTION: is this the best way to get rid of the flow error? I think there must be a better way, as this code doesn't really do anything
-      //because when pulling from events, added will ALWAYS exist, but because we pass the type with a ? it brings flow error
-      //(because the time added is got from 'now' on blockchain, not from user input)
-      if (typeof(paginatedArray[i].added) === 'object'){
+      if (paginatedArray[i].added) {
         stringifyAdded = dateFormat(paginatedArray[i].added)
       }
       let stringifyFrom = dateFormat(paginatedArray[i].from)
@@ -190,10 +189,10 @@ class WhitelistPage extends Component<Props, State> {
     return stringifiedArray
   }
 
-  removeInvestor = (investors: Array<Object>) => {
+  removeInvestor = (dataTableRow: Array<Object>) => {
     let addresses = []
-    for (let i = 0; i < investors.length; i++) {
-      addresses.push(investors[i].cells[0].value)
+    for (let i = 0; i < dataTableRow.length; i++) {
+      addresses.push(dataTableRow[i].cells[0].value)
     }
     this.props.removeInvestor(addresses)
   }
@@ -296,7 +295,7 @@ class WhitelistPage extends Component<Props, State> {
                   labelText='Upload From Desktop'
                   className='bob'
                   onChange={this.props.handleUpload}
-                  accept={[".csv"]}
+                  accept={['.csv']}
                   multiple
                   buttonKind='secondary'
                 />
