@@ -22,7 +22,7 @@
   "dependencies": {
     "bignumber.js": "^6.0.0",
     "carbon-components": "8.16.8",
-    "carbon-components-react": "5.32.0",
+    "carbon-components-react": "5.31.1",
     "carbon-icons": "6.3.2",
     "enzyme": "^3.2.0",
     "enzyme-adapter-react-15": "^1.0.5",

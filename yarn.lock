@@ -1866,20 +1866,6 @@ carbon-components-react@5.31.1:
     warning "3.0.0"
     window-or-global "^1.0.1"
 
-carbon-components-react@5.32.0:
-  version "5.32.0"
-  resolved "https://registry.yarnpkg.com/carbon-components-react/-/carbon-components-react-5.32.0.tgz#15dd0af15eb819ac4b432dd2b050d99b2189b44f"
-  dependencies:
-    classnames "2.2.5"
-    downshift "^1.23.2"
-    flatpickr "4.3.0"
-    invariant "^2.2.3"
-    lodash.debounce "^4.0.8"
-    lodash.isequal "^4.5.0"
-    lodash.omit "^4.5.0"
-    warning "3.0.0"
-    window-or-global "^1.0.1"
-
 carbon-components-react@^5.31.0:
   version "5.41.2"
   resolved "https://registry.yarnpkg.com/carbon-components-react/-/carbon-components-react-5.41.2.tgz#871448d6212c4905729405102e8eff6e7c2951e2"
@@ -10824,7 +10810,7 @@ web3-core-helpers@1.0.0-beta.33:
     web3-eth-iban "1.0.0-beta.33"
     web3-utils "1.0.0-beta.33"
 
-web3-core-method@1.0.0-beta.30, "web3-core-method@github:bshevchenko/web3-core-method#master":
+web3-core-method@1.0.0-beta.30, web3-core-method@bshevchenko/web3-core-method#master, "web3-core-method@github:bshevchenko/web3-core-method#master":
   version "1.0.0-beta.30"
   resolved "https://codeload.github.com/bshevchenko/web3-core-method/tar.gz/9199df8b1ea8658503ee48ba7ad391fec8e61838"
   dependencies:
