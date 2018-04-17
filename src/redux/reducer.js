@@ -28,6 +28,7 @@ export type RootState = {
   account: AccountState,
   token: TokenState,
   sto: STOState,
+  pui: any,
 }
 
 export type GetState = () => RootState

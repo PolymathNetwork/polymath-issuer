@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
+import { Sidebar, icoBriefcase, icoInbox } from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
 
 import NotFoundPage from './NotFoundPage'
@@ -51,7 +52,30 @@ class Dashboard extends Component<Props> {
     if (!isTokenFetched) {
       return <span />
     }
-    return renderRoutes(route.routes)
+    // $FlowFixMe
+    const ticker = token.ticker
+    const tokenUrl = '/dashboard/' + ticker
+    const location = window.location.href
+    const topSidebarItems = [
+      {
+        title: 'Token',
+        icon: <img src={icoBriefcase} alt='Token' />,
+        to: tokenUrl,
+        isActive: location.slice(ticker.length * -1) === ticker,
+      },
+      {
+        title: 'STO',
+        icon: <img src={icoInbox} alt='Token' />,
+        to: tokenUrl + '/sto',
+        isActive: location.slice(-4) === '/sto',
+      },
+    ]
+    return (
+      <div className='dashboard'>
+        <Sidebar topItems={topSidebarItems} bottomItems={[]} />
+        {renderRoutes(route.routes)}
+      </div>
+    )
   }
 }
 

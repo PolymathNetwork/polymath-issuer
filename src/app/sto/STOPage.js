@@ -10,8 +10,6 @@ import OverviewSTO from './components/OverviewSTO'
 import ConfigureSTO from './components/ConfigureSTO'
 import type { RootState } from '../../redux/reducer'
 
-import './style.css'
-
 type StateProps = {|
   stage: number,
 |}

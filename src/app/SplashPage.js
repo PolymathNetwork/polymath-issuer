@@ -9,16 +9,14 @@ export default class SplashPage extends Component {
       <DocumentTitle title='Polymath'>
         <div className='bx--row'>
           <div className='bx--col-xs-8'>
-            <h1 className='bx--type-mega'>The Next Mega-Trend in Crypto is the Emergence of Security Tokens</h1>
-            <p>&nbsp;</p>
-            <h3 className='bx--type-beta'>
+            <h1 className='pui-h0'>The Next Mega-Trend in Crypto is the Emergence of Security Tokens</h1>
+            <h3 className='pui-h3'>
               Polymath empowers trillions of dollars of financial securities
-              to effortlessly migrate to the blockchain
+              to be issued and traded on the blockchain.
             </h3>
-            <p>&nbsp;</p>
             <p>
               <Link to='/ticker'>
-                <Button>
+                <Button icon='arrow--right'>
                   ISSUE YOUR SECURITY TOKEN
                 </Button>
               </Link>

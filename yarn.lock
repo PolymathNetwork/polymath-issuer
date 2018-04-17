@@ -7993,9 +7993,9 @@ polymath-core@0.4.0:
     web3 "^1.0.0-beta.33"
     zeppelin-solidity "1.7.0"
 
-polymath-ui@0.2.6:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-0.2.6.tgz#3baec2978d74bf7482fb1fae9056d08576af726d"
+polymath-ui@0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-0.3.1.tgz#0a4b52dd0093ad64d4941758d36fbf8fd966ec0b"
   dependencies:
     babel-runtime "^6.26.0"
     bignumber.js "^6.0.0"
@@ -8010,9 +8010,9 @@ polymath-ui@0.2.6:
     react-transition-group "^2.2.1"
     redux "^3.7.2"
 
-polymathjs@0.4.2:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-0.4.2.tgz#187caf77849e4e6f9aa54319f4ef79db4d947852"
+polymathjs@0.4.7:
+  version "0.4.7"
+  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-0.4.7.tgz#421ee11f91e175e649d1f382487213f17c853e25"
   dependencies:
     bignumber.js "5.0.0"
     bs58 "^4.0.1"
@@ -10810,7 +10810,7 @@ web3-core-helpers@1.0.0-beta.33:
     web3-eth-iban "1.0.0-beta.33"
     web3-utils "1.0.0-beta.33"
 
-web3-core-method@1.0.0-beta.30, "web3-core-method@github:bshevchenko/web3-core-method#master":
+web3-core-method@1.0.0-beta.30, web3-core-method@bshevchenko/web3-core-method#master, "web3-core-method@github:bshevchenko/web3-core-method#master":
   version "1.0.0-beta.30"
   resolved "https://codeload.github.com/bshevchenko/web3-core-method/tar.gz/9199df8b1ea8658503ee48ba7ad391fec8e61838"
   dependencies:

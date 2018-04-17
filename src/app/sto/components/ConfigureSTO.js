@@ -3,8 +3,6 @@
 import React, { Component } from 'react'
 import DocumentTitle from 'react-document-title'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { Breadcrumb, BreadcrumbItem, Tile } from 'carbon-components-react'
 import type { SecurityToken, STOFactory } from 'polymathjs/types'
 
 import NotFoundPage from '../../NotFoundPage'
@@ -49,20 +47,13 @@ class ConfigureSTO extends Component<Props> {
       <DocumentTitle title={'Configure ' + token.ticker + ' STO – Polymath'}>
         <div className='bx--row'>
           <div className='bx--col-xs-12'>
-            <Breadcrumb>
-              <BreadcrumbItem>
-                <Link to='/'>Home</Link>
-              </BreadcrumbItem>
-              <BreadcrumbItem>
-                <Link to={'/dashboard/' + token.ticker + '/sto'}>STO</Link>
-              </BreadcrumbItem>
-            </Breadcrumb>
-            <h3 className='bx--type-mega'>Security Token Offering Configuration</h3><br /><br />
+            <h1 className='pui-h1'>Security Token Offering Configuration</h1>
+            <br /><br />
             <div className='bx--row'>
               <div className='bx--col-xs-5'>
-                <Tile>
+                <div className='pui-page-box'>
                   <ConfigureSTOForm onSubmit={this.handleSubmit}  />
-                </Tile>
+                </div>
               </div>
               <div className='bx--col-xs-7'>
                 <STODetails item={factory} />
