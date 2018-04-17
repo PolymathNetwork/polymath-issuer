@@ -312,7 +312,7 @@ class WhitelistPage extends Component<Props, State> {
                     <br />
                     <table>
                       <tr className='csvPreviewHeader'>
-                        <th >Investor's Eth Address</th>
+                        <th>Investor's Eth Address</th>
                         <th>Sale Lockup End Date</th>
                         <th>Purchase Lockup End Date</th>
                       </tr>
