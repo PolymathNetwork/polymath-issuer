@@ -28,6 +28,7 @@ class ConfigureSTOForm extends Component<Props> {
           label='Start Date;End Date'
           placeholder='mm/dd/yyyy'
           validate={[required]}
+          style={{ width: '235px' }}
         />
         <Field
           name='currency'
@@ -69,7 +70,6 @@ class ConfigureSTOForm extends Component<Props> {
           placeholder='Enter amount'
           validate={[required, integer]}
         />
-        <p>&nbsp;</p>
         <Button type='submit'>
           Confirm & Launch STO
         </Button>

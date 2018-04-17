@@ -48,7 +48,7 @@ class OverviewSTO extends Component<Props> {
     return (
       <DocumentTitle title={token.ticker + ' STO Overview – Polymath'}>
         <Fragment>
-          <h3 className='bx--type-mega'>{token.ticker} STO Overview</h3><br /><br />
+          <h1 className='pui-h1'>{token.ticker} STO Overview</h1><br />
           <STOStatus
             title='Capped STO'
             start={details.start}
@@ -57,7 +57,8 @@ class OverviewSTO extends Component<Props> {
             cap={details.cap}
             isPolyFundraise={details.isPolyFundraise}
           />
-          <h2 className='bx--type-beta root-header'>
+          <br /><br />
+          <h2 className='pui-h2'>
             List of Investors
           </h2>
           <InvestorTable rows={purchases} />

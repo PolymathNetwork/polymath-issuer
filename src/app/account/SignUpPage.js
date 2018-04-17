@@ -3,32 +3,26 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
-import { Link } from 'react-router-dom'
-import { Breadcrumb, BreadcrumbItem } from 'carbon-components-react'
-import { change } from 'redux-form'
+import { bull } from 'polymath-ui'
 import type { RouterHistory } from 'react-router'
 
-import SignUpForm, { formName } from './components/SignUpForm'
+import SignUpForm  from './components/SignUpForm'
 import { signUp } from './actions'
 import type { RootState } from '../../redux/reducer'
 
 type StateProps = {|
-  account: ?string,
   isSignedUp: ?boolean,
 |}
 
 type DispatchProps = {|
-  change: (?string) => any,
   signUp: () => any,
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
-  account: state.network.account,
   isSignedUp: state.account.isSignedUp,
 })
 
 const mapDispatchToProps: DispatchProps = {
-  change: (value) => change(formName, '_account', value, false, false),
   signUp,
 }
 
@@ -42,7 +36,6 @@ class SignUpPage extends Component<Props> {
     if (this.props.isSignedUp) {
       this.props.history.push('/ticker')
     }
-    this.props.change(this.props.account)
   }
 
   handleSubmit = () => {
@@ -53,16 +46,26 @@ class SignUpPage extends Component<Props> {
     return (
       <DocumentTitle title='Sign Up – Polymath'>
         <div className='bx--row'>
-          <div className='bx--col-xs-12'>
-            <Breadcrumb>
-              <BreadcrumbItem>
-                <Link to='/'>Home</Link>
-              </BreadcrumbItem>
-            </Breadcrumb>
-            <h1 className='bx--type-mega'>Sign Up</h1>
-            <p>&nbsp;</p>
-            <SignUpForm onSubmit={this.handleSubmit} />
+          <div className='bx--col-xs-2' />
+          <div className='bx--col-xs-8'>
+            <div className='pui-single-box'>
+              <div className='bx--row'>
+                <div className='bx--col-xs-8'>
+                  <h1 className='pui-h1'>Sign up</h1>
+                  <h3 className='pui-h3'>Subtitle token reg example and follow the instructions to unlock it.</h3>
+                </div>
+                <div className='bx--col-xs-4 pui-single-box-bull'>
+                  <img src={bull} alt='Bull' />
+                </div>
+              </div>
+              <div className='bx--row'>
+                <div className='bx--col-xs-12'>
+                  <SignUpForm onSubmit={this.handleSubmit} />
+                </div>
+              </div>
+            </div>
           </div>
+          <div className='bx--col-xs-2' />
         </div>
       </DocumentTitle>
     )

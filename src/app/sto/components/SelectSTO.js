@@ -3,8 +3,7 @@
 import React, { Component } from 'react'
 import DocumentTitle from 'react-document-title'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { Breadcrumb, BreadcrumbItem, Search } from 'carbon-components-react'
+import { Search } from 'carbon-components-react'
 import type { SecurityToken, STOFactory } from 'polymathjs/types'
 
 import NotFoundPage from '../../NotFoundPage'
@@ -59,13 +58,14 @@ class SelectSTO extends Component<Props> {
         <div>
           <div className='bx--row'>
             <div className='bx--col-xs-12'>
-              <Breadcrumb>
-                <BreadcrumbItem>
-                  <Link to='/'>Home</Link>
-                </BreadcrumbItem>
-              </Breadcrumb>
-              <h3 className='bx--type-mega'>Security Token Offerings</h3><br /><br />
-              <Search small labelText='Search' placeHolderText='Search' /><br /><br />
+              <h1 className='pui-h1'>Security Token Offerings</h1>
+              <h3 className='pui-h3'>
+                Browse the STO models below, and choose the model that best fits your needs.<br />
+                To select the model you desire, press &laquo;SELECT AND CONFIGURE STO&raquo;.
+              </h3>
+              <br /><br />
+              <Search small labelText='Search' placeHolderText='Search' style={{ maxWidth: '612px' }} />
+              <br />
               {this.props.factories.map((item) => (
                 <STODetails key={item.address} item={item} handleUseSTO={this.handleUseSTO(item)} />
               ))}
