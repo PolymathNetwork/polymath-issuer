@@ -50,11 +50,16 @@ export const initialize = () => async (dispatch: Function, getState: GetState) =
 //which can then be sent to the blockchain with multiUserSumbit()
 //QUESTION: @davekaj - Do we need to limit CSV file to 50 or 100, and notify them that it is too long? also keep in mind gas limit and WS packet size
 export const uploadCSV = (file: Object) => async (dispatch: Function) => {
-  console.log("FILETHING: ", file.dataTransfer)
+  let parseFile
+  if (file.target === undefined) {
+    parseFile = file
+  } else {
+    parseFile = file.target.files[0]
+  }
   let textType = /csv.*/
-  if (file.type.match(textType)) {
+  if (parseFile.type.match(textType)) {
     let reader = new FileReader()
-    reader.readAsText(file)
+    reader.readAsText(parseFile)
     reader.onload = function () {
       let parsedData = parseCSV(((reader.result: any): string))
       dispatch(ac_csvUpload('CSV upload was successful!', parsedData[0], parsedData[1], parsedData[2], true))

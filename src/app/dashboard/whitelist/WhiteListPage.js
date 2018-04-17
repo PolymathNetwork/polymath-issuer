@@ -21,7 +21,7 @@ import { initialize, uploadCSV, multiUserSubmit, oneUserSubmit, getWhitelist, li
 import { TableHeaders } from './tableHeaders'
 import InvestorForm from './components/userForm'
 import EditInvestorsForm from './components/editInvestorsForm'
-import { dragOverHandler, dropHandler } from './helpers/dragDrop'
+import BasicDropzone from './components/ReactDropZone'
 
 import './style.css'
 
@@ -65,7 +65,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch: Function) => ({
   initialize: () => dispatch(initialize()),
-  handleUpload: (htmlCsv) => dispatch(uploadCSV(htmlCsv)),//.target.files[0])),
+  handleUpload: (file) => dispatch(uploadCSV(file)),
   multiSubmit: () => dispatch(multiUserSubmit()),
   singleSubmit: () => dispatch(oneUserSubmit()),
   getWhitelist: (calenderStart: Date, calenderEnd: Date) => dispatch(getWhitelist(calenderStart, calenderEnd)),
@@ -290,12 +290,10 @@ class WhitelistPage extends Component<Props, State> {
                     <li>Column 1 - Ethereum Address</li>
                     <li>Column 2 - Date mm/dd/yyyy (date when the resale restrictions should be lifted for that address).</li>
                   </ul>
-                  <p>You can download a <a>Sample.csv</a> file and edit it</p>
+                  <p>You can download a <a href='localhost:3000'>Sample.csv</a> file and edit it</p>
                 </div>
                 <br />
-                <div id='rectangle-6' onDrop={this.props.handleUpload} onDragOver={(e)=> dragOverHandler(e)}>
-                  <p id='placeholder'>Drop file here</p>
-                </div>
+                <BasicDropzone onHandleUpload={this.props.handleUpload} />
                 <br />
                 <FileUploaderButton
                   labelText='Upload From Desktop'
