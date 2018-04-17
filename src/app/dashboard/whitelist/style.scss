@@ -1,5 +1,9 @@
 $main-font: 'Overpass', sans-serif;
 
+.modalHeight {
+  height: 600px
+}
+
 %modal-text {
   font-family: $main-font;
   color: #5A6872;

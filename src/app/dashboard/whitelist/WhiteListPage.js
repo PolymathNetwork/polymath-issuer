@@ -283,7 +283,7 @@ class WhitelistPage extends Component<Props, State> {
                 primaryButtonText='Send To Blockchain'
                 shouldCloseAfterSubmit
               >
-                <div>
+                <div className={this.props.previewCSVShowing ? 'modalHeight' : ''}>
                   <div className='csvModal'>
                   Add multiple addresses to the whitelist by uploading a comma seperated CSV file. The format should be as follows:
                     <ul>
@@ -294,39 +294,45 @@ class WhitelistPage extends Component<Props, State> {
                   <div className='csvModalMini'>
                     You can download a <a href='localhost:3000'>Sample.csv</a> file and edit it
                   </div>
-                </div>
-                <br />
-                <BasicDropzone onHandleUpload={this.props.handleUpload} />
-                <FileUploaderButton
-                  labelText='Upload From Desktop'
-                  className='bob'
-                  onChange={this.props.handleUpload}
-                  accept={['.csv']}
-                  multiple
-                  buttonKind='secondary'
-                />
-                {this.props.previewCSVShowing ? (
-                  <div className='csvModalTable'>
-                    {/* <div>{this.props.csvMessage}</div> TODO @davekaj: remove this from redux state, it is not needed anymore*/}
-                    {/* Below is the data you will be sending to the blockchain, please confirm it is correct, and then click the Send button to continue. */}
-                    <br />
-                    <table>
-                      <tr className='csvPreviewHeader'>
-                        <th>Investor's Eth Address</th>
-                        <th>Sale Lockup End Date</th>
-                        <th>Purchase Lockup End Date</th>
-                      </tr>
-                      {this.props.addresses.map((user, i) => (
-                        <tr key={uuidv4()} className='csvPreviewTable'>
-                          <td className='csvModalAddressTable' >{this.props.addresses[i]}</td>
-                          <td>{this.props.sell[i]}</td>
-                          <td>{this.props.buy[i]}</td>
+                  {/* </div> */}
+                  <br />
+                  {this.props.previewCSVShowing ? null :
+                    (
+                      <div>
+                        <BasicDropzone onHandleUpload={this.props.handleUpload} />
+                        <FileUploaderButton
+                          labelText='Upload From Desktop'
+                          className='bob'
+                          onChange={this.props.handleUpload}
+                          accept={['.csv']}
+                          multiple
+                          buttonKind='secondary'
+                        />
+                      </div>
+                    )}
+                  {this.props.previewCSVShowing ? (
+                    <div className='csvModalTable'>
+                      {/* <div>{this.props.csvMessage}</div> TODO @davekaj: remove this from redux state, it is not needed anymore*/}
+                      {/* Below is the data you will be sending to the blockchain, please confirm it is correct, and then click the Send button to continue. */}
+                      <br />
+                      <table>
+                        <tr className='csvPreviewHeader'>
+                          <th>Investor's Eth Address</th>
+                          <th>Sale Lockup End Date</th>
+                          <th>Purchase Lockup End Date</th>
                         </tr>
-                      ))}
-                    </table>
-                  </div>
-                )
-                  : null}
+                        {this.props.addresses.map((user, i) => (
+                          <tr key={uuidv4()} className='csvPreviewTable'>
+                            <td className='csvModalAddressTable' >{this.props.addresses[i]}</td>
+                            <td>{this.props.sell[i]}</td>
+                            <td>{this.props.buy[i]}</td>
+                          </tr>
+                        ))}
+                      </table>
+                    </div>
+                  )
+                    : null}
+                </div>
               </ModalWrapper>
               <br />
             </div>

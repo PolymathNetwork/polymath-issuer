@@ -1,3 +1,6 @@
+.modalHeight {
+  height: 600px; }
+
 .csvModal, .csvModalMini {
   font-family: "Overpass", sans-serif;
   color: #5A6872;
