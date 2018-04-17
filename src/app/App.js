@@ -15,6 +15,7 @@ import type { RootState } from '../redux/reducer'
 type StateProps = {|
   network: any,
   balance: ?BigNumber,
+  ticker: ?string,
 |}
 
 type DispatchProps = {|
@@ -26,6 +27,7 @@ type DispatchProps = {|
 const mapStateToProps = (state: RootState): StateProps => ({
   network: state.network,
   balance: state.account.balance,
+  ticker: state.token.token ? state.token.token.ticker : null,
 })
 
 const mapDispatchToProps: DispatchProps = {
@@ -54,9 +56,10 @@ class App extends Component<Props> {
   }
 
   render () {
+    const { history, balance, ticker } = this.props
     return (
       <Root>
-        <PolymathUI history={this.props.history} balance={this.props.balance} />
+        <PolymathUI history={history} balance={balance} ticker={ticker} />
         {renderRoutes(this.props.route.routes)}
       </Root>
     )
