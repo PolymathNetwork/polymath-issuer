@@ -21,6 +21,9 @@ import { initialize, uploadCSV, multiUserSubmit, oneUserSubmit, getWhitelist, li
 import { TableHeaders } from './tableHeaders'
 import InvestorForm from './components/userForm'
 import EditInvestorsForm from './components/editInvestorsForm'
+import { dragOverHandler, dropHandler } from './helpers/dragDrop'
+
+import './style.css'
 
 // might need TableToolbarAction and batchActionClick here
 const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
@@ -62,7 +65,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch: Function) => ({
   initialize: () => dispatch(initialize()),
-  handleUpload: (htmlCsv) => dispatch(uploadCSV(htmlCsv.target.files[0])),
+  handleUpload: (htmlCsv) => dispatch(uploadCSV(htmlCsv)),//.target.files[0])),
   multiSubmit: () => dispatch(multiUserSubmit()),
   singleSubmit: () => dispatch(oneUserSubmit()),
   getWhitelist: (calenderStart: Date, calenderEnd: Date) => dispatch(getWhitelist(calenderStart, calenderEnd)),
@@ -281,13 +284,17 @@ class WhitelistPage extends Component<Props, State> {
                 shouldCloseAfterSubmit
               >
                 <div>
-                  Add multiple addresses to the whisstelist by uploading a comma seperated CSV file. The format should be as follows:
+                  Add multiple addresses to the whitelist by uploading a comma seperated CSV file. The format should be as follows:
                   <br /><br />
                   <ul>
                     <li>Column 1 - Ethereum Address</li>
-                    <li>Column 2 - Sell Restriction (mm/dd/yyyy)</li>
-                    <li>Column 2 - Buy Restriction (mm/dd/yyyy)</li>
+                    <li>Column 2 - Date mm/dd/yyyy (date when the resale restrictions should be lifted for that address).</li>
                   </ul>
+                  <p>You can download a <a>Sample.csv</a> file and edit it</p>
+                </div>
+                <br />
+                <div id='rectangle-6' onDrop={this.props.handleUpload} onDragOver={(e)=> dragOverHandler(e)}>
+                  <p id='placeholder'>Drop file here</p>
                 </div>
                 <br />
                 <FileUploaderButton
@@ -305,14 +312,20 @@ class WhitelistPage extends Component<Props, State> {
                       <strong>Below is the data you will be sending to the blockchain, please confirm it is correct, and then click the Send button to continue.</strong>
                     </p>
                     <br />
-                    {this.props.addresses.map((user, i) => (
-                      <div key={uuidv4()}>
-                        <div>Address: {this.props.addresses[i]}</div>
-                        <div>Sell Expiry Time: {this.props.sell[i]}</div>
-                        <div>Buy Expiry Time: {this.props.buy[i]}</div>
-                        <br />
-                      </div>
-                    ))}
+                    <table>
+                      <tr>
+                        <th>Address</th>
+                        <th>Sell Expiry Time</th>
+                        <th>Buy Expiry Time</th>
+                      </tr>
+                      {this.props.addresses.map((user, i) => (
+                        <tr key={uuidv4()}>
+                          <td>{this.props.addresses[i]}</td>
+                          <td>{this.props.sell[i]}</td>
+                          <td>{this.props.buy[i]}</td>
+                        </tr>
+                      ))}
+                    </table>
                   </div>
                 )
                   : null}
@@ -325,13 +338,13 @@ class WhitelistPage extends Component<Props, State> {
               <DatePicker id='date-picker' onChange={this.handleDatePicker} datePickerType='range'>
                 <DatePickerInput
                   className='some-class'
-                  labelText='Start'
+                  labelText='Start Date Added'
                   placeholder='mm/dd/yyyy'
                   id='date-picker-input-id'
                 />
                 <DatePickerInput
                   className='some-class'
-                  labelText='End'
+                  labelText='End Date Added'
                   placeholder='mm/dd/yyyy'
                   id='date-picker-input-id-2'
                 />
