@@ -31,11 +31,8 @@ export type RootState = {
   account: AccountState,
   token: TokenState,
   sto: STOState,
-<<<<<<< HEAD
   whitelist: WhitelistState,
-=======
   pui: any,
->>>>>>> f21994433aba5828468b3d9cd6d0187417d72fe0
 }
 
 export type GetState = () => RootState

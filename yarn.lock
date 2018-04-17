@@ -7993,15 +7993,9 @@ polymath-core@0.4.0:
     web3 "^1.0.0-beta.33"
     zeppelin-solidity "1.7.0"
 
-<<<<<<< HEAD
-polymath-ui@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-0.3.0.tgz#5718bd497710a1f527b6684bc4eb6716d9769648"
-=======
 polymath-ui@0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-0.3.1.tgz#0a4b52dd0093ad64d4941758d36fbf8fd966ec0b"
->>>>>>> f21994433aba5828468b3d9cd6d0187417d72fe0
   dependencies:
     babel-runtime "^6.26.0"
     bignumber.js "^6.0.0"
@@ -8016,15 +8010,9 @@ polymath-ui@0.3.1:
     react-transition-group "^2.2.1"
     redux "^3.7.2"
 
-<<<<<<< HEAD
-polymathjs@^0.4.3:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-0.4.3.tgz#255366e047fd62cb5f50dd3b3ae170a26f84c655"
-=======
 polymathjs@0.4.7:
   version "0.4.7"
   resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-0.4.7.tgz#421ee11f91e175e649d1f382487213f17c853e25"
->>>>>>> f21994433aba5828468b3d9cd6d0187417d72fe0
   dependencies:
     bignumber.js "5.0.0"
     bs58 "^4.0.1"
