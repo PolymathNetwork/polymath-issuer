@@ -19,14 +19,14 @@ export default class BasicDropzone extends Component<Props> {
 
   render () {
     return (
-      <section id='rectangle-6'>
+      <section id='dropzoneRectangle'>
         <div>
           <Dropzone
             // eslint-disable-next-line
             onDrop={this.onDrop.bind(this)}
             style={dropzoneStyle}
           >
-            <p id='placeholder' >Drop file here</p>
+            <p id='dropZone' >Drop file here</p>
           </Dropzone>
         </div>
       </section>

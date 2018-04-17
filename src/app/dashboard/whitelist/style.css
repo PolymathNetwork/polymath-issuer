@@ -1,13 +1,32 @@
-.column-label {
-  height: 15px;
-  width: 57px;
-  color: #152935;
-  font-family: "Source Sans Pro";
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 15px; }
+.csvModal, .csvModalMini {
+  font-family: "Overpass", sans-serif;
+  color: #5A6872;
+  width: 500px; }
 
-#rectangle-6 {
+.csvModal {
+  font-size: 16px;
+  height: 160px;
+  line-height: 25px; }
+
+.csvModalMini {
+  height: 18px;
+  font-size: 14px;
+  line-height: 22px; }
+
+.csvPreviewHeader, .csvPreviewTable, .csvModalTable {
+  font-family: "Overpass", sans-serif;
+  font-size: 14px;
+  height: 18px;
+  color: #5A6872; }
+
+.csvPreviewHeader {
+  font-weight: 600; }
+
+.csvModalTable {
+  width: 148px;
+  line-height: 22px; }
+
+#dropzoneRectangle {
   height: 72px;
   width: 404px;
   border: 1px dashed #3D70B2;
@@ -16,11 +35,11 @@
   margin: auto;
   text-align: center; }
 
-#placeholder {
+#dropZone {
   height: 45px;
   width: 214px;
   color: #8C9BA5;
-  font-family: 'Overpass', sans-serif;
+  font-family: "Overpass", sans-serif;
   font-size: 34px;
   font-weight: 200;
   line-height: 55px;

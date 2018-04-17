@@ -1,14 +1,55 @@
-.column-label {
-  height: 15px;
-  width: 57px;
-  color: #152935;
-  font-family: "Source Sans Pro";
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 15px;
+$main-font: 'Overpass', sans-serif;
+
+%modal-text {
+  font-family: $main-font;
+  color: #5A6872;
+  width: 500px;
 }
 
-#rectangle-6 {
+.csvModal {
+  @extend %modal-text;
+  font-size: 16px;
+	height: 160px;
+	line-height: 25px;
+}
+
+.csvModalMini {
+  @extend %modal-text;
+	height: 18px;
+	font-size: 14px;
+	line-height: 22px;
+}
+
+
+%csvTable {
+  font-family: $main-font;
+  font-size: 14px;
+  height: 18px;
+  color: #5A6872;
+}
+
+.csvPreviewHeader {
+  @extend %csvTable;
+	font-weight: 600;
+}
+
+.csvPreviewTable {
+  @extend %csvTable;
+}
+
+.csvModalTable {
+  @extend %csvTable;
+  width: 148px;
+  line-height: 22px;
+}
+
+//
+// .csvModalAddressTable {
+//   width: 264px;
+//   overflow-y: scroll;
+// }
+
+#dropzoneRectangle {
   height: 72px;
   width: 404px;
   border: 1px dashed #3D70B2;
@@ -18,11 +59,11 @@
   text-align: center;
 }
 
-#placeholder {
+#dropZone {
 	height: 45px;
 	width: 214px;
 	color: #8C9BA5;
-  font-family: 'Overpass', sans-serif;
+  font-family: $main-font;
 	font-size: 34px;
 	font-weight: 200;
 	line-height: 55px;

@@ -231,6 +231,8 @@ class WhitelistPage extends Component<Props, State> {
             modalHeading='Add New Investor'
             handleSubmit={this.onHandleInvestorSubmit}
             shouldCloseAfterSubmit
+            primaryButtonText='Send To Blockchain'
+
           >
             <p className='bx--modal-content__text'>
                 Please enter the information below to add a single investor.
@@ -272,8 +274,6 @@ class WhitelistPage extends Component<Props, State> {
         <div className='bx--grid'>
           <div className='bx--row'>
             <div className='bx--col-xs-6'>
-              <h2>Whitelist</h2>
-              <br />
               <ModalWrapper
                 id='input-modal'
                 buttonTriggerText='Import Whitelist'
@@ -284,17 +284,19 @@ class WhitelistPage extends Component<Props, State> {
                 shouldCloseAfterSubmit
               >
                 <div>
+                  <div className='csvModal'>
                   Add multiple addresses to the whitelist by uploading a comma seperated CSV file. The format should be as follows:
-                  <br /><br />
-                  <ul>
-                    <li>Column 1 - Ethereum Address</li>
-                    <li>Column 2 - Date mm/dd/yyyy (date when the resale restrictions should be lifted for that address).</li>
-                  </ul>
-                  <p>You can download a <a href='localhost:3000'>Sample.csv</a> file and edit it</p>
+                    <ul>
+                      <li>Column 1 - Ethereum Address</li>
+                      <li>Column 2 - Date mm/dd/yyyy (date when the resale restrictions should be lifted for that address).</li>
+                    </ul>
+                  </div>
+                  <div className='csvModalMini'>
+                    You can download a <a href='localhost:3000'>Sample.csv</a> file and edit it
+                  </div>
                 </div>
                 <br />
                 <BasicDropzone onHandleUpload={this.props.handleUpload} />
-                <br />
                 <FileUploaderButton
                   labelText='Upload From Desktop'
                   className='bob'
@@ -304,21 +306,19 @@ class WhitelistPage extends Component<Props, State> {
                   buttonKind='secondary'
                 />
                 {this.props.previewCSVShowing ? (
-                  <div>
-                    <div>{this.props.csvMessage}</div>
-                    <p className='bx--modal-content__text'>
-                      <strong>Below is the data you will be sending to the blockchain, please confirm it is correct, and then click the Send button to continue.</strong>
-                    </p>
+                  <div className='csvModalTable'>
+                    {/* <div>{this.props.csvMessage}</div> TODO @davekaj: remove this from redux state, it is not needed anymore*/}
+                    {/* Below is the data you will be sending to the blockchain, please confirm it is correct, and then click the Send button to continue. */}
                     <br />
                     <table>
-                      <tr>
-                        <th>Address</th>
-                        <th>Sell Expiry Time</th>
-                        <th>Buy Expiry Time</th>
+                      <tr className='csvPreviewHeader'>
+                        <th >Investor's Eth Address</th>
+                        <th>Sale Lockup End Date</th>
+                        <th>Purchase Lockup End Date</th>
                       </tr>
                       {this.props.addresses.map((user, i) => (
-                        <tr key={uuidv4()}>
-                          <td>{this.props.addresses[i]}</td>
+                        <tr key={uuidv4()} className='csvPreviewTable'>
+                          <td className='csvModalAddressTable' >{this.props.addresses[i]}</td>
                           <td>{this.props.sell[i]}</td>
                           <td>{this.props.buy[i]}</td>
                         </tr>
@@ -349,7 +349,6 @@ class WhitelistPage extends Component<Props, State> {
               </DatePicker>
             </div>
           </div>
-          <br /> <br />
           <DataTable
             rows={paginatedRows}
             headers={TableHeaders}
