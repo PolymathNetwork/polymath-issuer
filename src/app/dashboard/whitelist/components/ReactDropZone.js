@@ -3,9 +3,9 @@ import React, { Component } from 'react'
 
 import '../style.css'
 
-type Props = {
+type Props = {|
   onHandleUpload: Function
-}
+|}
 
 const dropzoneStyle = {
   height: '72px',

@@ -2,7 +2,6 @@
   height: 600px; }
 
 .csvModal, .csvModalMini {
-  font-family: "Overpass", sans-serif;
   color: #5A6872;
   width: 500px; }
 
@@ -17,7 +16,6 @@
   line-height: 22px; }
 
 .csvPreviewHeader, .csvPreviewTable, .csvModalTable {
-  font-family: "Overpass", sans-serif;
   font-size: 14px;
   height: 18px;
   color: #5A6872; }
@@ -42,7 +40,6 @@
   height: 45px;
   width: 214px;
   color: #8C9BA5;
-  font-family: "Overpass", sans-serif;
   font-size: 34px;
   font-weight: 200;
   line-height: 55px;

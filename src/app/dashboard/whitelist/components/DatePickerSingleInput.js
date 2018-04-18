@@ -1,12 +1,12 @@
 // @flow
 
 // TODO @davekaj: get this file merged into the polymath-ui repo, and
-// remove the local version of it from here
+// TODO @davekaj: remove the local version of it from here
 
 import React from 'react'
 import { DatePicker, DatePickerInput } from 'carbon-components-react'
 
-type Props = {
+type Props = {|
   input: {
     name: string,
     [any]: any
@@ -19,7 +19,7 @@ type Props = {
   className: string,
   placeholder: string,
   [any]: any
-}
+|}
 
 export default ({
   input,

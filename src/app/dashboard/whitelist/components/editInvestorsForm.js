@@ -9,7 +9,7 @@ import DatePickerSingleInput from './DatePickerSingleInput'
 
 export const formName = 'edit_investor_form'
 
-type Props = {}
+type Props = {||}
 
 class EditInvestorsForm extends Component<Props> {
 

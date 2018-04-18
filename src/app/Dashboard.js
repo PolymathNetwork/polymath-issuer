@@ -73,7 +73,7 @@ class Dashboard extends Component<Props> {
         title: 'Whitelist',
         icon: <img src={icoHandshake} alt='Whitelist' />,
         to: tokenUrl + '/whitelist',
-        isActive: location.slice(-10) === '/sto',
+        isActive: location.slice(-10) === '/whitelist',
       },
     ]
     return (

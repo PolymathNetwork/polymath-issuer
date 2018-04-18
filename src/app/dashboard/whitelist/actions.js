@@ -2,7 +2,7 @@
 
 import * as ui from 'polymath-ui'
 import { TransferManager, SecurityToken } from 'polymathjs'
-import type { Investor } from 'polymathjs/types'
+import type { Investor, Address } from 'polymathjs/types'
 
 import { formName as userFormName } from './components/userForm'
 import { formName as editInvestorsFormName } from './components/editInvestorsForm'
@@ -14,7 +14,7 @@ export const TRANSFER_MANAGER = 'dashboard/whitelist/TRANSFER_MANAGER'
 export const ac_transferManager = (transferManager: TransferManager) => ({ type: TRANSFER_MANAGER, transferManager })
 
 export const UPLOAD_CSV = 'dashboard/whitelist/UPLOAD_CSV'
-export const ac_csvUpload = (csvMessage: string, addresses: Array<string>, sell: Array<string>, buy: Array<string>, previewCSVShowing: boolean, ) =>
+export const ac_csvUpload = (csvMessage: string, addresses: Array<Address>, sell: Array<Address>, buy: Array<Address>, previewCSVShowing: boolean, ) =>
   ({ type: UPLOAD_CSV, csvMessage, addresses, sell, buy, previewCSVShowing })
 export const UPLOAD_CSV_FAILED = 'dashboard/whitelist/UPLOAD_CSV_FAILED'
 
@@ -48,8 +48,8 @@ export const initialize = () => async (dispatch: Function, getState: GetState) =
 
 //Uploads the CSV file, reads it with built in js FileReader(), dispatches to the store the csv file information,
 //which can then be sent to the blockchain with multiUserSumbit()
-//QUESTION: @davekaj - Do we need to limit CSV file to 50 or 100, and notify them that it is too long? also keep in mind gas limit and WS packet size
-export const uploadCSV = (file: Object) => async (dispatch: Function) => {
+//TODO: @davekaj - Do we need to limit CSV file to 50 or 100, and notify them that it is too long? also keep in mind gas limit and WS packet size
+export const uploadCSV = (file: File) => async (dispatch: Function) => {
   let parseFile
   if (file.target === undefined) {
     parseFile = file
@@ -224,7 +224,7 @@ export const listLength = (pageNumber: number) => async (dispatch: Function) => 
   dispatch(ac_listLength(pageNumber))
 }
 
-export const removeInvestor = (addresses: Array<string>) => async (dispatch: Function, getState: GetState) => {
+export const removeInvestor = (addresses: Array<Address>) => async (dispatch: Function, getState: GetState) => {
   let blockchainData: Array<Investor> = []
   for (let i = 0; i < addresses.length; i++) {
     let zeroDate = new Date(0)
@@ -251,7 +251,7 @@ export const removeInvestor = (addresses: Array<string>) => async (dispatch: Fun
   dispatch(getWhitelist())
 }
 
-export const editInvestors = (addresses: Array<string>) => async (dispatch: Function, getState: GetState) => {
+export const editInvestors = (addresses: Array<Address>) => async (dispatch: Function, getState: GetState) => {
   let investors = []
   const times = { ...getState().form[editInvestorsFormName].values }
   let newSellDate = new Date(times.sell)

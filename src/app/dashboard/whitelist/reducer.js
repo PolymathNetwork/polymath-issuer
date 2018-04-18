@@ -1,14 +1,14 @@
 // @flow
 
 import { TransferManager } from 'polymathjs'
-import type { Investor } from 'polymathjs/types'
+import type { Investor, Address } from 'polymathjs/types'
 
 import * as a from './actions'
 import type { Action } from './actions'
 
 export type WhitelistState = {|
   transferManager: TransferManager,
-  addresses: Array<string>,
+  addresses: Array<Address>,
   sell: Array<number>,
   buy: Array<number>,
   investors: Array<Investor>,

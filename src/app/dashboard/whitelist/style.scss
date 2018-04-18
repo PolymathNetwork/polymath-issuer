@@ -1,11 +1,8 @@
-$main-font: 'Overpass', sans-serif;
-
 .modalHeight {
   height: 600px
 }
 
 %modal-text {
-  font-family: $main-font;
   color: #5A6872;
   width: 500px;
 }
@@ -26,7 +23,6 @@ $main-font: 'Overpass', sans-serif;
 
 
 %csvTable {
-  font-family: $main-font;
   font-size: 14px;
   height: 18px;
   color: #5A6872;
@@ -64,12 +60,11 @@ $main-font: 'Overpass', sans-serif;
 }
 
 #dropZone {
-	height: 45px;
-	width: 214px;
-	color: #8C9BA5;
-  font-family: $main-font;
-	font-size: 34px;
-	font-weight: 200;
-	line-height: 55px;
+  height: 45px;
+  width: 214px;
+  color: #8C9BA5;
+  font-size: 34px;
+  font-weight: 200;
+  line-height: 55px;
   margin: auto;
 }

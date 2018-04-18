@@ -13,32 +13,34 @@ import {
   DatePickerInput,
   FileUploaderButton,
 } from 'carbon-components-react'
-import { TransferManager } from 'polymathjs'
 
-import type { Investor } from 'polymathjs/types'
+import type { Address } from 'polymathjs/types'
 
-import { initialize, uploadCSV, multiUserSubmit, oneUserSubmit, getWhitelist, listLength, removeInvestor, editInvestors } from './actions'
+import {
+  initialize,
+  uploadCSV,
+  multiUserSubmit,
+  oneUserSubmit,
+  getWhitelist,
+  listLength,
+  removeInvestor,
+  editInvestors,
+} from './actions'
 import { TableHeaders } from './tableHeaders'
 import InvestorForm from './components/userForm'
 import EditInvestorsForm from './components/editInvestorsForm'
 import BasicDropzone from './components/ReactDropZone'
 
+import type { WhitelistState } from './reducer'
+
 import './style.css'
 
-// might need TableToolbarAction and batchActionClick here
 const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
   TableSelectAll, TableSelectRow, TableToolbar, TableBatchAction, TableBatchActions,
   TableToolbarSearch, TableToolbarContent } = DataTable
 
 type StateProps = {|
-  transferManager: TransferManager,
-  addresses: Array<string>,
-  sell: Array<number>,
-  buy: Array<number>,
-  investors: Array<Investor>,
-  csvMessage: string,
-  previewCSVShowing: boolean,
-  listLength: number,
+  whitelist: WhitelistState,
 |}
 
 type DispatchProps = {|
@@ -48,19 +50,12 @@ type DispatchProps = {|
   singleSubmit: () => any,
   getWhitelist: (?Date, ?Date) => any,
   updateListLength: (number) => any,
-  removeInvestor: (investors: Array<string>) => any,
-  editInvestors: (investors: Array<string>) => any,
+  removeInvestor: (investors: Array<Address>) => any,
+  editInvestors: (investors: Array<Address>) => any,
 |}
 
 const mapStateToProps = (state) => ({
-  transferManager: state.whitelist.transferManager,
-  addresses: state.whitelist.addresses,
-  sell: state.whitelist.sell,
-  buy: state.whitelist.buy,
-  investors: state.whitelist.investors,
-  csvMessage: state.whitelist.csvMessage,
-  previewCSVShowing: state.whitelist.previewCSVShowing,
-  listLength: state.whitelist.listLength,
+  whitelist: state.whitelist,
 })
 
 const mapDispatchToProps = (dispatch: Function) => ({
@@ -70,31 +65,31 @@ const mapDispatchToProps = (dispatch: Function) => ({
   singleSubmit: () => dispatch(oneUserSubmit()),
   getWhitelist: (calenderStart: Date, calenderEnd: Date) => dispatch(getWhitelist(calenderStart, calenderEnd)),
   updateListLength: (pageNumber: number) => dispatch(listLength(pageNumber)),
-  removeInvestor: (investors: Array<string>) => dispatch(removeInvestor(investors)),
-  editInvestors: (investors: Array<string>) => dispatch(editInvestors(investors)),
+  removeInvestor: (investors: Array<Address>) => dispatch(removeInvestor(investors)),
+  editInvestors: (investors: Array<Address>) => dispatch(editInvestors(investors)),
 })
 
 type Props = StateProps & DispatchProps
 
-type State = {
+type State = {|
   page: number,
   editInvestorsShowing: boolean,
-  editInvestors: Array<string>,
-}
+  editInvestors: Array<Address>,
+|}
 
- type EventData = {
+type EventData = {|
   id: string,
-  address: string,
+  address: Address,
   added: ?string,
-  addedBy: ?string,
+  addedBy: ?Address,
   from: string,
   to: string,
-}
+|}
 
-type PageChanger = {
+type PageChanger = {|
   page: number,
   pageSize: number,
-}
+|}
 
 type DatePickerType = [Date, Date]
 
@@ -125,7 +120,7 @@ class WhitelistPage extends Component<Props, State> {
   handleDatePicker = (picker: DatePickerType) => {
     if (picker.length === 2) {
       this.setState({
-        page: 0, // TODO @davekaj: make sure that reseting to initial page is truly needed
+        page: 0, // TODO @davekaj: make sure that resetting to initial page is truly needed
       })
       this.props.getWhitelist(picker[0], picker[1])
     }
@@ -163,9 +158,9 @@ class WhitelistPage extends Component<Props, State> {
   //renders the list by making it date strings and splitting up in pages, at the start of the render function
   paginationRendering () {
     let paginatedArray = []
-    let investors = this.props.investors
+    let investors = this.props.whitelist.investors
     let pageNum = this.state.page
-    let listLength = this.props.listLength
+    let listLength = this.props.whitelist.listLength
     let startSlice = pageNum * listLength
     let endSlice = ((pageNum+1) * listLength)
     paginatedArray = investors.slice(startSlice, endSlice)
@@ -283,7 +278,7 @@ class WhitelistPage extends Component<Props, State> {
                 primaryButtonText='Send To Blockchain'
                 shouldCloseAfterSubmit
               >
-                <div className={this.props.previewCSVShowing ? 'modalHeight' : ''}>
+                <div className={this.props.whitelist.previewCSVShowing ? 'modalHeight' : ''}>
                   <div className='csvModal'>
                   Add multiple addresses to the whitelist by uploading a comma seperated CSV file. The format should be as follows:
                     <ul>
@@ -296,7 +291,7 @@ class WhitelistPage extends Component<Props, State> {
                   </div>
                   {/* </div> */}
                   <br />
-                  {this.props.previewCSVShowing ? null :
+                  {this.props.whitelist.previewCSVShowing ? null :
                     (
                       <div>
                         <BasicDropzone onHandleUpload={this.props.handleUpload} />
@@ -310,9 +305,9 @@ class WhitelistPage extends Component<Props, State> {
                         />
                       </div>
                     )}
-                  {this.props.previewCSVShowing ? (
+                  {this.props.whitelist.previewCSVShowing ? (
                     <div className='csvModalTable'>
-                      {/* <div>{this.props.csvMessage}</div> TODO @davekaj: remove this from redux state, it is not needed anymore*/}
+                      {/* <div>{this.props.whitelist.csvMessage}</div> TODO @davekaj: remove this from redux state, it is not needed anymore*/}
                       {/* Below is the data you will be sending to the blockchain, please confirm it is correct, and then click the Send button to continue. */}
                       <br />
                       <table>
@@ -321,11 +316,11 @@ class WhitelistPage extends Component<Props, State> {
                           <th>Sale Lockup End Date</th>
                           <th>Purchase Lockup End Date</th>
                         </tr>
-                        {this.props.addresses.map((user, i) => (
+                        {this.props.whitelist.addresses.map((user, i) => (
                           <tr key={uuidv4()} className='csvPreviewTable'>
-                            <td className='csvModalAddressTable' >{this.props.addresses[i]}</td>
-                            <td>{this.props.sell[i]}</td>
-                            <td>{this.props.buy[i]}</td>
+                            <td className='csvModalAddressTable' >{this.props.whitelist.addresses[i]}</td>
+                            <td>{this.props.whitelist.sell[i]}</td>
+                            <td>{this.props.whitelist.buy[i]}</td>
                           </tr>
                         ))}
                       </table>
@@ -363,7 +358,7 @@ class WhitelistPage extends Component<Props, State> {
           <PaginationV2
             onChange={this.handleChangePages}
             pageSizes={[10, 20, 30, 40, 50]}
-            totalItems={this.props.investors.length}
+            totalItems={this.props.whitelist.investors.length}
           />
           {this.state.editInvestorsShowing ? (
             <Modal
