@@ -9,6 +9,8 @@ import type { NetworkState } from 'polymath-auth/types'
 import account from '../app/account/reducer'
 import token from '../app/token/reducer'
 import sto from '../app/sto/reducer'
+import whitelist from '../app/dashboard/whitelist/reducer'
+import type { WhitelistState } from '../app/dashboard/whitelist/reducer'
 import type { AccountState } from '../app/account/reducer'
 import type { TokenState } from '../app/token/reducer'
 import type { STOState } from '../app/sto/reducer'
@@ -20,6 +22,7 @@ export default combineReducers({
   token,
   sto,
   pui,
+  whitelist,
 })
 
 export type RootState = {
@@ -28,6 +31,7 @@ export type RootState = {
   account: AccountState,
   token: TokenState,
   sto: STOState,
+  whitelist: WhitelistState,
   pui: any,
 }
 

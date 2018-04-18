@@ -2,6 +2,7 @@
 
 import App from './app/App'
 import NotFoundPage from './app/NotFoundPage'
+import WhitelistPage from './app/dashboard/whitelist/WhiteListPage'
 import SignUpPage from './app/account/SignUpPage'
 import TickerPage from './app/ticker/TickerPage'
 import Dashboard from './app/Dashboard'
@@ -34,6 +35,11 @@ export default [
           {
             path: '/dashboard/:id/sto',
             component: STOPage,
+            exact: true,
+          },
+          {
+            path: '/dashboard/:id/whitelist',
+            component: WhitelistPage,
             exact: true,
           },
         ],
