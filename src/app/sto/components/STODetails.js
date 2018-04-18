@@ -89,13 +89,13 @@ export default class STODetails extends Component<Props> {
       </div>
     )
     return (
-      <div className='pui-page-box'>
+      <div className='pui-page-box sto-factory'>
         <h2 className='pui-h2 pui-h-tags'>
           {item.title}
           <span className='bx--tag bx--tag--custom'>Raise Funds in POLY</span>
           <span className='bx--tag bx--tag--ibm'>Raise Funds in ETH</span>
         </h2>
-        <br />
+        <br /><br />
         {isSelect ? (
           <div className='bx--row'>
             <div className='bx--col-xs-6'>

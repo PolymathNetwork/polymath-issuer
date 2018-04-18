@@ -7,6 +7,7 @@ import { STOStatus } from 'polymath-ui'
 import type { SecurityToken, STOPurchase, STODetails } from 'polymathjs'
 
 import NotFoundPage from '../../NotFoundPage'
+import Progress from '../../token/components/Progress'
 import InvestorTable from './InvestorTable'
 import { fetchPurchases } from '../actions'
 import type { RootState } from '../../../redux/reducer'
@@ -47,23 +48,26 @@ class OverviewSTO extends Component<Props> {
     }
     return (
       <DocumentTitle title={token.ticker + ' STO Overview – Polymath'}>
-        <Fragment>
-          <h1 className='pui-h1'>{token.ticker} STO Overview</h1><br />
-          <STOStatus
-            title='Capped STO'
-            start={details.start}
-            end={details.end}
-            raised={details.raised}
-            cap={details.cap}
-            isPolyFundraise={details.isPolyFundraise}
-          />
-          <br /><br />
-          <h2 className='pui-h2'>
-            List of Investors
-          </h2>
-          <InvestorTable rows={purchases} />
-          <p>&nbsp;</p>
-        </Fragment>
+        <div>
+          <Progress current={3} />
+          <Fragment>
+            <h1 className='pui-h1'>{token.ticker} STO Overview</h1><br />
+            <STOStatus
+              title='Capped STO'
+              start={details.start}
+              end={details.end}
+              raised={details.raised}
+              cap={details.cap}
+              isPolyFundraise={details.isPolyFundraise}
+            />
+            <br /><br />
+            <h2 className='pui-h2'>
+              List of Investors
+            </h2>
+            <InvestorTable rows={purchases} />
+            <p>&nbsp;</p>
+          </Fragment>
+        </div>
       </DocumentTitle>
     )
   }

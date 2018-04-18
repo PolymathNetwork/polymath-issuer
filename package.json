@@ -30,7 +30,7 @@
     "moment": "2.20.1",
     "normalize.css": "7.0.0",
     "polymath-auth": "0.2.3",
-    "polymath-ui": "0.3.1",
+    "polymath-ui": "0.3.3",
     "polymathjs": "0.4.7",
     "react": "16.2.0",
     "react-addons-css-transition-group": "15.0.1",

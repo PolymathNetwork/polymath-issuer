@@ -4,11 +4,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { Icon } from 'carbon-components-react'
-import { etherscanAddress } from 'polymath-ui'
+import { etherscanTx, etherscanAddress } from 'polymath-ui'
+import moment from 'moment'
 import type { SecurityToken } from 'polymathjs/types'
 
 import { complete } from './actions'
 import NotFoundPage from '../NotFoundPage'
+import Progress from './components/Progress'
 import CompleteTokenForm from './components/CompleteTokenForm'
 import type { RootState } from '../../redux/reducer'
 
@@ -60,42 +62,60 @@ class TokenPage extends Component<Props> {
     if (!token) {
       return <NotFoundPage />
     }
+    // TODO @bshevchenko: render real symbol registration tx hash
     return (
       <DocumentTitle title={token.ticker + ' Token – Polymath'}>
         <div>
-          <div className='bx--row'>
-            {!token.address ? (
+          <Progress current={token.address ? 2 : 1} />
+          {!token.address ? (
+            <div className='bx--row'>
               <div className='bx--col-xs-7'>
                 <div className='pui-page-box'>
                   {this.complete(token)}
                 </div>
               </div>
-            ) : ''}
-            <div className='bx--col-xs-5'>
-              <div className='pui-page-box'>
-                <div className='bx--form-item'>
-                  <label htmlFor='ticker' className='bx--label'>Token Symbol</label>
-                  <p>{token.ticker}</p>
-                </div>
-                <div className='bx--form-item'>
-                  <label htmlFor='owner' className='bx--label'>Owner</label>
-                  <p>{etherscanAddress(token.owner)}</p>
-                </div>
-                <div className='bx--form-item'>
-                  <label htmlFor='name' className='bx--label'>Name</label>
-                  <p>{token.name}</p>
-                </div>
-                <div className='bx--form-item'>
-                  <label htmlFor='company' className='bx--label'>Company</label>
-                  <p>{token.company}</p>
-                </div>
-                <div className='bx--form-item'>
-                  <label htmlFor='desc' className='bx--label'>Description</label>
-                  <p>{token.desc}</p>
+              <div className='bx--col-xs-5'>
+                <div className='pui-page-box'>
+                  <div className='ticker-field'>
+                    <div className='bx--form-item'>
+                      <label htmlFor='ticker' className='bx--label'>Token Symbol</label>
+                      <input
+                        type='text'
+                        name='ticker'
+                        value={token.ticker}
+                        id='ticker'
+                        readOnly
+                        className='bx--text-input bx--text__input'
+                      />
+                    </div>
+                  </div>
+                  <div className='bx--form-item'>
+                    <label htmlFor='name' className='bx--label'>Token Name</label>
+                    <p>{token.name}</p>
+                  </div>
+                  <div className='bx--form-item'>
+                    <label htmlFor='owner' className='bx--label'>Symbol Registration Transaction</label>
+                    <p>
+                      {etherscanTx(
+                        '0x0111717f6af1f7e1b2f65855ff44fc31c8cbbe55ea47852af4ea67e37fe60983',
+                        '0x0111717f6af1f7e1b2f65855ff44fc31c8cbbe55ea47852af4ea67e37fe60983')}
+                    </p>
+                  </div>
+                  <div className='bx--form-item'>
+                    <label htmlFor='name' className='bx--label'>Symbol Registration Date</label>
+                    <p>{moment(token.timestamp).format('D MMMM, YYYY')}</p>
+                  </div>
+                  <hr />
+                  <div className='bx--form-item'>
+                    <label htmlFor='name' className='bx--label'>{'Issuer\'s'} ETH Address</label>
+                    <p>{etherscanAddress(token.owner, token.owner)}</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <img src='/providers.jpg' alt='Providers' style={{ marginLeft: '-60px', marginTop: '-10px' }} />
+          )}
         </div>
       </DocumentTitle>
     )

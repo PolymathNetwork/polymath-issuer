@@ -8,6 +8,7 @@ import type { SecurityToken, STOFactory } from 'polymathjs/types'
 import NotFoundPage from '../../NotFoundPage'
 import STODetails from './STODetails'
 import ConfigureSTOForm from './ConfigureSTOForm'
+import Progress from '../../token/components/Progress'
 import { configure } from '../actions'
 import type { RootState } from '../../../redux/reducer'
 
@@ -45,18 +46,21 @@ class ConfigureSTO extends Component<Props> {
     }
     return (
       <DocumentTitle title={'Configure ' + token.ticker + ' STO – Polymath'}>
-        <div className='bx--row'>
-          <div className='bx--col-xs-12'>
-            <h1 className='pui-h1'>Security Token Offering Configuration</h1>
-            <br /><br />
-            <div className='bx--row'>
-              <div className='bx--col-xs-5'>
-                <div className='pui-page-box'>
-                  <ConfigureSTOForm onSubmit={this.handleSubmit}  />
+        <div>
+          <Progress current={3} />
+          <div className='bx--row'>
+            <div className='bx--col-xs-12'>
+              <h1 className='pui-h1'>Security Token Offering Configuration</h1>
+              <br /><br />
+              <div className='bx--row'>
+                <div className='bx--col-xs-5'>
+                  <div className='pui-page-box'>
+                    <ConfigureSTOForm onSubmit={this.handleSubmit}  />
+                  </div>
                 </div>
-              </div>
-              <div className='bx--col-xs-7'>
-                <STODetails item={factory} />
+                <div className='bx--col-xs-7'>
+                  <STODetails item={factory} />
+                </div>
               </div>
             </div>
           </div>

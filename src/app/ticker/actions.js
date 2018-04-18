@@ -10,6 +10,8 @@ export const register = () => async (dispatch: Function, getState: GetState) => 
   dispatch(ui.txStart('Submitting token symbol registration...'))
   try {
     const details: SymbolDetails = getState().form[formName].values
+    details.company = ''
+    details.desc = ''
     const receipt = await TickerRegistry.registerTicker(details)
     dispatch(ui.notify(
       'Token symbol was successfully registered',

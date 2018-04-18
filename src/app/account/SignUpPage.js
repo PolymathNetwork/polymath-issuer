@@ -52,7 +52,7 @@ class SignUpPage extends Component<Props> {
               <div className='bx--row'>
                 <div className='bx--col-xs-8'>
                   <h1 className='pui-h1'>Sign up</h1>
-                  <h3 className='pui-h3'>Subtitle token reg example and follow the instructions to unlock it.</h3>
+                  <h3 className='pui-h3'>Create your account by entering your name<br /> and email below.</h3>
                 </div>
                 <div className='bx--col-xs-4 pui-single-box-bull'>
                   <img src={bull} alt='Bull' />

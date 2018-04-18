@@ -24,32 +24,20 @@ class TickerForm extends Component<Props> {
   render () {
     return (
       <Form onSubmit={this.props.handleSubmit}>
-        <Field
-          name='ticker'
-          component={TextInput}
-          label='Token symbol'
-          placeholder='Enter token symbol'
-        />
+        <div className='ticker-field'>
+          <Field
+            name='ticker'
+            component={TextInput}
+            label='Enter Token Symbol'
+            placeholder='4 characters (for example: TORO)'
+          />
+        </div>
         <Field
           name='name'
           component={TextInput}
           label='Token name'
           placeholder='Enter token name'
           validate={[required, maxLength100]}
-        />
-        <Field
-          name='company'
-          component={TextInput}
-          label='Company name'
-          placeholder='Enter company name'
-          validate={[maxLength100]}
-        />
-        <Field
-          name='desc'
-          component={TextInput}
-          label='Company description'
-          placeholder='Enter company description'
-          validate={[maxLength100]}
         />
         <Button type='submit'>
           Register token symbol

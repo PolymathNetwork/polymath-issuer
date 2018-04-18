@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
-import { Sidebar, icoBriefcase, icoInbox } from 'polymath-ui'
+import { Sidebar, icoBriefcase, icoInbox, icoHelp } from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
 
 import NotFoundPage from './NotFoundPage'
@@ -70,9 +70,17 @@ class Dashboard extends Component<Props> {
         isActive: location.slice(-4) === '/sto',
       },
     ]
+    const bottomSidebarItems = [
+      {
+        title: 'FAQ',
+        icon: <img src={icoHelp} alt='FAQ' />,
+        to: '#',
+        isActive: false,
+      },
+    ]
     return (
       <div className='dashboard'>
-        <Sidebar topItems={topSidebarItems} bottomItems={[]} />
+        <Sidebar topItems={topSidebarItems} bottomItems={bottomSidebarItems} />
         {renderRoutes(route.routes)}
       </div>
     )

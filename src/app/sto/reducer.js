@@ -6,7 +6,7 @@ import type { STOFactory, STODetails, STOPurchase } from 'polymathjs/types'
 import * as a from './actions'
 import type { Action } from './actions'
 
-const STAGE_FETCHING = 0
+export const STAGE_FETCHING = 0
 export const STAGE_SELECT = 1
 export const STAGE_CONFIGURE = 2
 export const STAGE_OVERVIEW = 3

@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { fetch } from './actions'
-import { STAGE_SELECT, STAGE_CONFIGURE, STAGE_OVERVIEW } from './reducer'
+import { STAGE_CONFIGURE, STAGE_OVERVIEW } from './reducer'
 import SelectSTO from './components/SelectSTO'
 import OverviewSTO from './components/OverviewSTO'
 import ConfigureSTO from './components/ConfigureSTO'
@@ -36,14 +36,12 @@ class STOPage extends Component<Props> {
 
   render () {
     switch (this.props.stage) {
-      case STAGE_SELECT:
-        return <SelectSTO />
       case STAGE_CONFIGURE:
         return <ConfigureSTO />
       case STAGE_OVERVIEW:
         return <OverviewSTO />
       default:
-        return <span />
+        return <SelectSTO />
     }
   }
 }
