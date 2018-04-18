@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
-import { Sidebar, icoBriefcase, icoInbox, icoHelp } from 'polymath-ui'
+import { Sidebar, icoBriefcase, icoInbox, icoHandshake, icoHelp } from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
 
 import NotFoundPage from './NotFoundPage'
@@ -68,6 +68,12 @@ class Dashboard extends Component<Props> {
         icon: <img src={icoInbox} alt='Token' />,
         to: tokenUrl + '/sto',
         isActive: location.slice(-4) === '/sto',
+      },
+      {
+        title: 'Whitelist',
+        icon: <img src={icoHandshake} alt='Whitelist' />,
+        to: tokenUrl + '/whitelist',
+        isActive: location.slice(-10) === '/whitelist',
       },
     ]
     const bottomSidebarItems = [

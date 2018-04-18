@@ -1,0 +1,46 @@
+.modalHeight {
+  height: 600px; }
+
+.csvModal, .csvModalMini {
+  color: #5A6872;
+  width: 500px; }
+
+.csvModal {
+  font-size: 16px;
+  height: 160px;
+  line-height: 25px; }
+
+.csvModalMini {
+  height: 18px;
+  font-size: 14px;
+  line-height: 22px; }
+
+.csvPreviewHeader, .csvPreviewTable, .csvModalTable {
+  font-size: 14px;
+  height: 18px;
+  color: #5A6872; }
+
+.csvPreviewHeader {
+  font-weight: 600; }
+
+.csvModalTable {
+  width: 148px;
+  line-height: 22px; }
+
+#dropzoneRectangle {
+  height: 72px;
+  width: 404px;
+  border: 1px dashed #3D70B2;
+  border-radius: 4px;
+  background: #ECF0F5;
+  margin: auto;
+  text-align: center; }
+
+#dropZone {
+  height: 45px;
+  width: 214px;
+  color: #8C9BA5;
+  font-size: 34px;
+  font-weight: 200;
+  line-height: 55px;
+  margin: auto; }
