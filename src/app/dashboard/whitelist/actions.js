@@ -4,7 +4,7 @@ import * as ui from 'polymath-ui'
 import { TransferManager, SecurityToken } from 'polymathjs'
 import type { Investor, Address } from 'polymathjs/types'
 
-import { formName as userFormName } from './components/userForm'
+import { formName as addInvestorFormName } from './components/addInvestorForm'
 import { formName as editInvestorsFormName } from './components/editInvestorsForm'
 import type { GetState } from '../../../redux/reducer'
 import type { ExtractReturn } from '../../../redux/helpers'
@@ -37,7 +37,6 @@ export const initialize = () => async (dispatch: Function, getState: GetState) =
   const token = getState().token.token
   if (!token || !token.contract) {
     //eslint-disable-next-line
-    console.error('Contract manager object not found, it did not carry over into the state')
     return
   }
   const contract: SecurityToken = token.contract
@@ -46,10 +45,14 @@ export const initialize = () => async (dispatch: Function, getState: GetState) =
   dispatch(getWhitelist())
 }
 
-//Uploads the CSV file, reads it with built in js FileReader(), dispatches to the store the csv file information,
-//which can then be sent to the blockchain with multiUserSumbit()
-//TODO: @davekaj - Do we need to limit CSV file to 50 or 100, and notify them that it is too long? also keep in mind gas limit and WS packet size
-export const uploadCSV = (file: File) => async (dispatch: Function) => {
+// Uploads the CSV file, reads it with built in js FileReader(), dispatches to the store the csv file information,
+// which can then be sent to the blockchain with multiUserSumbit()
+
+// Note: We just Object type, instead of File type, because here we get passed a File directly from the dropzone, and an event
+// from the upload button, and then we determine whether it is a file or not inside of uploadCSV()
+
+// TODO: @davekaj - Do we need to limit CSV file to 50 or 100, and notify them that it is too long? also keep in mind gas limit and WS packet size
+export const uploadCSV = (file: Object) => async (dispatch: Function) => {
   let parseFile
   if (file.target === undefined) {
     parseFile = file
@@ -117,9 +120,9 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: GetSta
   try {
     const receipt = await transferManager.modifyWhitelistMulti(blockchainData)
     dispatch(ui.notify(
-      'CSV was successfully uploaded',
+      'Investors from the CSV were successfully sent to the blockchain',
       true,
-      'We will present the investor list to you on the next page',
+      'The investor list will be updated when the transaction on the blockchain completes',
       ui.etherscanTx(receipt.transactionHash)
     ))
   } catch (e) {
@@ -129,7 +132,7 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: GetSta
 }
 
 export const oneUserSubmit = () => async (dispatch: Function, getState: GetState) => {
-  const user = { ...getState().form[userFormName].values }
+  const user = { ...getState().form[addInvestorFormName].values }
   let newSellDate = new Date(user.sell)
   let newBuyDate = new Date(user.buy)
   let blockchainData: Investor = {
@@ -144,7 +147,7 @@ export const oneUserSubmit = () => async (dispatch: Function, getState: GetState
     dispatch(ui.notify(
       'Investor was submitted to the blockchain',
       true,
-      'We will present the investor list to you on the next page',
+      'The investor list will be updated when the transaction on the blockchain completes',
       ui.etherscanTx(receipt.transactionHash)
     ))
   } catch (e) {
@@ -242,7 +245,7 @@ export const removeInvestor = (addresses: Array<Address>) => async (dispatch: Fu
     dispatch(ui.notify(
       'Investors Removed Successfully',
       true,
-      'We will present the investor list to you on the next page',
+      'The investor list will be updated when the transaction on the blockchain complete',
       ui.etherscanTx(receipt.transactionHash)
     ))
   } catch (e) {
@@ -271,7 +274,7 @@ export const editInvestors = (addresses: Array<Address>) => async (dispatch: Fun
     dispatch(ui.notify(
       'Investors Updated Successfully',
       true,
-      'We will present the investor list to you on the next page',
+      'The investor list will be updated when the transaction on the blockchain completes',
       ui.etherscanTx(receipt.transactionHash)
     ))
   } catch (e) {

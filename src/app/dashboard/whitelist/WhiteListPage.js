@@ -1,5 +1,7 @@
 // @flow
 
+/* eslint-disable react/jsx-no-bind */
+
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
@@ -12,9 +14,10 @@ import {
   DatePicker,
   DatePickerInput,
   FileUploaderButton,
+  Button,
 } from 'carbon-components-react'
 
-import type { Address } from 'polymathjs/types'
+import type { Address, SecurityToken } from 'polymathjs/types'
 
 import Progress from '../../token/components/Progress'
 import {
@@ -28,7 +31,7 @@ import {
   editInvestors,
 } from './actions'
 import { TableHeaders } from './tableHeaders'
-import InvestorForm from './components/userForm'
+import InvestorForm from './components/addInvestorForm'
 import EditInvestorsForm from './components/editInvestorsForm'
 import BasicDropzone from './components/ReactDropZone'
 
@@ -42,6 +45,7 @@ const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, Tab
 
 type StateProps = {|
   whitelist: WhitelistState,
+  token: SecurityToken,
 |}
 
 type DispatchProps = {|
@@ -57,6 +61,7 @@ type DispatchProps = {|
 
 const mapStateToProps = (state) => ({
   whitelist: state.whitelist,
+  token: state.token.token,
 })
 
 const mapDispatchToProps = (dispatch: Function) => ({
@@ -313,18 +318,20 @@ class WhitelistPage extends Component<Props, State> {
                       {/* Below is the data you will be sending to the blockchain, please confirm it is correct, and then click the Send button to continue. */}
                       <br />
                       <table>
-                        <tr className='csvPreviewHeader'>
-                          <th>Investor's Eth Address</th>
-                          <th>Sale Lockup End Date</th>
-                          <th>Purchase Lockup End Date</th>
-                        </tr>
-                        {this.props.whitelist.addresses.map((user, i) => (
-                          <tr key={uuidv4()} className='csvPreviewTable'>
-                            <td className='csvModalAddressTable' >{this.props.whitelist.addresses[i]}</td>
-                            <td>{this.props.whitelist.sell[i]}</td>
-                            <td>{this.props.whitelist.buy[i]}</td>
+                        <tbody>
+                          <tr className='csvPreviewHeader'>
+                            <th>Investor&apos;s Eth Address</th>
+                            <th>Sale Lockup End Date</th>
+                            <th>Purchase Lockup End Date</th>
                           </tr>
-                        ))}
+                          {this.props.whitelist.addresses.map((user, i) => (
+                            <tr key={uuidv4()} className='csvPreviewTable'>
+                              <td className='csvModalAddressTable' >{this.props.whitelist.addresses[i]}</td>
+                              <td>{this.props.whitelist.sell[i]}</td>
+                              <td>{this.props.whitelist.buy[i]}</td>
+                            </tr>
+                          ))}
+                        </tbody>
                       </table>
                     </div>
                   )
@@ -342,12 +349,14 @@ class WhitelistPage extends Component<Props, State> {
                   labelText='Start Date Added'
                   placeholder='mm/dd/yyyy'
                   id='date-picker-input-id'
+                  onClick={()=>{}} // include this to get rid of error being passed onto the component and shown in console
                 />
                 <DatePickerInput
                   className='some-class'
                   labelText='End Date Added'
                   placeholder='mm/dd/yyyy'
                   id='date-picker-input-id-2'
+                  onClick={()=>{}} // include this to get rid of error being passed onto the component and shown in console
                 />
               </DatePicker>
             </div>
@@ -377,6 +386,23 @@ class WhitelistPage extends Component<Props, State> {
               </p>
               <br />
               <EditInvestorsForm />
+            </Modal>
+          )
+            : null}
+
+          {!this.props.token.status ? (
+            <Modal
+              open
+              passiveModal
+              modalHeading='Complete The STO Section'
+              primaryButtonText='Go to STO Section'
+            >
+              <p className='bx--modal-content__text'>
+                  Please confirm that you are ready to proceed to the next step in the STO process
+              </p>
+              <Button href={`/dashboard/${this.props.token.ticker}/sto`}>
+                Go to STO Section
+              </Button>
             </Modal>
           )
             : null}

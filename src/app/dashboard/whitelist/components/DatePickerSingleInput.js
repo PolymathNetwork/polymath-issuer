@@ -1,5 +1,7 @@
 // @flow
 
+/* eslint-disable react/jsx-no-bind */
+
 // TODO @davekaj: get this file merged into the polymath-ui repo, and
 // TODO @davekaj: remove the local version of it from here
 
@@ -47,6 +49,7 @@ export default ({
         id={input.name}
         invalid={invalid}
         invalidText={error}
+        onClick={()=>{}} // include this to get rid of error being passed onto the component and shown in console
         pattern={null}
       />
     </DatePicker>
