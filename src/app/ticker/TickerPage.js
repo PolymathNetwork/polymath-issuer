@@ -37,7 +37,6 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class TickerPage extends Component<Props> {
-
   componentWillMount () {
     this.props.tokenData(null)
   }

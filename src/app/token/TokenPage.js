@@ -36,7 +36,6 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class TokenPage extends Component<Props> {
-
   handleCompleteSubmit = () => {
     this.props.complete()
   }
@@ -44,8 +43,14 @@ class TokenPage extends Component<Props> {
   complete (token: SecurityToken) {
     return (
       <div>
-        <h2 className='pui-h2'><Icon name='warning--glyph' fill='#efc100' width='27' height='24' /> Complete {token.ticker} Token Registration</h2>
-        <h3 className='pui-h3'>Complete your security token registration before it expires. If your registration expires the token symbol you selected will be made available for others to claim.</h3>
+        <h2 className='pui-h2'>
+          <Icon name='warning--glyph' fill='#efc100' width='27' height='24' />
+          Complete {token.ticker} Token Registration
+        </h2>
+        <h3 className='pui-h3'>
+          Complete your security token registration before it expires.
+          If your registration expires the token symbol you selected will be made available for others to claim.
+        </h3>
         <br /><br />
         <h2 className='pui-h2'>Security Token Issuance</h2>
         <h3 className='pui-h3'>
@@ -64,7 +69,7 @@ class TokenPage extends Component<Props> {
     }
     // TODO @bshevchenko: render real symbol registration tx hash
     return (
-      <DocumentTitle title={token.ticker + ' Token – Polymath'}>
+      <DocumentTitle title={`${token.ticker} Token – Polymath`}>
         <div>
           <Progress current={token.address ? 2 : 1} />
           {!token.address ? (
@@ -98,7 +103,8 @@ class TokenPage extends Component<Props> {
                     <p>
                       {etherscanTx(
                         '0x0111717f6af1f7e1b2f65855ff44fc31c8cbbe55ea47852af4ea67e37fe60983',
-                        '0x0111717f6af1f7e1b2f65855ff44fc31c8cbbe55ea47852af4ea67e37fe60983')}
+                        '0x0111717f6af1f7e1b2f65855ff44fc31c8cbbe55ea47852af4ea67e37fe60983'
+                      )}
                     </p>
                   </div>
                   <div className='bx--form-item'>
@@ -107,7 +113,7 @@ class TokenPage extends Component<Props> {
                   </div>
                   <hr />
                   <div className='bx--form-item'>
-                    <label htmlFor='name' className='bx--label'>{'Issuer\'s'} ETH Address</label>
+                    <label htmlFor='name' className='bx--label'>Issuer&apos;s ETH Address</label>
                     <p>{etherscanAddress(token.owner, token.owner)}</p>
                   </div>
                 </div>

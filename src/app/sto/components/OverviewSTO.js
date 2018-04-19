@@ -36,7 +36,6 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class OverviewSTO extends Component<Props> {
-
   componentWillMount () {
     this.props.fetchPurchases()
   }
@@ -47,7 +46,7 @@ class OverviewSTO extends Component<Props> {
       return <NotFoundPage />
     }
     return (
-      <DocumentTitle title={token.ticker + ' STO Overview – Polymath'}>
+      <DocumentTitle title={`${token.ticker} STO Overview – Polymath`}>
         <div>
           <Progress current={3} />
           <Fragment>

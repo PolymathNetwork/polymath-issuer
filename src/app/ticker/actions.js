@@ -19,7 +19,7 @@ export const register = () => async (dispatch: Function, getState: GetState) => 
       'We have already sent you an email. Check your mailbox',
       ui.etherscanTx(receipt.transactionHash)
     ))
-    getState().pui.common.history.push('/dashboard/' + details.ticker)
+    getState().pui.common.history.push(`/dashboard/${details.ticker}`)
   } catch (e) {
     dispatch(ui.txFailed(e))
   }

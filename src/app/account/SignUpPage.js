@@ -6,7 +6,7 @@ import DocumentTitle from 'react-document-title'
 import { bull } from 'polymath-ui'
 import type { RouterHistory } from 'react-router'
 
-import SignUpForm  from './components/SignUpForm'
+import SignUpForm from './components/SignUpForm'
 import { signUp } from './actions'
 import type { RootState } from '../../redux/reducer'
 
@@ -31,7 +31,6 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class SignUpPage extends Component<Props> {
-
   componentWillMount () {
     if (this.props.isSignedUp) {
       this.props.history.push('/ticker')

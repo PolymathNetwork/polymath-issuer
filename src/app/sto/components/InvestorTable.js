@@ -14,37 +14,35 @@ const {
 } = DataTable
 
 // eslint-disable-next-line react/prop-types
-const render = ({ rows, headers, getHeaderProps }) => {
-  return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          {headers.map((header) => (
-            <TableHeader {...getHeaderProps({ header })}>
-              {header.header}
-            </TableHeader>
+const render = ({ rows, headers, getHeaderProps }) => (
+  <Table>
+    <TableHead>
+      <TableRow>
+        {headers.map((header) => (
+          <TableHeader {...getHeaderProps({ header })}>
+            {header.header}
+          </TableHeader>
+        ))}
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {rows.map((row) => (
+        <TableRow key={row.id}>
+          {row.cells.map((cell) => (
+            <TableCell key={cell.id}>{cell.value}</TableCell>
           ))}
         </TableRow>
-      </TableHead>
-      <TableBody>
-        {rows.map((row) => (
-          <TableRow key={row.id}>
-            {row.cells.map((cell) => (
-              <TableCell key={cell.id}>{cell.value}</TableCell>
-            ))}
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  )
-}
+      ))}
+    </TableBody>
+  </Table>
+)
 
 const InvestorTable = (props: {
   rows: Array<STOPurchase>
 }) => {
   const rows = []
   let rowId = 1
-  for (let row of props.rows) {
+  for (const row of props.rows) {
     rows.push({
       ...row,
       id: String(rowId),

@@ -11,14 +11,13 @@ type Props = {|
 |}
 
 export default class STODetails extends Component<Props> {
-
   render () {
     const { item, handleUseSTO } = this.props
 
     const isSelect = handleUseSTO !== undefined
     const authorAddress = (
       <div className='bx--form-item'>
-        <label htmlFor='ticker' className='bx--label'>STO {'Author\'s'} ETH address</label>
+        <label htmlFor='ticker' className='bx--label'>STO Author&apos;s ETH address</label>
         <p>0xd4fcfa94c48bd8a20cc9d047b59b79b59c1c324d</p>
       </div>
     )

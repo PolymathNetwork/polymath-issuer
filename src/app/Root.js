@@ -14,7 +14,6 @@ type Props = {|
 |}
 
 export default class Root extends Component<Props> {
-
   render () {
     const { children, route } = this.props
     return (

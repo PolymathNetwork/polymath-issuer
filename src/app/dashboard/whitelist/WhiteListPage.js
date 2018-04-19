@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable react/jsx-no-bind */
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -27,18 +28,20 @@ import {
   removeInvestor,
   editInvestors,
 } from './actions'
-import { TableHeaders } from './tableHeaders'
+import tableHeaders from './tableHeaders'
 import InvestorForm from './components/userForm'
 import EditInvestorsForm from './components/editInvestorsForm'
-import BasicDropzone from './components/ReactDropZone'
+import BasicDropZone from './components/ReactDropZone'
 
 import type { WhitelistState } from './reducer'
 
 import './style.css'
 
-const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
+const {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
   TableSelectAll, TableSelectRow, TableToolbar, TableBatchAction, TableBatchActions,
-  TableToolbarSearch, TableToolbarContent } = DataTable
+  TableToolbarSearch, TableToolbarContent,
+} = DataTable
 
 type StateProps = {|
   whitelist: WhitelistState,
@@ -128,7 +131,7 @@ class WhitelistPage extends Component<Props, State> {
   }
 
   handleEditInvestors = (dataTableRow: Array<Object>) => {
-    let addresses = []
+    const addresses = []
     for (let i = 0; i < dataTableRow.length; i++) {
       addresses.push(dataTableRow[i].cells[0].value)
     }
@@ -153,28 +156,27 @@ class WhitelistPage extends Component<Props, State> {
 
   onHandleInvestorSubmit = () => {
     this.props.singleSubmit()
-    return true  // Must return true, for the component from carbon to work
+    return true // Must return true, for the component from carbon to work
   }
 
-  //renders the list by making it date strings and splitting up in pages, at the start of the render function
+  // renders the list by making it date strings and splitting up in pages, at the start of the render function
   paginationRendering () {
-    let paginatedArray = []
-    let investors = this.props.whitelist.investors
-    let pageNum = this.state.page
-    let listLength = this.props.whitelist.listLength
-    let startSlice = pageNum * listLength
-    let endSlice = ((pageNum+1) * listLength)
-    paginatedArray = investors.slice(startSlice, endSlice)
-    let stringifiedArray = []
-    for (let i = 0; i <paginatedArray.length; i++){
-      let csvRandomID: string = uuidv4()
+    const investors = this.props.whitelist.investors
+    const pageNum = this.state.page
+    const listLength = this.props.whitelist.listLength
+    const startSlice = pageNum * listLength
+    const endSlice = ((pageNum + 1) * listLength)
+    let paginatedArray = investors.slice(startSlice, endSlice)
+    const stringifiedArray = []
+    for (let i = 0; i < paginatedArray.length; i++) {
+      const csvRandomID: string = uuidv4()
       let stringifyAdded = null
       if (paginatedArray[i].added) {
         stringifyAdded = dateFormat(paginatedArray[i].added)
       }
-      let stringifyFrom = dateFormat(paginatedArray[i].from)
-      let stringifyTo = dateFormat(paginatedArray[i].to)
-      let stringifyInvestor: EventData = {
+      const stringifyFrom = dateFormat(paginatedArray[i].from)
+      const stringifyTo = dateFormat(paginatedArray[i].to)
+      const stringifyInvestor: EventData = {
         id: csvRandomID,
         address: paginatedArray[i].address,
         added: stringifyAdded,
@@ -188,7 +190,7 @@ class WhitelistPage extends Component<Props, State> {
   }
 
   removeInvestor = (dataTableRow: Array<Object>) => {
-    let addresses = []
+    const addresses = []
     for (let i = 0; i < dataTableRow.length; i++) {
       addresses.push(dataTableRow[i].cells[0].value)
     }
@@ -212,10 +214,10 @@ class WhitelistPage extends Component<Props, State> {
     <TableContainer>
       <TableToolbar>
         <TableBatchActions {...getBatchActionProps()}>
-          <TableBatchAction onClick={()=> this.removeInvestor(selectedRows)}>
+          <TableBatchAction onClick={() => this.removeInvestor(selectedRows)}>
               Remove Investor
           </TableBatchAction>
-          <TableBatchAction onClick={()=> this.handleEditInvestors(selectedRows)}>
+          <TableBatchAction onClick={() => this.handleEditInvestors(selectedRows)}>
               Edit Sale/Purchase Lockup Dates
           </TableBatchAction>
         </TableBatchActions>
@@ -264,7 +266,7 @@ class WhitelistPage extends Component<Props, State> {
   )
 
   render () {
-    let paginatedRows =  this.paginationRendering()
+    const paginatedRows = this.paginationRendering()
     return (
       <DocumentTitle title='Whitelist – Polymath'>
         <div>
@@ -282,21 +284,24 @@ class WhitelistPage extends Component<Props, State> {
               >
                 <div className={this.props.whitelist.previewCSVShowing ? 'modalHeight' : ''}>
                   <div className='csvModal'>
-                  Add multiple addresses to the whitelist by uploading a comma seperated CSV file. The format should be as follows:
+                    Add multiple addresses to the whitelist by uploading a comma separated CSV file.
+                    The format should be as follows:
                     <ul>
                       <li>Column 1 - Ethereum Address</li>
-                      <li>Column 2 - Date mm/dd/yyyy (date when the resale restrictions should be lifted for that address).</li>
+                      <li>
+                        Column 2 - Date mm/dd/yyyy
+                        (date when the resale restrictions should be lifted for that address).
+                      </li>
                     </ul>
                   </div>
                   <div className='csvModalMini'>
-                    You can download a <a href='localhost:3000'>Sample.csv</a> file and edit it
+                    You can download a <a href='/whitelist-sample.csv'>Sample.csv</a> file and edit it
                   </div>
-                  {/* </div> */}
                   <br />
                   {this.props.whitelist.previewCSVShowing ? null :
                     (
                       <div>
-                        <BasicDropzone onHandleUpload={this.props.handleUpload} />
+                        <BasicDropZone onHandleUpload={this.props.handleUpload} />
                         <FileUploaderButton
                           labelText='Upload From Desktop'
                           className='bob'
@@ -309,12 +314,14 @@ class WhitelistPage extends Component<Props, State> {
                     )}
                   {this.props.whitelist.previewCSVShowing ? (
                     <div className='csvModalTable'>
-                      {/* <div>{this.props.whitelist.csvMessage}</div> TODO @davekaj: remove this from redux state, it is not needed anymore*/}
-                      {/* Below is the data you will be sending to the blockchain, please confirm it is correct, and then click the Send button to continue. */}
+                      {/* TODO @davekaj: remove this from redux state, it is not needed anymore */}
+                      {/* <div>{this.props.whitelist.csvMessage}</div> */}
+                      {/* Below is the data you will be sending to the blockchain, please confirm it is correct, */}
+                      {/* and then click the Send button to continue. */}
                       <br />
                       <table>
                         <tr className='csvPreviewHeader'>
-                          <th>Investor's Eth Address</th>
+                          <th>Investor&apos;s Eth Address</th>
                           <th>Sale Lockup End Date</th>
                           <th>Purchase Lockup End Date</th>
                         </tr>
@@ -354,7 +361,7 @@ class WhitelistPage extends Component<Props, State> {
           </div>
           <DataTable
             rows={paginatedRows}
-            headers={TableHeaders}
+            headers={tableHeaders}
             render={this.dataTableRender}
           />
           <PaginationV2
@@ -368,9 +375,9 @@ class WhitelistPage extends Component<Props, State> {
               onRequestClose={this.handleRequestClose}
               className='some-class'
               open
-              modalHeading='Edit Exisiting Investors'
+              modalHeading='Edit Existing Investors'
               primaryButtonText='Send'
-              secondaryButtonText='Cancle'
+              secondaryButtonText='Cancel'
             >
               <p className='bx--modal-content__text'>
                 Please enter the information below to edit the chosen investors.

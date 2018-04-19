@@ -34,7 +34,6 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class ConfigureSTO extends Component<Props> {
-
   handleSubmit = () => {
     this.props.configure()
   }
@@ -45,7 +44,7 @@ class ConfigureSTO extends Component<Props> {
       return <NotFoundPage />
     }
     return (
-      <DocumentTitle title={'Configure ' + token.ticker + ' STO – Polymath'}>
+      <DocumentTitle title={`Configure ${token.ticker} STO – Polymath`}>
         <div>
           <Progress current={3} />
           <div className='bx--row'>
@@ -55,7 +54,7 @@ class ConfigureSTO extends Component<Props> {
               <div className='bx--row'>
                 <div className='bx--col-xs-5'>
                   <div className='pui-page-box'>
-                    <ConfigureSTOForm onSubmit={this.handleSubmit}  />
+                    <ConfigureSTOForm onSubmit={this.handleSubmit} />
                   </div>
                 </div>
                 <div className='bx--col-xs-7'>

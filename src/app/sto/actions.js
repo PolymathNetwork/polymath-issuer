@@ -47,8 +47,10 @@ export const fetchFactories = () => async (dispatch: Function) => {
     dispatch(factories([{
       title,
       name: 'Polymath Inc.',
-      usedBy: ['The Bureau Shevchenko LLC', 'Everhusk Inc.', 'Koverko & Co'],
-      desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      usedBy: ['The Bureau Shevchenko, Ltd.', 'Everhusk Inc.', 'Koverko & Co'],
+      desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore' +
+      'et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip' +
+      ' ex ea commodo consequat.',
       isVerified: true,
       securityAuditBy: 'Zeppelin Solutions',
       address: CappedSTOFactory.address,

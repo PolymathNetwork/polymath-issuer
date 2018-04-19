@@ -42,7 +42,6 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class App extends Component<Props> {
-
   componentWillMount () {
     Contract.setParams({
       ...this.props.network,

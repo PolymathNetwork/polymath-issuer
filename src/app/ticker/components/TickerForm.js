@@ -42,7 +42,9 @@ class TickerForm extends Component<Props> {
         <Button type='submit'>
           Register token symbol
         </Button>
-        <p className='pui-input-hint'>By registering your token symbol with Polymath you agree to our Terms and Conditions</p>
+        <p className='pui-input-hint'>
+          By registering your token symbol with Polymath you agree to our Terms and Conditions
+        </p>
       </Form>
     )
   }

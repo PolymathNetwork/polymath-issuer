@@ -1,4 +1,4 @@
-//@flow
+// @flow
 
 import * as ui from 'polymath-ui'
 import { TransferManager, SecurityToken } from 'polymathjs'
@@ -9,13 +9,18 @@ import { formName as editInvestorsFormName } from './components/editInvestorsFor
 import type { GetState } from '../../../redux/reducer'
 import type { ExtractReturn } from '../../../redux/helpers'
 
-//ac_ = actionCreator
+// ac_ = actionCreator
 export const TRANSFER_MANAGER = 'dashboard/whitelist/TRANSFER_MANAGER'
 export const ac_transferManager = (transferManager: TransferManager) => ({ type: TRANSFER_MANAGER, transferManager })
 
 export const UPLOAD_CSV = 'dashboard/whitelist/UPLOAD_CSV'
-export const ac_csvUpload = (csvMessage: string, addresses: Array<Address>, sell: Array<Address>, buy: Array<Address>, previewCSVShowing: boolean, ) =>
-  ({ type: UPLOAD_CSV, csvMessage, addresses, sell, buy, previewCSVShowing })
+export const ac_csvUpload = (
+  csvMessage: string,
+  addresses: Array<Address>,
+  sell: Array<Address>,
+  buy: Array<Address>,
+  previewCSVShowing: boolean
+) => ({ type: UPLOAD_CSV, csvMessage, addresses, sell, buy, previewCSVShowing })
 export const UPLOAD_CSV_FAILED = 'dashboard/whitelist/UPLOAD_CSV_FAILED'
 
 export const GET_WHITELIST = 'dashboard/whitelist/GET_WHITELIST'
@@ -31,12 +36,12 @@ export type Action =
   | ExtractReturn<typeof ac_getWhitelist>
   | ExtractReturn<typeof ac_listLength>
 
-//initialize grabs transferManager , and stores it in state for other functions to easily call
-//It then calls getWhiteList() to populate the table for the user
+// initialize grabs transferManager , and stores it in state for other functions to easily call
+// It then calls getWhiteList() to populate the table for the user
 export const initialize = () => async (dispatch: Function, getState: GetState) => {
   const token = getState().token.token
   if (!token || !token.contract) {
-    //eslint-disable-next-line
+    // eslint-disable-next-line
     console.error('Contract manager object not found, it did not carry over into the state')
     return
   }
@@ -46,22 +51,23 @@ export const initialize = () => async (dispatch: Function, getState: GetState) =
   dispatch(getWhitelist())
 }
 
-//Uploads the CSV file, reads it with built in js FileReader(), dispatches to the store the csv file information,
-//which can then be sent to the blockchain with multiUserSumbit()
-//TODO: @davekaj - Do we need to limit CSV file to 50 or 100, and notify them that it is too long? also keep in mind gas limit and WS packet size
-export const uploadCSV = (file: File) => async (dispatch: Function) => {
+// Uploads the CSV file, reads it with built in js FileReader(), dispatches to the store the csv file information,
+// which can then be sent to the blockchain with multiUserSubmit()
+// TODO @davekaj: Do we need to limit CSV file to 50 or 100, and notify them that it is too long?...
+// TODO @davekaj: ...also keep in mind gas limit and WS packet size
+export const uploadCSV = (file: Object) => async (dispatch: Function) => {
   let parseFile
   if (file.target === undefined) {
     parseFile = file
   } else {
     parseFile = file.target.files[0]
   }
-  let textType = /csv.*/
+  const textType = /csv.*/
   if (parseFile.type.match(textType)) {
-    let reader = new FileReader()
+    const reader = new FileReader()
     reader.readAsText(parseFile)
     reader.onload = function () {
-      let parsedData = parseCSV(((reader.result: any): string))
+      const parsedData = parseCSV(((reader.result: any): string))
       dispatch(ac_csvUpload('CSV upload was successful!', parsedData[0], parsedData[1], parsedData[2], true))
     }
   } else {
@@ -69,22 +75,22 @@ export const uploadCSV = (file: File) => async (dispatch: Function) => {
   }
 }
 
-//Takes the CSV data, turns it into two arrays, split up by addresses and time they are allowed to trade for , in order
-const parseCSV = (csvResult: string ) => {
-  let parsedData = []
-  let addresses = []
-  let sellRestriction = []
-  let buyRestriction = []
-  let allTextLines = csvResult.split(/\r\n|\n/)
-  let zeroX = '0x'
+// Takes the CSV data, turns it into two arrays, split up by addresses and time they are allowed to trade for , in order
+const parseCSV = (csvResult: string) => {
+  const parsedData = []
+  const addresses = []
+  const sellRestriction = []
+  const buyRestriction = []
+  const allTextLines = csvResult.split(/\r\n|\n/)
+  const zeroX = '0x'
   for (let i = 0; i < allTextLines.length; i++) {
-    let entry = allTextLines[i]
+    const entry = allTextLines[i]
     if (entry.includes(zeroX)) {
-      let splitArray = entry.split(',', 4)
-      //splitArray[0] is ignored, because it is just a blank string.
-      let address = splitArray[1]
-      let sell = splitArray[2]
-      let buy = splitArray[3]
+      const splitArray = entry.split(',', 4)
+      // splitArray[0] is ignored, because it is just a blank string.
+      const address = splitArray[1]
+      const sell = splitArray[2]
+      const buy = splitArray[3]
       addresses.push(address)
       sellRestriction.push(sell)
       buyRestriction.push(buy)
@@ -96,16 +102,16 @@ const parseCSV = (csvResult: string ) => {
   return parsedData
 }
 
-//This takes the CSV data we have stored in the store from uploadCSV, and then submits it to the blockchain
+// This takes the CSV data we have stored in the store from uploadCSV, and then submits it to the blockchain
 export const multiUserSubmit = () => async (dispatch: Function, getState: GetState) => {
-  let blockchainData = []
-  let csvAddresses = getState().whitelist.addresses
-  let csvSell = getState().whitelist.sell
-  let csvBuy = getState().whitelist.buy
+  const blockchainData = []
+  const csvAddresses = getState().whitelist.addresses
+  const csvSell = getState().whitelist.sell
+  const csvBuy = getState().whitelist.buy
   for (let i = 0; i < csvAddresses.length; i++) {
-    let newSellDate = new Date(csvSell[i])
-    let newBuyDate = new Date(csvBuy[i])
-    let investorData: Investor = {
+    const newSellDate = new Date(csvSell[i])
+    const newBuyDate = new Date(csvBuy[i])
+    const investorData: Investor = {
       address: csvAddresses[i],
       from: newSellDate,
       to: newBuyDate,
@@ -130,9 +136,9 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: GetSta
 
 export const oneUserSubmit = () => async (dispatch: Function, getState: GetState) => {
   const user = { ...getState().form[userFormName].values }
-  let newSellDate = new Date(user.sell)
-  let newBuyDate = new Date(user.buy)
-  let blockchainData: Investor = {
+  const newSellDate = new Date(user.sell)
+  const newBuyDate = new Date(user.buy)
+  const blockchainData: Investor = {
     address: user.address,
     from: newSellDate,
     to: newBuyDate,
@@ -153,28 +159,30 @@ export const oneUserSubmit = () => async (dispatch: Function, getState: GetState
   dispatch(getWhitelist())
 }
 
-export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async (dispatch: Function, getState: GetState) => {
-  let tableData = []
+export const getWhitelist = (start?: Date, end?: Date) => async (dispatch: Function, getState: GetState) => {
+  const tableData = []
   const transferManager: TransferManager = getState().whitelist.transferManager
   let whitelistEvents = await transferManager.getWhitelist()
-  //if statement only gets checked if both date picker values have been filled in, and then it will shrink the list down to its needed size
-  if (calenderStart !== undefined && calenderEnd !== undefined) {
-    let wlDateRestricted = []
-    for (let k =0; k < whitelistEvents.length; k++){
-      if (calenderStart.getTime() < whitelistEvents[k].added.getTime() && whitelistEvents[k].added.getTime()  < calenderEnd.getTime() ){
+  // if statement only gets checked if both date picker values have been filled in,
+  // and then it will shrink the list down to its needed size
+  if (start !== undefined && end !== undefined) {
+    const wlDateRestricted = []
+    for (let k = 0; k < whitelistEvents.length; k++) {
+      if (start.getTime() < whitelistEvents[k].added.getTime() && whitelistEvents[k].added.getTime() < end.getTime()) {
         wlDateRestricted.push(whitelistEvents[k])
       }
     }
     whitelistEvents = wlDateRestricted
   }
-  //TODO EFFICIENCY: going through this array backwards would probably save some computation time
-  for (let i =0; i < whitelistEvents.length; i++){
-    let found = tableData.some(function (el, index, array) {
-      //if true, User already recorded in eventList, so we don't want to make a new entry
-      if( el.address === whitelistEvents[i].address ){
+  // TODO EFFICIENCY: going through this array backwards would probably save some computation time
+  for (let i = 0; i < whitelistEvents.length; i++) {
+    const found = tableData.some((el, index, array) => {
+      // if true, User already recorded in eventList, so we don't want to make a new entry
+      if (el.address === whitelistEvents[i].address) {
         // if true, this event is newer than the previous event, so we update the space in the array
-        if (whitelistEvents[i].added > el.added){
-          let updateArray: Investor = {
+        if (whitelistEvents[i].added > el.added) {
+          // noinspection UnnecessaryLocalVariableJS
+          const updateArray: Investor = {
             address: whitelistEvents[i].address,
             added: whitelistEvents[i].added,
             addedBy: whitelistEvents[i].addedBy,
@@ -183,16 +191,15 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
           }
           array[index] = updateArray
           return true
-        }else {
-          return true
         }
-        //found returns false because it doesn't exist. so we add it below as backendData
-      } else {
-        return false
+        return true
+
+        // found returns false because it doesn't exist. so we add it below as backendData
       }
+      return false
     })
     if (!found) {
-      let backendData: Investor = {
+      const backendData: Investor = {
         address: whitelistEvents[i].address,
         added: whitelistEvents[i].added,
         addedBy: whitelistEvents[i].addedBy,
@@ -202,11 +209,12 @@ export const getWhitelist = (calenderStart?: Date, calenderEnd?: Date) => async 
       tableData.push(backendData)
     }
   }
-  //removeZeroTimestampArray removes investors that have a zero timestamp, because they are effectively removed from trading and shouldnt be shown on the list to the user
-  let removeZeroTimestampArray = []
-  for (let j = 0; j < tableData.length; j++){
-    if (tableData[j].from.getTime() !== 0 && tableData[j].to.getTime() !== 0 ) {
-      let validInvestor: Investor = {
+  // removeZeroTimestampArray removes investors that have a zero timestamp,
+  // because they are effectively removed from trading and shouldn't be shown on the list to the user
+  const removeZeroTimestampArray = []
+  for (let j = 0; j < tableData.length; j++) {
+    if (tableData[j].from.getTime() !== 0 && tableData[j].to.getTime() !== 0) {
+      const validInvestor: Investor = {
         address: tableData[j].address,
         added: (tableData[j].added),
         addedBy: tableData[j].addedBy,
@@ -225,10 +233,10 @@ export const listLength = (pageNumber: number) => async (dispatch: Function) => 
 }
 
 export const removeInvestor = (addresses: Array<Address>) => async (dispatch: Function, getState: GetState) => {
-  let blockchainData: Array<Investor> = []
+  const blockchainData: Array<Investor> = []
   for (let i = 0; i < addresses.length; i++) {
-    let zeroDate = new Date(0)
-    let removeInvestor: Investor = {
+    const zeroDate = new Date(0)
+    const removeInvestor: Investor = {
       address: addresses[i],
       from: zeroDate,
       to: zeroDate,
@@ -252,12 +260,12 @@ export const removeInvestor = (addresses: Array<Address>) => async (dispatch: Fu
 }
 
 export const editInvestors = (addresses: Array<Address>) => async (dispatch: Function, getState: GetState) => {
-  let investors = []
+  const investors = []
   const times = { ...getState().form[editInvestorsFormName].values }
-  let newSellDate = new Date(times.sell)
-  let newBuyDate = new Date(times.buy)
-  for (let i = 0; i < addresses.length; i ++){
-    let blockchainData: Investor = {
+  const newSellDate = new Date(times.sell)
+  const newBuyDate = new Date(times.buy)
+  for (let i = 0; i < addresses.length; i++) {
+    const blockchainData: Investor = {
       address: addresses[i],
       from: newSellDate,
       to: newBuyDate,

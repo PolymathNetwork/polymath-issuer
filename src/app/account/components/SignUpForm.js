@@ -37,7 +37,10 @@ class SignUpForm extends Component<Props> {
           placeholder='Enter your contact email address'
           validate={[required, email]}
         />
-        <p className='pui-input-hint'>{'We don\'t store your name and email. They will be saved on your computer for further email sendings about your transactions.'}</p>
+        <p className='pui-input-hint'>
+          We don&apos;t store your name and email.
+          They will be saved on your computer for further email sendings about your transactions.
+        </p>
         <Button type='submit'>
           Save Account Info
         </Button>

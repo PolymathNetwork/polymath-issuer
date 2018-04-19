@@ -35,14 +35,11 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class SelectSTO extends Component<Props> {
-
   componentWillMount () {
     this.props.fetchFactories()
   }
 
-  handleUseSTO = (sto: STOFactory) => {
-    return () => this.props.useFactory(sto)
-  }
+  handleUseSTO = (sto: STOFactory) => () => this.props.useFactory(sto)
 
   search () {
     // TODO
@@ -54,7 +51,7 @@ class SelectSTO extends Component<Props> {
       return <span>Launch your token at first.</span>
     }
     return (
-      <DocumentTitle title={'Select ' + token.ticker + ' STO – Polymath'}>
+      <DocumentTitle title={`Select ${token.ticker} STO – Polymath`}>
         <div>
           <Progress current={3} />
           <div className='bx--row'>

@@ -3436,19 +3436,19 @@ eslint-plugin-jsx-a11y@6.0.2:
     emoji-regex "^6.1.0"
     jsx-ast-utils "^1.4.0"
 
-"eslint-plugin-polymath-react@github:PolymathNetwork/eslint-plugin-polymath-react#master":
+"eslint-plugin-polymath-react@github:PolymathNetwork/eslint-plugin-polymath-react#6.0.0":
   version "1.0.0"
-  resolved "https://codeload.github.com/PolymathNetwork/eslint-plugin-polymath-react/tar.gz/0cd34e915433f8009cbba938446f586046e86997"
+  resolved "https://codeload.github.com/PolymathNetwork/eslint-plugin-polymath-react/tar.gz/b21d73c6face5b09d6d731cff80dd35009ee3bd9"
   dependencies:
     eslint-config-airbnb "16.1.0"
     eslint-plugin-import "^2.7.0"
     eslint-plugin-jsx-a11y "6.0.2"
-    eslint-plugin-polymath PolymathNetwork/eslint-plugin-polymath
+    eslint-plugin-polymath PolymathNetwork/eslint-plugin-polymath#3.0.0
     eslint-plugin-react "^7.4.0"
 
-eslint-plugin-polymath@PolymathNetwork/eslint-plugin-polymath:
+eslint-plugin-polymath@PolymathNetwork/eslint-plugin-polymath#3.0.0:
   version "1.0.0"
-  resolved "https://codeload.github.com/PolymathNetwork/eslint-plugin-polymath/tar.gz/86f3c5eb0cedfdeabebc235a32ce0c75a9373c7e"
+  resolved "https://codeload.github.com/PolymathNetwork/eslint-plugin-polymath/tar.gz/0d48ee281faddae343a67088fbbeead0052ad310"
   dependencies:
     eslint-plugin-async-await "0.0.0"
 
@@ -7969,9 +7969,9 @@ pn@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
 
-polymath-auth@0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/polymath-auth/-/polymath-auth-0.2.3.tgz#21b68f6bfac9557dfeccc7717872a2d5a28d9c44"
+polymath-auth@0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/polymath-auth/-/polymath-auth-0.2.4.tgz#d3f166c9c158231040df3b43a7f5cfe661afb4b0"
   dependencies:
     carbon-components-react "5.31.1"
     react "15.5.4"
@@ -7999,9 +7999,9 @@ polymath-core@0.4.0:
     web3 "^1.0.0-beta.33"
     zeppelin-solidity "1.7.0"
 
-polymath-ui@0.3.3:
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-0.3.3.tgz#19b964a5c824feba1392f220993d5682d6aac1f2"
+polymath-ui@0.3.4:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-0.3.4.tgz#992d307aa190d8f7e76214e88933b9b1299b5767"
   dependencies:
     babel-runtime "^6.26.0"
     bignumber.js "^6.0.0"
@@ -8016,9 +8016,9 @@ polymath-ui@0.3.3:
     react-transition-group "^2.2.1"
     redux "^3.7.2"
 
-polymathjs@0.4.7:
-  version "0.4.7"
-  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-0.4.7.tgz#421ee11f91e175e649d1f382487213f17c853e25"
+polymathjs@0.4.8:
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-0.4.8.tgz#e369a39fa5023683ed6d987211969eb94e3d38c4"
   dependencies:
     bignumber.js "5.0.0"
     bs58 "^4.0.1"

@@ -17,7 +17,6 @@ type Props = {
 }
 
 class RouteLoader extends Component<Props> {
-
   render () {
     if (this.props.location.pathname === '/') {
       return (
