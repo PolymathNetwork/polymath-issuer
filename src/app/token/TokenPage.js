@@ -120,7 +120,7 @@ class TokenPage extends Component<Props> {
               </div>
             </div>
           ) : (
-            <img src='/providers.jpg' alt='Providers' style={{ marginLeft: '-60px', marginTop: '-10px' }} />
+            <img src='/providers.jpg' alt='Providers' style={{ marginLeft: '-55px', marginTop: '-45px' }} />
           )}
         </div>
       </DocumentTitle>
