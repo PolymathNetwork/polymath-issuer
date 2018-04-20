@@ -18,7 +18,7 @@ export default class STODetails extends Component<Props> {
     const authorAddress = (
       <div className='bx--form-item'>
         <label htmlFor='ticker' className='bx--label'>STO Author&apos;s ETH address</label>
-        <p>0xd4fcfa94c48bd8a20cc9d047b59b79b59c1c324d</p>
+        <p>{item.owner}</p>
       </div>
     )
     const desc = (
@@ -31,60 +31,30 @@ export default class STODetails extends Component<Props> {
       <div className='bx--form-item'>
         <label htmlFor='ticker' className='bx--label'>Verified by Etherscan</label>
         {item.isVerified ? (
-          <div>
+          <p>
             <Icon
               name='checkmark--glyph'
-              fill='green'
+              fill='#00AA5E'
             />
             &nbsp;Yes
-          </div>
+          </p>
         ) : (
-          <div>
+          <p>
             <Icon
               name='close--glyph'
               fill='red'
             />
             &nbsp;No
-          </div>
+          </p>
         )}
       </div>
     )
-    const verifiedByPolymath = (
+    const securityAuditLink = (
       <div className='bx--form-item'>
-        <label htmlFor='ticker' className='bx--label'>Verified by Polymath</label>
-        {item.isVerified ? (
-          <div>
-            <Icon
-              name='checkmark--glyph'
-              fill='green'
-            />
-            &nbsp;Yes
-          </div>
-        ) : (
-          <div>
-            <Icon
-              name='close--glyph'
-              fill='red'
-            />
-            &nbsp;No
-          </div>
-        )}
-      </div>
-    )
-    const securityAuditBy = (
-      <div className='bx--form-item'>
-        <label htmlFor='ticker' className='bx--label'>Security Audit by</label>
-        <p>{item.securityAuditBy}</p>
-      </div>
-    )
-    const usedBy = (
-      <div className='bx--form-item'>
-        <label htmlFor='ticker' className='bx--label'>Used by</label>
-        <ul>
-          {item.usedBy.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
+        <label htmlFor='ticker' className='bx--label'>Security Audit Link</label>
+        <p>
+          <a href={item.securityAuditLink.url} target='_blank'>{item.securityAuditLink.title}</a>
+        </p>
       </div>
     )
     return (
@@ -97,32 +67,26 @@ export default class STODetails extends Component<Props> {
         <br /><br />
         {isSelect ? (
           <div className='bx--row'>
-            <div className='bx--col-xs-6'>
-              {authorAddress}
-              {desc}
-            </div>
-            <div className='bx--col-xs-2'>
-              {verifiedByPolymath}
-              {verifiedByEtherscan}
-            </div>
-            <div className='bx--col-xs-2'>
-              {securityAuditBy}
-            </div>
-            <div className='bx--col-xs-2'>
-              {usedBy}
-            </div>
-          </div>
-        ) : (
-          <div className='bx--row'>
             <div className='bx--col-xs-8'>
               {authorAddress}
               {desc}
             </div>
-            <div className='bx--col-xs-4'>
-              {verifiedByPolymath}
+            <div className='bx--col-xs-2'>
               {verifiedByEtherscan}
-              {securityAuditBy}
-              {usedBy}
+            </div>
+            <div className='bx--col-xs-2'>
+              {securityAuditLink}
+            </div>
+          </div>
+        ) : (
+          <div className='bx--row'>
+            <div className='bx--col-xs-9'>
+              {authorAddress}
+              {desc}
+            </div>
+            <div className='bx--col-xs-3'>
+              {verifiedByEtherscan}
+              {securityAuditLink}
             </div>
           </div>
         )}

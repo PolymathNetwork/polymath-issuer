@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { Icon } from 'carbon-components-react'
-import { etherscanTx, etherscanAddress } from 'polymath-ui'
+import { etherscanTx } from 'polymath-ui'
 import moment from 'moment'
 import type { SecurityToken } from 'polymathjs/types'
 
@@ -40,12 +40,12 @@ class TokenPage extends Component<Props> {
     this.props.complete()
   }
 
-  complete (token: SecurityToken) {
+  complete () {
     return (
       <div>
         <h2 className='pui-h2'>
           <Icon name='warning--glyph' fill='#efc100' width='27' height='24' />
-          Complete {token.ticker} Token Registration
+          Complete Token Registration
         </h2>
         <h3 className='pui-h3'>
           Complete your security token registration before it expires.
@@ -67,7 +67,7 @@ class TokenPage extends Component<Props> {
     if (!token) {
       return <NotFoundPage />
     }
-    // TODO @bshevchenko: render real symbol registration tx hash
+    // TODO @bshevchenko: real symbol registration tx hash https://github.com/PolymathNetwork/polymath-issuer/issues/25
     return (
       <DocumentTitle title={`${token.ticker} Token – Polymath`}>
         <div>
@@ -76,7 +76,7 @@ class TokenPage extends Component<Props> {
             <div className='bx--row'>
               <div className='bx--col-xs-7'>
                 <div className='pui-page-box'>
-                  {this.complete(token)}
+                  {this.complete()}
                 </div>
               </div>
               <div className='bx--col-xs-5'>
@@ -114,7 +114,7 @@ class TokenPage extends Component<Props> {
                   <hr />
                   <div className='bx--form-item'>
                     <label htmlFor='name' className='bx--label'>Issuer&apos;s ETH Address</label>
-                    <p>{etherscanAddress(token.owner, token.owner)}</p>
+                    <p>{token.owner}</p>
                   </div>
                 </div>
               </div>

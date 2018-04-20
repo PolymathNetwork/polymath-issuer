@@ -35,6 +35,7 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class SelectSTO extends Component<Props> {
+
   componentWillMount () {
     this.props.fetchFactories()
   }
@@ -62,7 +63,9 @@ class SelectSTO extends Component<Props> {
                 To select the model you desire, press &laquo;SELECT AND CONFIGURE STO&raquo;.
               </h3>
               <br /><br />
-              <Search small labelText='Search' placeHolderText='Search' style={{ maxWidth: '612px' }} />
+              <div className='sto-search-container'>
+                <Search small labelText='Search' placeHolderText='Search' />
+              </div>
               <br />
               {this.props.factories.map((item) => (
                 <STODetails key={item.address} item={item} handleUseSTO={this.handleUseSTO(item)} />

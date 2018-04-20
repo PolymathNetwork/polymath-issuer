@@ -26,7 +26,7 @@ export default class BasicDropzone extends Component<Props> {
             onDrop={this.onDrop.bind(this)}
             style={dropzoneStyle}
           >
-            <p id='dropZone' >Drop file here</p>
+            <p id='dropZone' >drop file here<br />or click to select</p>
           </Dropzone>
         </div>
       </section>

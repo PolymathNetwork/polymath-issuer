@@ -9,10 +9,14 @@ import type { ExtractReturn } from '../../redux/helpers'
 import type { GetState } from '../../redux/reducer'
 
 export const SIGNED_UP = 'account/SIGNED_UP'
-export const signedUp = (value: boolean, balance: BigNumber) => ({ type: SIGNED_UP, value, balance })
+export const signedUp = (value: boolean) => ({ type: SIGNED_UP, value })
+
+export const BALANCE = 'account/BALANCE'
+export const setBalance = (balance: BigNumber) => ({ type: BALANCE, balance })
 
 export type Action =
   | ExtractReturn<typeof signedUp>
+  | ExtractReturn<typeof setBalance>
 
 export const ACCOUNT_KEY = 'account'
 
@@ -22,11 +26,15 @@ export const init = () => async (dispatch: Function, getState: GetState) => {
   let balance
   try {
     balance = await PolyToken.myBalance()
+    await PolyToken.subscribeMyTransfers(async () => {
+      dispatch(setBalance(await PolyToken.myBalance()))
+    })
   } catch (e) {
     dispatch(ui.fetchingFailed(e))
     return
   }
-  dispatch(signedUp(value, balance))
+  dispatch(signedUp(value))
+  dispatch(setBalance(balance))
   if (!value) {
     getState().pui.common.history.push('/signup')
   }

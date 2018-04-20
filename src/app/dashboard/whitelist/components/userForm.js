@@ -23,25 +23,20 @@ class InvestorForm extends Component<Props> {
           placeholder='Investor Address'
           validate={[required, ethereumAddress]}
         />
-        <div className='bx--grid'>
-          <div className='bx--row'>
-            <Field
-              name='sell'
-              component={DatePickerSingleInput}
-              label='Sell Restriction Date'
-              validate={[required]}
-              placeholder='mm/dd/yyyy'
-            />
-            <Field
-              name='buy'
-              component={DatePickerSingleInput}
-              label='Buy Restriction Date'
-              validate={[required]}
-              placeholder='mm/dd/yyyy'
-            />
-            <p>&nbsp;</p>
-          </div>
-        </div>
+        <Field
+          name='sell'
+          component={DatePickerSingleInput}
+          label='Sell Restriction Date'
+          validate={[required]}
+          placeholder='mm/dd/yyyy'
+        />
+        <Field
+          name='buy'
+          component={DatePickerSingleInput}
+          label='Buy Restriction Date'
+          validate={[required]}
+          placeholder='mm/dd/yyyy'
+        />
       </Form>
     )
   }

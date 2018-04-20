@@ -20,6 +20,9 @@ export const useFactory = (factory: STOFactory) => ({ type: USE_FACTORY, factory
 export const PURCHASES = 'sto/PURCHASES'
 export const purchases = (purchases: Array<STOPurchase>) => ({ type: PURCHASES, purchases })
 
+export const GO_BACK = 'sto/GO_BACK'
+export const goBack = () => ({ type: GO_BACK })
+
 export type Action =
   | ExtractReturn<typeof data>
   | ExtractReturn<typeof factories>
@@ -47,14 +50,18 @@ export const fetchFactories = () => async (dispatch: Function) => {
     dispatch(factories([{
       title,
       name: 'Polymath Inc.',
-      usedBy: ['The Bureau Shevchenko, Ltd.', 'Everhusk Inc.', 'Koverko & Co'],
       desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore' +
       'et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip' +
       ' ex ea commodo consequat.',
       isVerified: true,
-      securityAuditBy: 'Zeppelin Solutions',
+      securityAuditLink: {
+        title: 'Zeppelin Solutions',
+        url: 'https://zeppelin.solutions/',
+      },
       address: CappedSTOFactory.address,
+      owner: '0xd4fcfa94c48bd8a20cc9d047b59b79b59c1c324d',
     }]))
+    dispatch(ui.fetched())
   } catch (e) {
     dispatch(ui.fetchingFailed(e))
   }

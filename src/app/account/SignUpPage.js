@@ -44,27 +44,18 @@ class SignUpPage extends Component<Props> {
   render () {
     return (
       <DocumentTitle title='Sign Up – Polymath'>
-        <div className='bx--row'>
-          <div className='bx--col-xs-2' />
-          <div className='bx--col-xs-8'>
-            <div className='pui-single-box'>
-              <div className='bx--row'>
-                <div className='bx--col-xs-8'>
-                  <h1 className='pui-h1'>Sign up</h1>
-                  <h3 className='pui-h3'>Create your account by entering your name<br /> and email below.</h3>
-                </div>
-                <div className='bx--col-xs-4 pui-single-box-bull'>
-                  <img src={bull} alt='Bull' />
-                </div>
-              </div>
-              <div className='bx--row'>
-                <div className='bx--col-xs-12'>
-                  <SignUpForm onSubmit={this.handleSubmit} />
-                </div>
-              </div>
+        <div className='pui-single-box'>
+          <div className='pui-single-box-header'>
+            <div className='pui-single-box-header-text'>
+              <h1 className='pui-h1'>Sign up</h1>
+              <h3 className='pui-h3'>Create your account by entering your name<br /> and email below.</h3>
             </div>
+            <div className='pui-single-box-bull'>
+              <img src={bull} alt='Bull' />
+            </div>
+            <div className='pui-clearfix' />
           </div>
-          <div className='bx--col-xs-2' />
+          <SignUpForm onSubmit={this.handleSubmit} />
         </div>
       </DocumentTitle>
     )

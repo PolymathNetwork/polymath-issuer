@@ -12,7 +12,6 @@ import {
   ModalWrapper,
   DatePicker,
   DatePickerInput,
-  FileUploaderButton,
 } from 'carbon-components-react'
 
 import type { Address } from 'polymathjs/types'
@@ -302,14 +301,6 @@ class WhitelistPage extends Component<Props, State> {
                     (
                       <div>
                         <BasicDropZone onHandleUpload={this.props.handleUpload} />
-                        <FileUploaderButton
-                          labelText='Upload From Desktop'
-                          className='bob'
-                          onChange={this.props.handleUpload}
-                          accept={['.csv']}
-                          multiple
-                          buttonKind='secondary'
-                        />
                       </div>
                     )}
                   {this.props.whitelist.previewCSVShowing ? (

@@ -58,19 +58,19 @@ class Dashboard extends Component<Props> {
     const topSidebarItems = [
       {
         title: 'Token',
-        icon: <img src={icoBriefcase} alt='Token' />,
+        icon: icoBriefcase,
         to: tokenUrl,
         isActive: location.slice(ticker.length * -1) === ticker,
       },
       {
         title: 'STO',
-        icon: <img src={icoInbox} alt='Token' />,
+        icon: icoInbox,
         to: `${tokenUrl}/sto`,
         isActive: location.slice(-4) === '/sto',
       },
       {
         title: 'Whitelist',
-        icon: <img src={icoHandshake} alt='Whitelist' />,
+        icon: icoHandshake,
         to: `${tokenUrl}/whitelist`,
         isActive: location.slice(-10) === '/whitelist',
       },
@@ -78,7 +78,7 @@ class Dashboard extends Component<Props> {
     const bottomSidebarItems = [
       {
         title: 'FAQ',
-        icon: <img src={icoHelp} alt='FAQ' />,
+        icon: icoHelp,
         to: '#',
         isActive: false,
       },

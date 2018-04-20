@@ -3,12 +3,13 @@
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form'
 
-import { Form, Button } from 'carbon-components-react'
+import { Form, Button, Tooltip } from 'carbon-components-react'
 import { TextInput } from 'polymath-ui'
 import {
   required,
   maxLength,
   alphanumeric,
+  ethereumAddress,
 } from 'polymath-ui/dist/validate'
 import { TickerRegistry } from 'polymathjs'
 
@@ -35,9 +36,36 @@ class TickerForm extends Component<Props> {
         <Field
           name='name'
           component={TextInput}
-          label='Token name'
+          label={
+            <Tooltip triggerText='Token name'>
+              <p className='bx--tooltip__label'>
+                Token name
+              </p>
+              <p>
+                This is the name of your token for display purposes.<br />
+                For example: Toro Token
+              </p>
+            </Tooltip>
+          }
           placeholder='Enter token name'
           validate={[required, maxLength100]}
+        />
+        <Field
+          name='owner'
+          component={TextInput}
+          label={
+            <Tooltip triggerText='Issuer&apos;s ETH Address'>
+              <p className='bx--tooltip__label'>
+                Issuer&apos;s ETH Address
+              </p>
+              <p>
+                This the ETH address of the owner for the token that is provided by MetaMask.
+                Only this account will be able to access the dashboard and finish the token deployment address.
+              </p>
+            </Tooltip>
+          }
+          disabled
+          validate={[required, ethereumAddress]}
         />
         <Button type='submit'>
           Register token symbol
