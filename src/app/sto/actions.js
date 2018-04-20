@@ -5,6 +5,7 @@ import * as ui from 'polymath-ui'
 import type { STOFactory, STODetails, STOPurchase } from 'polymathjs/types'
 
 import { formName as configureFormName } from './components/ConfigureSTOForm'
+import { fetchAPI, getAccountData } from '../offchain'
 import type { ExtractReturn } from '../../redux/helpers'
 import type { GetState } from '../../redux/reducer'
 
@@ -82,10 +83,31 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
       contract.account,
     )
     dispatch(fetch())
+
+    const emailResult = await fetchAPI({
+      query: `
+        mutation ($accountData: AccountData!, $txHash: String!, $ticker: String!) {
+          withAccount(accountData: $accountData, txHash: $txHash) {
+            sendEmailSTOLaunched(ticker: $ticker)
+          }
+        }
+      `,
+      variables: {
+        accountData: getAccountData(),
+        txHash: receipt.transactionHash,
+        ticker: token.ticker,
+      },
+    })``
+
+    if (emailResult.errors) {
+      // eslint-disable-next-line no-console
+      console.error('sendEmailSTOLaunched failed:', emailResult.errors)
+    }
+
     dispatch(ui.notify(
       'STO was successfully issued',
       true,
-      'We have already sent you an email. Check your mailbox',
+      'We\'ve sent you an email. Check your inbox.',
       ui.etherscanTx(receipt.transactionHash)
     ))
   } catch (e) {

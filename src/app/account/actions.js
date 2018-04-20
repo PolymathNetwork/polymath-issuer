@@ -12,8 +12,9 @@ export type Action =
 
 export const isSignedUp = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
-  const value = localStorage.getItem('account') !== null
-  dispatch(signedUp(value)) // TODO @bshevchenko: use API
+  const accountDataString = localStorage.getItem('account')
+  const value = accountDataString != null && JSON.parse(accountDataString).accountJSON != null
+  dispatch(signedUp(value))
   if (!value) {
     getState().pui.common.history.push('/signup')
   }
@@ -25,9 +26,19 @@ export const signUp = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
   try {
     const data = getState().form[formName].values
+
     // eslint-disable-next-line no-underscore-dangle
-    // data._signature = await getState().network.web3.eth.sign(data, data._account)
-    localStorage.setItem('account', JSON.stringify(data)) // TODO @bshevchenko: use API
+    let account = {
+      account: {
+        ...data,
+        address: data['_account'],
+      },
+    }
+    account.accountJSON = JSON.stringify(account.account)
+    account.signature = await getState().network.web3.eth.sign(account.accountJSON, data['_account'])
+    const accountDataString = JSON.stringify(account)
+    localStorage.setItem('account', accountDataString)
+
     dispatch(signedUp(true))
     dispatch(ui.notify(
       'You were successfully signed up',

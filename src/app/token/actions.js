@@ -5,6 +5,7 @@ import * as ui from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
 
 import { formName as completeFormName } from './components/CompleteTokenForm'
+import { fetchAPI, getAccountData } from '../offchain'
 import type { GetState } from '../../redux/reducer'
 import type { ExtractReturn } from '../../redux/helpers'
 
@@ -38,10 +39,31 @@ export const complete = () => async (dispatch: Function, getState: GetState) => 
     }
     const receipt = await SecurityTokenRegistry.generateSecurityToken(token.name, token.ticker)
     dispatch(fetch(token.ticker))
+
+    const emailResult = await fetchAPI({
+      query: `
+        mutation ($accountData: AccountData!, $txHash: String!, $ticker: String!) {
+          withAccount(accountData: $accountData, txHash: $txHash) {
+            sendEmailTokenIssued(ticker: $ticker)
+          }
+        }
+      `,
+      variables: {
+        accountData: getAccountData(),
+        txHash: receipt.transactionHash,
+        ticker: token.ticker,
+      },
+    })
+
+    if (emailResult.errors) {
+      // eslint-disable-next-line no-console
+      console.error('sendEmailTokenIssued failed:', emailResult.errors)
+    }
+
     dispatch(ui.notify(
       token.ticker + ' token was successfully issued',
       true,
-      'We have already sent you an email. Check your mailbox',
+      'We\'ve sent you an email. Check your inbox.',
       ui.etherscanTx(receipt.transactionHash)
     ))
   } catch (e) {
