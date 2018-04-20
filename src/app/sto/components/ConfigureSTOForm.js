@@ -28,6 +28,7 @@ class ConfigureSTOForm extends Component<Props> {
           label='Start Date;End Date'
           placeholder='mm/dd/yyyy'
           validate={[required]}
+          style={{ width: '235px' }}
         />
         <Field
           name='currency'
@@ -62,14 +63,14 @@ class ConfigureSTOForm extends Component<Props> {
                 Rate
               </p>
               <p>
-                Rate is the conversion rate between the currency you chose and your ST. E.g. 1000 means that 1 ETH (or POLY) will buy 1000 STs
+                Rate is the conversion rate between the currency you chose and your ST.
+                E.g. 1000 means that 1 ETH (or POLY) will buy 1000 STs
               </p>
             </Tooltip>
           }
           placeholder='Enter amount'
           validate={[required, integer]}
         />
-        <p>&nbsp;</p>
         <Button type='submit'>
           Confirm & Launch STO
         </Button>

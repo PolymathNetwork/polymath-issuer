@@ -2,12 +2,14 @@
 
 import { createApolloFetch } from 'apollo-fetch'
 
+import { ACCOUNT_KEY } from './account/actions'
+
 export const fetchAPI = createApolloFetch({
-  uri: 'https://polymath-offchain.herokuapp.com/graphql',
+  uri: 'http://localhost:3001/graphql',
 })
 
 export const getAccountData = () => {
-  const accountDataString = localStorage.getItem('account')
+  const accountDataString = localStorage.getItem(ACCOUNT_KEY)
 
   if (accountDataString == null) {
     throw new Error('Cannot make request to API before signing up.')

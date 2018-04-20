@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form'
 
-import { Form, Button } from 'carbon-components-react'
+import { Form, Button, Tooltip } from 'carbon-components-react'
 import { TextInput } from 'polymath-ui'
 import {
   required,
@@ -25,42 +25,54 @@ class TickerForm extends Component<Props> {
   render () {
     return (
       <Form onSubmit={this.props.handleSubmit}>
-        <Field
-          name='ticker'
-          component={TextInput}
-          label='Enter token symbol'
-          placeholder='POLY'
-        />
+        <div className='ticker-field'>
+          <Field
+            name='ticker'
+            component={TextInput}
+            label='Enter Token Symbol'
+            placeholder='4 characters (for example: TORO)'
+          />
+        </div>
         <Field
           name='name'
           component={TextInput}
-          label='Enter token name'
-          placeholder='Polymath Network Token'
+          label={
+            <Tooltip triggerText='Token name'>
+              <p className='bx--tooltip__label'>
+                Token name
+              </p>
+              <p>
+                This is the name of your token for display purposes.<br />
+                For example: Toro Token
+              </p>
+            </Tooltip>
+          }
+          placeholder='Enter token name'
           validate={[required, maxLength100]}
         />
         <Field
           name='owner'
           component={TextInput}
-          label='Owner'
+          label={
+            <Tooltip triggerText='Issuer&apos;s ETH Address'>
+              <p className='bx--tooltip__label'>
+                Issuer&apos;s ETH Address
+              </p>
+              <p>
+                This the ETH address of the owner for the token that is provided by MetaMask.
+                Only this account will be able to access the dashboard and finish the token deployment address.
+              </p>
+            </Tooltip>
+          }
           disabled
           validate={[required, ethereumAddress]}
         />
-        <Field
-          name='company'
-          component={TextInput}
-          label='Company name'
-          validate={[maxLength100]}
-        />
-        <Field
-          name='desc'
-          component={TextInput}
-          label='Company description'
-          validate={[maxLength100]}
-        />
-        <p>&nbsp;</p>
         <Button type='submit'>
-          Submit
+          Register token symbol
         </Button>
+        <p className='pui-input-hint'>
+          By registering your token symbol with Polymath you agree to our Terms and Conditions
+        </p>
       </Form>
     )
   }

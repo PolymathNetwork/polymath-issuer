@@ -7,6 +7,7 @@ import { STOStatus } from 'polymath-ui'
 import type { SecurityToken, STOPurchase, STODetails } from 'polymathjs'
 
 import NotFoundPage from '../../NotFoundPage'
+import Progress from '../../token/components/Progress'
 import InvestorTable from './InvestorTable'
 import { fetchPurchases } from '../actions'
 import type { RootState } from '../../../redux/reducer'
@@ -35,7 +36,6 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class OverviewSTO extends Component<Props> {
-
   componentWillMount () {
     this.props.fetchPurchases()
   }
@@ -46,23 +46,27 @@ class OverviewSTO extends Component<Props> {
       return <NotFoundPage />
     }
     return (
-      <DocumentTitle title={token.ticker + ' STO Overview – Polymath'}>
-        <Fragment>
-          <h3 className='bx--type-mega'>{token.ticker} STO Overview</h3><br /><br />
-          <STOStatus
-            title='Capped STO'
-            start={details.start}
-            end={details.end}
-            raised={details.raised}
-            cap={details.cap}
-            isPolyFundraise={details.isPolyFundraise}
-          />
-          <h2 className='bx--type-beta root-header'>
-            List of Investors
-          </h2>
-          <InvestorTable rows={purchases} />
-          <p>&nbsp;</p>
-        </Fragment>
+      <DocumentTitle title={`${token.ticker} STO Overview – Polymath`}>
+        <div>
+          <Progress current={3} />
+          <Fragment>
+            <h1 className='pui-h1'>{token.ticker} STO Overview</h1><br />
+            <STOStatus
+              title='Capped STO'
+              start={details.start}
+              end={details.end}
+              raised={details.raised}
+              cap={details.cap}
+              isPolyFundraise={details.isPolyFundraise}
+            />
+            <br /><br />
+            <h2 className='pui-h2'>
+              List of Investors
+            </h2>
+            <InvestorTable rows={purchases} />
+            <p>&nbsp;</p>
+          </Fragment>
+        </div>
       </DocumentTitle>
     )
   }

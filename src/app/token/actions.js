@@ -31,7 +31,7 @@ export const complete = () => async (dispatch: Function, getState: GetState) => 
   if (!token) {
     return
   }
-  dispatch(ui.txStart('Issuing ' + token.ticker + ' token...'))
+  dispatch(ui.txStart(`Issuing ${token.ticker} token...`))
   try {
     const token: SecurityToken = {
       ...getState().token.token,
@@ -61,7 +61,7 @@ export const complete = () => async (dispatch: Function, getState: GetState) => 
     }
 
     dispatch(ui.notify(
-      token.ticker + ' token was successfully issued',
+      `${token.ticker} token was successfully issued`,
       true,
       'We\'ve sent you an email. Check your inbox.',
       ui.etherscanTx(receipt.transactionHash)

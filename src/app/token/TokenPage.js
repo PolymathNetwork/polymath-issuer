@@ -3,17 +3,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
-import { Link } from 'react-router-dom'
-import { Breadcrumb, BreadcrumbItem, InlineNotification, Button } from 'carbon-components-react'
-import { etherscanAddress, etherscanToken } from 'polymath-ui'
+import { Icon } from 'carbon-components-react'
+import { etherscanTx } from 'polymath-ui'
+import moment from 'moment'
 import type { SecurityToken } from 'polymathjs/types'
 
 import { complete } from './actions'
 import NotFoundPage from '../NotFoundPage'
+import Progress from './components/Progress'
 import CompleteTokenForm from './components/CompleteTokenForm'
 import type { RootState } from '../../redux/reducer'
-
-import './style.css'
 
 type StateProps = {|
   token: ?SecurityToken,
@@ -37,26 +36,27 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class TokenPage extends Component<Props> {
-
   handleCompleteSubmit = () => {
     this.props.complete()
   }
 
-  complete (token: SecurityToken) {
+  complete () {
     return (
       <div>
-        <InlineNotification
-          title={'Complete ' + token.ticker + ' Token Registration'}
-          subtitle='Complete your security token registration before it expires. If your registration expires the token symbol you selected will be made available for others to claim.'
-          kind='warning'
-          hideCloseButton
-        />
-        <h3 className='bx--type-beta'>Security Token Issuance</h3><br />
-        <p>
-          You are one step away from issuing the security token for your company.
-          Please, make sure you have all your documentation ready before you deploy your Security Token.
-        </p>
-        <br />
+        <h2 className='pui-h2'>
+          <Icon name='warning--glyph' fill='#efc100' width='27' height='24' />
+          Complete Token Registration
+        </h2>
+        <h3 className='pui-h3'>
+          Complete your security token registration before it expires.
+          If your registration expires the token symbol you selected will be made available for others to claim.
+        </h3>
+        <br /><br />
+        <h2 className='pui-h2'>Security Token Issuance</h2>
+        <h3 className='pui-h3'>
+          You are one step closer to issuing your Security Token.
+          Please ensure you have the necessary documentation and information before you proceed.
+        </h3>
         <CompleteTokenForm onSubmit={this.handleCompleteSubmit} />
       </div>
     )
@@ -67,68 +67,61 @@ class TokenPage extends Component<Props> {
     if (!token) {
       return <NotFoundPage />
     }
+    // TODO @bshevchenko: real symbol registration tx hash https://github.com/PolymathNetwork/polymath-issuer/issues/25
     return (
-      <DocumentTitle title={token.ticker + ' Token – Polymath'}>
+      <DocumentTitle title={`${token.ticker} Token – Polymath`}>
         <div>
-          <div className='bx--row'>
-            <div className='bx--col-xs-12'>
-              <Breadcrumb>
-                <BreadcrumbItem>
-                  <Link to='/'>Home</Link>
-                </BreadcrumbItem>
-              </Breadcrumb>
-            </div>
-          </div>
-          <div className='bx--row'>
-            <div className='bx--col-xs-5'>
-              <h1 className='bx--type-mega'>{token.ticker} Token</h1>
-              <div className='bx--form-item'>
-                <label htmlFor='owner' className='bx--label'>Owner</label>
-                <p>{etherscanAddress(token.owner)}</p>
-              </div>
-              <div className='bx--form-item'>
-                <label htmlFor='name' className='bx--label'>Name</label>
-                <p>{token.name}</p>
-              </div>
-              <div className='bx--form-item'>
-                <label htmlFor='company' className='bx--label'>Company</label>
-                <p>{token.company}</p>
-              </div>
-              <div className='bx--form-item'>
-                <label htmlFor='desc' className='bx--label'>Description</label>
-                <p>{token.desc}</p>
-              </div>
-              {token.address ? (
-                <div>
-                  <p>&nbsp;</p>
-                  <p>&nbsp;</p>
-                  <p>&nbsp;</p>
-                  <p>
-                    <Link to={'/dashboard/' + token.ticker + '/sto'}>
-                      <Button>
-                        GO TO STO PAGE
-                      </Button>
-                    </Link>
-                  </p>
+          <Progress current={token.address ? 2 : 1} />
+          {!token.address ? (
+            <div className='bx--row'>
+              <div className='bx--col-xs-7'>
+                <div className='pui-page-box'>
+                  {this.complete()}
                 </div>
-              ) : ''}
-            </div>
-            <div className='bx--col-xs-7'>
-              {token.address ? (
-                <div className='completed-token-details'>
-                  <div className='bx--form-item'>
-                    <label htmlFor='owner' className='bx--label'>Address</label>
-                    <p>{etherscanToken(token.address)}</p>
+              </div>
+              <div className='bx--col-xs-5'>
+                <div className='pui-page-box'>
+                  <div className='ticker-field'>
+                    <div className='bx--form-item'>
+                      <label htmlFor='ticker' className='bx--label'>Token Symbol</label>
+                      <input
+                        type='text'
+                        name='ticker'
+                        value={token.ticker}
+                        id='ticker'
+                        readOnly
+                        className='bx--text-input bx--text__input'
+                      />
+                    </div>
                   </div>
                   <div className='bx--form-item'>
-                    <label htmlFor='owner' className='bx--label'>Decimals</label>
-                    <p>{token.decimals}</p>
+                    <label htmlFor='name' className='bx--label'>Token Name</label>
+                    <p>{token.name}</p>
+                  </div>
+                  <div className='bx--form-item'>
+                    <label htmlFor='owner' className='bx--label'>Symbol Registration Transaction</label>
+                    <p>
+                      {etherscanTx(
+                        '0x0111717f6af1f7e1b2f65855ff44fc31c8cbbe55ea47852af4ea67e37fe60983',
+                        '0x0111717f6af1f7e1b2f65855ff44fc31c8cbbe55ea47852af4ea67e37fe60983'
+                      )}
+                    </p>
+                  </div>
+                  <div className='bx--form-item'>
+                    <label htmlFor='name' className='bx--label'>Symbol Registration Date</label>
+                    <p>{moment(token.timestamp).format('D MMMM, YYYY')}</p>
+                  </div>
+                  <hr />
+                  <div className='bx--form-item'>
+                    <label htmlFor='name' className='bx--label'>Issuer&apos;s ETH Address</label>
+                    <p>{token.owner}</p>
                   </div>
                 </div>
-              ) : this.complete(token)}
-              <p>&nbsp;</p>
+              </div>
             </div>
-          </div>
+          ) : (
+            <img src='/providers.jpg' alt='Providers' style={{ marginLeft: '-55px', marginTop: '-45px' }} />
+          )}
         </div>
       </DocumentTitle>
     )

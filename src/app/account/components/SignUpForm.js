@@ -9,7 +9,6 @@ import {
   required,
   maxLength,
   email,
-  ethereumAddress,
 } from 'polymath-ui/dist/validate'
 
 export const formName = 'signup'
@@ -25,13 +24,6 @@ class SignUpForm extends Component<Props> {
     return (
       <Form onSubmit={this.props.handleSubmit}>
         <Field
-          name='_account'
-          component={TextInput}
-          label='Ethereum address'
-          disabled
-          validate={[required, ethereumAddress]}
-        />
-        <Field
           name='name'
           component={TextInput}
           label='Name'
@@ -45,16 +37,12 @@ class SignUpForm extends Component<Props> {
           placeholder='Enter your contact email address'
           validate={[required, email]}
         />
-        <Field
-          name='phone'
-          component={TextInput}
-          label='Phone'
-          placeholder='Enter your contact phone number'
-          validate={[maxLength100]}
-        />
-        <p>&nbsp;</p>
+        <p className='pui-input-hint'>
+          We don&apos;t store your name and email.
+          They will be saved on your computer for further email sendings about your transactions.
+        </p>
         <Button type='submit'>
-          Submit
+          Save Account Info
         </Button>
       </Form>
     )

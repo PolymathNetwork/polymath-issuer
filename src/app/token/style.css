@@ -1,2 +1,4 @@
-.completed-token-details {
-  margin-top: 67px; }
+.ticker-field {
+  margin-bottom: 1.5rem; }
+  .ticker-field input {
+    height: 64px; }

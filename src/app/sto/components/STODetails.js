@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react'
-import { Tile, Button, Icon } from 'carbon-components-react'
+import { Button, Icon } from 'carbon-components-react'
 import { etherscanAddress } from 'polymath-ui'
 import type { STOFactory } from 'polymathjs/types'
 
@@ -11,66 +11,97 @@ type Props = {|
 |}
 
 export default class STODetails extends Component<Props> {
-
   render () {
-    const { item } = this.props
-    return (
-      <Tile className='sto-factory'>
-        <h3 className='bx--type-beta'>{item.title}</h3>
-        <div className='bx--row'>
-          <div className='bx--col-xs-2'>
-            <h3 className='bx--type-zeta'>Name</h3>
-            {item.name}
-          </div>
-          <div className='bx--col-xs-3'>
-            <h3 className='bx--type-zeta'>Used by</h3>
-            <ul>
-              {item.usedBy.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <div className='bx--col-xs-5'>
-            <h3 className='bx--type-zeta'>Description</h3>
-            {item.desc}
-          </div>
-          <div className='bx--col-xs-2'>
-            <h3 className='bx--type-zeta'>Verified on Etherscan</h3>
-            {item.isVerified ? (
-              <div>
-                <Icon
-                  name='checkmark--glyph'
-                  fill='green'
-                />
-                &nbsp;Yes
-              </div>
-            ) : (
-              <div>
-                <Icon
-                  name='close--glyph'
-                  fill='red'
-                />
-                &nbsp;No
-              </div>
-            )}
+    const { item, handleUseSTO } = this.props
 
-            <p>&nbsp;</p>
-            <h3 className='bx--type-zeta'>Security Audit by</h3>
-            {item.securityAuditBy}
+    const isSelect = handleUseSTO !== undefined
+    const authorAddress = (
+      <div className='bx--form-item'>
+        <label htmlFor='ticker' className='bx--label'>STO Author&apos;s ETH address</label>
+        <p>{item.owner}</p>
+      </div>
+    )
+    const desc = (
+      <div className='bx--form-item'>
+        <label htmlFor='ticker' className='bx--label'>Description</label>
+        <p>{item.desc}</p>
+      </div>
+    )
+    const verifiedByEtherscan = (
+      <div className='bx--form-item'>
+        <label htmlFor='ticker' className='bx--label'>Verified by Etherscan</label>
+        {item.isVerified ? (
+          <p>
+            <Icon
+              name='checkmark--glyph'
+              fill='#00AA5E'
+            />
+            &nbsp;Yes
+          </p>
+        ) : (
+          <p>
+            <Icon
+              name='close--glyph'
+              fill='red'
+            />
+            &nbsp;No
+          </p>
+        )}
+      </div>
+    )
+    const securityAuditLink = (
+      <div className='bx--form-item'>
+        <label htmlFor='ticker' className='bx--label'>Security Audit Link</label>
+        <p>
+          <a href={item.securityAuditLink.url} target='_blank'>{item.securityAuditLink.title}</a>
+        </p>
+      </div>
+    )
+    return (
+      <div className='pui-page-box sto-factory'>
+        <h2 className='pui-h2 pui-h-tags'>
+          {item.title}
+          <span className='bx--tag bx--tag--custom'>Raise Funds in POLY</span>
+          <span className='bx--tag bx--tag--ibm'>Raise Funds in ETH</span>
+        </h2>
+        <br /><br />
+        {isSelect ? (
+          <div className='bx--row'>
+            <div className='bx--col-xs-8'>
+              {authorAddress}
+              {desc}
+            </div>
+            <div className='bx--col-xs-2'>
+              {verifiedByEtherscan}
+            </div>
+            <div className='bx--col-xs-2'>
+              {securityAuditLink}
+            </div>
           </div>
-        </div>
-        <div className='sto-factory-actions'>
+        ) : (
+          <div className='bx--row'>
+            <div className='bx--col-xs-9'>
+              {authorAddress}
+              {desc}
+            </div>
+            <div className='bx--col-xs-3'>
+              {verifiedByEtherscan}
+              {securityAuditLink}
+            </div>
+          </div>
+        )}
+        <div style={isSelect ? { textAlign: 'right' } : {}}>
           {etherscanAddress(item.address, <Button kind='secondary'>See on Etherscan</Button>)}
-          {this.props.handleUseSTO !== undefined ? (
+          {isSelect ? (
             <span>
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <Button onClick={this.props.handleUseSTO}>
+              <Button onClick={handleUseSTO}>
                 USE STO
               </Button>
             </span>
           ) : ''}
         </div>
-      </Tile>
+      </div>
     )
   }
 }

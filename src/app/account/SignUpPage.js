@@ -3,32 +3,26 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
-import { Link } from 'react-router-dom'
-import { Breadcrumb, BreadcrumbItem } from 'carbon-components-react'
-import { change } from 'redux-form'
+import { bull } from 'polymath-ui'
 import type { RouterHistory } from 'react-router'
 
-import SignUpForm, { formName } from './components/SignUpForm'
+import SignUpForm from './components/SignUpForm'
 import { signUp } from './actions'
 import type { RootState } from '../../redux/reducer'
 
 type StateProps = {|
-  account: ?string,
   isSignedUp: ?boolean,
 |}
 
 type DispatchProps = {|
-  change: (?string) => any,
   signUp: () => any,
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
-  account: state.network.account,
   isSignedUp: state.account.isSignedUp,
 })
 
 const mapDispatchToProps: DispatchProps = {
-  change: (value) => change(formName, '_account', value, false, false),
   signUp,
 }
 
@@ -37,12 +31,10 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class SignUpPage extends Component<Props> {
-
   componentWillMount () {
     if (this.props.isSignedUp) {
       this.props.history.push('/ticker')
     }
-    this.props.change(this.props.account)
   }
 
   handleSubmit = () => {
@@ -52,17 +44,18 @@ class SignUpPage extends Component<Props> {
   render () {
     return (
       <DocumentTitle title='Sign Up – Polymath'>
-        <div className='bx--row'>
-          <div className='bx--col-xs-12'>
-            <Breadcrumb>
-              <BreadcrumbItem>
-                <Link to='/'>Home</Link>
-              </BreadcrumbItem>
-            </Breadcrumb>
-            <h1 className='bx--type-mega'>Sign Up</h1>
-            <p>&nbsp;</p>
-            <SignUpForm onSubmit={this.handleSubmit} />
+        <div className='pui-single-box'>
+          <div className='pui-single-box-header'>
+            <div className='pui-single-box-header-text'>
+              <h1 className='pui-h1'>Sign up</h1>
+              <h3 className='pui-h3'>Create your account by entering your name<br /> and email below.</h3>
+            </div>
+            <div className='pui-single-box-bull'>
+              <img src={bull} alt='Bull' />
+            </div>
+            <div className='pui-clearfix' />
           </div>
+          <SignUpForm onSubmit={this.handleSubmit} />
         </div>
       </DocumentTitle>
     )

@@ -27,8 +27,6 @@ export const register = () => async (dispatch: Function, getState: GetState) => 
         symbolDetails: {
           ticker: details.ticker,
           name: details.name,
-          company: details.company,
-          desc: details.desc,
         },
       },
     })
@@ -44,7 +42,7 @@ export const register = () => async (dispatch: Function, getState: GetState) => 
       'We\'ve sent you an email. Check your inbox.',
       ui.etherscanTx(receipt.transactionHash)
     ))
-    getState().pui.common.history.push('/dashboard/' + details.ticker)
+    getState().pui.common.history.push(`/dashboard/${details.ticker}`)
   } catch (e) {
     dispatch(ui.txFailed(e))
   }

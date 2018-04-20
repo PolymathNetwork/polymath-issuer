@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
+import { Sidebar, icoBriefcase, icoInbox, icoHandshake, icoHelp } from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
 
 import NotFoundPage from './NotFoundPage'
@@ -38,7 +39,6 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class Dashboard extends Component<Props> {
-
   componentWillMount () {
     this.props.fetchToken(this.props.match.params.id)
   }
@@ -51,7 +51,44 @@ class Dashboard extends Component<Props> {
     if (!isTokenFetched) {
       return <span />
     }
-    return renderRoutes(route.routes)
+    // $FlowFixMe
+    const ticker = token.ticker
+    const tokenUrl = `/dashboard/${ticker}`
+    const location = window.location.href
+    const topSidebarItems = [
+      {
+        title: 'Token',
+        icon: icoBriefcase,
+        to: tokenUrl,
+        isActive: location.slice(ticker.length * -1) === ticker,
+      },
+      {
+        title: 'STO',
+        icon: icoInbox,
+        to: `${tokenUrl}/sto`,
+        isActive: location.slice(-4) === '/sto',
+      },
+      {
+        title: 'Whitelist',
+        icon: icoHandshake,
+        to: `${tokenUrl}/whitelist`,
+        isActive: location.slice(-10) === '/whitelist',
+      },
+    ]
+    const bottomSidebarItems = [
+      {
+        title: 'FAQ',
+        icon: icoHelp,
+        to: '#',
+        isActive: false,
+      },
+    ]
+    return (
+      <div className='dashboard'>
+        <Sidebar topItems={topSidebarItems} bottomItems={bottomSidebarItems} />
+        {renderRoutes(route.routes)}
+      </div>
+    )
   }
 }
 

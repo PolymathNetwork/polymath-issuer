@@ -1,0 +1,70 @@
+.modalHeight {
+  height: 600px
+}
+
+%modal-text {
+  color: #5A6872;
+  width: 500px;
+}
+
+.csvModal {
+  @extend %modal-text;
+  font-size: 16px;
+	height: 160px;
+	line-height: 25px;
+}
+
+.csvModalMini {
+  @extend %modal-text;
+	height: 18px;
+	font-size: 14px;
+	line-height: 22px;
+}
+
+
+%csvTable {
+  font-size: 14px;
+  height: 18px;
+  color: #5A6872;
+}
+
+.csvPreviewHeader {
+  @extend %csvTable;
+	font-weight: 600;
+}
+
+.csvPreviewTable {
+  @extend %csvTable;
+}
+
+.csvModalTable {
+  @extend %csvTable;
+  width: 148px;
+  line-height: 22px;
+}
+
+//
+// .csvModalAddressTable {
+//   width: 264px;
+//   overflow-y: scroll;
+// }
+
+#dropzoneRectangle {
+  height: 72px;
+  width: 404px;
+  border: 1px dashed #3D70B2;
+  border-radius: 4px;
+  background: #ECF0F5;
+  margin: auto;
+  text-align: center;
+}
+
+#dropZone {
+  height: 45px;
+  width: 214px;
+  color: #8C9BA5;
+  font-size: 22px;
+  font-weight: 200;
+  line-height: 30px;
+  margin: 3px auto;
+}
