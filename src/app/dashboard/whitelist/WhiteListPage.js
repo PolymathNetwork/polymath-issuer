@@ -13,7 +13,7 @@ import {
   ModalWrapper,
   DatePicker,
   DatePickerInput,
-  FileUploaderButton,
+  // FileUploaderButton,
   Button,
 } from 'carbon-components-react'
 
@@ -30,7 +30,6 @@ import {
   removeInvestor,
   editInvestors,
 } from './actions'
-import { TableHeaders } from './tableHeaders'
 import InvestorForm from './components/addInvestorForm'
 import EditInvestorsForm from './components/editInvestorsForm'
 import BasicDropzone from './components/ReactDropZone'
@@ -38,6 +37,10 @@ import BasicDropzone from './components/ReactDropZone'
 import type { WhitelistState } from './reducer'
 
 import './style.css'
+
+const tableStyle = {
+  'backgroundColor': 'white',
+}
 
 const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
   TableSelectAll, TableSelectRow, TableToolbar, TableBatchAction, TableBatchActions,
@@ -105,6 +108,14 @@ const dateFormat = (date: Date) => date.toLocaleDateString('en', {
   day: 'numeric',
 })
 
+const tableHeaders = [
+  { key: 'address', header: 'Investor Eth Address' },
+  { key: 'added', header: 'Date Added' },
+  { key: 'addedBy', header: 'Added By' },
+  { key: 'from', header: 'Sell Restriction Until' },
+  { key: 'to', header: 'Buy Restriction Until' },
+]
+
 class WhitelistPage extends Component<Props, State> {
   state = {
     page: 0,
@@ -161,6 +172,11 @@ class WhitelistPage extends Component<Props, State> {
     return true  // Must return true, for the component from carbon to work
   }
 
+  //This is used to display the garbage cans in the table
+  checkEqualFour = (index) => {
+    if (index === 4) return true
+  }
+
   //renders the list by making it date strings and splitting up in pages, at the start of the render function
   paginationRendering () {
     let paginatedArray = []
@@ -192,7 +208,7 @@ class WhitelistPage extends Component<Props, State> {
     return stringifiedArray
   }
 
-  removeInvestor = (dataTableRow: Array<Object>) => {
+  removeInvestorDataTable = (dataTableRow: Array<Object>) => {
     let addresses = []
     for (let i = 0; i < dataTableRow.length; i++) {
       addresses.push(dataTableRow[i].cells[0].value)
@@ -217,7 +233,7 @@ class WhitelistPage extends Component<Props, State> {
     <TableContainer>
       <TableToolbar>
         <TableBatchActions {...getBatchActionProps()}>
-          <TableBatchAction onClick={()=> this.removeInvestor(selectedRows)}>
+          <TableBatchAction onClick={()=> this.removeInvestorDataTable(selectedRows)}>
               Remove Investor
           </TableBatchAction>
           <TableBatchAction onClick={()=> this.handleEditInvestors(selectedRows)}>
@@ -255,11 +271,25 @@ class WhitelistPage extends Component<Props, State> {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
+          {rows.map((row, rowIndex) => (
+            <TableRow key={row.id} style={tableStyle}>
               <TableSelectRow {...getSelectionProps({ row })} />
-              {row.cells.map((cell) => (
-                <TableCell key={cell.id}>{cell.value}</TableCell>
+              {row.cells.map((cell, i) => (
+                <TableCell key={cell.id}>
+                  {this.checkEqualFour(i) ?
+                    <div className='garbageFlexBox'>
+                      {cell.value}
+                      <svg width='16' height='24' viewBox='0 0 16 24' fillRule='evenodd' onClick={()=> this.props.removeInvestor([this.props.whitelist.investors[rowIndex].address])}>
+                        <path d='M4 0h8v2H4zM0 3v4h1v17h14V7h1V3H0zm13 18H3V8h10v13z' />
+                        <path d='M5 10h2v9H5zm4 0h2v9H9z' />
+                      </svg>
+                    </div>
+                    :
+                    <div>
+                      {cell.value}
+                    </div>
+                  }
+                </TableCell>
               ))}
             </TableRow>
           ))}
@@ -285,36 +315,32 @@ class WhitelistPage extends Component<Props, State> {
                 primaryButtonText='Send To Blockchain'
                 shouldCloseAfterSubmit
               >
-                <div className={this.props.whitelist.previewCSVShowing ? 'modalHeight' : ''}>
+                <div className={this.props.whitelist.previewCSVShowing ? 'modalSize' : ''}>
                   <div className='csvModal'>
-                  Add multiple addresses to the whitelist by uploading a comma seperated CSV file. The format should be as follows:
-                    <ul>
-                      <li>Column 1 - Ethereum Address</li>
-                      <li>Column 2 - Date mm/dd/yyyy (date when the resale restrictions should be lifted for that address).</li>
-                    </ul>
+                    <p className='csvModalText'>Add multiple addresses to the whitelist by uploading a comma seperated CSV file. The format should be as follows:</p>
+                    <p className='csvModalText'>Column 1 - Ethereum Address</p>
+                    <p className='csvModalText'>Column 2 - Date mm/dd/yyyy (date when the resale restrictions should be lifted for that address).</p>
+                    <p className='csvModalTextMini'>You can download a <a href='localhost:3000'>Sample.csv</a> file and edit it</p>
                   </div>
-                  <div className='csvModalMini'>
-                    You can download a <a href='localhost:3000'>Sample.csv</a> file and edit it
-                  </div>
-                  {/* </div> */}
                   <br />
                   {this.props.whitelist.previewCSVShowing ? null :
                     (
                       <div>
                         <BasicDropzone onHandleUpload={this.props.handleUpload} />
-                        <FileUploaderButton
+                        {/* TODO @davekaj: this button is not displaying correctly for Boris, and maybe others. Dave to talk to stan about new designs
+                          <FileUploaderButton
                           labelText='Upload From Desktop'
                           className='bob'
                           onChange={this.props.handleUpload}
                           accept={['.csv']}
                           multiple
                           buttonKind='secondary'
-                        />
+                        /> */}
                       </div>
                     )}
                   {this.props.whitelist.previewCSVShowing ? (
                     <div className='csvModalTable'>
-                      {/* <div>{this.props.whitelist.csvMessage}</div> TODO @davekaj: remove this from redux state, it is not needed anymore*/}
+                      {/* <div>{this.props.whitelist.csvMessage}</div> TODO @davekaj: Reword this section so it works with the design */}
                       {/* Below is the data you will be sending to the blockchain, please confirm it is correct, and then click the Send button to continue. */}
                       <br />
                       <table>
@@ -326,9 +352,9 @@ class WhitelistPage extends Component<Props, State> {
                           </tr>
                           {this.props.whitelist.addresses.map((user, i) => (
                             <tr key={uuidv4()} className='csvPreviewTable'>
-                              <td className='csvModalAddressTable' >{this.props.whitelist.addresses[i]}</td>
-                              <td>{this.props.whitelist.sell[i]}</td>
-                              <td>{this.props.whitelist.buy[i]}</td>
+                              <td>{this.props.whitelist.addresses[i]}</td>
+                              <td className='csvModalTableDates' >{this.props.whitelist.sell[i]}</td>
+                              <td className='csvModalTableDates'>{this.props.whitelist.buy[i]}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -363,7 +389,7 @@ class WhitelistPage extends Component<Props, State> {
           </div>
           <DataTable
             rows={paginatedRows}
-            headers={TableHeaders}
+            headers={tableHeaders}
             render={this.dataTableRender}
           />
           <PaginationV2

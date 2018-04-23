@@ -1,18 +1,17 @@
-.modalHeight {
-  height: 600px; }
-
-.csvModal, .csvModalMini {
-  color: #5A6872;
-  width: 500px; }
+.csvModal, .csvModalText, .csvModalTextMini {
+  color: #5A6872; }
 
 .csvModal {
-  font-size: 16px;
+  font-size: 14px;
   height: 160px;
   line-height: 25px; }
 
-.csvModalMini {
-  height: 18px;
-  font-size: 14px;
+.csvModalText {
+  font-size: 12px;
+  line-height: 22px; }
+
+.csvModalTextMini {
+  font-size: 12px;
   line-height: 22px; }
 
 .csvPreviewHeader, .csvPreviewTable, .csvModalTable {
@@ -24,23 +23,43 @@
   font-weight: 600; }
 
 .csvModalTable {
-  width: 148px;
-  line-height: 22px; }
+  width: 100%; }
+
+.csvModalTableDates {
+  text-align: center; }
+
+.garbageFlexBox {
+  display: flex;
+  justify-content: space-between; }
 
 #dropzoneRectangle {
-  height: 72px;
-  width: 404px;
+  height: 150px;
   border: 1px dashed #3D70B2;
   border-radius: 4px;
   background: #ECF0F5;
-  margin: auto;
-  text-align: center; }
+  display: flex;
+  align-items: center;
+  justify-content: center; }
 
-#dropZone {
-  height: 45px;
-  width: 214px;
+#dropZoneText {
   color: #8C9BA5;
-  font-size: 34px;
-  font-weight: 200;
-  line-height: 55px;
-  margin: auto; }
+  font-size: 24px;
+  font-weight: 200; }
+
+.bx--batch-actions--active {
+  background: #28266E; }
+
+.bx--modal-content {
+  height: 90%;
+  margin-bottom: 0; }
+
+.bx--modal-container {
+  border-top: 0;
+  height: 62%;
+  width: 60%; }
+
+.bx--modal-footer {
+  background: white;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 10%; }
