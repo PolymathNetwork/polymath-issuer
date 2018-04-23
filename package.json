@@ -29,7 +29,7 @@
     "jest-enzyme": "^4.0.1",
     "moment": "2.20.1",
     "normalize.css": "7.0.0",
-    "polymath-auth": "0.2.5",
+    "polymath-auth": "0.2.4",
     "polymath-ui": "0.3.5",
     "polymathjs": "1.0.1",
     "react": "16.2.0",
