@@ -31,6 +31,7 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class SignUpPage extends Component<Props> {
+
   componentWillMount () {
     if (this.props.isSignedUp) {
       this.props.history.push('/ticker')

@@ -18,11 +18,9 @@ export type Action =
   | ExtractReturn<typeof signedUp>
   | ExtractReturn<typeof setBalance>
 
-export const ACCOUNT_KEY = 'account'
-
 export const init = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
-  const value = localStorage.getItem(ACCOUNT_KEY) !== null
+  const value = localStorage.getItem(String(getState().network.account)) !== null
   let balance
   try {
     balance = await PolyToken.myBalance()
@@ -41,19 +39,18 @@ export const init = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetched())
 }
 
-// eslint-disable-next-line
 export const signUp = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
   try {
     const data = getState().form[formName].values
-    const jsonData = JSON.stringify(data)
+    const account = getState().network.account
     const { web3 } = getState().network
-    if (!web3) {
-      throw new Error('web3 is undefined')
+    if (!web3 || !account) {
+      throw new Error('web3 or account is undefined')
     }
-    // noinspection JSUnresolvedVariable
-    data.signature = await web3.eth.sign(jsonData, getState().network.account)
-    localStorage.setItem(ACCOUNT_KEY, jsonData)
+    const jsonData = JSON.stringify(data)
+    data.signature = await web3.eth.sign(jsonData, account)
+    localStorage.setItem(account, jsonData)
     dispatch(signedUp(true))
     dispatch(ui.notify(
       'You were successfully signed up',
