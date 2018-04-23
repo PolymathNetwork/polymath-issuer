@@ -5,15 +5,15 @@ import React, { Component } from 'react'
 import Contract from 'polymathjs'
 import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
-import { PolymathUI, txHash, txEnd } from 'polymath-ui'
+import { PolymathUI, SignUpPage, initAccount, txHash, txEnd } from 'polymath-ui'
 import type { RouterHistory } from 'react-router-dom'
 
 import Root from './Root'
-import { init as initAccount } from './account/actions'
 import type { RootState } from '../redux/reducer'
 
 type StateProps = {|
   network: any,
+  isSignedUp: ?boolean,
   balance: ?BigNumber,
   ticker: ?string,
 |}
@@ -26,7 +26,8 @@ type DispatchProps = {|
 
 const mapStateToProps = (state: RootState): StateProps => ({
   network: state.network,
-  balance: state.account.balance,
+  isSignedUp: state.pui.account.isSignedUp,
+  balance: state.pui.account.balance,
   ticker: state.token.token ? state.token.token.ticker : null,
 })
 
@@ -42,6 +43,7 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class App extends Component<Props> {
+
   componentWillMount () {
     Contract.setParams({
       ...this.props.network,
@@ -55,11 +57,11 @@ class App extends Component<Props> {
   }
 
   render () {
-    const { history, balance, ticker } = this.props
+    const { history, ticker, isSignedUp } = this.props
     return (
       <Root>
-        <PolymathUI history={history} balance={balance} ticker={ticker} />
-        {renderRoutes(this.props.route.routes)}
+        <PolymathUI history={history} ticker={ticker} />
+        {isSignedUp ? renderRoutes(this.props.route.routes) : <SignUpPage />}
       </Root>
     )
   }
