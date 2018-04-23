@@ -5,7 +5,7 @@ import { createApolloFetch } from 'apollo-fetch'
 import { ACCOUNT_KEY } from './account/actions'
 
 export const fetchAPI = createApolloFetch({
-  uri: 'http://localhost:3001/graphql',
+  uri: (process.env.OFFCHAIN_URL || 'https://polymath-offchain.herokuapp.com') + '/graphql',
 })
 
 export const getAccountData = () => {
