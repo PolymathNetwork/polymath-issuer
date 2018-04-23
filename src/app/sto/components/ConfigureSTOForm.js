@@ -63,7 +63,8 @@ class ConfigureSTOForm extends Component<Props> {
                 Rate
               </p>
               <p>
-                Rate is the conversion rate between the currency you chose and your ST. E.g. 1000 means that 1 ETH (or POLY) will buy 1000 STs
+                Rate is the conversion rate between the currency you chose and your ST.
+                E.g. 1000 means that 1 ETH (or POLY) will buy 1000 STs
               </p>
             </Tooltip>
           }

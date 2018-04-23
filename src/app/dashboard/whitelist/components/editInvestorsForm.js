@@ -12,7 +12,6 @@ export const formName = 'edit_investor_form'
 type Props = {||}
 
 class EditInvestorsForm extends Component<Props> {
-
   render () {
     return (
       <Form>

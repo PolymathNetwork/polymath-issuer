@@ -40,9 +40,7 @@ class SelectSTO extends Component<Props> {
     this.props.fetchFactories()
   }
 
-  handleUseSTO = (sto: STOFactory) => {
-    return () => this.props.useFactory(sto)
-  }
+  handleUseSTO = (sto: STOFactory) => () => this.props.useFactory(sto)
 
   search () {
     // TODO
@@ -54,7 +52,7 @@ class SelectSTO extends Component<Props> {
       return <span>Launch your token at first.</span>
     }
     return (
-      <DocumentTitle title={'Select ' + token.ticker + ' STO – Polymath'}>
+      <DocumentTitle title={`Select ${token.ticker} STO – Polymath`}>
         <div>
           <Progress current={3} />
           <div className='bx--row'>
@@ -65,7 +63,9 @@ class SelectSTO extends Component<Props> {
                 To select the model you desire, press &laquo;SELECT AND CONFIGURE STO&raquo;.
               </h3>
               <br /><br />
-              <Search small labelText='Search' placeHolderText='Search' style={{ maxWidth: '612px' }} />
+              <div className='sto-search-container'>
+                <Search small labelText='Search' placeHolderText='Search' />
+              </div>
               <br />
               {this.props.factories.map((item) => (
                 <STODetails key={item.address} item={item} handleUseSTO={this.handleUseSTO(item)} />

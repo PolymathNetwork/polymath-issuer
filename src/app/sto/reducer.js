@@ -54,6 +54,11 @@ export default (state: STOState = defaultState, action: Action) => {
         ...state,
         purchases: action.purchases,
       }
+    case a.GO_BACK:
+      return {
+        ...state,
+        stage: STAGE_SELECT,
+      }
     default:
       return state
   }

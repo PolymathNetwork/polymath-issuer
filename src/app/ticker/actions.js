@@ -10,8 +10,6 @@ export const register = () => async (dispatch: Function, getState: GetState) => 
   dispatch(ui.txStart('Submitting token symbol registration...'))
   try {
     const details: SymbolDetails = getState().form[formName].values
-    details.company = ''
-    details.desc = ''
     const receipt = await TickerRegistry.registerTicker(details)
     dispatch(ui.notify(
       'Token symbol was successfully registered',
@@ -19,7 +17,7 @@ export const register = () => async (dispatch: Function, getState: GetState) => 
       'We have already sent you an email. Check your mailbox',
       ui.etherscanTx(receipt.transactionHash)
     ))
-    getState().pui.common.history.push('/dashboard/' + details.ticker)
+    getState().pui.common.history.push(`/dashboard/${details.ticker}`)
   } catch (e) {
     dispatch(ui.txFailed(e))
   }

@@ -29,7 +29,6 @@ const mapDispatchToProps: DispatchProps = {
 type Props = StateProps & DispatchProps
 
 class STOPage extends Component<Props> {
-
   componentDidMount () {
     this.props.fetch()
   }

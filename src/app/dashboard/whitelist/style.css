@@ -43,6 +43,7 @@
 
 #dropZoneText {
   color: #8C9BA5;
+<<<<<<< HEAD
   font-size: 24px;
   font-weight: 200; }
 
@@ -63,3 +64,9 @@
   margin-top: 0;
   padding-top: 0;
   padding-bottom: 10%; }
+=======
+  font-size: 22px;
+  font-weight: 200;
+  line-height: 30px;
+  margin: 3px auto; }
+>>>>>>> 7f7faf2a6cc731ef3fd982deb0e291b244adf6a1

@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { Icon } from 'carbon-components-react'
-import { etherscanTx, etherscanAddress } from 'polymath-ui'
+import { etherscanTx } from 'polymath-ui'
 import moment from 'moment'
 import type { SecurityToken } from 'polymathjs/types'
 
@@ -36,16 +36,21 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class TokenPage extends Component<Props> {
-
   handleCompleteSubmit = () => {
     this.props.complete()
   }
 
-  complete (token: SecurityToken) {
+  complete () {
     return (
       <div>
-        <h2 className='pui-h2'><Icon name='warning--glyph' fill='#efc100' width='27' height='24' /> Complete {token.ticker} Token Registration</h2>
-        <h3 className='pui-h3'>Complete your security token registration before it expires. If your registration expires the token symbol you selected will be made available for others to claim.</h3>
+        <h2 className='pui-h2'>
+          <Icon name='warning--glyph' fill='#efc100' width='27' height='24' />
+          Complete Token Registration
+        </h2>
+        <h3 className='pui-h3'>
+          Complete your security token registration before it expires.
+          If your registration expires the token symbol you selected will be made available for others to claim.
+        </h3>
         <br /><br />
         <h2 className='pui-h2'>Security Token Issuance</h2>
         <h3 className='pui-h3'>
@@ -62,16 +67,16 @@ class TokenPage extends Component<Props> {
     if (!token) {
       return <NotFoundPage />
     }
-    // TODO @bshevchenko: render real symbol registration tx hash
+    // TODO @bshevchenko: real symbol registration tx hash https://github.com/PolymathNetwork/polymath-issuer/issues/25
     return (
-      <DocumentTitle title={token.ticker + ' Token – Polymath'}>
+      <DocumentTitle title={`${token.ticker} Token – Polymath`}>
         <div>
           <Progress current={token.address ? 2 : 1} />
           {!token.address ? (
             <div className='bx--row'>
               <div className='bx--col-xs-7'>
                 <div className='pui-page-box'>
-                  {this.complete(token)}
+                  {this.complete()}
                 </div>
               </div>
               <div className='bx--col-xs-5'>
@@ -98,7 +103,8 @@ class TokenPage extends Component<Props> {
                     <p>
                       {etherscanTx(
                         '0x0111717f6af1f7e1b2f65855ff44fc31c8cbbe55ea47852af4ea67e37fe60983',
-                        '0x0111717f6af1f7e1b2f65855ff44fc31c8cbbe55ea47852af4ea67e37fe60983')}
+                        '0x0111717f6af1f7e1b2f65855ff44fc31c8cbbe55ea47852af4ea67e37fe60983'
+                      )}
                     </p>
                   </div>
                   <div className='bx--form-item'>
@@ -107,14 +113,14 @@ class TokenPage extends Component<Props> {
                   </div>
                   <hr />
                   <div className='bx--form-item'>
-                    <label htmlFor='name' className='bx--label'>{'Issuer\'s'} ETH Address</label>
-                    <p>{etherscanAddress(token.owner, token.owner)}</p>
+                    <label htmlFor='name' className='bx--label'>Issuer&apos;s ETH Address</label>
+                    <p>{token.owner}</p>
                   </div>
                 </div>
               </div>
             </div>
           ) : (
-            <img src='/providers.jpg' alt='Providers' style={{ marginLeft: '-60px', marginTop: '-10px' }} />
+            <img src='/providers.jpg' alt='Providers' style={{ marginLeft: '-55px', marginTop: '-45px' }} />
           )}
         </div>
       </DocumentTitle>

@@ -39,7 +39,6 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class Dashboard extends Component<Props> {
-
   componentWillMount () {
     this.props.fetchToken(this.props.match.params.id)
   }
@@ -54,32 +53,32 @@ class Dashboard extends Component<Props> {
     }
     // $FlowFixMe
     const ticker = token.ticker
-    const tokenUrl = '/dashboard/' + ticker
+    const tokenUrl = `/dashboard/${ticker}`
     const location = window.location.href
     const topSidebarItems = [
       {
         title: 'Token',
-        icon: <img src={icoBriefcase} alt='Token' />,
+        icon: icoBriefcase,
         to: tokenUrl,
         isActive: location.slice(ticker.length * -1) === ticker,
       },
       {
         title: 'STO',
-        icon: <img src={icoInbox} alt='Token' />,
-        to: tokenUrl + '/sto',
+        icon: icoInbox,
+        to: `${tokenUrl}/sto`,
         isActive: location.slice(-4) === '/sto',
       },
       {
         title: 'Whitelist',
-        icon: <img src={icoHandshake} alt='Whitelist' />,
-        to: tokenUrl + '/whitelist',
+        icon: icoHandshake,
+        to: `${tokenUrl}/whitelist`,
         isActive: location.slice(-10) === '/whitelist',
       },
     ]
     const bottomSidebarItems = [
       {
         title: 'FAQ',
-        icon: <img src={icoHelp} alt='FAQ' />,
+        icon: icoHelp,
         to: '#',
         isActive: false,
       },

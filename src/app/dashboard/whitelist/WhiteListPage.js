@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable react/jsx-no-bind */
 
 /* eslint-disable react/jsx-no-bind */
 
@@ -44,7 +45,8 @@ const tableStyle = {
 
 const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
   TableSelectAll, TableSelectRow, TableToolbar, TableBatchAction, TableBatchActions,
-  TableToolbarSearch, TableToolbarContent } = DataTable
+  TableToolbarSearch, TableToolbarContent,
+} = DataTable
 
 type StateProps = {|
   whitelist: WhitelistState,
@@ -144,7 +146,7 @@ class WhitelistPage extends Component<Props, State> {
   }
 
   handleEditInvestors = (dataTableRow: Array<Object>) => {
-    let addresses = []
+    const addresses = []
     for (let i = 0; i < dataTableRow.length; i++) {
       addresses.push(dataTableRow[i].cells[0].value)
     }
@@ -169,7 +171,7 @@ class WhitelistPage extends Component<Props, State> {
 
   onHandleInvestorSubmit = () => {
     this.props.singleSubmit()
-    return true  // Must return true, for the component from carbon to work
+    return true // Must return true, for the component from carbon to work
   }
 
   //This is used to display the garbage cans in the table
@@ -179,23 +181,22 @@ class WhitelistPage extends Component<Props, State> {
 
   //renders the list by making it date strings and splitting up in pages, at the start of the render function
   paginationRendering () {
-    let paginatedArray = []
-    let investors = this.props.whitelist.investors
-    let pageNum = this.state.page
-    let listLength = this.props.whitelist.listLength
-    let startSlice = pageNum * listLength
-    let endSlice = ((pageNum+1) * listLength)
-    paginatedArray = investors.slice(startSlice, endSlice)
-    let stringifiedArray = []
-    for (let i = 0; i <paginatedArray.length; i++){
-      let csvRandomID: string = uuidv4()
+    const investors = this.props.whitelist.investors
+    const pageNum = this.state.page
+    const listLength = this.props.whitelist.listLength
+    const startSlice = pageNum * listLength
+    const endSlice = ((pageNum + 1) * listLength)
+    let paginatedArray = investors.slice(startSlice, endSlice)
+    const stringifiedArray = []
+    for (let i = 0; i < paginatedArray.length; i++) {
+      const csvRandomID: string = uuidv4()
       let stringifyAdded = null
       if (paginatedArray[i].added) {
         stringifyAdded = dateFormat(paginatedArray[i].added)
       }
-      let stringifyFrom = dateFormat(paginatedArray[i].from)
-      let stringifyTo = dateFormat(paginatedArray[i].to)
-      let stringifyInvestor: EventData = {
+      const stringifyFrom = dateFormat(paginatedArray[i].from)
+      const stringifyTo = dateFormat(paginatedArray[i].to)
+      const stringifyInvestor: EventData = {
         id: csvRandomID,
         address: paginatedArray[i].address,
         added: stringifyAdded,
@@ -236,7 +237,7 @@ class WhitelistPage extends Component<Props, State> {
           <TableBatchAction onClick={()=> this.removeInvestorDataTable(selectedRows)}>
               Remove Investor
           </TableBatchAction>
-          <TableBatchAction onClick={()=> this.handleEditInvestors(selectedRows)}>
+          <TableBatchAction onClick={() => this.handleEditInvestors(selectedRows)}>
               Edit Sale/Purchase Lockup Dates
           </TableBatchAction>
         </TableBatchActions>
@@ -299,7 +300,7 @@ class WhitelistPage extends Component<Props, State> {
   )
 
   render () {
-    let paginatedRows =  this.paginationRendering()
+    const paginatedRows = this.paginationRendering()
     return (
       <DocumentTitle title='Whitelist – Polymath'>
         <div>
@@ -403,9 +404,9 @@ class WhitelistPage extends Component<Props, State> {
               onRequestClose={this.handleRequestClose}
               className='some-class'
               open
-              modalHeading='Edit Exisiting Investors'
+              modalHeading='Edit Existing Investors'
               primaryButtonText='Send'
-              secondaryButtonText='Cancle'
+              secondaryButtonText='Cancel'
             >
               <p className='bx--modal-content__text'>
                 Please enter the information below to edit the chosen investors.
