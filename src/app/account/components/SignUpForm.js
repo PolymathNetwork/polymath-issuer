@@ -51,6 +51,4 @@ class SignUpForm extends Component<Props> {
 
 export default reduxForm({
   form: formName,
-  destroyOnUnmount: false,
-  forceUnregisterOnUnmount: true,
 })(SignUpForm)

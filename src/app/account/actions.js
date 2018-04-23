@@ -33,9 +33,6 @@ export const init = () => async (dispatch: Function, getState: GetState) => {
   }
   dispatch(signedUp(value))
   dispatch(setBalance(balance))
-  if (!value) {
-    getState().pui.common.history.push('/signup')
-  }
   dispatch(ui.fetched())
 }
 

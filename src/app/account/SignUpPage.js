@@ -4,39 +4,19 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { bull } from 'polymath-ui'
-import type { RouterHistory } from 'react-router'
 
 import SignUpForm from './components/SignUpForm'
 import { signUp } from './actions'
-import type { RootState } from '../../redux/reducer'
-
-type StateProps = {|
-  isSignedUp: ?boolean,
-|}
 
 type DispatchProps = {|
   signUp: () => any,
 |}
 
-const mapStateToProps = (state: RootState): StateProps => ({
-  isSignedUp: state.account.isSignedUp,
-})
-
 const mapDispatchToProps: DispatchProps = {
   signUp,
 }
 
-type Props = {|
-  history: RouterHistory,
-|} & StateProps & DispatchProps
-
-class SignUpPage extends Component<Props> {
-
-  componentWillMount () {
-    if (this.props.isSignedUp) {
-      this.props.history.push('/ticker')
-    }
-  }
+class SignUpPage extends Component<DispatchProps> {
 
   handleSubmit = () => {
     this.props.signUp()
@@ -63,4 +43,4 @@ class SignUpPage extends Component<Props> {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignUpPage)
+export default connect(null, mapDispatchToProps)(SignUpPage)
