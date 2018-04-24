@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-=======
 [version]
 0.68.0
 
->>>>>>> 7f7faf2a6cc731ef3fd982deb0e291b244adf6a1
 [ignore]
 .*incomplete\.js
 

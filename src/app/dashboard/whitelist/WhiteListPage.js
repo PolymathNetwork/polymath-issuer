@@ -7,6 +7,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import uuidv4 from 'uuid/v4'
+import { addressShortifier } from 'polymath-ui'
 import {
   DataTable,
   PaginationV2,
@@ -14,7 +15,7 @@ import {
   ModalWrapper,
   DatePicker,
   DatePickerInput,
-  // FileUploaderButton,
+  FileUploaderButton,
   Button,
 } from 'carbon-components-react'
 
@@ -328,15 +329,14 @@ class WhitelistPage extends Component<Props, State> {
                     (
                       <div>
                         <BasicDropzone onHandleUpload={this.props.handleUpload} />
-                        {/* TODO @davekaj: this button is not displaying correctly for Boris, and maybe others. Dave to talk to stan about new designs
-                          <FileUploaderButton
+                        <FileUploaderButton
                           labelText='Upload From Desktop'
                           className='bob'
                           onChange={this.props.handleUpload}
                           accept={['.csv']}
                           multiple
                           buttonKind='secondary'
-                        /> */}
+                        />
                       </div>
                     )}
                   {this.props.whitelist.previewCSVShowing ? (
@@ -353,7 +353,7 @@ class WhitelistPage extends Component<Props, State> {
                           </tr>
                           {this.props.whitelist.addresses.map((user, i) => (
                             <tr key={uuidv4()} className='csvPreviewTable'>
-                              <td>{this.props.whitelist.addresses[i]}</td>
+                              <td>{addressShortifier(this.props.whitelist.addresses[i])}</td>
                               <td className='csvModalTableDates' >{this.props.whitelist.sell[i]}</td>
                               <td className='csvModalTableDates'>{this.props.whitelist.buy[i]}</td>
                             </tr>
