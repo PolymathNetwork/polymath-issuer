@@ -7995,15 +7995,16 @@ polymath-core@1.0.1:
     web3 "^1.0.0-beta.33"
     zeppelin-solidity "^1.8.0"
 
-polymath-ui@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-1.0.1.tgz#2ecb9b25516441a078708e1c7e8facd8c65aaa1e"
+polymath-ui@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-1.1.0.tgz#e64f958d8bbb60c6e754e2423a170f0c548a5fca"
   dependencies:
     babel-runtime "6.26.0"
     bignumber.js "6.0.0"
     carbon-components "8.16.8"
     carbon-components-react "5.31.0"
     carbon-icons "6.3.2"
+    eth-sig-util "^1.4.2"
     polymathjs "1.0.1"
     react "16.2.0"
     react-document-title "2.0.3"
