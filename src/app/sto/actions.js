@@ -5,7 +5,7 @@ import * as ui from 'polymath-ui'
 import type { STOFactory, STODetails, STOPurchase } from 'polymathjs/types'
 
 import { formName as configureFormName } from './components/ConfigureSTOForm'
-import { fetchAPI, getAccountData } from '../offchain'
+import { fetchAPI } from '../offchain'
 import type { ExtractReturn } from '../../redux/helpers'
 import type { GetState } from '../../redux/reducer'
 
@@ -93,6 +93,12 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
     )
     dispatch(fetch())
 
+    const accountData = ui.getAccountData(getState())
+
+    if (!accountData) {
+      throw new Error('Not signed in')
+    }
+
     const emailResult = await fetchAPI({
       query: `
         mutation ($accountData: AccountData!, $txHash: String!, $ticker: String!) {
@@ -102,7 +108,10 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
         }
       `,
       variables: {
-        accountData: getAccountData(),
+        accountData: {
+          accountJSON: accountData.accountJSON,
+          signature: accountData.signature,
+        },
         txHash: receipt.transactionHash,
         ticker: token.ticker,
       },

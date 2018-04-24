@@ -5,7 +5,7 @@ import * as ui from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
 
 import { formName as completeFormName } from './components/CompleteTokenForm'
-import { fetchAPI, getAccountData } from '../offchain'
+import { fetchAPI } from '../offchain'
 import type { GetState } from '../../redux/reducer'
 import type { ExtractReturn } from '../../redux/helpers'
 
@@ -40,6 +40,12 @@ export const complete = () => async (dispatch: Function, getState: GetState) => 
     const receipt = await SecurityTokenRegistry.generateSecurityToken(token.name, token.ticker)
     dispatch(fetch(token.ticker))
 
+    const accountData = ui.getAccountData(getState())
+
+    if (!accountData) {
+      throw new Error('Not signed in')
+    }
+
     const emailResult = await fetchAPI({
       query: `
         mutation ($accountData: AccountData!, $txHash: String!, $ticker: String!) {
@@ -49,7 +55,10 @@ export const complete = () => async (dispatch: Function, getState: GetState) => 
         }
       `,
       variables: {
-        accountData: getAccountData(),
+        accountData: {
+          accountJSON: accountData.accountJSON,
+          signature: accountData.signature,
+        },
         txHash: receipt.transactionHash,
         ticker: token.ticker,
       },

@@ -3,7 +3,7 @@ import * as ui from 'polymath-ui'
 import type { SymbolDetails } from 'polymathjs/types'
 
 import { formName } from './components/TickerForm'
-import { fetchAPI, getAccountData } from '../offchain'
+import { fetchAPI } from '../offchain'
 import type { GetState } from '../../redux/reducer'
 
 // eslint-disable-next-line
@@ -12,6 +12,12 @@ export const register = () => async (dispatch: Function, getState: GetState) => 
   try {
     const details: SymbolDetails = getState().form[formName].values
     const receipt = await TickerRegistry.registerTicker(details)
+
+    const accountData = ui.getAccountData(getState())
+
+    if (!accountData) {
+      throw new Error('Not signed in')
+    }
 
     const emailResult = await fetchAPI({
       query: `
@@ -22,7 +28,10 @@ export const register = () => async (dispatch: Function, getState: GetState) => 
         }
       `,
       variables: {
-        accountData: getAccountData(),
+        accountData: {
+          accountJSON: accountData.accountJSON,
+          signature: accountData.signature,
+        },
         txHash: receipt.transactionHash,
         symbolDetails: {
           ticker: details.ticker,
