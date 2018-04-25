@@ -40,7 +40,7 @@
 
 .csvModalTable {
   @extend %csvTable;
-  width: 100%;
+  // width: 100%;
 
 }
 
@@ -72,6 +72,10 @@
   font-weight: 200;
 }
 
+.flexy {
+  display: flex;
+}
+
 //TODO @davekaj: move this into polymath-ui
 //note: i thought all of these needed !important to work, but then dont. maybe if it breaks at bundling, put !importants back
 .bx--batch-actions--active {
@@ -79,14 +83,23 @@
 }
 
 .bx--modal-content {
-  height: 90%  ;
-  margin-bottom: 0  ;
+  // height: 90%  ;
+  width: 100%;
+  height: 80%;
+  padding-bottom: 100px;
+
+  //TODO: @davekaj can't figure out how to display the clear gradient properly to indicate you can scroll on the list
+  // background-color: white;
+  // -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1.0), rgba(0, 0, 0, 1.0), rgba(0, 0, 0, 1.0), rgba(0, 0, 0, 0.2));
+  // -webkit-mask-image: square;
+  // mask-image: square;
+  // margin-bottom: 0  ;
 }
 
 .bx--modal-container {
   border-top: 0  ;
-  // height: 62%  ;
-  // width: 60%  ;
+  height: 70%  ;
+  width: 20%  ;
 }
 
 .bx--modal-footer {
@@ -94,5 +107,9 @@
   margin-top: 0  ;
   padding-top: 0  ;
   padding-bottom: 10%  ;
+
+}
+
+.bx--modal-header__heading {
 
 }

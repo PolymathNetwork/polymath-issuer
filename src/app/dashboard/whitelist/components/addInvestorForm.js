@@ -20,24 +20,26 @@ class InvestorForm extends Component<Props> {
         <Field
           name='address'
           component={TextInput}
-          label='Eth Address'
+          label='Investor&apos;s Eth Address'
           placeholder='Investor Address'
           validate={[required, ethereumAddress]}
         />
-        <Field
-          name='sell'
-          component={DatePickerSingleInput}
-          label='Sell Restriction Date'
-          validate={[required]}
-          placeholder='mm/dd/yyyy'
-        />
-        <Field
-          name='buy'
-          component={DatePickerSingleInput}
-          label='Buy Restriction Date'
-          validate={[required]}
-          placeholder='mm/dd/yyyy'
-        />
+        <div className='flexy'>
+          <Field
+            name='sell'
+            component={DatePickerSingleInput}
+            label='Sell Restriction Date'
+            validate={[required]}
+            placeholder='mm/dd/yyyy'
+          />
+          <Field
+            name='buy'
+            component={DatePickerSingleInput}
+            label='Buy Restriction Date'
+            validate={[required]}
+            placeholder='mm/dd/yyyy'
+          />
+        </div>
       </Form>
     )
   }

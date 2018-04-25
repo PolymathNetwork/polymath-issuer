@@ -250,7 +250,7 @@ class WhitelistPage extends Component<Props, State> {
             modalHeading='Add New Investor'
             handleSubmit={this.onHandleInvestorSubmit}
             shouldCloseAfterSubmit
-            primaryButtonText='Send To Blockchain'
+            primaryButtonText='Add New Investor'
 
           >
             <p className='bx--modal-content__text'>
@@ -316,15 +316,15 @@ class WhitelistPage extends Component<Props, State> {
                 handleSubmit={this.onHandleMultiSubmit}
                 primaryButtonText='Send To Blockchain'
                 shouldCloseAfterSubmit
+                className='DAVE'
               >
-                <div className={this.props.whitelist.previewCSVShowing ? 'modalSize' : ''}>
+                <div className={this.props.whitelist.previewCSVShowing ? '' : ''}>
                   <div className='csvModal'>
                     <p className='csvModalText'>Add multiple addresses to the whitelist by uploading a comma seperated CSV file. The format should be as follows:</p>
                     <p className='csvModalText'>Column 1 - Ethereum Address</p>
                     <p className='csvModalText'>Column 2 - Date mm/dd/yyyy (date when the resale restrictions should be lifted for that address).</p>
                     <p className='csvModalTextMini'>You can download a <a href='localhost:3000'>Sample.csv</a> file and edit it</p>
                   </div>
-                  <br />
                   {this.props.whitelist.previewCSVShowing ? null :
                     (
                       <div>
@@ -343,7 +343,6 @@ class WhitelistPage extends Component<Props, State> {
                     <div className='csvModalTable'>
                       {/* <div>{this.props.whitelist.csvMessage}</div> TODO @davekaj: Reword this section so it works with the design */}
                       {/* Below is the data you will be sending to the blockchain, please confirm it is correct, and then click the Send button to continue. */}
-                      <br />
                       <table>
                         <tbody>
                           <tr className='csvPreviewHeader'>

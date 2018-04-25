@@ -26,7 +26,7 @@ export default class BasicDropzone extends Component<Props> {
       <section id='dropzoneRectangle'>
         <Dropzone
           // eslint-disable-next-line
-            onDrop={this.onDrop.bind(this)}
+          onDrop={this.onDrop.bind(this)}
           style={dropzoneStyle}
         >
           <p id='dropZoneText' >Drop file here or click to upload</p>
