@@ -1,8 +1,6 @@
 // @flow
 /* eslint-disable react/jsx-no-bind */
 
-/* eslint-disable react/jsx-no-bind */
-
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
@@ -316,7 +314,6 @@ class WhitelistPage extends Component<Props, State> {
                 handleSubmit={this.onHandleMultiSubmit}
                 primaryButtonText='Send To Blockchain'
                 shouldCloseAfterSubmit
-                className='DAVE'
               >
                 <div className={this.props.whitelist.previewCSVShowing ? '' : ''}>
                   <div className='csvModal'>
@@ -341,8 +338,6 @@ class WhitelistPage extends Component<Props, State> {
                     )}
                   {this.props.whitelist.previewCSVShowing ? (
                     <div className='csvModalTable'>
-                      {/* <div>{this.props.whitelist.csvMessage}</div> TODO @davekaj: Reword this section so it works with the design */}
-                      {/* Below is the data you will be sending to the blockchain, please confirm it is correct, and then click the Send button to continue. */}
                       <table>
                         <tbody>
                           <tr className='csvPreviewHeader'>

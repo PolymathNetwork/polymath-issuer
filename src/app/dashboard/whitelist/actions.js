@@ -15,12 +15,11 @@ export const ac_transferManager = (transferManager: TransferManager) => ({ type:
 
 export const UPLOAD_CSV = 'dashboard/whitelist/UPLOAD_CSV'
 export const ac_csvUpload = (
-  csvMessage: string,
   addresses: Array<Address>,
   sell: Array<Address>,
   buy: Array<Address>,
   previewCSVShowing: boolean
-) => ({ type: UPLOAD_CSV, csvMessage, addresses, sell, buy, previewCSVShowing })
+) => ({ type: UPLOAD_CSV, addresses, sell, buy, previewCSVShowing })
 export const UPLOAD_CSV_FAILED = 'dashboard/whitelist/UPLOAD_CSV_FAILED'
 
 export const GET_WHITELIST = 'dashboard/whitelist/GET_WHITELIST'
@@ -78,10 +77,10 @@ export const uploadCSV = (file: Object) => async (dispatch: Function) => {
     reader.readAsText(parseFile)
     reader.onload = function () {
       const parsedData = parseCSV(((reader.result: any): string))
-      dispatch(ac_csvUpload('CSV upload was successful!', parsedData[0], parsedData[1], parsedData[2], true))
+      dispatch(ac_csvUpload( parsedData[0], parsedData[1], parsedData[2], true))
     }
   } else {
-    dispatch({ type: UPLOAD_CSV_FAILED, csvMessage: 'There was an error uploading the CSV file' })
+    dispatch({ type: UPLOAD_CSV_FAILED })
   }
 }
 
@@ -129,11 +128,11 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: GetSta
     blockchainData.push(investorData)
   }
   const transferManager = getState().whitelist.transferManager
-  dispatch(ui.txStart('Submitting CSV to the blockchain...'))
+  dispatch(ui.txStart('Submitting Approved Investors...'))
   try {
     const receipt = await transferManager.modifyWhitelistMulti(blockchainData)
     dispatch(ui.notify(
-      'Investors from the CSV were successfully sent to the blockchain',
+      'Investors from the CSV were successfully Uploaded',
       true,
       'The investor list will be updated when the transaction on the blockchain completes',
       ui.etherscanTx(receipt.transactionHash)
@@ -154,7 +153,7 @@ export const oneUserSubmit = () => async (dispatch: Function, getState: GetState
     to: newBuyDate,
   }
   const transferManager = getState().whitelist.transferManager
-  dispatch(ui.txStart('Submitting CSV to the blockchain...'))
+  dispatch(ui.txStart('Submitting Approved Investors...'))
   try {
     const receipt = await transferManager.modifyWhitelist(blockchainData)
     dispatch(ui.notify(
