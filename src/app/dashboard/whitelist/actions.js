@@ -36,17 +36,25 @@ export type Action =
   | ExtractReturn<typeof ac_getWhitelist>
   | ExtractReturn<typeof ac_listLength>
 
-// initialize grabs transferManager , and stores it in state for other functions to easily call
-// It then calls getWhiteList() to populate the table for the user
+  // initialize grabs transferManager , and stores it in state for other functions to easily call
+  // It then calls getWhiteList() to populate the table for the user
 export const initialize = () => async (dispatch: Function, getState: GetState) => {
-  const token = getState().token.token
-  if (!token || !token.contract) {
-    //eslint-disable-next-line
-    return
+  if (!getState().whitelist.transferManager) {
+    const token = getState().token.token
+    if (!token || !token.contract) {
+      // eslint-disable-next-line
+        console.error('Contract manager object not found. This is created on token creation page, it is possible there was an error upon creation')
+      return
+    }
+    const contract: SecurityToken = token.contract
+    const transferManager: TransferManager = await contract.getTransferManager()
+    if (transferManager === null) {
+      // eslint-disable-next-line
+        console.error('Failure to grab transfer manager module, most likely a websocket connection error has caused this')
+      return
+    }
+    dispatch(ac_transferManager(transferManager))
   }
-  const contract: SecurityToken = token.contract
-  const transferManager: TransferManager = await contract.getTransferManager()
-  dispatch(ac_transferManager(transferManager))
   dispatch(getWhitelist())
 }
 
