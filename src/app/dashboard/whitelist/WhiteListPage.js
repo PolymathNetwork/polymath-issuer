@@ -279,10 +279,12 @@ class WhitelistPage extends Component<Props, State> {
                   {this.checkEqualFour(i) ?
                     <div className='garbageFlexBox'>
                       {cell.value}
-                      <svg width='16' height='24' viewBox='0 0 16 24' fillRule='evenodd' onClick={()=> this.props.removeInvestor([this.props.whitelist.investors[rowIndex].address])}>
-                        <path d='M4 0h8v2H4zM0 3v4h1v17h14V7h1V3H0zm13 18H3V8h10v13z' />
-                        <path d='M5 10h2v9H5zm4 0h2v9H9z' />
-                      </svg>
+                      <div className='garbageHover'>
+                        <svg className='garbageCan' width='16' height='24' viewBox='0 0 16 24' fillRule='evenodd' onClick={()=> this.props.removeInvestor([this.props.whitelist.investors[rowIndex].address])}>
+                          <path d='M4 0h8v2H4zM0 3v4h1v17h14V7h1V3H0zm13 18H3V8h10v13z' />
+                          <path d='M5 10h2v9H5zm4 0h2v9H9z' />
+                        </svg>
+                      </div>
                     </div>
                     :
                     <div>
@@ -312,7 +314,7 @@ class WhitelistPage extends Component<Props, State> {
                 modalLabel=''
                 modalHeading='Import Whitelist'
                 handleSubmit={this.onHandleMultiSubmit}
-                primaryButtonText='Send To Blockchain'
+                primaryButtonText='Add Investors'
                 shouldCloseAfterSubmit
               >
                 <div className={this.props.whitelist.previewCSVShowing ? '' : ''}>
