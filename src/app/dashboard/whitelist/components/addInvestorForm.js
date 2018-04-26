@@ -21,10 +21,10 @@ class InvestorForm extends Component<Props> {
           name='address'
           component={TextInput}
           label='Investor&apos;s Eth Address'
-          placeholder='Investor Address'
+          placeholder='Enter Investor&apos;s Eth Address'
           validate={[required, ethereumAddress]}
         />
-        <div className='flexy'>
+        <div className='flexFixDatePicker'>
           <Field
             name='sell'
             component={DatePickerSingleInput}

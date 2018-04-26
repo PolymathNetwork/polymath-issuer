@@ -15,7 +15,7 @@ class EditInvestorsForm extends Component<Props> {
   render () {
     return (
       <Form>
-        <div className='flexy'>
+        <div className='flexFixDatePicker'>
           <Field
             name='sell'
             component={DatePickerSingleInput}

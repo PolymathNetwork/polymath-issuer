@@ -318,7 +318,7 @@ class WhitelistPage extends Component<Props, State> {
                 shouldCloseAfterSubmit
               >
                 <div className={this.props.whitelist.previewCSVShowing ? '' : ''}>
-                  <div className='csvModal'>
+                  <div>
                     <p className='csvModalText'>Add multiple addresses to the whitelist by uploading a comma seperated CSV file. The format should be as follows:</p>
                     <p className='csvModalText'>Column 1 - Ethereum Address</p>
                     <p className='csvModalText'>Column 2 - Date mm/dd/yyyy (date when the resale restrictions should be lifted for that address).</p>
@@ -339,7 +339,7 @@ class WhitelistPage extends Component<Props, State> {
                       </div>
                     )}
                   {this.props.whitelist.previewCSVShowing ? (
-                    <div className='csvModalTable'>
+                    <div className='csvModalTableContainer'>
                       <table>
                         <tbody>
                           <tr className='csvPreviewHeader'>
@@ -349,9 +349,9 @@ class WhitelistPage extends Component<Props, State> {
                           </tr>
                           {this.props.whitelist.addresses.map((user, i) => (
                             <tr key={uuidv4()} className='csvPreviewTable'>
-                              <td>{addressShortifier(this.props.whitelist.addresses[i])}</td>
-                              <td className='csvModalTableDates' >{this.props.whitelist.sell[i]}</td>
-                              <td className='csvModalTableDates'>{this.props.whitelist.buy[i]}</td>
+                              <td className='csvTableEthAddress'>{addressShortifier(this.props.whitelist.addresses[i])}</td>
+                              <td>{this.props.whitelist.sell[i]}</td>
+                              <td>{this.props.whitelist.buy[i]}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -368,14 +368,12 @@ class WhitelistPage extends Component<Props, State> {
             <div className='bx--col-xs-2'>
               <DatePicker id='date-picker' onChange={this.handleDatePicker} datePickerType='range'>
                 <DatePickerInput
-                  className='some-class'
                   labelText='Start Date Added'
                   placeholder='mm/dd/yyyy'
                   id='date-picker-input-id'
                   onClick={()=>{}} // include this to get rid of error being passed onto the component and shown in console
                 />
                 <DatePickerInput
-                  className='some-class'
                   labelText='End Date Added'
                   placeholder='mm/dd/yyyy'
                   id='date-picker-input-id-2'
@@ -398,7 +396,6 @@ class WhitelistPage extends Component<Props, State> {
             <Modal
               onRequestSubmit={this.handleRequestSubmit}
               onRequestClose={this.handleRequestClose}
-              className='some-class'
               open
               modalHeading='Edit Existing Investors'
               primaryButtonText='Send'

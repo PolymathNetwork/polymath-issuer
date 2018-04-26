@@ -1,51 +1,48 @@
-%modal-text {
-  color: #5A6872;
-}
-
-.csvModal {
-  @extend %modal-text;
-  font-size: 14px;
-	height: 160px;
-	line-height: 25px;
-}
-
 .csvModalText {
-  @extend %modal-text;
-	font-size: 12px;
-	line-height: 22px;
+  color: #5A6872;
 }
 
 .csvModalTextMini {
-  @extend %modal-text;
+  color: #5A6872;
 	font-size: 12px;
-	line-height: 22px;
+	line-height: 35px;
 }
 
-
-%csvTable {
-  font-size: 14px;
-  height: 18px;
-  color: #5A6872;
-
+.csvTableEthAddress{
+  width: 180px;
 }
 
 .csvPreviewHeader {
-  @extend %csvTable;
-	font-weight: 600;
+  color: #152935;
+  font-size: 14px;
+  font-weight:normal;
+  text-align: left;
 }
 
 .csvPreviewTable {
-  @extend %csvTable;
+  font-size: 14px;
+  height: 18px;
+  color: #5A6872;
 }
 
-.csvModalTable {
-  @extend %csvTable;
-  // width: 100%;
-
+.csvModalTableContainer {
+  height: 210px;
 }
 
-.csvModalTableDates {
-  text-align: center;
+#dropzoneRectangle {
+  height: 150px;
+  border: 1px dashed #3D70B2;
+  border-radius: 4px;
+  background: #ECF0F5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#dropZoneText {
+  color: #8C9BA5;
+  font-size: 24px;
+  font-weight: 200;
 }
 
 .garbageFlexBox {
@@ -65,60 +62,54 @@
   fill: #909BA3;
 }
 
-#dropzoneRectangle {
-  height: 150px;
-  border: 1px dashed #3D70B2;
-  border-radius: 4px;
-  background: #ECF0F5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-
-#dropZoneText {
-  color: #8C9BA5;
-  font-size: 24px;
-  font-weight: 200;
-}
-
-.flexy {
+.flexFixDatePicker {
   display: flex;
 }
 
-//TODO @davekaj: move this into polymath-ui
-//note: i thought all of these needed !important to work, but then dont. maybe if it breaks at bundling, put !importants back
 .bx--batch-actions--active {
    background: #28266E  ;
 }
 
 .bx--modal-content {
   width: 100%;
-  // height: 80%;
-  padding-bottom: 100px;
-
-  //TODO: @davekaj can't figure out how to display the clear gradient properly to indicate you can scroll on the list
+  padding-bottom: 50px;
   background-color: white;
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1.0), rgba(0, 0, 0, 1.0), rgba(0, 0, 0, 1.0), rgba(0, 0, 0, 0.2));
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1.0) 90%, rgba(0, 0, 0, 0.2));
   -webkit-mask-image: square;
   mask-image: square;
   margin-bottom: 0  ;
 }
 
 .bx--modal-container {
-  border-top: 0  ;
-  // height: 70%  ;
-  width: 20%  ;
+  border-top: 0;
+  width: 20%;
+  font-family: Overpass, sans-serif;
 }
 
 .bx--modal-footer {
-  background: white  ;
-  margin-top: 0  ;
-  padding-top: 0  ;
-  padding-bottom: 10%  ;
+  background: white;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 10%;
+}
 
+.bx--label {
+  	color: #152935;
+  	font-size: 14px;
+  	font-weight:normal;
+}
+
+.bx--date-picker__icon {
+  fill: #273066
 }
 
 .bx--modal-header__heading {
+	color: #252E6A;
+	font-size: 28px;
+	font-weight: bold;
+}
 
+.bx--modal-content__text {
+	color: #5A6872;
+	font-size: 16px;
 }
