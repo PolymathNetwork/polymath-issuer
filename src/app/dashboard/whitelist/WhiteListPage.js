@@ -330,7 +330,6 @@ class WhitelistPage extends Component<Props, State> {
                         <BasicDropzone onHandleUpload={this.props.handleUpload} />
                         <FileUploaderButton
                           labelText='Upload From Desktop'
-                          className='bob'
                           onChange={this.props.handleUpload}
                           accept={['.csv']}
                           multiple
