@@ -21,13 +21,7 @@ const defaultState: WhitelistState = {
   addresses: [],
   sell: [],
   buy: [],
-  investors: [{
-    address: 'No investors added yet!',
-    added: new Date(0),
-    addedBy: '',
-    from: new Date(0),
-    to: new Date(0),
-  }],
+  investors: [],
   listLength: 10,
   previewCSVShowing: false,
 }

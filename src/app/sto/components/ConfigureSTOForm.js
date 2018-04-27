@@ -42,7 +42,7 @@ class ConfigureSTOForm extends Component<Props> {
           name='cap'
           component={TextInput}
           label={
-            <Tooltip triggerText='Hard cap'>
+            <Tooltip triggerText='Hard Cap (in Tokens)'>
               <p className='bx--tooltip__label'>
                 Hard cap
               </p>

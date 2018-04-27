@@ -153,7 +153,7 @@ export const oneUserSubmit = () => async (dispatch: Function, getState: GetState
     to: newBuyDate,
   }
   const transferManager = getState().whitelist.transferManager
-  dispatch(ui.txStart('Submitting Approved Investors...'))
+  dispatch(ui.txStart('Submitting Approved Investor...'))
   try {
     const receipt = await transferManager.modifyWhitelist(blockchainData)
     dispatch(ui.notify(
@@ -259,7 +259,7 @@ export const removeInvestor = (addresses: Array<Address>) => async (dispatch: Fu
     dispatch(ui.notify(
       'Investors Removed Successfully',
       true,
-      'The investor list will be updated when the transaction on the blockchain complete',
+      null,
       ui.etherscanTx(receipt.transactionHash)
     ))
   } catch (e) {
