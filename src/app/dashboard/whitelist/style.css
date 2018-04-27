@@ -43,7 +43,7 @@
   margin-right: 10px;
   margin-top: 13px; }
 
-.garbageHover:hover {
+.garbage:hover {
   padding: 0px 10px;
   margin-right: -10px;
   transform: scale(1.2); }
