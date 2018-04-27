@@ -7952,11 +7952,10 @@ pn@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
 
-polymath-auth@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/polymath-auth/-/polymath-auth-0.3.0.tgz#4ab99ba4eb0997a22a3d28266ac0ada5db943e70"
+polymath-auth@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/polymath-auth/-/polymath-auth-1.0.0.tgz#a847cec5c1f17cbb1ec1936165cc7d9db0a3e939"
   dependencies:
-    carbon-components-react "5.31.1"
     react "16.2.0"
     react-redux "5.0.6"
     redux "3.7.2"
@@ -7982,9 +7981,9 @@ polymath-core@1.0.1:
     web3 "^1.0.0-beta.33"
     zeppelin-solidity "^1.8.0"
 
-polymath-ui@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-1.1.0.tgz#e64f958d8bbb60c6e754e2423a170f0c548a5fca"
+polymath-ui@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-1.2.0.tgz#283dd6a486a12ed4ad0429e235c2093dbc295006"
   dependencies:
     babel-runtime "6.26.0"
     bignumber.js "6.0.0"
@@ -7992,6 +7991,7 @@ polymath-ui@1.1.0:
     carbon-components-react "5.31.0"
     carbon-icons "6.3.2"
     eth-sig-util "^1.4.2"
+    polymath-auth "1.0.0"
     polymathjs "1.0.1"
     react "16.2.0"
     react-document-title "2.0.3"
