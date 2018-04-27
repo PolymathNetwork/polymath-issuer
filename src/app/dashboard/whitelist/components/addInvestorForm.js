@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable jsx-no-bind */
 
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form'
@@ -19,24 +20,26 @@ class InvestorForm extends Component<Props> {
         <Field
           name='address'
           component={TextInput}
-          label='Eth Address'
-          placeholder='Investor Address'
+          label='Investor&apos;s Eth Address'
+          placeholder='Enter Investor&apos;s Eth Address'
           validate={[required, ethereumAddress]}
         />
-        <Field
-          name='sell'
-          component={DatePickerSingleInput}
-          label='Sell Restriction Date'
-          validate={[required]}
-          placeholder='mm/dd/yyyy'
-        />
-        <Field
-          name='buy'
-          component={DatePickerSingleInput}
-          label='Buy Restriction Date'
-          validate={[required]}
-          placeholder='mm/dd/yyyy'
-        />
+        <div className='flexFixDatePicker'>
+          <Field
+            name='sell'
+            component={DatePickerSingleInput}
+            label='Sell Restriction Date'
+            validate={[required]}
+            placeholder='mm/dd/yyyy'
+          />
+          <Field
+            name='buy'
+            component={DatePickerSingleInput}
+            label='Buy Restriction Date'
+            validate={[required]}
+            placeholder='mm/dd/yyyy'
+          />
+        </div>
       </Form>
     )
   }
