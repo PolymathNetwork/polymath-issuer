@@ -2,6 +2,7 @@
 
 import { STO, CappedSTOFactory, SecurityToken } from 'polymathjs'
 import * as ui from 'polymath-ui'
+import type { TwelveHourTime } from 'polymath-ui'
 import type { STOFactory, STODetails, STOPurchase } from 'polymathjs/types'
 
 import { formName as configureFormName } from './components/ConfigureSTOForm'
@@ -67,6 +68,9 @@ export const fetchFactories = () => async (dispatch: Function) => {
   }
 }
 
+const dateTimeFromDateAndTime = (date: Date, time: TwelveHourTime) =>
+  new Date(date.valueOf() + ui.twelveHourTimeToMinutes(time) * 60000)
+
 export const configure = () => async (dispatch: Function, getState: GetState) => {
   try {
     const factory = getState().sto.factory
@@ -80,11 +84,11 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
     dispatch(ui.txStart('Configuring STO'))
     const contract: SecurityToken = token.contract
     const values = getState().form[configureFormName].values
-    const [start, end] = values['start-end']
+    const [startDate, endDate] = values['start-end']
     const receipt = await contract.setSTO(
       factory.address,
-      start,
-      end,
+      dateTimeFromDateAndTime(startDate, values.startTime),
+      dateTimeFromDateAndTime(endDate, values.endTime),
       values.cap,
       values.rate,
       values.currency === 'ETH',

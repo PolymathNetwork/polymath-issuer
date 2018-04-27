@@ -4,10 +4,13 @@ import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form'
 
 import { Form, Button, Tooltip } from 'carbon-components-react'
-import { TextInput, SelectInput, DatePickerRangeInput } from 'polymath-ui'
+import { TextInput, SelectInput, DatePickerRangeInput, TimePicker } from 'polymath-ui'
 import {
   required,
   integer,
+  twelveHourTime,
+  dateRange,
+  dateRangeTodayOrLater,
 } from 'polymath-ui/dist/validate'
 
 export const formName = 'configure_sto'
@@ -27,9 +30,23 @@ class ConfigureSTOForm extends Component<Props> {
           component={DatePickerRangeInput}
           label='Start Date;End Date'
           placeholder='mm/dd/yyyy'
-          validate={[required]}
+          validate={[required, dateRange, dateRangeTodayOrLater]}
           style={{ width: '235px' }}
         />
+        <div className='time-pickers-container'>
+          <Field
+            name='startTime'
+            component={TimePicker}
+            label='Start Time'
+            validate={[twelveHourTime]}
+          />
+          <Field
+            name='endTime'
+            component={TimePicker}
+            label='End Time'
+            validate={[twelveHourTime]}
+          />
+        </div>
         <Field
           name='currency'
           component={SelectInput}
@@ -83,4 +100,14 @@ export default reduxForm({
   form: formName,
   destroyOnUnmount: false,
   forceUnregisterOnUnmount: true,
+  initialValues: {
+    startTime: {
+      timeString: '',
+      dayPeriod: 'AM',
+    },
+    endTime: {
+      timeString: '',
+      dayPeriod: 'AM',
+    },
+  },
 })(ConfigureSTOForm)
