@@ -7981,9 +7981,9 @@ polymath-core@1.0.1:
     web3 "^1.0.0-beta.33"
     zeppelin-solidity "^1.8.0"
 
-polymath-ui@1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-1.2.1.tgz#612a3d48d0e9569151a82984d59a2e35eedb40d0"
+polymath-ui@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-1.2.2.tgz#77d972483401cd66f9d70eea33d5acfa3145e9b0"
   dependencies:
     babel-runtime "6.26.0"
     bignumber.js "6.0.0"
@@ -7992,7 +7992,7 @@ polymath-ui@1.2.1:
     carbon-icons "6.3.2"
     eth-sig-util "^1.4.2"
     polymath-auth "1.0.0"
-    polymathjs "1.0.1"
+    polymathjs "1.1.0"
     react "16.2.0"
     react-document-title "2.0.3"
     react-dom "16.2.0"
@@ -8002,19 +8002,6 @@ polymath-ui@1.2.1:
     react-transition-group "^2.2.1"
     redux "3.7.2"
     redux-form "7.0.4"
-
-polymathjs@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-1.0.1.tgz#5315e538ffae3830216a0b9604ced6d4d4e07dbe"
-  dependencies:
-    bignumber.js "5.0.0"
-    bs58 "^4.0.1"
-    polymath-core "1.0.1"
-    redux "3.7.2"
-    redux-thunk "2.2.0"
-    web3 "1.0.0-beta.30"
-    web3-core-method bshevchenko/web3-core-method#master
-    web3-eth-contract "1.0.0-beta.30"
 
 polymathjs@1.1.0:
   version "1.1.0"
