@@ -1,46 +1,95 @@
-.modalHeight {
-  height: 600px; }
+.csvModalText {
+  color: #5A6872; }
 
-.csvModal, .csvModalMini {
+.csvModalTextMini {
   color: #5A6872;
-  width: 500px; }
+  font-size: 12px;
+  line-height: 35px; }
 
-.csvModal {
-  font-size: 16px;
-  height: 160px;
-  line-height: 25px; }
+.csvTableEthAddress {
+  width: 180px; }
 
-.csvModalMini {
-  height: 18px;
+.csvPreviewHeader {
+  color: #152935;
   font-size: 14px;
-  line-height: 22px; }
+  font-weight: normal;
+  text-align: left; }
 
-.csvPreviewHeader, .csvPreviewTable, .csvModalTable {
+.csvPreviewTable {
   font-size: 14px;
   height: 18px;
   color: #5A6872; }
 
-.csvPreviewHeader {
-  font-weight: 600; }
-
-.csvModalTable {
-  width: 148px;
-  line-height: 22px; }
+.csvModalTableContainer {
+  height: 210px; }
 
 #dropzoneRectangle {
-  height: 72px;
-  width: 404px;
+  height: 150px;
   border: 1px dashed #3D70B2;
   border-radius: 4px;
   background: #ECF0F5;
-  margin: auto;
-  text-align: center; }
+  display: flex;
+  align-items: center;
+  justify-content: center; }
 
-#dropZone {
-  height: 45px;
-  width: 214px;
+#dropZoneText {
   color: #8C9BA5;
-  font-size: 22px;
-  font-weight: 200;
-  line-height: 30px;
-  margin: 3px auto; }
+  font-size: 24px;
+  font-weight: 200; }
+
+.garbageFlexBox {
+  display: flex;
+  justify-content: space-between;
+  margin-right: 10px;
+  margin-top: 13px; }
+
+.garbageHover:hover {
+  padding: 0px 10px;
+  margin-right: -10px;
+  transform: scale(1.2); }
+
+.garbageCan {
+  fill: #909BA3; }
+
+.flexFixDatePicker {
+  display: flex; }
+
+.bx--batch-actions--active {
+  background: #28266E; }
+
+.bx--modal-content {
+  width: 100%;
+  padding-bottom: 50px;
+  background-color: white;
+  -webkit-mask-image: linear-gradient(to bottom, black 90%, rgba(0, 0, 0, 0.2));
+  -webkit-mask-image: square;
+  mask-image: square;
+  margin-bottom: 0; }
+
+.bx--modal-container {
+  border-top: 0;
+  width: 20%;
+  font-family: Overpass, sans-serif; }
+
+.bx--modal-footer {
+  background: white;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 10%; }
+
+.bx--label {
+  color: #152935;
+  font-size: 14px;
+  font-weight: normal; }
+
+.bx--date-picker__icon {
+  fill: #273066; }
+
+.bx--modal-header__heading {
+  color: #252E6A;
+  font-size: 28px;
+  font-weight: bold; }
+
+.bx--modal-content__text {
+  color: #5A6872;
+  font-size: 16px; }

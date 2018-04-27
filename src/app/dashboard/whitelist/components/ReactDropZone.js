@@ -7,9 +7,13 @@ type Props = {|
   onHandleUpload: Function
 |}
 
+//Doing this to override the basic dropzone look
 const dropzoneStyle = {
-  height: '72px',
-  width: '404px',
+  'height': '100%',
+  'width': '100%',
+  'display': 'flex',
+  'alignItems': 'center',
+  'justifyContent': 'center',
 }
 
 export default class BasicDropzone extends Component<Props> {
@@ -20,15 +24,13 @@ export default class BasicDropzone extends Component<Props> {
   render () {
     return (
       <section id='dropzoneRectangle'>
-        <div>
-          <Dropzone
-            // eslint-disable-next-line
-            onDrop={this.onDrop.bind(this)}
-            style={dropzoneStyle}
-          >
-            <p id='dropZone' >drop file here<br />or click to select</p>
-          </Dropzone>
-        </div>
+        <Dropzone
+          // eslint-disable-next-line
+          onDrop={this.onDrop.bind(this)}
+          style={dropzoneStyle}
+        >
+          <p id='dropZoneText' >Drop file here or click to upload</p>
+        </Dropzone>
       </section>
     )
   }

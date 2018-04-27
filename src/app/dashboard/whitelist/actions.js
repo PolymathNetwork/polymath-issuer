@@ -4,7 +4,7 @@ import * as ui from 'polymath-ui'
 import { TransferManager, SecurityToken } from 'polymathjs'
 import type { Investor, Address } from 'polymathjs/types'
 
-import { formName as userFormName } from './components/userForm'
+import { formName as addInvestorFormName } from './components/addInvestorForm'
 import { formName as editInvestorsFormName } from './components/editInvestorsForm'
 import type { GetState } from '../../../redux/reducer'
 import type { ExtractReturn } from '../../../redux/helpers'
@@ -15,12 +15,11 @@ export const ac_transferManager = (transferManager: TransferManager) => ({ type:
 
 export const UPLOAD_CSV = 'dashboard/whitelist/UPLOAD_CSV'
 export const ac_csvUpload = (
-  csvMessage: string,
   addresses: Array<Address>,
   sell: Array<Address>,
   buy: Array<Address>,
   previewCSVShowing: boolean
-) => ({ type: UPLOAD_CSV, csvMessage, addresses, sell, buy, previewCSVShowing })
+) => ({ type: UPLOAD_CSV, addresses, sell, buy, previewCSVShowing })
 export const UPLOAD_CSV_FAILED = 'dashboard/whitelist/UPLOAD_CSV_FAILED'
 
 export const GET_WHITELIST = 'dashboard/whitelist/GET_WHITELIST'
@@ -36,25 +35,35 @@ export type Action =
   | ExtractReturn<typeof ac_getWhitelist>
   | ExtractReturn<typeof ac_listLength>
 
-// initialize grabs transferManager , and stores it in state for other functions to easily call
-// It then calls getWhiteList() to populate the table for the user
+  // initialize grabs transferManager , and stores it in state for other functions to easily call
+  // It then calls getWhiteList() to populate the table for the user
 export const initialize = () => async (dispatch: Function, getState: GetState) => {
-  const token = getState().token.token
-  if (!token || !token.contract) {
-    // eslint-disable-next-line
-    console.error('Contract manager object not found, it did not carry over into the state')
-    return
+  if (!getState().whitelist.transferManager) {
+    const token = getState().token.token
+    if (!token || !token.contract) {
+      // eslint-disable-next-line
+        console.error('Contract manager object not found. This is created on token creation page, it is possible there was an error upon creation')
+      return
+    }
+    const contract: SecurityToken = token.contract
+    const transferManager: TransferManager = await contract.getTransferManager()
+    if (transferManager === null) {
+      // eslint-disable-next-line
+        console.error('Failure to grab transfer manager module, most likely a websocket connection error has caused this')
+      return
+    }
+    dispatch(ac_transferManager(transferManager))
   }
-  const contract: SecurityToken = token.contract
-  const transferManager: TransferManager = await contract.getTransferManager()
-  dispatch(ac_transferManager(transferManager))
   dispatch(getWhitelist())
 }
 
 // Uploads the CSV file, reads it with built in js FileReader(), dispatches to the store the csv file information,
-// which can then be sent to the blockchain with multiUserSubmit()
-// TODO @davekaj: Do we need to limit CSV file to 50 or 100, and notify them that it is too long?...
-// TODO @davekaj: ...also keep in mind gas limit and WS packet size
+// which can then be sent to the blockchain with multiUserSumbit()
+
+// Note: We just Object type, instead of File type, because here we get passed a File directly from the dropzone, and an event
+// from the upload button, and then we determine whether it is a file or not inside of uploadCSV()
+
+// TODO: @davekaj - Do we need to limit CSV file to 50 or 100, and notify them that it is too long? also keep in mind gas limit and WS packet size
 export const uploadCSV = (file: Object) => async (dispatch: Function) => {
   let parseFile
   if (file.target === undefined) {
@@ -68,10 +77,10 @@ export const uploadCSV = (file: Object) => async (dispatch: Function) => {
     reader.readAsText(parseFile)
     reader.onload = function () {
       const parsedData = parseCSV(((reader.result: any): string))
-      dispatch(ac_csvUpload('CSV upload was successful!', parsedData[0], parsedData[1], parsedData[2], true))
+      dispatch(ac_csvUpload( parsedData[0], parsedData[1], parsedData[2], true))
     }
   } else {
-    dispatch({ type: UPLOAD_CSV_FAILED, csvMessage: 'There was an error uploading the CSV file' })
+    dispatch({ type: UPLOAD_CSV_FAILED })
   }
 }
 
@@ -119,13 +128,13 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: GetSta
     blockchainData.push(investorData)
   }
   const transferManager = getState().whitelist.transferManager
-  dispatch(ui.txStart('Submitting CSV to the blockchain...'))
+  dispatch(ui.txStart('Submitting Approved Investors...'))
   try {
     const receipt = await transferManager.modifyWhitelistMulti(blockchainData)
     dispatch(ui.notify(
-      'CSV was successfully uploaded',
+      'Investors from the CSV were successfully Uploaded',
       true,
-      'We will present the investor list to you on the next page',
+      'The investor list will be updated when the transaction on the blockchain completes',
       ui.etherscanTx(receipt.transactionHash)
     ))
   } catch (e) {
@@ -135,22 +144,22 @@ export const multiUserSubmit = () => async (dispatch: Function, getState: GetSta
 }
 
 export const oneUserSubmit = () => async (dispatch: Function, getState: GetState) => {
-  const user = { ...getState().form[userFormName].values }
-  const newSellDate = new Date(user.sell)
-  const newBuyDate = new Date(user.buy)
-  const blockchainData: Investor = {
+  const user = { ...getState().form[addInvestorFormName].values }
+  let newSellDate = new Date(user.sell)
+  let newBuyDate = new Date(user.buy)
+  let blockchainData: Investor = {
     address: user.address,
     from: newSellDate,
     to: newBuyDate,
   }
   const transferManager = getState().whitelist.transferManager
-  dispatch(ui.txStart('Submitting CSV to the blockchain...'))
+  dispatch(ui.txStart('Submitting Approved Investors...'))
   try {
     const receipt = await transferManager.modifyWhitelist(blockchainData)
     dispatch(ui.notify(
       'Investor was submitted to the blockchain',
       true,
-      'We will present the investor list to you on the next page',
+      'The investor list will be updated when the transaction on the blockchain completes',
       ui.etherscanTx(receipt.transactionHash)
     ))
   } catch (e) {
@@ -250,7 +259,7 @@ export const removeInvestor = (addresses: Array<Address>) => async (dispatch: Fu
     dispatch(ui.notify(
       'Investors Removed Successfully',
       true,
-      'We will present the investor list to you on the next page',
+      'The investor list will be updated when the transaction on the blockchain complete',
       ui.etherscanTx(receipt.transactionHash)
     ))
   } catch (e) {
@@ -279,7 +288,7 @@ export const editInvestors = (addresses: Array<Address>) => async (dispatch: Fun
     dispatch(ui.notify(
       'Investors Updated Successfully',
       true,
-      'We will present the investor list to you on the next page',
+      'The investor list will be updated when the transaction on the blockchain completes',
       ui.etherscanTx(receipt.transactionHash)
     ))
   } catch (e) {
