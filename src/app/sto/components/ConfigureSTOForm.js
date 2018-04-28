@@ -4,13 +4,20 @@ import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form'
 
 import { Form, Button, Tooltip } from 'carbon-components-react'
-import { TextInput, SelectInput, DatePickerRangeInput, TimePicker } from 'polymath-ui'
+import {
+  TextInput,
+  SelectInput,
+  DatePickerRangeInput,
+  TimePicker,
+  timeZoneName,
+} from 'polymath-ui'
 import {
   required,
   integer,
   twelveHourTime,
   dateRange,
   dateRangeTodayOrLater,
+  gt,
 } from 'polymath-ui/dist/validate'
 
 export const formName = 'configure_sto'
@@ -20,6 +27,8 @@ type Props = {
 }
 
 const defaultCurrency = 'POLY'
+
+const gt0 = gt(0)
 
 class ConfigureSTOForm extends Component<Props> {
   render () {
@@ -43,7 +52,16 @@ class ConfigureSTOForm extends Component<Props> {
           <Field
             name='endTime'
             component={TimePicker}
-            label='End Time'
+            label={
+              <Tooltip triggerText='End Time'>
+                <p className='bx--tooltip__label'>
+                  Start and End Times
+                </p>
+                <p>
+                  Uses your local time zone, {timeZoneName()}.
+                </p>
+              </Tooltip>
+            }
             validate={[twelveHourTime]}
           />
         </div>
@@ -59,7 +77,7 @@ class ConfigureSTOForm extends Component<Props> {
           name='cap'
           component={TextInput}
           label={
-            <Tooltip triggerText='Hard cap'>
+            <Tooltip triggerText='Hard Cap'>
               <p className='bx--tooltip__label'>
                 Hard cap
               </p>
@@ -69,7 +87,7 @@ class ConfigureSTOForm extends Component<Props> {
             </Tooltip>
           }
           placeholder='Enter amount'
-          validate={[required, integer]}
+          validate={[required, integer, gt0]}
         />
         <Field
           name='rate'
@@ -86,7 +104,7 @@ class ConfigureSTOForm extends Component<Props> {
             </Tooltip>
           }
           placeholder='Enter amount'
-          validate={[required, integer]}
+          validate={[required, integer, gt0]}
         />
         <Button type='submit'>
           Confirm & Launch STO
