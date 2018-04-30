@@ -47,9 +47,8 @@ export const fetch = () => async (dispatch: Function, getState: GetState) => {
 export const fetchFactories = () => async (dispatch: Function) => {
   dispatch(ui.fetching())
   try {
-    const title = await CappedSTOFactory.getTitle()
     dispatch(factories([{
-      title,
+      title: 'Capped STO',
       name: 'Polymath Inc.',
       desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore' +
       'et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip' +
@@ -113,7 +112,7 @@ export const fetchPurchases = () => async (dispatch: Function, getState: GetStat
     if (!contract) {
       return
     }
-    dispatch(factories(await contract.getPurchases()))
+    dispatch(purchases(await contract.getPurchases()))
     dispatch(ui.fetched())
   } catch (e) {
     dispatch(ui.fetchingFailed(e))

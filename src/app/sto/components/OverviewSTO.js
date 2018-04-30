@@ -36,6 +36,7 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class OverviewSTO extends Component<Props> {
+
   componentWillMount () {
     this.props.fetchPurchases()
   }

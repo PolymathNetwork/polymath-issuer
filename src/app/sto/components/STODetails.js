@@ -29,7 +29,7 @@ export default class STODetails extends Component<Props> {
     )
     const verifiedByEtherscan = (
       <div className='bx--form-item'>
-        <label htmlFor='ticker' className='bx--label'>Verified by Etherscan</label>
+        <label htmlFor='ticker' className='bx--label'>Verified on Etherscan</label>
         {item.isVerified ? (
           <p>
             <Icon
@@ -51,9 +51,9 @@ export default class STODetails extends Component<Props> {
     )
     const securityAuditLink = (
       <div className='bx--form-item'>
-        <label htmlFor='ticker' className='bx--label'>Security Audit Link</label>
+        <label htmlFor='ticker' className='bx--label'>Contract Audit</label>
         <p>
-          <a href={item.securityAuditLink.url} target='_blank'>{item.securityAuditLink.title}</a>
+          <a href={item.securityAuditLink.url} target='_blank'>Link to Security Audit</a>
         </p>
       </div>
     )

@@ -36,6 +36,7 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class TokenPage extends Component<Props> {
+
   handleCompleteSubmit = () => {
     this.props.complete()
   }
@@ -101,10 +102,7 @@ class TokenPage extends Component<Props> {
                   <div className='bx--form-item'>
                     <label htmlFor='owner' className='bx--label'>Symbol Registration Transaction</label>
                     <p>
-                      {etherscanTx(
-                        '0x0111717f6af1f7e1b2f65855ff44fc31c8cbbe55ea47852af4ea67e37fe60983',
-                        '0x0111717f6af1f7e1b2f65855ff44fc31c8cbbe55ea47852af4ea67e37fe60983'
-                      )}
+                      {etherscanTx(token.txHash, token.txHash)}
                     </p>
                   </div>
                   <div className='bx--form-item'>
