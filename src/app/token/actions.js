@@ -36,14 +36,15 @@ export const complete = () => async (dispatch: Function, getState: GetState) => 
       ...getState().token.token,
       ...getState().form[completeFormName].values,
     }
-    const receipt = await SecurityTokenRegistry.generateSecurityToken(token.name, token.ticker)
+    await SecurityTokenRegistry.generateSecurityToken(token.name, token.ticker)
     dispatch(fetch(token.ticker))
-    dispatch(ui.notify(
-      `${token.ticker} token was successfully issued`,
-      true,
-      'We have already sent you an email. Check your mailbox',
-      ui.etherscanTx(receipt.transactionHash)
-    ))
+    dispatch(
+      ui.txSuccess(
+        'Token Was Issued Successfully',
+        'Choose your providers',
+        `/dashboard/${token.ticker}`
+      )
+    )
   } catch (e) {
     dispatch(ui.txFailed(e))
   }

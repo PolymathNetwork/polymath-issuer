@@ -80,8 +80,6 @@ class TickerForm extends Component<Props> {
 
 export default reduxForm({
   form: formName,
-  destroyOnUnmount: false,
-  forceUnregisterOnUnmount: true,
   asyncValidate: async (values) => {
     // async validation doesn't work properly with field-level validation, so we need to specify sync rules here
     const v = values.ticker

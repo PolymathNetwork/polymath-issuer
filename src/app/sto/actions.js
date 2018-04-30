@@ -80,7 +80,7 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
     const contract: SecurityToken = token.contract
     const values = getState().form[configureFormName].values
     const [start, end] = values['start-end']
-    const receipt = await contract.setSTO(
+    await contract.setSTO(
       factory.address,
       start,
       end,
@@ -90,12 +90,13 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
       contract.account,
     )
     dispatch(fetch())
-    dispatch(ui.notify(
-      'STO was successfully issued',
-      true,
-      'We have already sent you an email. Check your mailbox',
-      ui.etherscanTx(receipt.transactionHash)
-    ))
+    dispatch(
+      ui.txSuccess(
+        'STO Details Configured Successfully',
+        'Go to STO overview',
+        `/dashboard/${token.ticker}/sto`
+      )
+    )
   } catch (e) {
     dispatch(ui.txFailed(e))
   }
