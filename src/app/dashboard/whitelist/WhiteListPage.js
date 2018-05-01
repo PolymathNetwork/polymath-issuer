@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import uuidv4 from 'uuid/v4'
-import { addressShortifier } from 'polymath-ui'
+import { addressShortifier, etherscanAddress } from 'polymath-ui'
 import {
   DataTable,
   PaginationV2,
@@ -293,7 +293,7 @@ class WhitelistPage extends Component<Props, State> {
                     </div>
                     : this.checkAddressCell(i) ?
                       <div>
-                        <a target='blank' href={`https://etherscan.io/address/${cell.value}`}>{cell.value}</a>
+                        {etherscanAddress(cell.value, cell.value)}
                       </div>
                       :
                       <div>
