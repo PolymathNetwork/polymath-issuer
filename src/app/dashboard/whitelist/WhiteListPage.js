@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import uuidv4 from 'uuid/v4'
-import { addressShortifier } from 'polymath-ui'
+import { addressShortifier, etherscanAddress } from 'polymath-ui'
 import {
   DataTable,
   PaginationV2,
@@ -174,8 +174,13 @@ class WhitelistPage extends Component<Props, State> {
   }
 
   //This is used to display the garbage cans in the table
-  checkEqualFour = (index) => {
+  checkGarbageCell = (index) => {
     if (index === 4) return true
+  }
+
+  //This is used to add etherscan links on the addressed in the table
+  checkAddressCell = (index) => {
+    if (index === 0 || index === 2) return true
   }
 
   //renders the list by making it date strings and splitting up in pages, at the start of the render function
@@ -273,23 +278,27 @@ class WhitelistPage extends Component<Props, State> {
         <TableBody>
           {rows.map((row, rowIndex) => (
             <TableRow key={row.id} style={tableStyle}>
-              <TableSelectRow {...getSelectionProps({ row })} />
+              <TableSelectRow    {...getSelectionProps({ row })} />
               {row.cells.map((cell, i) => (
-                <TableCell key={cell.id}>
-                  {this.checkEqualFour(i) ?
+                <TableCell key={cell.id}  >
+                  {this.checkGarbageCell(i) ?
                     <div className='garbageFlexBox'>
                       {cell.value}
-                      <div className='garbageHover'>
+                      <div className='garbage'>
                         <svg className='garbageCan' width='16' height='24' viewBox='0 0 16 24' fillRule='evenodd' onClick={()=> this.props.removeInvestor([this.props.whitelist.investors[rowIndex].address])}>
                           <path d='M4 0h8v2H4zM0 3v4h1v17h14V7h1V3H0zm13 18H3V8h10v13z' />
                           <path d='M5 10h2v9H5zm4 0h2v9H9z' />
                         </svg>
                       </div>
                     </div>
-                    :
-                    <div>
-                      {cell.value}
-                    </div>
+                    : this.checkAddressCell(i) ?
+                      <div>
+                        {etherscanAddress(cell.value, cell.value)}
+                      </div>
+                      :
+                      <div>
+                        {cell.value}
+                      </div>
                   }
                 </TableCell>
               ))}
