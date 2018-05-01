@@ -1,5 +1,7 @@
 // @flow
 
+import { CONNECTED } from 'polymath-auth'
+import { setHelpersNetwork } from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
 
 import * as a from './actions'
@@ -23,6 +25,9 @@ export default (state: TokenState = defaultState, action: Action) => {
         token: action.token,
         isFetched: true,
       }
+    case CONNECTED:
+      setHelpersNetwork(action.params.name)
+      return state
     default:
       return state
   }
