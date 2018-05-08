@@ -103,3 +103,19 @@
 .sto-search-container {
   max-width: 612px;
 }
+
+.time-pickers-container {
+  display: flex;
+
+  .bx--form-item {
+    flex-grow: 0;
+
+    &:first-child {
+      padding-right: 0.5rem;
+    }
+  }
+
+  .bx--time-picker__select {
+    min-width: 4rem;
+  }
+}

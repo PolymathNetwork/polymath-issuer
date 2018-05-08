@@ -3,7 +3,6 @@ import * as ui from 'polymath-ui'
 import type { SymbolDetails } from 'polymathjs/types'
 
 import { formName } from './components/TickerForm'
-import { fetchAPI } from '../offchain'
 import type { GetState } from '../../redux/reducer'
 
 // eslint-disable-next-line
@@ -14,26 +13,25 @@ export const register = () => async (dispatch: Function, getState: GetState) => 
     const receipt = await TickerRegistry.registerTicker(details)
 
     const accountData = ui.getAccountData(getState())
-
     if (!accountData) {
       throw new Error('Not signed in')
     }
+    delete accountData.account
 
-    const emailResult = await fetchAPI({
+    const emailResult = await ui.offchainFetch({
       query: `
-        mutation ($accountData: AccountData!, $txHash: String!, $symbolDetails: SymbolDetails!) {
-          withAccount(accountData: $accountData, txHash: $txHash) {
-            sendEmailRegisterTicker(symbolDetails: $symbolDetails)
+        mutation ($account: WithAccountInput!, $input: EmailRegisterTickerInput!) {
+          withAccount(input: $account) {
+            sendEmailRegisterTicker(input: $input)
           }
         }
       `,
       variables: {
-        accountData: {
-          accountJSON: accountData.accountJSON,
-          signature: accountData.signature,
+        account: {
+          accountData: accountData,
+          txHash: receipt.transactionHash,
         },
-        txHash: receipt.transactionHash,
-        symbolDetails: {
+        input: {
           ticker: details.ticker,
           name: details.name,
         },
@@ -45,13 +43,13 @@ export const register = () => async (dispatch: Function, getState: GetState) => 
       console.error('sendEmailRegisterTicker failed:', emailResult.errors)
     }
 
-    dispatch(ui.notify(
-      'Token symbol was successfully registered',
-      true,
-      'We\'ve sent you an email. Check your inbox.',
-      ui.etherscanTx(receipt.transactionHash)
-    ))
-    getState().pui.common.history.push(`/dashboard/${details.ticker}`)
+    dispatch(
+      ui.txSuccess(
+        'Token Symbol Was Registered Successfully',
+        'Go to dashboard',
+        `/dashboard/${details.ticker}`
+      )
+    )
   } catch (e) {
     dispatch(ui.txFailed(e))
   }

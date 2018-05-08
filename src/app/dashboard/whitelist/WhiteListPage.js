@@ -5,6 +5,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import uuidv4 from 'uuid/v4'
+import { addressShortifier, etherscanAddress } from 'polymath-ui'
 import {
   DataTable,
   PaginationV2,
@@ -12,9 +13,11 @@ import {
   ModalWrapper,
   DatePicker,
   DatePickerInput,
+  FileUploaderButton,
+  Button,
 } from 'carbon-components-react'
 
-import type { Address } from 'polymathjs/types'
+import type { Address, SecurityToken } from 'polymathjs/types'
 
 import Progress from '../../token/components/Progress'
 import {
@@ -27,23 +30,26 @@ import {
   removeInvestor,
   editInvestors,
 } from './actions'
-import tableHeaders from './tableHeaders'
-import InvestorForm from './components/userForm'
+import InvestorForm from './components/addInvestorForm'
 import EditInvestorsForm from './components/editInvestorsForm'
-import BasicDropZone from './components/ReactDropZone'
+import BasicDropzone from './components/ReactDropZone'
 
 import type { WhitelistState } from './reducer'
 
 import './style.css'
 
-const {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
+const tableStyle = {
+  'backgroundColor': 'white',
+}
+
+const { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow,
   TableSelectAll, TableSelectRow, TableToolbar, TableBatchAction, TableBatchActions,
   TableToolbarSearch, TableToolbarContent,
 } = DataTable
 
 type StateProps = {|
   whitelist: WhitelistState,
+  token: SecurityToken,
 |}
 
 type DispatchProps = {|
@@ -59,6 +65,7 @@ type DispatchProps = {|
 
 const mapStateToProps = (state) => ({
   whitelist: state.whitelist,
+  token: state.token.token,
 })
 
 const mapDispatchToProps = (dispatch: Function) => ({
@@ -101,6 +108,14 @@ const dateFormat = (date: Date) => date.toLocaleDateString('en', {
   month: 'short',
   day: 'numeric',
 })
+
+const tableHeaders = [
+  { key: 'address', header: 'Investor Eth Address' },
+  { key: 'added', header: 'Date Added' },
+  { key: 'addedBy', header: 'Added By' },
+  { key: 'from', header: 'Sell Restriction Until' },
+  { key: 'to', header: 'Buy Restriction Until' },
+]
 
 class WhitelistPage extends Component<Props, State> {
   state = {
@@ -158,7 +173,17 @@ class WhitelistPage extends Component<Props, State> {
     return true // Must return true, for the component from carbon to work
   }
 
-  // renders the list by making it date strings and splitting up in pages, at the start of the render function
+  //This is used to display the garbage cans in the table
+  checkGarbageCell = (index) => {
+    if (index === 4) return true
+  }
+
+  //This is used to add etherscan links on the addressed in the table
+  checkAddressCell = (index) => {
+    if (index === 0 || index === 2) return true
+  }
+
+  //renders the list by making it date strings and splitting up in pages, at the start of the render function
   paginationRendering () {
     const investors = this.props.whitelist.investors
     const pageNum = this.state.page
@@ -188,8 +213,8 @@ class WhitelistPage extends Component<Props, State> {
     return stringifiedArray
   }
 
-  removeInvestor = (dataTableRow: Array<Object>) => {
-    const addresses = []
+  removeInvestorDataTable = (dataTableRow: Array<Object>) => {
+    let addresses = []
     for (let i = 0; i < dataTableRow.length; i++) {
       addresses.push(dataTableRow[i].cells[0].value)
     }
@@ -213,7 +238,7 @@ class WhitelistPage extends Component<Props, State> {
     <TableContainer>
       <TableToolbar>
         <TableBatchActions {...getBatchActionProps()}>
-          <TableBatchAction onClick={() => this.removeInvestor(selectedRows)}>
+          <TableBatchAction onClick={()=> this.removeInvestorDataTable(selectedRows)}>
               Remove Investor
           </TableBatchAction>
           <TableBatchAction onClick={() => this.handleEditInvestors(selectedRows)}>
@@ -228,7 +253,7 @@ class WhitelistPage extends Component<Props, State> {
             modalHeading='Add New Investor'
             handleSubmit={this.onHandleInvestorSubmit}
             shouldCloseAfterSubmit
-            primaryButtonText='Send To Blockchain'
+            primaryButtonText='Add New Investor'
 
           >
             <p className='bx--modal-content__text'>
@@ -251,11 +276,31 @@ class WhitelistPage extends Component<Props, State> {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
-              <TableSelectRow {...getSelectionProps({ row })} />
-              {row.cells.map((cell) => (
-                <TableCell key={cell.id}>{cell.value}</TableCell>
+          {rows.map((row, rowIndex) => (
+            <TableRow key={row.id} style={tableStyle}>
+              <TableSelectRow    {...getSelectionProps({ row })} />
+              {row.cells.map((cell, i) => (
+                <TableCell key={cell.id}  >
+                  {this.checkGarbageCell(i) ?
+                    <div className='garbageFlexBox'>
+                      {cell.value}
+                      <div className='garbage'>
+                        <svg className='garbageCan' width='16' height='24' viewBox='0 0 16 24' fillRule='evenodd' onClick={()=> this.props.removeInvestor([this.props.whitelist.investors[rowIndex].address])}>
+                          <path d='M4 0h8v2H4zM0 3v4h1v17h14V7h1V3H0zm13 18H3V8h10v13z' />
+                          <path d='M5 10h2v9H5zm4 0h2v9H9z' />
+                        </svg>
+                      </div>
+                    </div>
+                    : this.checkAddressCell(i) ?
+                      <div>
+                        {etherscanAddress(cell.value, cell.value)}
+                      </div>
+                      :
+                      <div>
+                        {cell.value}
+                      </div>
+                  }
+                </TableCell>
               ))}
             </TableRow>
           ))}
@@ -278,51 +323,46 @@ class WhitelistPage extends Component<Props, State> {
                 modalLabel=''
                 modalHeading='Import Whitelist'
                 handleSubmit={this.onHandleMultiSubmit}
-                primaryButtonText='Send To Blockchain'
+                primaryButtonText='Add Investors'
                 shouldCloseAfterSubmit
               >
-                <div className={this.props.whitelist.previewCSVShowing ? 'modalHeight' : ''}>
-                  <div className='csvModal'>
-                    Add multiple addresses to the whitelist by uploading a comma separated CSV file.
-                    The format should be as follows:
-                    <ul>
-                      <li>Column 1 - Ethereum Address</li>
-                      <li>
-                        Column 2 - Date mm/dd/yyyy
-                        (date when the resale restrictions should be lifted for that address).
-                      </li>
-                    </ul>
+                <div className={this.props.whitelist.previewCSVShowing ? '' : ''}>
+                  <div>
+                    <p className='csvModalText'>Add multiple addresses to the whitelist by uploading a comma seperated CSV file. The format should be as follows:</p>
+                    <p className='csvModalText'>Column 1 - Ethereum Address</p>
+                    <p className='csvModalText'>Column 2 - Date mm/dd/yyyy (date when the resale restrictions should be lifted for that address).</p>
+                    <p className='csvModalTextMini'>You can download a <a href='localhost:3000'>Sample.csv</a> file and edit it</p>
                   </div>
-                  <div className='csvModalMini'>
-                    You can download a <a href='/whitelist-sample.csv'>Sample.csv</a> file and edit it
-                  </div>
-                  <br />
                   {this.props.whitelist.previewCSVShowing ? null :
                     (
                       <div>
-                        <BasicDropZone onHandleUpload={this.props.handleUpload} />
+                        <BasicDropzone onHandleUpload={this.props.handleUpload} />
+                        <FileUploaderButton
+                          labelText='Upload From Desktop'
+                          onChange={this.props.handleUpload}
+                          accept={['.csv']}
+                          multiple
+                          buttonKind='secondary'
+                        />
                       </div>
                     )}
                   {this.props.whitelist.previewCSVShowing ? (
-                    <div className='csvModalTable'>
-                      {/* TODO @davekaj: remove this from redux state, it is not needed anymore */}
-                      {/* <div>{this.props.whitelist.csvMessage}</div> */}
-                      {/* Below is the data you will be sending to the blockchain, please confirm it is correct, */}
-                      {/* and then click the Send button to continue. */}
-                      <br />
+                    <div className='csvModalTableContainer'>
                       <table>
-                        <tr className='csvPreviewHeader'>
-                          <th>Investor&apos;s Eth Address</th>
-                          <th>Sale Lockup End Date</th>
-                          <th>Purchase Lockup End Date</th>
-                        </tr>
-                        {this.props.whitelist.addresses.map((user, i) => (
-                          <tr key={uuidv4()} className='csvPreviewTable'>
-                            <td className='csvModalAddressTable' >{this.props.whitelist.addresses[i]}</td>
-                            <td>{this.props.whitelist.sell[i]}</td>
-                            <td>{this.props.whitelist.buy[i]}</td>
+                        <tbody>
+                          <tr className='csvPreviewHeader'>
+                            <th>Investor&apos;s Eth Address</th>
+                            <th>Sale Lockup End Date</th>
+                            <th>Purchase Lockup End Date</th>
                           </tr>
-                        ))}
+                          {this.props.whitelist.addresses.map((user, i) => (
+                            <tr key={uuidv4()} className='csvPreviewTable'>
+                              <td className='csvTableEthAddress'>{addressShortifier(this.props.whitelist.addresses[i])}</td>
+                              <td>{this.props.whitelist.sell[i]}</td>
+                              <td>{this.props.whitelist.buy[i]}</td>
+                            </tr>
+                          ))}
+                        </tbody>
                       </table>
                     </div>
                   )
@@ -336,16 +376,16 @@ class WhitelistPage extends Component<Props, State> {
             <div className='bx--col-xs-2'>
               <DatePicker id='date-picker' onChange={this.handleDatePicker} datePickerType='range'>
                 <DatePickerInput
-                  className='some-class'
                   labelText='Start Date Added'
                   placeholder='mm/dd/yyyy'
                   id='date-picker-input-id'
+                  onClick={()=>{}} // include this to get rid of error being passed onto the component and shown in console
                 />
                 <DatePickerInput
-                  className='some-class'
                   labelText='End Date Added'
                   placeholder='mm/dd/yyyy'
                   id='date-picker-input-id-2'
+                  onClick={()=>{}} // include this to get rid of error being passed onto the component and shown in console
                 />
               </DatePicker>
             </div>
@@ -364,7 +404,6 @@ class WhitelistPage extends Component<Props, State> {
             <Modal
               onRequestSubmit={this.handleRequestSubmit}
               onRequestClose={this.handleRequestClose}
-              className='some-class'
               open
               modalHeading='Edit Existing Investors'
               primaryButtonText='Send'
@@ -375,6 +414,23 @@ class WhitelistPage extends Component<Props, State> {
               </p>
               <br />
               <EditInvestorsForm />
+            </Modal>
+          )
+            : null}
+
+          {!this.props.token.status ? (
+            <Modal
+              open
+              passiveModal
+              modalHeading='Complete The STO Section'
+              primaryButtonText='Go to STO Section'
+            >
+              <p className='bx--modal-content__text'>
+                  Please confirm that you are ready to proceed to the next step in the STO process
+              </p>
+              <Button href={`/dashboard/${this.props.token.ticker}/sto`}>
+                Go to STO Section
+              </Button>
             </Modal>
           )
             : null}

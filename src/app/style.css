@@ -71,3 +71,12 @@
 
 .sto-search-container {
   max-width: 612px; }
+
+.time-pickers-container {
+  display: flex; }
+  .time-pickers-container .bx--form-item {
+    flex-grow: 0; }
+    .time-pickers-container .bx--form-item:first-child {
+      padding-right: 0.5rem; }
+  .time-pickers-container .bx--time-picker__select {
+    min-width: 4rem; }

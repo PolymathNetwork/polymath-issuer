@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
+// eslint-disable-next-line no-unused-vars
 import { Sidebar, icoBriefcase, icoInbox, icoHandshake, icoHelp } from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
 
@@ -76,12 +77,12 @@ class Dashboard extends Component<Props> {
       },
     ]
     const bottomSidebarItems = [
-      {
-        title: 'FAQ',
-        icon: icoHelp,
-        to: '#',
-        isActive: false,
-      },
+      // {
+      //   title: 'FAQ',
+      //   icon: icoHelp,
+      //   to: '#',
+      //   isActive: false,
+      // },
     ]
     return (
       <div className='dashboard'>

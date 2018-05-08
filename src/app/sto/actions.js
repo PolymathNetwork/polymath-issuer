@@ -2,10 +2,10 @@
 
 import { STO, CappedSTOFactory, SecurityToken } from 'polymathjs'
 import * as ui from 'polymath-ui'
+import type { TwelveHourTime } from 'polymath-ui'
 import type { STOFactory, STODetails, STOPurchase } from 'polymathjs/types'
 
 import { formName as configureFormName } from './components/ConfigureSTOForm'
-import { fetchAPI } from '../offchain'
 import type { ExtractReturn } from '../../redux/helpers'
 import type { GetState } from '../../redux/reducer'
 
@@ -47,9 +47,8 @@ export const fetch = () => async (dispatch: Function, getState: GetState) => {
 export const fetchFactories = () => async (dispatch: Function) => {
   dispatch(ui.fetching())
   try {
-    const title = await CappedSTOFactory.getTitle()
     dispatch(factories([{
-      title,
+      title: 'Capped STO',
       name: 'Polymath Inc.',
       desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore' +
       'et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip' +
@@ -68,6 +67,9 @@ export const fetchFactories = () => async (dispatch: Function) => {
   }
 }
 
+const dateTimeFromDateAndTime = (date: Date, time: TwelveHourTime) =>
+  new Date(date.valueOf() + ui.twelveHourTimeToMinutes(time) * 60000)
+
 export const configure = () => async (dispatch: Function, getState: GetState) => {
   try {
     const factory = getState().sto.factory
@@ -81,11 +83,11 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
     dispatch(ui.txStart('Configuring STO'))
     const contract: SecurityToken = token.contract
     const values = getState().form[configureFormName].values
-    const [start, end] = values['start-end']
+    const [startDate, endDate] = values['start-end']
     const receipt = await contract.setSTO(
       factory.address,
-      start,
-      end,
+      dateTimeFromDateAndTime(startDate, values.startTime),
+      dateTimeFromDateAndTime(endDate, values.endTime),
       values.cap,
       values.rate,
       values.currency === 'ETH',
@@ -94,26 +96,27 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
     dispatch(fetch())
 
     const accountData = ui.getAccountData(getState())
-
     if (!accountData) {
       throw new Error('Not signed in')
     }
+    delete accountData.account
 
-    const emailResult = await fetchAPI({
+    const emailResult = await ui.offchainFetch({
       query: `
-        mutation ($accountData: AccountData!, $txHash: String!, $ticker: String!) {
-          withAccount(accountData: $accountData, txHash: $txHash) {
-            sendEmailSTOLaunched(ticker: $ticker)
+        mutation ($account: WithAccountInput!, $input: EmailSTOLaunchedInput!) {
+          withAccount(input: $account) {
+            sendEmailSTOLaunched(input: $input)
           }
         }
       `,
       variables: {
-        accountData: {
-          accountJSON: accountData.accountJSON,
-          signature: accountData.signature,
+        account: {
+          accountData: accountData,
+          txHash: receipt.transactionHash,
         },
-        txHash: receipt.transactionHash,
-        ticker: token.ticker,
+        input: {
+          ticker: token.ticker,
+        },
       },
     })
 
@@ -122,12 +125,13 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
       console.error('sendEmailSTOLaunched failed:', emailResult.errors)
     }
 
-    dispatch(ui.notify(
-      'STO was successfully issued',
-      true,
-      'We\'ve sent you an email. Check your inbox.',
-      ui.etherscanTx(receipt.transactionHash)
-    ))
+    dispatch(
+      ui.txSuccess(
+        'STO Details Configured Successfully',
+        'Go to STO overview',
+        `/dashboard/${token.ticker}/sto`
+      )
+    )
   } catch (e) {
     dispatch(ui.txFailed(e))
   }
@@ -140,7 +144,7 @@ export const fetchPurchases = () => async (dispatch: Function, getState: GetStat
     if (!contract) {
       return
     }
-    dispatch(factories(await contract.getPurchases()))
+    dispatch(purchases(await contract.getPurchases()))
     dispatch(ui.fetched())
   } catch (e) {
     dispatch(ui.fetchingFailed(e))

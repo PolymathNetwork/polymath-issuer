@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { Icon } from 'carbon-components-react'
-import { etherscanTx } from 'polymath-ui'
+import { etherscanTx, TxSuccess } from 'polymath-ui'
 import moment from 'moment'
 import type { SecurityToken } from 'polymathjs/types'
 
@@ -17,6 +17,7 @@ import type { RootState } from '../../redux/reducer'
 type StateProps = {|
   token: ?SecurityToken,
   isMainnet: boolean,
+  isDeploySuccess: boolean,
 |}
 
 type DispatchProps = {|
@@ -26,6 +27,7 @@ type DispatchProps = {|
 const mapStateToProps = (state: RootState): StateProps => ({
   token: state.token.token,
   isMainnet: state.network.id === 1,
+  isDeploySuccess: state.pui.tx.success !== null,
 })
 
 const mapDispatchToProps: DispatchProps = {
@@ -36,6 +38,7 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class TokenPage extends Component<Props> {
+
   handleCompleteSubmit = () => {
     this.props.complete()
   }
@@ -63,61 +66,63 @@ class TokenPage extends Component<Props> {
   }
 
   render () {
-    const token = this.props.token
+    const { token, isDeploySuccess } = this.props
     if (!token) {
       return <NotFoundPage />
     }
-    // TODO @bshevchenko: real symbol registration tx hash https://github.com/PolymathNetwork/polymath-issuer/issues/25
+    // $FlowFixMe
+    const txSuccess = <TxSuccess className='pui-single-box-internal' />
     return (
       <DocumentTitle title={`${token.ticker} Token – Polymath`}>
         <div>
           <Progress current={token.address ? 2 : 1} />
-          {!token.address ? (
-            <div className='bx--row'>
-              <div className='bx--col-xs-7'>
-                <div className='pui-page-box'>
-                  {this.complete()}
-                </div>
-              </div>
-              <div className='bx--col-xs-5'>
-                <div className='pui-page-box'>
-                  <div className='ticker-field'>
-                    <div className='bx--form-item'>
-                      <label htmlFor='ticker' className='bx--label'>Token Symbol</label>
-                      <input
-                        type='text'
-                        name='ticker'
-                        value={token.ticker}
-                        id='ticker'
-                        readOnly
-                        className='bx--text-input bx--text__input'
-                      />
+          {!token.address || isDeploySuccess ? (
+            <div>
+              {isDeploySuccess ? txSuccess : (
+                <div className='bx--row'>
+                  <div className='bx--col-xs-7'>
+                    <div className='pui-page-box'>
+                      {this.complete()}
                     </div>
                   </div>
-                  <div className='bx--form-item'>
-                    <label htmlFor='name' className='bx--label'>Token Name</label>
-                    <p>{token.name}</p>
-                  </div>
-                  <div className='bx--form-item'>
-                    <label htmlFor='owner' className='bx--label'>Symbol Registration Transaction</label>
-                    <p>
-                      {etherscanTx(
-                        '0x0111717f6af1f7e1b2f65855ff44fc31c8cbbe55ea47852af4ea67e37fe60983',
-                        '0x0111717f6af1f7e1b2f65855ff44fc31c8cbbe55ea47852af4ea67e37fe60983'
-                      )}
-                    </p>
-                  </div>
-                  <div className='bx--form-item'>
-                    <label htmlFor='name' className='bx--label'>Symbol Registration Date</label>
-                    <p>{moment(token.timestamp).format('D MMMM, YYYY')}</p>
-                  </div>
-                  <hr />
-                  <div className='bx--form-item'>
-                    <label htmlFor='name' className='bx--label'>Issuer&apos;s ETH Address</label>
-                    <p>{token.owner}</p>
+                  <div className='bx--col-xs-5'>
+                    <div className='pui-page-box'>
+                      <div className='ticker-field'>
+                        <div className='bx--form-item'>
+                          <label htmlFor='ticker' className='bx--label'>Token Symbol</label>
+                          <input
+                            type='text'
+                            name='ticker'
+                            value={token.ticker}
+                            id='ticker'
+                            readOnly
+                            className='bx--text-input bx--text__input'
+                          />
+                        </div>
+                      </div>
+                      <div className='bx--form-item'>
+                        <label htmlFor='name' className='bx--label'>Token Name</label>
+                        <p>{token.name}</p>
+                      </div>
+                      <div className='bx--form-item'>
+                        <label htmlFor='owner' className='bx--label'>Symbol Registration Transaction</label>
+                        <p>
+                          {etherscanTx(token.txHash, token.txHash)}
+                        </p>
+                      </div>
+                      <div className='bx--form-item'>
+                        <label htmlFor='name' className='bx--label'>Symbol Registration Date</label>
+                        <p>{moment(token.timestamp).format('D MMMM, YYYY')}</p>
+                      </div>
+                      <hr />
+                      <div className='bx--form-item'>
+                        <label htmlFor='name' className='bx--label'>Issuer&apos;s ETH Address</label>
+                        <p>{token.owner}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           ) : (
             <img src='/providers.jpg' alt='Providers' style={{ marginLeft: '-55px', marginTop: '-45px' }} />

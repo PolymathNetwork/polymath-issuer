@@ -13,7 +13,6 @@ export type WhitelistState = {|
   buy: Array<number>,
   investors: Array<Investor>,
   listLength: number,
-  csvMessage: string,
   previewCSVShowing: boolean,
 |}
 
@@ -22,15 +21,8 @@ const defaultState: WhitelistState = {
   addresses: [],
   sell: [],
   buy: [],
-  investors: [{
-    address: 'No investors added yet!',
-    added: new Date(0),
-    addedBy: '',
-    from: new Date(0),
-    to: new Date(0),
-  }],
+  investors: [],
   listLength: 10,
-  csvMessage: 'Please upload a CSV file',
   previewCSVShowing: false,
 }
 
@@ -47,13 +39,11 @@ export default (state: WhitelistState = defaultState, action: Action) => {
         addresses: action.addresses,
         sell: action.sell,
         buy: action.buy,
-        csvMessage: action.csvMessage,
         previewCSVShowing: action.previewCSVShowing,
       }
     case a.UPLOAD_CSV_FAILED:
       return {
         ...state,
-        csvMessage: action.csvMessage,
       }
     case a.GET_WHITELIST:
       return {

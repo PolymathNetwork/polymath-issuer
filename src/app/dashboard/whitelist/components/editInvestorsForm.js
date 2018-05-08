@@ -15,20 +15,22 @@ class EditInvestorsForm extends Component<Props> {
   render () {
     return (
       <Form>
-        <Field
-          name='sell'
-          component={DatePickerSingleInput}
-          label='Sell Restriction Date'
-          validate={[required]}
-          placeholder='mm/dd/yyyy'
-        />
-        <Field
-          name='buy'
-          component={DatePickerSingleInput}
-          label='Buy Restriction Date'
-          validate={[required]}
-          placeholder='mm/dd/yyyy'
-        />
+        <div className='flexFixDatePicker'>
+          <Field
+            name='sell'
+            component={DatePickerSingleInput}
+            label='Sell Restriction Date'
+            validate={[required]}
+            placeholder='mm/dd/yyyy'
+          />
+          <Field
+            name='buy'
+            component={DatePickerSingleInput}
+            label='Buy Restriction Date'
+            validate={[required]}
+            placeholder='mm/dd/yyyy'
+          />
+        </div>
       </Form>
     )
   }

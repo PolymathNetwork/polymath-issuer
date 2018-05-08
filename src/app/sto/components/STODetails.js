@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable jsx-a11y/label-has-for */
 
 import React, { Component } from 'react'
 import { Button, Icon } from 'carbon-components-react'
@@ -17,19 +18,19 @@ export default class STODetails extends Component<Props> {
     const isSelect = handleUseSTO !== undefined
     const authorAddress = (
       <div className='bx--form-item'>
-        <label htmlFor='ticker' className='bx--label'>STO Author&apos;s ETH address</label>
+        <label className='bx--label'>STO Author&apos;s ETH address</label>
         <p>{item.owner}</p>
       </div>
     )
     const desc = (
       <div className='bx--form-item'>
-        <label htmlFor='ticker' className='bx--label'>Description</label>
+        <label className='bx--label'>Description</label>
         <p>{item.desc}</p>
       </div>
     )
     const verifiedByEtherscan = (
       <div className='bx--form-item'>
-        <label htmlFor='ticker' className='bx--label'>Verified by Etherscan</label>
+        <label className='bx--label'>Verified on Etherscan</label>
         {item.isVerified ? (
           <p>
             <Icon
@@ -51,9 +52,9 @@ export default class STODetails extends Component<Props> {
     )
     const securityAuditLink = (
       <div className='bx--form-item'>
-        <label htmlFor='ticker' className='bx--label'>Security Audit Link</label>
+        <label className='bx--label'>Contract Audit</label>
         <p>
-          <a href={item.securityAuditLink.url} target='_blank'>{item.securityAuditLink.title}</a>
+          <a href={item.securityAuditLink.url} target='_blank'>Link to Security Audit</a>
         </p>
       </div>
     )

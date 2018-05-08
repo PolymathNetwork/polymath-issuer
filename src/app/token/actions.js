@@ -5,7 +5,6 @@ import * as ui from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
 
 import { formName as completeFormName } from './components/CompleteTokenForm'
-import { fetchAPI } from '../offchain'
 import type { GetState } from '../../redux/reducer'
 import type { ExtractReturn } from '../../redux/helpers'
 
@@ -41,26 +40,27 @@ export const complete = () => async (dispatch: Function, getState: GetState) => 
     dispatch(fetch(token.ticker))
 
     const accountData = ui.getAccountData(getState())
-
     if (!accountData) {
       throw new Error('Not signed in')
     }
+    delete accountData.account
 
-    const emailResult = await fetchAPI({
+    const emailResult = await ui.offchainFetch({
       query: `
-        mutation ($accountData: AccountData!, $txHash: String!, $ticker: String!) {
-          withAccount(accountData: $accountData, txHash: $txHash) {
-            sendEmailTokenIssued(ticker: $ticker)
+        mutation ($account: WithAccountInput!, $input: EmailTokenIssuedInput!) {
+          withAccount(input: $account) {
+            sendEmailTokenIssued(input: $input)
           }
         }
       `,
       variables: {
-        accountData: {
-          accountJSON: accountData.accountJSON,
-          signature: accountData.signature,
+        account: {
+          accountData: accountData,
+          txHash: receipt.transactionHash,
         },
-        txHash: receipt.transactionHash,
-        ticker: token.ticker,
+        input: {
+          ticker: token.ticker,
+        },
       },
     })
 
@@ -69,12 +69,13 @@ export const complete = () => async (dispatch: Function, getState: GetState) => 
       console.error('sendEmailTokenIssued failed:', emailResult.errors)
     }
 
-    dispatch(ui.notify(
-      `${token.ticker} token was successfully issued`,
-      true,
-      'We\'ve sent you an email. Check your inbox.',
-      ui.etherscanTx(receipt.transactionHash)
-    ))
+    dispatch(
+      ui.txSuccess(
+        'Token Was Issued Successfully',
+        'Choose your providers',
+        `/dashboard/${token.ticker}`
+      )
+    )
   } catch (e) {
     dispatch(ui.txFailed(e))
   }
