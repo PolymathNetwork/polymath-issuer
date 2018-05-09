@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { Search } from 'carbon-components-react'
 import type { SecurityToken, STOFactory } from 'polymathjs/types'
 
+import NotFoundPage from '../../NotFoundPage'
 import Progress from '../../token/components/Progress'
 import STODetails from './STODetails'
 import { fetchFactories, useFactory } from '../actions'
@@ -48,13 +49,13 @@ class SelectSTO extends Component<Props> {
 
   render () {
     const token = this.props.token
-    if (!token || !token.address || !token.contract) {
-      return <span>Launch your token at first.</span>
+    if (!token || !token.address) {
+      return <NotFoundPage />
     }
     return (
       <DocumentTitle title={`Select ${token.ticker} STO – Polymath`}>
         <div>
-          <Progress current={3} />
+          <Progress />
           <div className='bx--row'>
             <div className='bx--col-xs-12'>
               <h1 className='pui-h1'>Security Token Offerings</h1>

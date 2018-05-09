@@ -53,17 +53,13 @@ class OverviewSTO extends Component<Props> {
     return (
       <DocumentTitle title={`${token.ticker} STO Overview – Polymath`}>
         <div>
-          <Progress current={3} />
+          <Progress />
           {this.props.isLaunchSuccess ? txSuccess : (
             <Fragment>
               <h1 className='pui-h1'>{token.ticker} STO Overview</h1><br />
               <STOStatus
-                title='Capped STO'
-                start={details.start}
-                end={details.end}
-                raised={details.raised}
-                cap={details.cap}
-                isPolyFundraise={details.isPolyFundraise}
+                details={details}
+                token={token}
               />
               <br /><br />
               <h2 className='pui-h2'>

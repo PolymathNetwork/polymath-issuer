@@ -15,7 +15,7 @@ export const register = () => async (dispatch: Function, getState: GetState) => 
       ui.txSuccess(
         'Token Symbol Was Registered Successfully',
         'Go to dashboard',
-        `/dashboard/${details.ticker}`
+        `/dashboard/${details.ticker}/providers`
       )
     )
   } catch (e) {

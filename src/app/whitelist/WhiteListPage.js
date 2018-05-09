@@ -19,7 +19,7 @@ import {
 
 import type { Address, SecurityToken } from 'polymathjs/types'
 
-import Progress from '../../token/components/Progress'
+import Progress from '../token/components/Progress'
 import {
   initialize,
   uploadCSV,
@@ -32,7 +32,7 @@ import {
 } from './actions'
 import InvestorForm from './components/addInvestorForm'
 import EditInvestorsForm from './components/editInvestorsForm'
-import BasicDropzone from './components/ReactDropZone'
+import BasicDropZone from './components/ReactDropZone'
 
 import type { WhitelistState } from './reducer'
 
@@ -314,7 +314,7 @@ class WhitelistPage extends Component<Props, State> {
     return (
       <DocumentTitle title='Whitelist – Polymath'>
         <div>
-          <Progress current={4} />
+          <Progress />
           <div className='bx--row'>
             <div className='bx--col-xs-6'>
               <ModalWrapper
@@ -331,12 +331,12 @@ class WhitelistPage extends Component<Props, State> {
                     <p className='csvModalText'>Add multiple addresses to the whitelist by uploading a comma seperated CSV file. The format should be as follows:</p>
                     <p className='csvModalText'>Column 1 - Ethereum Address</p>
                     <p className='csvModalText'>Column 2 - Date mm/dd/yyyy (date when the resale restrictions should be lifted for that address).</p>
-                    <p className='csvModalTextMini'>You can download a <a href='localhost:3000'>Sample.csv</a> file and edit it</p>
+                    <p className='csvModalTextMini'>You can download a <a href='/whitelist-sample.csv' download>Sample.csv</a> file and edit it</p>
                   </div>
                   {this.props.whitelist.previewCSVShowing ? null :
                     (
                       <div>
-                        <BasicDropzone onHandleUpload={this.props.handleUpload} />
+                        <BasicDropZone onHandleUpload={this.props.handleUpload} />
                         <FileUploaderButton
                           labelText='Upload From Desktop'
                           onChange={this.props.handleUpload}

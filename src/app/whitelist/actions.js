@@ -6,8 +6,8 @@ import type { Investor, Address } from 'polymathjs/types'
 
 import { formName as addInvestorFormName } from './components/addInvestorForm'
 import { formName as editInvestorsFormName } from './components/editInvestorsForm'
-import type { GetState } from '../../../redux/reducer'
-import type { ExtractReturn } from '../../../redux/helpers'
+import type { GetState } from '../../redux/reducer'
+import type { ExtractReturn } from '../../redux/helpers'
 
 // ac_ = actionCreator
 export const TRANSFER_MANAGER = 'dashboard/whitelist/TRANSFER_MANAGER'
