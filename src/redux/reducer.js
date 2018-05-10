@@ -4,7 +4,7 @@ import { combineReducers } from 'redux'
 import { reducer as form } from 'redux-form'
 import { reducer as network } from 'polymath-auth'
 import { reducer as pui } from 'polymath-ui'
-// import type { PUIState } from 'polymath-ui'
+import type { PUIState } from 'polymath-ui'
 import type { NetworkState } from 'polymath-auth'
 
 import providers  from '../app/providers/reducer'
@@ -33,7 +33,6 @@ export type RootState = {
   token: TokenState,
   sto: STOState,
   whitelist: WhitelistState,
-  pui: any, // TODO @bshevchenko: https://github.com/PolymathNetwork/polymath-issuer/issues/14
-}
+} & PUIState
 
 export type GetState = () => RootState

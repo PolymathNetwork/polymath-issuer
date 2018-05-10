@@ -84,7 +84,7 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
     const contract: SecurityToken = token.contract
     const values = getState().form[configureFormName].values
     const [startDate, endDate] = values['start-end']
-    await contract.setSTO(
+    const receipt = await contract.setSTO(
       factory.address,
       dateTimeFromDateAndTime(startDate, values.startTime),
       dateTimeFromDateAndTime(endDate, values.endTime),
@@ -94,6 +94,37 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
       contract.account,
     )
     dispatch(fetch())
+
+    const accountData = ui.getAccountData(getState())
+    if (!accountData) {
+      throw new Error('Not signed in')
+    }
+    delete accountData.account
+
+    const emailResult = await ui.offchainFetch({
+      query: `
+        mutation ($account: WithAccountInput!, $input: EmailSTOLaunchedInput!) {
+          withAccount(input: $account) {
+            sendEmailSTOLaunched(input: $input)
+          }
+        }
+      `,
+      variables: {
+        account: {
+          accountData: accountData,
+          txHash: receipt.transactionHash,
+        },
+        input: {
+          ticker: token.ticker,
+        },
+      },
+    })
+
+    if (emailResult.errors) {
+      // eslint-disable-next-line no-console
+      console.error('sendEmailSTOLaunched failed:', emailResult.errors)
+    }
+
     dispatch(
       ui.txSuccess(
         'STO Details Configured Successfully',

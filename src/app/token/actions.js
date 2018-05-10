@@ -38,8 +38,39 @@ export const complete = () => async (dispatch: Function, getState: GetState) => 
       ...getState().token.token,
       ...getState().form[completeFormName].values,
     }
-    await SecurityTokenRegistry.generateSecurityToken(token.name, token.ticker)
+    const receipt = await SecurityTokenRegistry.generateSecurityToken(token.name, token.ticker)
     dispatch(fetch(token.ticker))
+
+    const accountData = ui.getAccountData(getState())
+    if (!accountData) {
+      throw new Error('Not signed in')
+    }
+    delete accountData.account
+
+    const emailResult = await ui.offchainFetch({
+      query: `
+        mutation ($account: WithAccountInput!, $input: EmailTokenIssuedInput!) {
+          withAccount(input: $account) {
+            sendEmailTokenIssued(input: $input)
+          }
+        }
+      `,
+      variables: {
+        account: {
+          accountData: accountData,
+          txHash: receipt.transactionHash,
+        },
+        input: {
+          ticker: token.ticker,
+        },
+      },
+    })
+
+    if (emailResult.errors) {
+      // eslint-disable-next-line no-console
+      console.error('sendEmailTokenIssued failed:', emailResult.errors)
+    }
+
     dispatch(
       ui.txSuccess(
         'Token Was Issued Successfully',

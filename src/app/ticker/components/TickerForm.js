@@ -92,7 +92,7 @@ export default reduxForm({
     try {
       details = await TickerRegistry.getDetails(v)
     } catch (err) {
-      // eslint-disable-next-line
+      // eslint-disable-next-line no-console
       console.error('Error fetching details', err)
     }
 
