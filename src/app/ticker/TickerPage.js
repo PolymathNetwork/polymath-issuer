@@ -12,6 +12,7 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
+  Icon,
 } from 'carbon-components-react'
 
 import TickerForm, { formName } from './components/TickerForm'
@@ -22,13 +23,13 @@ type StateProps = {|
   account: ?string,
   token: Object,
   isSuccess: boolean
-|};
+|}
 
 type DispatchProps = {|
   change: (?string) => any,
   register: () => any,
   tokenData: (data: any) => any
-|};
+|}
 
 const mapStateToProps = (state): StateProps => ({
   account: state.network.account,
@@ -44,17 +45,17 @@ const mapDispatchToProps: DispatchProps = {
 
 type Props = {|
   history: RouterHistory
-|} & StateProps &
-  DispatchProps;
+|} & StateProps & DispatchProps
 
 type State = {|
-  showModal: boolean
-|};
+  isModalOpen: boolean
+|}
 
 class TickerPage extends Component<Props, State> {
+
   state = {
-    showModal: false,
-  };
+    isModalOpen: false,
+  }
 
   componentWillMount () {
     this.props.change(this.props.account)
@@ -62,16 +63,17 @@ class TickerPage extends Component<Props, State> {
   }
 
   handleSubmit = () => {
-    this.setState({ showModal: true })
-  };
+    this.setState({ isModalOpen: true })
+  }
 
   handleConfirm = () => {
+    this.setState({ isModalOpen: false })
     this.props.register()
-  };
+  }
 
   handleCancel = () => {
-    this.setState({ showModal: false })
-  };
+    this.setState({ isModalOpen: false })
+  }
 
   render () {
     const { isSuccess } = this.props
@@ -81,20 +83,29 @@ class TickerPage extends Component<Props, State> {
           <TxSuccess />
         ) : (
           <Fragment>
-            <ComposedModal open={this.state.showModal}>
+            <ComposedModal open={this.state.isModalOpen} className='pui-confirm-modal'>
               <ModalHeader
-                label='Confirmation Required'
-                title='Before you proceed with your Token Symbol Registration'
+                label='Confirmation required'
+                title={(
+                  <span>
+                    <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
+                    Before You Proceed with Your Token Symbol Reservation
+                  </span>
+                )}
               />
               <ModalBody>
                 <div className='bx--modal-content__text'>
-                  Before proceeding, please confirm that all previous
-                  information is correct and that you are not violating any
-                  trademarks. Once you hit CONFIRM, your Token Symbol
-                  registration will be sent to the blockchain and will be
-                  immutable. Any change will require that you start the process
-                  over. If you wish to review your information, please select
-                  CANCEL
+                  <p>
+                    Please confirm that all previous information is correct and that you are not
+                    violating any trademarks.
+                  </p>
+                  <p>
+                    Once you hit &laquo;CONFIRM&raquo;, your Token Symbol
+                    reservation will be sent to the blockchain and will be
+                    immutable. Any change will require that you start the process
+                    over. If you wish to review your information, please select
+                    &laquo;CANCEL&raquo;.
+                  </p>
                 </div>
               </ModalBody>
 
@@ -102,18 +113,19 @@ class TickerPage extends Component<Props, State> {
                 <Button kind='secondary' onClick={this.handleCancel}>
                   Cancel
                 </Button>
-                <Button onClick={this.handleConfirm}>Confirm</Button>
+                <Button onClick={this.handleConfirm}>Reserve Ticker</Button>
               </ModalFooter>
             </ComposedModal>
             <div className='pui-single-box'>
               <div className='pui-single-box-header'>
                 <div className='pui-single-box-header-text'>
-                  <h1 className='pui-h1'>Token symbol registration</h1>
+                  <h1 className='pui-h1'>Reserve Your Token Symbol</h1>
                   <h4 className='pui-h4'>
-                    The token symbol and name you choose will be stored on the
-                    Ethereum blockchain forever. It will also be listed on
-                    exchanges and other sites. Make sure you choose a symbol and
-                    name that helps investors recognize you.
+                    Your token symbol will be reserved for 15 days, and<br />
+                    permanently yours once you create your Token.<br />
+                    This reservation ensures that no other organization can use<br />
+                    your brand or create an identical token symbol using the<br />
+                    Polymath platform.
                   </h4>
                 </div>
                 <div className='pui-single-box-bull'>

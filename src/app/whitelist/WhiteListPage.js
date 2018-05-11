@@ -19,7 +19,7 @@ import {
 
 import type { Address, SecurityToken } from 'polymathjs/types'
 
-import Progress from '../../token/components/Progress'
+import Progress from '../token/components/Progress'
 import {
   initialize,
   uploadCSV,
@@ -32,7 +32,7 @@ import {
 } from './actions'
 import InvestorForm from './components/addInvestorForm'
 import EditInvestorsForm from './components/editInvestorsForm'
-import BasicDropzone from './components/ReactDropZone'
+import BasicDropZone from './components/ReactDropZone'
 
 import type { WhitelistState } from './reducer'
 
@@ -61,8 +61,8 @@ const {
 
 type StateProps = {|
   whitelist: WhitelistState,
-  token: SecurityToken
-|};
+  token: SecurityToken,
+|}
 
 type DispatchProps = {|
   initialize: () => any,
@@ -72,8 +72,8 @@ type DispatchProps = {|
   getWhitelist: (?Date, ?Date) => any,
   updateListLength: number => any,
   removeInvestor: (investors: Array<Address>) => any,
-  editInvestors: (investors: Array<Address>) => any
-|};
+  editInvestors: (investors: Array<Address>) => any,
+|}
 
 const mapStateToProps = (state) => ({
   whitelist: state.whitelist,
@@ -99,8 +99,8 @@ type Props = StateProps & DispatchProps;
 type State = {|
   page: number,
   editInvestorsShowing: boolean,
-  editInvestors: Array<Address>
-|};
+  editInvestors: Array<Address>,
+|}
 
 type EventData = {|
   id: string,
@@ -108,15 +108,15 @@ type EventData = {|
   added: ?string,
   addedBy: ?Address,
   from: string,
-  to: string
-|};
+  to: string,
+|}
 
 type PageChanger = {|
   page: number,
-  pageSize: number
-|};
+  pageSize: number,
+|}
 
-type DatePickerType = [Date, Date];
+type DatePickerType = [Date, Date]
 
 const dateFormat = (date: Date) =>
   date.toLocaleDateString('en', {
@@ -138,7 +138,7 @@ class WhitelistPage extends Component<Props, State> {
     page: 0,
     editInvestorsShowing: false,
     editInvestors: [],
-  };
+  }
 
   componentWillMount () {
     this.props.initialize()
@@ -149,7 +149,7 @@ class WhitelistPage extends Component<Props, State> {
     this.setState({
       page: pc.page - 1,
     })
-  };
+  }
 
   handleDatePicker = (picker: DatePickerType) => {
     if (picker.length === 2) {
@@ -158,7 +158,7 @@ class WhitelistPage extends Component<Props, State> {
       })
       this.props.getWhitelist(picker[0], picker[1])
     }
-  };
+  }
 
   handleEditInvestors = (dataTableRow: Array<Object>) => {
     const addresses = []
@@ -169,35 +169,35 @@ class WhitelistPage extends Component<Props, State> {
       editInvestorsShowing: true,
       editInvestors: addresses,
     })
-  };
+  }
 
   handleRequestSubmit = () => {
     this.props.editInvestors(this.state.editInvestors)
     this.setState({
       editInvestorsShowing: false,
     })
-  };
+  }
 
   handleRequestClose = () => {
     this.setState({
       editInvestorsShowing: false,
     })
-  };
+  }
 
   onHandleInvestorSubmit = () => {
     this.props.singleSubmit()
     return true // Must return true, for the component from carbon to work
-  };
+  }
 
   // This is used to display the garbage cans in the table
   checkGarbageCell = (index) => {
     if (index === 4) return true
-  };
+  }
 
   // This is used to add etherscan links on the addressed in the table
   checkAddressCell = (index) => {
     if (index === 0 || index === 2) return true
-  };
+  }
 
   // renders the list by making it date strings and splitting up in pages, at the start of the render function
   paginationRendering () {
@@ -235,12 +235,12 @@ class WhitelistPage extends Component<Props, State> {
       addresses.push(dataTableRow[i].cells[0].value)
     }
     this.props.removeInvestor(addresses)
-  };
+  }
 
   onHandleMultiSubmit = () => {
     this.props.multiSubmit()
     return true // Must return true, for the component from carbon to work
-  };
+  }
 
   dataTableRender = ({
     rows,
@@ -333,14 +333,14 @@ class WhitelistPage extends Component<Props, State> {
         </TableBody>
       </Table>
     </TableContainer>
-  );
+  )
 
   render () {
     const paginatedRows = this.paginationRendering()
     return (
       <DocumentTitle title='Whitelist – Polymath'>
         <div>
-          <Progress current={4} />
+          <Progress />
           <div className='bx--row'>
             <div className='bx--col-xs-6'>
               <ModalWrapper
@@ -358,7 +358,7 @@ class WhitelistPage extends Component<Props, State> {
                   <div>
                     <p className='csvModalText'>
                       Add multiple addresses to the whitelist by uploading a
-                      comma seperated CSV file. The format should be as follows:
+                      comma separated CSV file. The format should be as follows:
                     </p>
                     <p className='csvModalText'>Column 1 - Ethereum Address</p>
                     <p className='csvModalText'>
@@ -366,7 +366,7 @@ class WhitelistPage extends Component<Props, State> {
                       restrictions should be lifted for that address).
                     </p>
                     <p className='csvModalTextMini'>
-                      You can download a <a href='localhost:3000'>Sample.csv</a>{' '}
+                      You can download a <a href='/whitelist-sample.csv' download>Sample.csv</a>
                       file and edit it
                     </p>
                     <div
@@ -376,18 +376,18 @@ class WhitelistPage extends Component<Props, State> {
                     >
                       <div className='bx--inline-notification__details'>
                         <h3 className='bx--inline-notification__title'>
-                          REMINDER:{' '}
+                          REMINDER:
                         </h3>
                         <p className='bx--inline-notification__subtitle'>
                           Investors must be approved before they are added to
-                          the whitelist
+                          the whitelist.
                         </p>
                       </div>
                     </div>
                   </div>
                   {this.props.whitelist.previewCSVShowing ? null : (
                     <div>
-                      <BasicDropzone onHandleUpload={this.props.handleUpload} />
+                      <BasicDropZone onHandleUpload={this.props.handleUpload} />
                       <FileUploaderButton
                         labelText='Upload From Desktop'
                         onChange={this.props.handleUpload}

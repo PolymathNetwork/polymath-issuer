@@ -21,12 +21,12 @@ import type { RootState } from '../../../redux/reducer'
 type StateProps = {|
   token: ?SecurityToken,
   factory: ?STOFactory
-|};
+|}
 
 type DispatchProps = {|
   configure: () => any,
   goBack: () => any
-|};
+|}
 
 const mapStateToProps = (state: RootState): StateProps => ({
   token: state.token.token,
@@ -38,32 +38,32 @@ const mapDispatchToProps: DispatchProps = {
   goBack,
 }
 
-type Props = {||} & StateProps & DispatchProps;
+type Props = {||} & StateProps & DispatchProps
 
 type State = {|
-  showModal: boolean,
-|};
+  isModalOpen: boolean,
+|}
 
 class ConfigureSTO extends Component<Props, State> {
   state = {
-    showModal: false,
-  };
+    isModalOpen: false,
+  }
 
   handleSubmit = () => {
-    this.setState({ showModal: true })
-  };
+    this.setState({ isModalOpen: true })
+  }
 
   handleGoBack = () => {
     this.props.goBack()
-  };
+  }
 
   handleConfirm = () => {
     this.props.configure()
-  };
+  }
 
   handleCancel = () => {
-    this.setState({ showModal: false })
-  };
+    this.setState({ isModalOpen: false })
+  }
 
   render () {
     const { token, factory } = this.props
@@ -75,9 +75,9 @@ class ConfigureSTO extends Component<Props, State> {
         <div>
           <div className='bx--row'>
             <div className='bx--col-xs-12'>
-              <ComposedModal open={this.state.showModal}>
+              <ComposedModal open={this.state.isModalOpen}>
                 <ModalHeader
-                  label='Confirmation Required'
+                  label='Confirmation required'
                   title='Before you launch your security token offering'
                 />
                 <ModalBody>

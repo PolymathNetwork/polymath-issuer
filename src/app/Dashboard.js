@@ -4,11 +4,12 @@ import React, { Component } from 'react'
 import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
 // eslint-disable-next-line no-unused-vars
-import { Sidebar, icoBriefcase, icoInbox, icoHandshake, icoHelp } from 'polymath-ui'
+import { Sidebar, icoBriefcase, icoInbox, icoHandshake, icoHelp, icoWhitelist } from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
 
 import NotFoundPage from './NotFoundPage'
 import { fetch as fetchToken } from './token/actions'
+import { fetchProviders } from './providers/actions'
 import type { RootState } from '../redux/reducer'
 
 type StateProps = {|
@@ -18,6 +19,7 @@ type StateProps = {|
 
 type DispatchProps = {|
   fetchToken: (ticker: string) => any,
+  fetchProviders: (ticker: string) => any,
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -27,6 +29,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
 
 const mapDispatchToProps: DispatchProps = {
   fetchToken,
+  fetchProviders,
 }
 
 type Props = {|
@@ -40,8 +43,10 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class Dashboard extends Component<Props> {
+
   componentWillMount () {
     this.props.fetchToken(this.props.match.params.id)
+    this.props.fetchProviders(this.props.match.params.id)
   }
 
   render () {
@@ -58,6 +63,12 @@ class Dashboard extends Component<Props> {
     const location = window.location.href
     const topSidebarItems = [
       {
+        title: 'Providers',
+        icon: icoHandshake,
+        to: `${tokenUrl}/providers`,
+        isActive: location.slice(-10) === '/providers',
+      },
+      {
         title: 'Token',
         icon: icoBriefcase,
         to: tokenUrl,
@@ -71,7 +82,7 @@ class Dashboard extends Component<Props> {
       },
       {
         title: 'Whitelist',
-        icon: icoHandshake,
+        icon: icoWhitelist,
         to: `${tokenUrl}/whitelist`,
         isActive: location.slice(-10) === '/whitelist',
       },

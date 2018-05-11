@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid, jsx-a11y/href-no-hash */
 // @flow
 
 import React, { Component } from 'react'
@@ -37,7 +38,7 @@ class TickerForm extends Component<Props> {
           name='name'
           component={TextInput}
           label={
-            <Tooltip triggerText='Token name'>
+            <Tooltip triggerText='Token Name'>
               <p className='bx--tooltip__label'>
                 Token name
               </p>
@@ -59,8 +60,8 @@ class TickerForm extends Component<Props> {
                 Issuer&apos;s ETH Address
               </p>
               <p>
-                This the ETH address of the owner for the token that is provided by MetaMask.
-                Only this account will be able to access the dashboard and finish the token deployment address.
+                This ETH address was read from your MetaMask. Only this account will be able to access dashboard and
+                complete token issuance and STO.
               </p>
             </Tooltip>
           }
@@ -68,10 +69,10 @@ class TickerForm extends Component<Props> {
           validate={[required, ethereumAddress]}
         />
         <Button type='submit'>
-          Register token symbol
+          Reserve token symbol
         </Button>
         <p className='pui-input-hint'>
-          By registering your token symbol with Polymath you agree to our Terms and Conditions
+          By registering your token symbol with Polymath you agree to our <a href='#'>Terms and Conditions</a>.
         </p>
       </Form>
     )
@@ -92,7 +93,7 @@ export default reduxForm({
     try {
       details = await TickerRegistry.getDetails(v)
     } catch (err) {
-      // eslint-disable-next-line
+      // eslint-disable-next-line no-console
       console.error('Error fetching details', err)
     }
 

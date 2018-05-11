@@ -16,12 +16,12 @@ type StateProps = {|
   token: ?SecurityToken,
   details: ?STODetails,
   purchases: Array<STOPurchase>,
-  isLaunchSuccess: boolean
-|};
+  isLaunchSuccess: boolean,
+|}
 
 type DispatchProps = {|
   fetchPurchases: () => any
-|};
+|}
 
 const mapStateToProps = (state: RootState): StateProps => ({
   token: state.token.token,
@@ -34,9 +34,11 @@ const mapDispatchToProps: DispatchProps = {
   fetchPurchases,
 }
 
-type Props = {||} & StateProps & DispatchProps;
+type Props = {|
+|} & StateProps & DispatchProps
 
 class OverviewSTO extends Component<Props> {
+
   componentWillMount () {
     this.props.fetchPurchases()
   }
@@ -51,7 +53,7 @@ class OverviewSTO extends Component<Props> {
     return (
       <DocumentTitle title={`${token.ticker} STO Overview – Polymath`}>
         <div>
-          <Progress current={3} />
+          <Progress />
           {this.props.isLaunchSuccess ? (
             txSuccess
           ) : (

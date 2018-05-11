@@ -4,19 +4,22 @@ import { combineReducers } from 'redux'
 import { reducer as form } from 'redux-form'
 import { reducer as network } from 'polymath-auth'
 import { reducer as pui } from 'polymath-ui'
-// import type { PUIState } from 'polymath-ui'
+import type { PUIState } from 'polymath-ui'
 import type { NetworkState } from 'polymath-auth'
 
+import providers  from '../app/providers/reducer'
 import token from '../app/token/reducer'
 import sto from '../app/sto/reducer'
-import whitelist from '../app/dashboard/whitelist/reducer'
-import type { WhitelistState } from '../app/dashboard/whitelist/reducer'
+import whitelist from '../app/whitelist/reducer'
+import type { ProvidersState } from '../app/providers/reducer'
 import type { TokenState } from '../app/token/reducer'
 import type { STOState } from '../app/sto/reducer'
+import type { WhitelistState } from '../app/whitelist/reducer'
 
 export default combineReducers({
   network,
   form,
+  providers,
   token,
   sto,
   pui,
@@ -26,10 +29,11 @@ export default combineReducers({
 export type RootState = {
   network: NetworkState,
   form: any,
+  providers: ProvidersState,
   token: TokenState,
   sto: STOState,
   whitelist: WhitelistState,
-  pui: any, // TODO @bshevchenko: https://github.com/PolymathNetwork/polymath-issuer/issues/14
+  pui: PUIState,
 }
 
 export type GetState = () => RootState
