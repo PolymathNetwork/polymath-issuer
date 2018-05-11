@@ -116,8 +116,6 @@ class ConfigureSTOForm extends Component<Props> {
 
 export default reduxForm({
   form: formName,
-  destroyOnUnmount: false,
-  forceUnregisterOnUnmount: true,
   initialValues: {
     startTime: {
       timeString: '',

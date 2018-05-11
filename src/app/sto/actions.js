@@ -128,8 +128,8 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
     dispatch(
       ui.txSuccess(
         'STO Details Configured Successfully',
-        'Go to STO overview',
-        `/dashboard/${token.ticker}/sto`
+        'Whitelist your investors',
+        `/dashboard/${token.ticker}/whitelist`
       )
     )
   } catch (e) {

@@ -9,6 +9,7 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
+  Icon,
 } from 'carbon-components-react'
 import type { SecurityToken, STOFactory } from 'polymathjs/types'
 
@@ -45,6 +46,7 @@ type State = {|
 |}
 
 class ConfigureSTO extends Component<Props, State> {
+
   state = {
     isModalOpen: false,
   }
@@ -75,36 +77,35 @@ class ConfigureSTO extends Component<Props, State> {
         <div>
           <div className='bx--row'>
             <div className='bx--col-xs-12'>
-              <ComposedModal open={this.state.isModalOpen}>
+              <ComposedModal open={this.state.isModalOpen} className='pui-confirm-modal'>
                 <ModalHeader
                   label='Confirmation required'
-                  title='Before you launch your security token offering'
+                  title={(
+                    <span>
+                      <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
+                      Before You Launch Your Security Token Offering
+                    </span>
+                  )}
                 />
                 <ModalBody>
                   <div className='bx--modal-content__text'>
-                    Before you confirm this transaction, please remember the
-                    following:
-                    <ul className='bx--list--unordered'>
-                      <li className='bx--list__item'>
-                        Once submitted to the blockchain, the dates for your
-                        offering cannot be changed.
-                        <ul className='bx--list--nested'>
-                          <li className='bx--list__item'>
-                            Please confirm dates with your Advisor and Legal
-                            providers before you click on CONFIRM
-                          </li>
-                        </ul>
-                      </li>
-                      <li className='bx--list__item'>
-                        Investors must be added to the whitelist before or while
-                        the STO is live, so they can participate to your
-                        fundraise
-                      </li>
-                      <li className='bx--list__item'>
-                        All necessary documentation must be posted on your
-                        Securities Offering Site
-                      </li>
-                    </ul>
+                    <p>
+                      Once submitted to the blockchain, the dates for your
+                      offering cannot be changed.
+                    </p>
+                    <p>
+                      Please confirm dates with your Advisor and Legal
+                      providers before you click on &laquo;CONFIRM&raquo;.
+                    </p>
+                    <p>
+                      Investors must be added to the whitelist before or while
+                      the STO is live, so they can participate to your
+                      fundraise.
+                    </p>
+                    <p>
+                      All necessary documentation must be posted on your
+                      Securities Offering Site.
+                    </p>
                   </div>
                 </ModalBody>
 
@@ -112,7 +113,7 @@ class ConfigureSTO extends Component<Props, State> {
                   <Button kind='secondary' onClick={this.handleCancel}>
                     Cancel
                   </Button>
-                  <Button onClick={this.handleConfirm}>Confirm</Button>
+                  <Button onClick={this.handleConfirm}>LAUNCH</Button>
                 </ModalFooter>
               </ComposedModal>
               <Button
