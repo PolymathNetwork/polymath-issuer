@@ -16,12 +16,12 @@ type StateProps = {|
   token: ?SecurityToken,
   details: ?STODetails,
   purchases: Array<STOPurchase>,
-  isLaunchSuccess: boolean,
-|}
+  isLaunchSuccess: boolean
+|};
 
 type DispatchProps = {|
   fetchPurchases: () => any
-|}
+|};
 
 const mapStateToProps = (state: RootState): StateProps => ({
   token: state.token.token,
@@ -34,11 +34,9 @@ const mapDispatchToProps: DispatchProps = {
   fetchPurchases,
 }
 
-type Props = {|
-|} & StateProps & DispatchProps
+type Props = {||} & StateProps & DispatchProps;
 
 class OverviewSTO extends Component<Props> {
-
   componentWillMount () {
     this.props.fetchPurchases()
   }
@@ -54,21 +52,16 @@ class OverviewSTO extends Component<Props> {
       <DocumentTitle title={`${token.ticker} STO Overview – Polymath`}>
         <div>
           <Progress current={3} />
-          {this.props.isLaunchSuccess ? txSuccess : (
+          {this.props.isLaunchSuccess ? (
+            txSuccess
+          ) : (
             <Fragment>
-              <h1 className='pui-h1'>{token.ticker} STO Overview</h1><br />
-              <STOStatus
-                title='Capped STO'
-                start={details.start}
-                end={details.end}
-                raised={details.raised}
-                cap={details.cap}
-                isPolyFundraise={details.isPolyFundraise}
-              />
-              <br /><br />
-              <h2 className='pui-h2'>
-                List of Investors
-              </h2>
+              <h1 className='pui-h1'>{token.ticker} STO Overview</h1>
+              <br />
+              <STOStatus details={details} token={token} />
+              <br />
+              <br />
+              <h2 className='pui-h2'>List of Investors</h2>
               <InvestorTable rows={purchases} />
               <p>&nbsp;</p>
             </Fragment>
