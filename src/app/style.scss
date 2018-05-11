@@ -146,18 +146,31 @@
   }
 
   .bx--tabs__nav-item {
-    padding: 16px 100px 36px 24px;
+    padding: 16px 24px 36px 24px;
+    width: 200px;
 
     .bx--tabs__nav-link {
       font-size: 16px;
       font-weight: 600;
       color: #5A6872;
+
+      div {
+        display: inline-flex;
+        align-items: center;
+      }
     }
 
     &:hover {
       .bx--tabs__nav-link {
         color: #252E6A !important;
       }
+    }
+
+    .bx--tag {
+      font-size: 10px;
+      font-weight: 300;
+      background-color: #3D70B2;
+      color: white;
     }
   }
 
@@ -252,6 +265,10 @@
   }
 }
 
+.tag-my-own {
+  background-color: #5596E6 !important;
+}
+
 .providers-controls {
   float: right;
 
@@ -266,6 +283,13 @@
 
   button {
     margin-top: 0;
+  }
+}
+
+.providers-apply-modal {
+  .bx--modal-container {
+    width: 736px;
+    max-width: 736px;
   }
 }
 
@@ -287,4 +311,8 @@
   .bx--time-picker__select {
     min-width: 4rem;
   }
+}
+
+.bx--fieldset {
+  margin-bottom: 0;
 }

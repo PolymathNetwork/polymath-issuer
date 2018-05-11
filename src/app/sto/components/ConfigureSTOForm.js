@@ -8,7 +8,7 @@ import {
   TextInput,
   SelectInput,
   DatePickerRangeInput,
-  TimePicker,
+  TimePickerInput,
   timeZoneName,
 } from 'polymath-ui'
 import {
@@ -45,13 +45,13 @@ class ConfigureSTOForm extends Component<Props> {
         <div className='time-pickers-container'>
           <Field
             name='startTime'
-            component={TimePicker}
+            component={TimePickerInput}
             label='Start Time'
             validate={[twelveHourTime]}
           />
           <Field
             name='endTime'
-            component={TimePicker}
+            component={TimePickerInput}
             label={
               <Tooltip triggerText='End Time'>
                 <p className='bx--tooltip__label'>

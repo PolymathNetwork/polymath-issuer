@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { ProgressIndicator, ProgressStep } from 'carbon-components-react'
 import type { SecurityToken } from 'polymathjs/types'
 
-import { complete } from '../actions'
 import type { RootState } from '../../../redux/reducer'
 import type { ServiceProvider } from '../../providers/data'
 
@@ -15,22 +14,14 @@ type StateProps = {|
   providers: ?Array<ServiceProvider>,
 |}
 
-type DispatchProps = {|
-  complete: () => any,
-|}
-
 const mapStateToProps = (state: RootState): StateProps => ({
   providers: state.providers.data,
   token: state.token.token,
   sto: state.sto.contract,
 })
 
-const mapDispatchToProps: DispatchProps = {
-  complete,
-}
-
 type Props = {|
-|} & StateProps & DispatchProps
+|} & StateProps
 
 class Progress extends Component<Props> {
 
@@ -80,4 +71,4 @@ class Progress extends Component<Props> {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Progress)
+export default connect(mapStateToProps)(Progress)

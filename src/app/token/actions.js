@@ -29,7 +29,7 @@ export const fetch = (ticker: string) => async (dispatch: Function) => {
   dispatch(fetchSTO())
 }
 
-export const complete = () => async (dispatch: Function, getState: GetState) => {
+export const complete = (isDivisible: boolean) => async (dispatch: Function, getState: GetState) => {
   const token = getState().token.token
   // $FlowFixMe
   dispatch(ui.txStart(`Issuing ${token.ticker} token...`))
@@ -38,7 +38,7 @@ export const complete = () => async (dispatch: Function, getState: GetState) => 
       ...getState().token.token,
       ...getState().form[completeFormName].values,
     }
-    const receipt = await SecurityTokenRegistry.generateSecurityToken(token.name, token.ticker)
+    const receipt = await SecurityTokenRegistry.generateSecurityToken(token.name, token.ticker, isDivisible ? 18 : 0)
     dispatch(fetch(token.ticker))
 
     const accountData = ui.getAccountData(getState())

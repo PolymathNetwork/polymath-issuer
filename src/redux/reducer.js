@@ -33,6 +33,7 @@ export type RootState = {
   token: TokenState,
   sto: STOState,
   whitelist: WhitelistState,
-} & PUIState
+  pui: PUIState,
+}
 
 export type GetState = () => RootState

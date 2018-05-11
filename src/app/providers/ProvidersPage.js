@@ -4,7 +4,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
-import { Tabs, Tab, Icon, Checkbox, Button } from 'carbon-components-react'
+import {
+  Tabs,
+  Tab,
+  Icon,
+  Checkbox,
+  Button,
+  ComposedModal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from 'carbon-components-react'
 import type { SecurityToken } from 'polymathjs/types'
 import type { RouterHistory } from 'react-router-dom'
 
@@ -44,6 +54,7 @@ type State = {|
   selectAll: boolean,
   isApply: boolean,
   catName: string,
+  isModalOpen: boolean,
 |}
 
 type Props = {|
@@ -58,6 +69,13 @@ class ProvidersPage extends Component<Props, State> {
     selectAll: false,
     isApply: false,
     catName: '',
+    isModalOpen: false,
+  }
+
+  componentWillMount = () => {
+    if (this.state.catName === '') {
+      this.setState({ catName: categories[0].title })
+    }
   }
 
   handleTabClick = (tabSelected, catName) => {
@@ -108,17 +126,58 @@ class ProvidersPage extends Component<Props, State> {
 
   handleApply = () => {
     this.props.applyProviders(this.state.selected)
-    this.setState({ isApply: false, selected: [], selectAll: false })
+    this.next()
   }
 
-  handleIHaveMyOwn = () => {
-    this.props.iHaveMyOwnProviders(this.state.tabSelected)
+  handleIHaveMyOwn = (cat: ?number) => {
+    this.props.iHaveMyOwnProviders(cat || this.state.tabSelected)
+    this.next()
   }
 
   handleCreateToken = () => {
-    this.handleIHaveMyOwn()
+    this.setState({ isModalOpen: true })
+  }
+
+  handleConfirmCreate = () => {
+    this.setState({ isModalOpen: false })
+    this.handleIHaveMyOwn(0)
     // $FlowFixMe
     this.props.history.push('/dashboard/' + this.props.token.ticker)
+  }
+
+  handleCancelCreate = () => {
+    this.setState({ isModalOpen: false })
+  }
+
+  applied = (cat: number): number => {
+    const { providers } = this.props
+    let applied = 0
+    let isPassed = false
+    // $FlowFixMe
+    for (let p: ServiceProvider of providers) {
+      if (p.cat === cat && p.progress) {
+        isPassed = true
+        if (p.progress.isApplied) {
+          applied++
+        }
+      }
+    }
+    return isPassed ? applied : -1
+  }
+
+  next = () => {
+    let tabSelected = this.state.tabSelected
+    const isLastCat = tabSelected + 1 === categories.length
+    if (isLastCat) {
+      tabSelected = 0
+      // $FlowFixMe
+      if (!this.props.token.address) {
+        this.handleCreateToken()
+      }
+    } else {
+      tabSelected++
+    }
+    this.setState({ isApply: false, selected: [], selectAll: false, tabSelected })
   }
 
   render () {
@@ -126,13 +185,35 @@ class ProvidersPage extends Component<Props, State> {
     if (!token || !providers) {
       return <NotFoundPage />
     }
-    if (this.state.catName === '') {
-      this.setState({ catName: categories[0].title })
-    }
     return (
       <DocumentTitle title={`${token.ticker} Providers – Polymath`}>
         <div>
           <Progress />
+          <ComposedModal open={this.state.isModalOpen} className='pui-confirm-modal'>
+            <ModalHeader
+              title={(
+                <span>
+                  <Icon name='warning--glyph' fill='#EFC100' width='24' height='24' />&nbsp;
+                  Before You Proceed
+                </span>
+              )}
+            />
+            <ModalBody>
+              <div className='bx--modal-content__text'>
+                <p>
+                  Please make sure you have received sufficient information from one of the Advisors or the Legal
+                  firms listed below or your own advisor before you proceed with the token creation.
+                </p>
+              </div>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button kind='secondary' onClick={this.handleCancelCreate}>
+                Cancel
+              </Button>
+              <Button onClick={this.handleConfirmCreate}>Create Token</Button>
+            </ModalFooter>
+          </ComposedModal>
           <div className='remark'>
             <span>Data Privacy</span>
             None of your data entered in the application form(s) is stored on Polymath servers or shared with any
@@ -148,23 +229,36 @@ class ProvidersPage extends Component<Props, State> {
             to select all at the same time nor have any obligation to select any of the providers below.
             You can always elect to use your own.
           </h3>
-          <Button
-            kind='secondary'
-            onClick={this.handleCreateToken}
-            style={{ float: 'right', marginTop: '47px', position: 'relative', zIndex: 9 }}
-          >
-            Create Your Token
-          </Button>
+          {!token.address ? (
+            <Button
+              kind='secondary'
+              onClick={() => this.handleCreateToken()}
+              style={{ float: 'right', marginTop: '47px', position: 'relative', zIndex: 9 }}
+            >
+              Create Your Token Now
+            </Button>
+          ) : ''}
           <Tabs selected={this.state.tabSelected}>
             {categories.map((cat: SPCategory) => (
               <Tab
                 key={cat.id}
-                label={cat.title}
+                label={(
+                  <div>
+                    {cat.title}&nbsp;
+                    {this.applied(cat.id) !== -1 ? (
+                      <span className={'bx--tag' + (!this.applied(cat.id) ? ' tag-my-own' : '')}>
+                        {this.applied(cat.id) ? this.applied(cat.id) + ' Applied' : 'I Have My Own'}
+                      </span>
+                    ) : ''}
+                  </div>
+                )}
                 onClick={() => this.handleTabClick(cat.id, cat.title)}
                 href={'#' + cat.id}
               >
                 <div>
-                  <h2 className='pui-h2'>{cat.title}</h2>
+                  <h2 className='pui-h2'>
+                    {cat.title}
+                  </h2>
                   <h4 className='pui-h4' style={{ width: '721px', float: 'left' }}>{cat.desc}</h4>
                   <div className='providers-controls'>
                     <Checkbox
@@ -179,7 +273,7 @@ class ProvidersPage extends Component<Props, State> {
                     >
                       Apply to selected
                     </Button>
-                    <Button kind='secondary' onClick={this.handleIHaveMyOwn}>I have my own</Button>
+                    <Button kind='secondary' onClick={() => this.handleIHaveMyOwn(cat.id)}>I have my own</Button>
                   </div>
                   <div className='pui-clearfix' />
                   <div className='providers pui-no-select'>

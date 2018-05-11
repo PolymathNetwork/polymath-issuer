@@ -14,21 +14,26 @@ type Props = {|
 
 export default class ApplyModal extends Component<Props> {
 
+  handleSubmit = (e: Object) => {
+    e.preventDefault()
+    this.props.onSubmit()
+  }
+
   render () {
-    const { isOpen, catName, onClose, onSubmit } = this.props
+    const { isOpen, catName, onClose } = this.props
     return (
       <Modal
         open={isOpen}
         onRequestClose={onClose}
-        onRequestSubmit={onSubmit}
         modalHeading={'Apply to ' + catName + ' Providers'}
-        primaryButtonText='Submit'
-        secondaryButtonText='Cancel'
+        passiveModal
+        className='providers-apply-modal'
       >
         <h4 className='pui-h4'>
           The information you enter below will be sent to the {catName} Providers your selected.
         </h4>
-        <ApplyForm onSubmit={onSubmit} />
+        <br /><br />
+        <ApplyForm onSubmit={this.handleSubmit} />
       </Modal>
     )
   }

@@ -7,7 +7,7 @@ type Props = {|
   onHandleUpload: Function
 |}
 
-//Doing this to override the basic dropzone look
+// Doing this to override the basic dropzone look
 const dropzoneStyle = {
   'height': '100%',
   'width': '100%',
