@@ -46,6 +46,7 @@ class CompleteTokenForm extends Component<Props, State> {
           <RadioButtonGroup
             onChange={this.handleChange}
             name='radio-button-group'
+            defaultSelected='0'
           >
             <RadioButton
               value='1'
@@ -56,7 +57,6 @@ class CompleteTokenForm extends Component<Props, State> {
               value='0'
               labelText='Indivisible'
               id='radio-indivisible'
-              defaultChecked
             />
           </RadioButtonGroup>
         </FormGroup>

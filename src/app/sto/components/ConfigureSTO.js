@@ -60,6 +60,7 @@ class ConfigureSTO extends Component<Props, State> {
   }
 
   handleConfirm = () => {
+    this.setState({ isModalOpen: false })
     this.props.configure()
   }
 
