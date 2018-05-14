@@ -28,12 +28,12 @@ export default combineReducers({
 
 export type RootState = {
   network: NetworkState,
-  form: any,
   providers: ProvidersState,
   token: TokenState,
   sto: STOState,
   whitelist: WhitelistState,
   pui: PUIState,
+  form: any,
 }
 
 export type GetState = () => RootState
