@@ -16,6 +16,7 @@ export type ServiceProvider = {|
   desc: string,
   progress?: SPProgress,
   disclosure?: string,
+  isToBeAnnounced?: boolean,
 |}
 
 export type SPCategory = {|
@@ -60,14 +61,14 @@ export const categories: Array<SPCategory> = [
 const providers: Array<ServiceProvider> = [
 
   // ADVISORY
-  {
-    id: 0,
-    cat: 0,
-    title: 'Above Board',
-    logo: '/providers/advisory/aboveboard.png',
-    desc: 'Enhance the collaboration between issuers and investors with the value of security rights, the engagement ' +
-    'of token economics, control of code, and the scope of global blockchains.',
-  },
+  // {
+  //   id: 0,
+  //   cat: 0,
+  //   title: 'Above Board',
+  //   logo: '/providers/advisory/aboveboard.png',
+  //   desc: 'Enhance the collaboration between issuers and investors with the value of security rights, the engagement ' +
+  //   'of token economics, control of code, and the scope of global blockchains.',
+  // },
   {
     id: 1,
     cat: 0,
@@ -121,6 +122,7 @@ const providers: Array<ServiceProvider> = [
     desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et ' +
     'dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea ' +
     'commodo consequat.',
+    isToBeAnnounced: true,
   },
   {
     id: 7,
@@ -130,6 +132,7 @@ const providers: Array<ServiceProvider> = [
     desc: 'FisherBroyles, LLP is a full-service law firm for the twenty-first century. Our Law Firm 2.0® business ' +
     'model prioritizes the highest quality of legal services by partners who have the most relevant expertise, while ' +
     'our structure maximizes efficiency, responsiveness, and value.',
+    isToBeAnnounced: true,
   },
   {
     id: 8,
@@ -146,6 +149,7 @@ const providers: Array<ServiceProvider> = [
     logo: '/providers/legal/paul-hastings.png',
     desc: 'Founded in 1951, Paul Hastings has grown strategically to anticipate and respond to our clients\' needs in ' +
     'markets across the globe. We have a strong presence throughout Asia, Europe, Latin America, and the U.S.',
+    isToBeAnnounced: true,
   },
   {
     id: 10,
@@ -154,6 +158,7 @@ const providers: Array<ServiceProvider> = [
     logo: '/providers/legal/aird-berlis.png',
     desc: 'As a leading Canadian law firm with a focus on all principal areas of business law, we advise on a diverse ' +
     'range of transactional and litigation matters for clients ranging from startups to multinational corporations.',
+    isToBeAnnounced: true,
   },
 
   // KYC/AML
@@ -191,9 +196,10 @@ const providers: Array<ServiceProvider> = [
     cat: 3,
     title: 'Taurus Vision',
     logo: '/providers/marketing/taurus.png',
-    desc: 'Taurus Vision specializes in identifying your unique selling points and builds a full-service marketing ' +
+    desc: 'Taurus Visiwon specializes in identifying your unique selling points and builds a full-service marketing ' +
     '& PR strategy around them. CONTENT & MARKETING. Working as an organic part of your team, Taurus Vision will ' +
-    'assist you in formulating and executing a full go-to market strategy. ',
+    'assist you in formulating and executing a full go-to market strategy.',
+    isToBeAnnounced: true,
   },
 ]
 
@@ -201,6 +207,13 @@ export const getProviders = () => {
   providers.sort((a: ServiceProvider, b: ServiceProvider) => {
     const textA = a.title.toUpperCase()
     const textB = b.title.toUpperCase()
+    if (a.isToBeAnnounced && b.isToBeAnnounced) {
+      return 0
+    } else if (a.isToBeAnnounced) {
+      return 1
+    } else if (b.isToBeAnnounced) {
+      return -1
+    }
     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
   })
   return providers

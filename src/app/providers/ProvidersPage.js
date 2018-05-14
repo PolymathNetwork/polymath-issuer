@@ -88,7 +88,7 @@ class ProvidersPage extends Component<Props, State> {
   }
 
   handleProviderClick = (provider: ServiceProvider) => {
-    if (provider.progress && provider.progress.isApplied) {
+    if ((provider.progress && provider.progress.isApplied) || provider.isToBeAnnounced) {
       return
     }
     const { selected } = this.state
@@ -108,7 +108,7 @@ class ProvidersPage extends Component<Props, State> {
     if (isChecked) {
       // $FlowFixMe
       for (let p: ServiceProvider of providers) {
-        if (p.cat === this.state.tabSelected && (!p.progress || !p.progress.isApplied)) {
+        if (p.cat === this.state.tabSelected && (!p.progress || !p.progress.isApplied) && !p.isToBeAnnounced) {
           selected.push(p.id)
         }
       }
@@ -285,7 +285,8 @@ class ProvidersPage extends Component<Props, State> {
                         className={
                           'provider' +
                           (this.state.selected.includes(p.id) ? ' provider-selected' : '') +
-                          (p.progress && p.progress.isApplied ? ' provider-applied' : '')
+                          (p.progress && p.progress.isApplied ? ' provider-applied' : '') +
+                          (p.isToBeAnnounced ? ' provider-to-be-announced' : '')
                         }
                       >
                         {p.progress && p.progress.isApplied ? (
@@ -298,8 +299,8 @@ class ProvidersPage extends Component<Props, State> {
                           </div>
                         ) : ''}
                         <div className='provider-img'><img src={p.logo} alt={p.title} /></div>
-                        <h3 className='pui-h3'>{p.title}</h3>
-                        <p>{p.desc}</p>
+                        <h3 className='pui-h3'>{p.isToBeAnnounced ? 'SOON...' : p.title}</h3>
+                        <p>{p.isToBeAnnounced ? 'To Be Announced' : p.desc}</p>
                         {p.disclosure ? (
                           <div className='remark'>
                             <span>Disclosure</span>

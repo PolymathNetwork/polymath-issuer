@@ -169,6 +169,14 @@
   .providers .provider.provider-applied {
     outline: 1px solid #00AA5E;
     cursor: default; }
+  .providers .provider.provider-to-be-announced {
+    cursor: default; }
+    .providers .provider.provider-to-be-announced img {
+      filter: blur(8px);
+      -webkit-filter: blur(8px);
+      -moz-filter: blur(8px);
+      -o-filter: blur(8px);
+      -ms-filter: blur(8px); }
   .providers .provider .remark {
     line-height: 12.9px;
     padding: 2px 6px;

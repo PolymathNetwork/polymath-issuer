@@ -100,7 +100,7 @@ class TickerPage extends Component<Props, State> {
                     violating any trademarks.
                   </p>
                   <p>
-                    Once you hit &laquo;CONFIRM&raquo;, your Token Symbol
+                    Once you hit &laquo;RESERVE TICKER&raquo;, your Token Symbol
                     reservation will be sent to the blockchain and will be
                     immutable. Any change will require that you start the process
                     over. If you wish to review your information, please select

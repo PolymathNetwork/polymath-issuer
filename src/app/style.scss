@@ -245,6 +245,19 @@
       outline: 1px solid #00AA5E;
       cursor: default;
     }
+    
+    &.provider-to-be-announced {
+      cursor: default;
+
+      // noinspection ALL
+      img {
+        filter: blur(8px);
+        -webkit-filter: blur(8px);
+        -moz-filter: blur(8px);
+        -o-filter: blur(8px);
+        -ms-filter: blur(8px);
+      }
+    }
 
     .remark {
       line-height: 12.9px;
