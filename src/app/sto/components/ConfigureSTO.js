@@ -96,7 +96,7 @@ class ConfigureSTO extends Component<Props, State> {
                     </p>
                     <p>
                       Please confirm dates with your Advisor and Legal
-                      providers before you click on &laquo;CONFIRM&raquo;.
+                      providers before you click on &laquo;LAUNCH&raquo;.
                     </p>
                     <p>
                       Investors must be added to the whitelist before or while
