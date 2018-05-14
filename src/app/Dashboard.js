@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router'
 // eslint-disable-next-line no-unused-vars
 import { Sidebar, icoBriefcase, icoInbox, icoHandshake, icoHelp } from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
@@ -14,6 +15,8 @@ import type { RootState } from '../redux/reducer'
 type StateProps = {|
   token: ?SecurityToken,
   isTokenFetched: boolean,
+  isAccountActivated: boolean,
+  isAccountInitialized: boolean,
 |}
 
 type DispatchProps = {|
@@ -23,6 +26,8 @@ type DispatchProps = {|
 const mapStateToProps = (state: RootState): StateProps => ({
   token: state.token.token,
   isTokenFetched: state.token.isFetched,
+  isAccountInitialized: state.pui.account.isInitialized,
+  isAccountActivated: state.pui.account.isActivated,
 })
 
 const mapDispatchToProps: DispatchProps = {
@@ -36,7 +41,6 @@ type Props = {|
       id: string
     }
   }
-
 |} & StateProps & DispatchProps
 
 class Dashboard extends Component<Props> {
@@ -45,13 +49,27 @@ class Dashboard extends Component<Props> {
   }
 
   render () {
-    const { token, isTokenFetched, route } = this.props
+    const {
+      token,
+      isAccountActivated,
+      isAccountInitialized,
+      isTokenFetched,
+      route,
+    } = this.props
+
+    if (!isAccountInitialized || !isTokenFetched) {
+      return <span />
+    }
+
+    if (!isAccountActivated) {
+      // TickerSuccessPage decides whether to go to /ticker or /confirm-email.
+      return <Redirect to='/ticker/success' />
+    }
+
     if (isTokenFetched && token === null) {
       return <NotFoundPage />
     }
-    if (!isTokenFetched) {
-      return <span />
-    }
+
     // $FlowFixMe
     const ticker = token.ticker
     const tokenUrl = `/dashboard/${ticker}`

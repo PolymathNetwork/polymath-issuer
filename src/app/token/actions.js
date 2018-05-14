@@ -56,10 +56,10 @@ export const complete = () => async (dispatch: Function, getState: GetState) => 
       variables: {
         account: {
           accountData: accountData,
-          txHash: receipt.transactionHash,
         },
         input: {
           ticker: token.ticker,
+          txHash: receipt.transactionHash,
         },
       },
     })

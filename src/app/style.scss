@@ -66,6 +66,21 @@
   }
 }
 
+.confirm-email-form {
+  button {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .bx--text-input {
+    height: 60px;
+
+    text-align: center;
+    font-size: 18px;
+  }
+}
+
 .pui-page-box {
 
   hr {

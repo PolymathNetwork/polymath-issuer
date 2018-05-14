@@ -55,6 +55,7 @@ class OverviewSTO extends Component<Props> {
         <div>
           <Progress current={3} />
           {this.props.isLaunchSuccess ? txSuccess : (
+            // $FlowFixMe
             <Fragment>
               <h1 className='pui-h1'>{token.ticker} STO Overview</h1><br />
               <STOStatus
