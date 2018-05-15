@@ -37,56 +37,56 @@ class ApplyForm extends Component<Props> {
     return (
       <Form onSubmit={this.props.onSubmit}>
         <Field
-          name='company'
+          name='companyName'
           component={TextInput}
           label='Company Name'
           placeholder='Enter company name'
           validate={[required, maxLength100]}
         />
         <Field
-          name='desc'
+          name='companyDesc'
           component={TextAreaInput}
           label='Company Description'
           placeholder='Enter company description'
           validate={[required, maxLength300]}
         />
         <Field
-          name='operationJurisdiction'
+          name='operatedIn'
           component={TextInput}
           label='Jurisdiction of Operation'
           placeholder='Enter jurisdiction of operation'
           validate={[required, maxLength100]}
         />
         <Field
-          name='incorporationJurisdiction'
+          name='incorporatedIn'
           component={TextInput}
           label='Jurisdiction of Incorporation'
           placeholder='Enter jurisdiction of incorporation'
           validate={[required, maxLength100]}
         />
         <Field
-          name='presentationUrl'
+          name='projectURL'
           component={TextInput}
           label={linkTooltip('Corporate/Project Presentation')}
           placeholder='Paste link here'
           validate={[required, url]}
         />
         <Field
-          name='profilesUrl'
+          name='profilesURL'
           component={TextInput}
           label={linkTooltip('Management and Board Member Profiles')}
           placeholder='Paste link here'
           validate={[required, url]}
         />
         <Field
-          name='structureUrl'
+          name='structureURL'
           component={TextInput}
           label={linkTooltip('Corporate or Project Structure/Organization')}
           placeholder='Paste link here'
           validate={[required, url]}
         />
         <Field
-          name='details'
+          name='otherDetails'
           component={TextAreaInput}
           label='Other Details'
           placeholder='Start text here'

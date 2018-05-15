@@ -46,11 +46,10 @@ export const complete = (isDivisible: boolean) => async (dispatch: Function, get
     )
     dispatch(fetch(token.ticker))
 
-    const accountData = ui.getAccountData(getState())
+    const accountData = ui.getAccountDataForFetch(getState())
     if (!accountData) {
       throw new Error('Not signed in')
     }
-    delete accountData.account
 
     const emailResult = await ui.offchainFetch({
       query: `
@@ -63,10 +62,10 @@ export const complete = (isDivisible: boolean) => async (dispatch: Function, get
       variables: {
         account: {
           accountData: accountData,
-          txHash: receipt.transactionHash,
         },
         input: {
           ticker: token.ticker,
+          txHash: receipt.transactionHash,
         },
       },
     })
