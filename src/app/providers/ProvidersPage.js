@@ -131,7 +131,7 @@ class ProvidersPage extends Component<Props, State> {
   }
 
   handleIHaveMyOwn = (cat: ?number) => {
-    this.props.iHaveMyOwnProviders(cat || this.state.tabSelected)
+    this.props.iHaveMyOwnProviders((cat === null || cat === undefined) ? this.state.tabSelected : cat)
     this.next()
   }
 

@@ -5,7 +5,6 @@ import DocumentTitle from 'react-document-title'
 import { connect } from 'react-redux'
 import type { SecurityToken, STOFactory } from 'polymathjs/types'
 
-import NotFoundPage from '../../NotFoundPage'
 import Progress from '../../token/components/Progress'
 import STODetails from './STODetails'
 import { fetchFactories, useFactory } from '../actions'
@@ -42,16 +41,9 @@ class SelectSTO extends Component<Props> {
 
   handleUseSTO = (sto: STOFactory) => () => this.props.useFactory(sto)
 
-  search () {
-    // TODO
-  }
-
   render () {
-    const token = this.props.token
-    if (!token || !token.address) {
-      return <NotFoundPage />
-    }
-    return (
+    const { token } = this.props
+    return ( // $FlowFixMe
       <DocumentTitle title={`Select ${token.ticker} STO – Polymath`}>
         <div>
           <Progress />

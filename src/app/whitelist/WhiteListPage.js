@@ -14,11 +14,11 @@ import {
   DatePicker,
   DatePickerInput,
   FileUploaderButton,
-  Button,
 } from 'carbon-components-react'
 
 import type { Address, SecurityToken } from 'polymathjs/types'
 
+import NotFoundPage from '../NotFoundPage'
 import Progress from '../token/components/Progress'
 import {
   initialize,
@@ -336,6 +336,10 @@ class WhitelistPage extends Component<Props, State> {
   )
 
   render () {
+    const { token } = this.props
+    if (!token || !token.address) {
+      return <NotFoundPage />
+    }
     const paginatedRows = this.paginationRendering()
     return (
       <DocumentTitle title='Whitelist – Polymath'>
@@ -474,23 +478,6 @@ class WhitelistPage extends Component<Props, State> {
               </p>
               <br />
               <EditInvestorsForm />
-            </Modal>
-          ) : null}
-
-          {!this.props.token.status ? (
-            <Modal
-              open
-              passiveModal
-              modalHeading='Complete The STO Section'
-              primaryButtonText='Go to STO Section'
-            >
-              <p className='bx--modal-content__text'>
-                Please confirm that you are ready to proceed to the next step in
-                the STO process
-              </p>
-              <Button href={`/dashboard/${this.props.token.ticker}/sto`}>
-                Go to STO Section
-              </Button>
             </Modal>
           ) : null}
         </div>
