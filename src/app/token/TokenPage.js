@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { Icon, ComposedModal, ModalHeader, ModalBody, ModalFooter, Button } from 'carbon-components-react'
-import { etherscanTx, TxSuccess } from 'polymath-ui'
+import { etherscanTx, TxSuccess, Countdown } from 'polymath-ui'
 import moment from 'moment'
 import type { SecurityToken } from 'polymathjs/types'
 
@@ -102,19 +102,29 @@ class TokenPage extends Component<Props, State> {
           <div>
             {isDeploySuccess ? txSuccess : (
               <div className='bx--row'>
-                {!token.address ? (
+                {!token.address && token.expires ? (
                   <div className='bx--col-xs-7'>
                     <div className='pui-page-box'>
-                      <div>
-                        <h2 className='pui-h2'>
-                          Create Your Security Token
-                        </h2>
-                        <h3 className='pui-h3'>
-                          Create your security token before your token registration expires. If your registration
-                          expires, the token symbol you selected will available for others to claim.
-                        </h3>
-                        <br />
-                        <CompleteTokenForm onSubmit={this.handleCompleteSubmit} />
+                      <div className='bx--row'>
+                        <div className='bx--col-xs-8'>
+                          <h2 className='pui-h2'>
+                            Create Your Security Token
+                          </h2>
+                          <h3 className='pui-h3'>
+                            Create your security token before your token reservation expires. If your reservation
+                            expire, the token symbol you selected will be available for others to claim.
+                          </h3>
+                          <h3 className='pui-h3'>
+                            To proceed with the creation of your security token,
+                            we recommend you work with your Advisory to answer
+                            the following questions:
+                          </h3>
+                          <br />
+                          <CompleteTokenForm onSubmit={this.handleCompleteSubmit} />
+                        </div>
+                        <div className='bx--col-xs-4'>
+                          <Countdown small title='Time Left' deadline={token.expires} />
+                        </div>
                       </div>
                     </div>
                   </div>

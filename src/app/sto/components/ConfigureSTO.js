@@ -127,10 +127,15 @@ class ConfigureSTO extends Component<Props, State> {
               </Button>
               <h1 className='pui-h1'>Security Token Offering Configuration</h1>
               <br />
-              <br />
               <div className='bx--row'>
                 <div className='bx--col-xs-5'>
                   <div className='pui-page-box'>
+                    <h2 className='pui-h2'>
+                      Simple Capped Offering
+                    </h2>
+                    <h4 className='pui-h4' style={{ marginBottom: '15px' }}>
+                      Provide the financial details and timing for your offering below.
+                    </h4>
                     <ConfigureSTOForm onSubmit={this.handleSubmit} />
                   </div>
                 </div>

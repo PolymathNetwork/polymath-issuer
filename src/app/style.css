@@ -232,3 +232,6 @@
 
 .bx--fieldset {
   margin-bottom: 0; }
+
+.token-form .bx--tooltip__trigger {
+  font-size: 17px; }

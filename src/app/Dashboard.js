@@ -8,16 +8,19 @@ import { Redirect } from 'react-router'
 import { Sidebar, icoBriefcase, icoInbox, icoHandshake, icoHelp, icoWhitelist } from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
 
+import { isProvidersPassed } from './providers/data'
 import NotFoundPage from './NotFoundPage'
 import { fetch as fetchToken } from './token/actions'
 import { fetchProviders } from './providers/actions'
 import type { RootState } from '../redux/reducer'
+import type { ServiceProvider } from './providers/data'
 
 type StateProps = {|
   token: ?SecurityToken,
   isTokenFetched: boolean,
   isAccountActivated: boolean,
   isAccountInitialized: boolean,
+  providers: ?Array<ServiceProvider>,
 |}
 
 type DispatchProps = {|
@@ -30,6 +33,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
   isTokenFetched: state.token.isFetched,
   isAccountInitialized: state.pui.account.isInitialized,
   isAccountActivated: state.pui.account.isActivated,
+  providers: state.providers.data,
 })
 
 const mapDispatchToProps: DispatchProps = {
@@ -55,11 +59,12 @@ class Dashboard extends Component<Props> {
 
   render () {
     const {
-      token,
       isAccountActivated,
       isAccountInitialized,
       isTokenFetched,
+      providers,
       route,
+      token,
     } = this.props
 
     if (!isAccountInitialized || !isTokenFetched) {
@@ -85,24 +90,28 @@ class Dashboard extends Component<Props> {
         icon: icoHandshake,
         to: `${tokenUrl}/providers`,
         isActive: location.slice(-10) === '/providers',
+        isDisabled: false,
       },
       {
         title: 'Token',
         icon: icoBriefcase,
         to: tokenUrl,
         isActive: location.slice(ticker.length * -1) === ticker,
+        isDisabled: !isProvidersPassed(providers),
       },
       {
         title: 'STO',
         icon: icoInbox,
         to: `${tokenUrl}/sto`,
         isActive: location.slice(-4) === '/sto',
+        isDisabled: !token || !token.address,
       },
       {
         title: 'Whitelist',
         icon: icoWhitelist,
         to: `${tokenUrl}/whitelist`,
         isActive: location.slice(-10) === '/whitelist',
+        isDisabled: !token || !token.address,
       },
     ]
     const bottomSidebarItems = [

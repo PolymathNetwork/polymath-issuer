@@ -38,7 +38,12 @@ export const complete = (isDivisible: boolean) => async (dispatch: Function, get
       ...getState().token.token,
       ...getState().form[completeFormName].values,
     }
-    const receipt = await SecurityTokenRegistry.generateSecurityToken(token.name, token.ticker, isDivisible ? 18 : 0)
+    const receipt = await SecurityTokenRegistry.generateSecurityToken(
+      token.name,
+      token.ticker,
+      isDivisible ? 18 : 0,
+      token.details,
+    )
     dispatch(fetch(token.ticker))
 
     const accountData = ui.getAccountDataForFetch(getState())

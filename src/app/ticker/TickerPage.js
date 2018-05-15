@@ -127,10 +127,10 @@ class TickerPage extends Component<Props, State> {
               </div>
               <h1 className='pui-h1'>Reserve Your Token Symbol</h1>
               <h4 className='pui-h4'>
-                Your token symbol will be reserved for 15 days, and<br />
+                Your token symbol will be reserved for 15 days, and
                 permanently yours once you create your Token.<br />
-                This reservation ensures that no other organization can use<br />
-                your brand or create an identical token symbol using the<br />
+                This reservation ensures that no other organization can use
+                your brand or create an identical token symbol using the
                 Polymath platform.
               </h4>
               <div className='pui-clearfix' />

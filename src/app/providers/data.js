@@ -226,3 +226,23 @@ export const getProgress = (ticker: string): Array<SPProgress> => {
 export const saveProgress = (ticker: string, progress: Array<SPProgress>) => {
   localStorage.setItem('providers-' + ticker, JSON.stringify(progress))
 }
+
+export const isProvidersPassed = (providers: ?Array<ServiceProvider>) => {
+  let isProvidersPassed = true
+  if (providers) {
+    for (let p: ServiceProvider of providers) {
+      if (p.cat === 0) { // only cat 0 is obligatory
+        if (p.progress && p.progress.isApplied) {
+          isProvidersPassed = true
+          break
+        }
+        if (!p.progress) {
+          isProvidersPassed = false
+        }
+      }
+    }
+  } else {
+    isProvidersPassed = false
+  }
+  return isProvidersPassed
+}

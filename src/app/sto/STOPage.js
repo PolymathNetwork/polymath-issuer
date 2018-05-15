@@ -3,7 +3,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Loading } from 'carbon-components-react'
+import type { SecurityToken } from 'polymathjs/types'
 
+import NotFoundPage from '../NotFoundPage'
 import { fetch } from './actions'
 import { STAGE_SELECT, STAGE_CONFIGURE, STAGE_OVERVIEW } from './reducer'
 import SelectSTO from './components/SelectSTO'
@@ -12,6 +14,7 @@ import ConfigureSTO from './components/ConfigureSTO'
 import type { RootState } from '../../redux/reducer'
 
 type StateProps = {|
+  token: ?SecurityToken,
   stage: number,
 |}
 
@@ -20,6 +23,7 @@ type DispatchProps = {|
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
+  token: state.token.token,
   stage: state.sto.stage,
 })
 
@@ -36,6 +40,10 @@ class STOPage extends Component<Props> {
   }
 
   render () {
+    const { token } = this.props
+    if (!token || !token.address) {
+      return <NotFoundPage />
+    }
     switch (this.props.stage) {
       case STAGE_SELECT:
         return <SelectSTO />
