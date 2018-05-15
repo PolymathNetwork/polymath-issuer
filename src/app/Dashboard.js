@@ -97,7 +97,7 @@ class Dashboard extends Component<Props> {
         icon: icoBriefcase,
         to: tokenUrl,
         isActive: location.slice(ticker.length * -1) === ticker,
-        isDisabled: !isProvidersPassed(providers),
+        isDisabled: !isProvidersPassed(providers) && (!token || !token.address),
       },
       {
         title: 'STO',

@@ -46,7 +46,7 @@ class Progress extends Component<Props> {
             <ProgressStep label='Register Token Symbol' />
             <ProgressStep label='Choose Your Providers' />
             <ProgressStep label='Create Token' />
-            <ProgressStep label='Setup Offering Details' />
+            <ProgressStep label='Set Up Offering Details' />
             <ProgressStep label='Whitelist Investors' />
           </ProgressIndicator>
         </div>

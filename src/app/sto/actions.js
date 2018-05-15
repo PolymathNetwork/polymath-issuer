@@ -76,6 +76,7 @@ const getModuleAddressFromReceipt = (receipt: any) => {
     return null
   }
 
+  // eslint-disable-next-line no-underscore-dangle
   return log.returnValues._module
 }
 

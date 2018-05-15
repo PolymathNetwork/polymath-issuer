@@ -6,6 +6,7 @@ import DocumentTitle from 'react-document-title'
 import { change } from 'redux-form'
 import { bull } from 'polymath-ui'
 import { Redirect } from 'react-router'
+import { TickerRegistry } from 'polymathjs'
 import type { RouterHistory } from 'react-router'
 import {
   Button,
@@ -52,16 +53,22 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 type State = {|
-  isModalOpen: boolean
+  isModalOpen: boolean,
+  expiryLimit: number,
 |}
 
 class TickerPage extends Component<Props, State> {
 
   state = {
     isModalOpen: false,
+    expiryLimit: 7,
   }
 
   componentWillMount () {
+    // TODO @bshevchenko: probably we shouldn't call polymath.js directly from the components
+    TickerRegistry.expiryLimit().then((expiryLimit) => {
+      this.setState({ expiryLimit: expiryLimit / 24 / 60 / 60 })
+    })
     this.props.change(this.props.account)
     this.props.tokenData(null)
   }
@@ -127,7 +134,7 @@ class TickerPage extends Component<Props, State> {
               </div>
               <h1 className='pui-h1'>Reserve Your Token Symbol</h1>
               <h4 className='pui-h4'>
-                Your token symbol will be reserved for 15 days, and
+                Your token symbol will be reserved for {this.state.expiryLimit} days, and
                 permanently yours once you create your Token.<br />
                 This reservation ensures that no other organization can use
                 your brand or create an identical token symbol using the

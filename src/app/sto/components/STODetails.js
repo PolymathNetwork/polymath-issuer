@@ -96,7 +96,7 @@ export default class STODetails extends Component<Props> {
             <span>
               &nbsp;&nbsp;&nbsp;&nbsp;
               <Button onClick={handleUseSTO}>
-                USE STO
+                SELECT AND CONFIGURE STO
               </Button>
             </span>
           ) : ''}

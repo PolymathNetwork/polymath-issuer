@@ -52,7 +52,7 @@ class SelectSTO extends Component<Props> {
               <h1 className='pui-h1'>Security Token Offerings</h1>
               <h3 className='pui-h3'>
                 Browse the STO models below, and choose the model that best fits your needs.<br />
-                To select the model you desire, press &laquo;USE STO&raquo;.
+                To select the model you desire, press &laquo;SELECT AND CONFIGURE STO&raquo;.
               </h3>
               <br />
               {this.props.factories.map((item) => (

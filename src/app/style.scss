@@ -62,11 +62,13 @@
     text-align: center;
     color: #152935;
     background: white;
+    text-transform: uppercase;
 
     &::placeholder {
       color: #DFE3E6 !important;
       font-weight: 300 !important;
       font-size: 26px !important;
+      text-transform: initial !important;
     }
   }
 }

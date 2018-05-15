@@ -49,11 +49,13 @@
     font-size: 34px;
     text-align: center;
     color: #152935;
-    background: white; }
+    background: white;
+    text-transform: uppercase; }
     .ticker-field input::placeholder {
       color: #DFE3E6 !important;
       font-weight: 300 !important;
-      font-size: 26px !important; }
+      font-size: 26px !important;
+      text-transform: initial !important; }
 
 .confirm-email-form button {
   display: block;

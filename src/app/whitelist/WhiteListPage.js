@@ -345,6 +345,7 @@ class WhitelistPage extends Component<Props, State> {
       <DocumentTitle title='Whitelist – Polymath'>
         <div>
           <Progress />
+          <h1 className='pui-h1'>Whitelist Investors</h1>
           <div className='bx--row'>
             <div className='bx--col-xs-6'>
               <ModalWrapper
@@ -364,14 +365,17 @@ class WhitelistPage extends Component<Props, State> {
                       Add multiple addresses to the whitelist by uploading a
                       comma separated CSV file. The format should be as follows:
                     </p>
-                    <p className='csvModalText'>Column 1 - Ethereum Address</p>
+                    <p className='csvModalText'>Column 1 - Ethereum Address.</p>
                     <p className='csvModalText'>
-                      Column 2 - Date mm/dd/yyyy (date when the resale
-                      restrictions should be lifted for that address).
+                      Column 2 - Sell Restriction Date mm/dd/yyyy
+                      (date when the resale restrictions should be lifted for that address).
+                    </p>
+                    <p className='csvModalText'>
+                      Column 3 - Buy Restriction Date mm/dd/yyyy
+                      (date when the resale restrictions should be lifted for that address).
                     </p>
                     <p className='csvModalTextMini'>
-                      You can download a <a href='/whitelist-sample.csv' download>Sample.csv</a>
-                      file and edit it
+                      You can download a <a href='/whitelist-sample.csv' download>Sample.csv</a> file and edit it
                     </p>
                     <div
                       data-notification

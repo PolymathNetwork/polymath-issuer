@@ -7,7 +7,6 @@ import { STOStatus, TxSuccess } from 'polymath-ui'
 import type { SecurityToken, STOPurchase, STODetails } from 'polymathjs'
 
 import NotFoundPage from '../../NotFoundPage'
-import Progress from '../../token/components/Progress'
 import InvestorTable from './InvestorTable'
 import { fetchPurchases } from '../actions'
 import type { RootState } from '../../../redux/reducer'
@@ -53,12 +52,11 @@ class OverviewSTO extends Component<Props> {
     return (
       <DocumentTitle title={`${token.ticker} STO Overview – Polymath`}>
         <div>
-          <Progress />
           {this.props.isLaunchSuccess ? (
             txSuccess
           ) : (
             <Fragment>
-              <h1 className='pui-h1'>{token.ticker} STO Overview</h1>
+              <h1 className='pui-h1'>Security Token Overview</h1>
               <br />
               <STOStatus details={details} token={token} />
               <br />
