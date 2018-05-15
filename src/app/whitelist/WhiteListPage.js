@@ -370,8 +370,7 @@ class WhitelistPage extends Component<Props, State> {
                       restrictions should be lifted for that address).
                     </p>
                     <p className='csvModalTextMini'>
-                      You can download a <a href='/whitelist-sample.csv' download>Sample.csv</a>
-                      file and edit it
+                      You can download a <a href='/whitelist-sample.csv' download>Sample.csv</a> file and edit it
                     </p>
                     <div
                       data-notification
