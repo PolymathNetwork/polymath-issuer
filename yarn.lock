@@ -8083,9 +8083,9 @@ polymath-core@1.0.3:
     web3 "^1.0.0-beta.33"
     zeppelin-solidity "^1.8.0"
 
-polymath-ui@2.4.1:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-2.4.1.tgz#3c3cc7e805b280dc01352ced870637f8f3560d78"
+polymath-ui@2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-2.5.0.tgz#4b56a068d9d4ba2aac3074905461f5d85c292b43"
   dependencies:
     apollo-fetch "^0.7.0"
     babel-runtime "6.26.0"
@@ -8104,9 +8104,9 @@ polymath-ui@2.4.1:
     redux "3.7.2"
     redux-form "7.0.4"
 
-polymathjs@1.2.4:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-1.2.4.tgz#563f108ed20852a75028b86b274e23984450b403"
+polymathjs@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-1.2.6.tgz#d3eeab2793d5ba0d4d6bac223395bd57099232d5"
   dependencies:
     bignumber.js "5.0.0"
     bs58 "^4.0.1"
