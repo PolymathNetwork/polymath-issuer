@@ -6,7 +6,7 @@ import { required, email } from 'polymath-ui/dist/validate'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
-import { reduxForm, Field } from 'redux-form'
+import { getFormValues, reduxForm, Field } from 'redux-form'
 
 import { confirmEmail } from './actions'
 
@@ -22,7 +22,7 @@ class ConfirmEmailFormUnwrapped extends Component<any> {
           placeholder='you@example.com'
           validate={[required, email]}
         />
-        <Button type='submit'>
+        <Button type='submit' disabled={this.props.disableSubmit}>
           Send Confirmation Email
         </Button>
       </Form>
@@ -35,7 +35,8 @@ const ConfirmEmailForm = reduxForm({
 })(ConfirmEmailFormUnwrapped)
 
 type StateProps = {|
-  email: string,
+  initialEmail: string,
+  disableSubmit: boolean,
 |}
 
 type DispatchProps = {|
@@ -46,14 +47,17 @@ type Props = StateProps & DispatchProps
 
 const mapStateToProps = (state) => {
   const accountData = getAccountData(state)
-  let email = ''
-
+  let initialEmail = ''
   if (accountData && accountData.account) {
-    email = accountData.account.email
+    initialEmail = accountData.account.email
   }
 
+  const values = getFormValues(formName)(state)
+  const email = values && values.email
+
   return {
-    email,
+    initialEmail,
+    disableSubmit: email === state.ticker.lastConfirmationEmailAddress,
   }
 }
 
@@ -83,7 +87,8 @@ class ConfirmEmailPage extends Component<Props> {
             <div className='pui-clearfix' />
             <ConfirmEmailForm
               onSubmit={this.handleSubmit}
-              initialValues={{ email: this.props.email }}
+              initialValues={{ email: this.props.initialEmail }}
+              disableSubmit={this.props.disableSubmit}
             />
           </div>
         </div>

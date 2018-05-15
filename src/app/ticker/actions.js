@@ -19,10 +19,15 @@ export const setTransaction = (transaction: boolean) => ({ type: TX, transaction
 export const EMAIL_SENT = 'ticker/EMAIL_SENT'
 export const emailSent = () => ({ type: EMAIL_SENT })
 
+export const LAST_CONFIRMATION_EMAIL = 'ticker/LAST_CONFIRMATION_EMAIL'
+export const confirmationEmailSent = (email: string) => ({ type: LAST_CONFIRMATION_EMAIL, email })
+
 export type Action =
   | ExtractReturn<typeof registered>
   | ExtractReturn<typeof successPageInitialized>
   | ExtractReturn<typeof setTransaction>
+  | ExtractReturn<typeof emailSent>
+  | ExtractReturn<typeof confirmationEmailSent>
 
 // eslint-disable-next-line
 export const register = () => async (dispatch: Function, getState: GetState) => {
@@ -77,7 +82,7 @@ export const initSuccessPage = () => async (dispatch: Function) => {
 }
 
 export const sendRegisterTickerEmail = () => async (dispatch: Function, getState: GetState) => {
-  if (getState().ticker.isEmailSent) {
+  if (getState().ticker.isTickerEmailSent) {
     return
   }
   dispatch(emailSent())
@@ -130,6 +135,7 @@ export const confirmEmail = () => async (dispatch: Function, getState: GetState)
     await dispatch(ui.updateAccount(account))
     dispatch(ui.txStart('Sending a confirmation email...'))
     await dispatch(ui.sendActivationEmail())
+    dispatch(confirmationEmailSent(account.email))
 
     dispatch(ui.notify(
       'Check your inbox for a confirmation email.',

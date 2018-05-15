@@ -84,10 +84,12 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
     const contract: SecurityToken = token.contract
     const values = getState().form[configureFormName].values
     const [startDate, endDate] = values['start-end']
+    const startDateWithTime = dateTimeFromDateAndTime(startDate, values.startTime)
+    const endDateWithTime = dateTimeFromDateAndTime(endDate, values.endTime)
     const receipt = await contract.setSTO(
       factory.address,
-      dateTimeFromDateAndTime(startDate, values.startTime),
-      dateTimeFromDateAndTime(endDate, values.endTime),
+      startDateWithTime,
+      endDateWithTime,
       values.cap,
       values.rate,
       values.currency === 'ETH',
@@ -114,6 +116,8 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
         },
         input: {
           ticker: token.ticker,
+          startDate: startDateWithTime.getTime().toString(),
+          endDate: endDateWithTime.getTime().toString(),
           txHash: receipt.transactionHash,
         },
       },
