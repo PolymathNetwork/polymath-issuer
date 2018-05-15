@@ -16,6 +16,9 @@ export const successPageInitialized = (initialized: boolean) => ({ type: SUCCESS
 export const TX = 'ticker/TX'
 export const setTransaction = (transaction: boolean) => ({ type: TX, transaction })
 
+export const EMAIL_SENT = 'ticker/EMAIL_SENT'
+export const emailSent = () => ({ type: EMAIL_SENT })
+
 export type Action =
   | ExtractReturn<typeof registered>
   | ExtractReturn<typeof successPageInitialized>
@@ -64,9 +67,9 @@ export const initSuccessPage = () => async (dispatch: Function) => {
 
   dispatch(ui.txHash(tx.txHash))
   dispatch(ui.txSuccess(
-    'Token Symbol Was Registered Successfully',
-    'Go to dashboard',
-    `/dashboard/${tx.ticker}`
+    'Your Token Symbol Was Reserved Successfully',
+    'Choose your providers',
+    `/dashboard/${tx.ticker}/providers`,
   ))
 
   dispatch(setTransaction(tx))
@@ -74,11 +77,15 @@ export const initSuccessPage = () => async (dispatch: Function) => {
 }
 
 export const sendRegisterTickerEmail = () => async (dispatch: Function, getState: GetState) => {
-  const accountData = ui.getAccountData(getState())
+  if (getState().ticker.isEmailSent) {
+    return
+  }
+  dispatch(emailSent())
+
+  const accountData = ui.getAccountDataForFetch(getState())
   if (!accountData) {
     throw new Error('Not signed in')
   }
-  delete accountData.account
 
   const tx = getState().ticker.transaction
   if (!tx) {

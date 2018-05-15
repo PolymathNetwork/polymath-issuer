@@ -4,10 +4,11 @@ import App from './app/App'
 import NotFoundPage from './app/NotFoundPage'
 import ConfirmEmailPage from './app/ticker/ConfirmEmailPage'
 import EmailConfirmedPage from './app/EmailConfirmedPage'
-import WhitelistPage from './app/dashboard/whitelist/WhiteListPage'
+import WhitelistPage from './app/whitelist/WhiteListPage'
 import TickerPage from './app/ticker/TickerPage'
 import TickerSuccessPage from './app/ticker/TickerSuccessPage'
 import Dashboard from './app/Dashboard'
+import ProvidersPage from './app/providers/ProvidersPage'
 import TokenPage from './app/token/TokenPage'
 import STOPage from './app/sto/STOPage'
 
@@ -39,6 +40,11 @@ export default [
         path: '/dashboard/:id',
         component: Dashboard,
         routes: [
+          {
+            path: '/dashboard/:id/providers',
+            component: ProvidersPage,
+            exact: true,
+          },
           {
             path: '/dashboard/:id',
             component: TokenPage,

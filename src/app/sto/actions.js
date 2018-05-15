@@ -95,11 +95,10 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
     )
     dispatch(fetch())
 
-    const accountData = ui.getAccountData(getState())
+    const accountData = ui.getAccountDataForFetch(getState())
     if (!accountData) {
       throw new Error('Not signed in')
     }
-    delete accountData.account
 
     const emailResult = await ui.offchainFetch({
       query: `
@@ -128,8 +127,8 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
     dispatch(
       ui.txSuccess(
         'STO Details Configured Successfully',
-        'Go to STO overview',
-        `/dashboard/${token.ticker}/sto`
+        'Whitelist your investors',
+        `/dashboard/${token.ticker}/whitelist`
       )
     )
   } catch (e) {

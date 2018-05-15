@@ -5,6 +5,7 @@ import * as ui from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
 
 import { formName as completeFormName } from './components/CompleteTokenForm'
+import { fetch as fetchSTO } from '../sto/actions'
 import type { GetState } from '../../redux/reducer'
 import type { ExtractReturn } from '../../redux/helpers'
 
@@ -17,33 +18,33 @@ export type Action =
 export const fetch = (ticker: string) => async (dispatch: Function) => {
   dispatch(ui.fetching())
   try {
+    const expires = new Date()
+    expires.setDate(expires.getDate() + 1)
     const token = await SecurityTokenRegistry.getTokenByTicker(ticker)
     dispatch(data(token))
     dispatch(ui.fetched())
   } catch (e) {
     dispatch(ui.fetchingFailed(e))
   }
+  dispatch(fetchSTO())
 }
 
-export const complete = () => async (dispatch: Function, getState: GetState) => {
+export const complete = (isDivisible: boolean) => async (dispatch: Function, getState: GetState) => {
   const token = getState().token.token
-  if (!token) {
-    return
-  }
+  // $FlowFixMe
   dispatch(ui.txStart(`Issuing ${token.ticker} token...`))
   try {
     const token: SecurityToken = {
       ...getState().token.token,
       ...getState().form[completeFormName].values,
     }
-    const receipt = await SecurityTokenRegistry.generateSecurityToken(token.name, token.ticker)
+    const receipt = await SecurityTokenRegistry.generateSecurityToken(token.name, token.ticker, isDivisible ? 18 : 0)
     dispatch(fetch(token.ticker))
 
-    const accountData = ui.getAccountData(getState())
+    const accountData = ui.getAccountDataForFetch(getState())
     if (!accountData) {
       throw new Error('Not signed in')
     }
-    delete accountData.account
 
     const emailResult = await ui.offchainFetch({
       query: `
@@ -72,8 +73,8 @@ export const complete = () => async (dispatch: Function, getState: GetState) => 
     dispatch(
       ui.txSuccess(
         'Token Was Issued Successfully',
-        'Choose your providers',
-        `/dashboard/${token.ticker}`
+        'Setup Offering Details',
+        `/dashboard/${token.ticker}/sto`
       )
     )
   } catch (e) {

@@ -4,7 +4,6 @@ import React, { Component } from 'react'
 import { renderRoutes } from 'react-router-config'
 import type { Node } from 'react'
 
-import 'carbon-components/css/carbon-components.min.css'
 // TODO @bshevchenko: why Flow cannot resolve polymath-ui/dist/style.css?
 // $FlowFixMe
 import 'polymath-ui/dist/style.css'

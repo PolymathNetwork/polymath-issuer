@@ -13,12 +13,14 @@ export type TickerState = {
   isRegistered: boolean,
   isSuccessPageInitialized: boolean,
   transaction: ?TickerTransaction,
+  isEmailSent: boolean,
 }
 
 const defaultState: TickerState = {
   isRegistered: false,
   isSuccessPageInitialized: false,
   transaction: null,
+  isEmailSent: true,
 }
 
 export default (state: TickerState = defaultState, action: Action) => {
@@ -37,6 +39,11 @@ export default (state: TickerState = defaultState, action: Action) => {
       return {
         ...state,
         transaction: action.transaction,
+      }
+    case a.EMAIL_SENT:
+      return {
+        ...state,
+        isEmailSent: true,
       }
     default:
       return state
