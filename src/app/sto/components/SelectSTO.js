@@ -3,7 +3,6 @@
 import React, { Component } from 'react'
 import DocumentTitle from 'react-document-title'
 import { connect } from 'react-redux'
-import { Search } from 'carbon-components-react'
 import type { SecurityToken, STOFactory } from 'polymathjs/types'
 
 import NotFoundPage from '../../NotFoundPage'
@@ -63,10 +62,6 @@ class SelectSTO extends Component<Props> {
                 Browse the STO models below, and choose the model that best fits your needs.<br />
                 To select the model you desire, press &laquo;USE STO&raquo;.
               </h3>
-              <br /><br />
-              <div className='sto-search-container'>
-                <Search small labelText='Search' placeHolderText='Search' />
-              </div>
               <br />
               {this.props.factories.map((item) => (
                 <STODetails key={item.address} item={item} handleUseSTO={this.handleUseSTO(item)} />

@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { ProgressIndicator, ProgressStep } from 'carbon-components-react'
 import type { SecurityToken } from 'polymathjs/types'
 
+import { isProvidersPassed } from '../../providers/data'
 import type { RootState } from '../../../redux/reducer'
 import type { ServiceProvider } from '../../providers/data'
 
@@ -28,29 +29,12 @@ class Progress extends Component<Props> {
   render () {
     const { token, sto, providers } = this.props
 
-    let isProvidersPassed = true
-    if (providers) {
-      for (let p: ServiceProvider of providers) {
-        if (p.cat === 0) { // only cat 0 is obligatory
-          if (p.progress && p.progress.isApplied) {
-            isProvidersPassed = true
-            break
-          }
-          if (!p.progress) {
-            isProvidersPassed = false
-          }
-        }
-      }
-    } else {
-      isProvidersPassed = false
-    }
-
     let index = 0
     if (sto) {
       index = 4
     } else if (token && token.contract) {
       index = 3
-    } else if (isProvidersPassed) {
+    } else if (isProvidersPassed(providers)) {
       index = 2
     } else if (token) {
       index = 1

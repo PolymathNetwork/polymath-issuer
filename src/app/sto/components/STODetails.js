@@ -28,7 +28,7 @@ export default class STODetails extends Component<Props> {
         <p>{item.desc}</p>
       </div>
     )
-    const verifiedByEtherscan = (
+    const verifiedOnEtherscan = (
       <div className='bx--form-item'>
         <label className='bx--label'>Verified on Etherscan</label>
         {item.isVerified ? (
@@ -50,14 +50,14 @@ export default class STODetails extends Component<Props> {
         )}
       </div>
     )
-    const securityAuditLink = (
-      <div className='bx--form-item'>
-        <label className='bx--label'>Contract Audit</label>
-        <p>
-          <a href={item.securityAuditLink.url} target='_blank'>Link to Security Audit</a>
-        </p>
-      </div>
-    )
+    // const securityAuditLink = (
+    //   <div className='bx--form-item'>
+    //     <label className='bx--label'>Contract Audit</label>
+    //     <p>
+    //       <a href={item.securityAuditLink.url} target='_blank'>Link to Security Audit</a>
+    //     </p>
+    //   </div>
+    // )
     return (
       <div className='pui-page-box sto-factory'>
         <h2 className='pui-h2 pui-h-tags'>
@@ -73,10 +73,10 @@ export default class STODetails extends Component<Props> {
               {desc}
             </div>
             <div className='bx--col-xs-2'>
-              {verifiedByEtherscan}
+              &nbsp;
             </div>
             <div className='bx--col-xs-2'>
-              {securityAuditLink}
+              {verifiedOnEtherscan}
             </div>
           </div>
         ) : (
@@ -86,8 +86,7 @@ export default class STODetails extends Component<Props> {
               {desc}
             </div>
             <div className='bx--col-xs-3'>
-              {verifiedByEtherscan}
-              {securityAuditLink}
+              {verifiedOnEtherscan}
             </div>
           </div>
         )}

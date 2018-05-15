@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-no-bind, jsx-a11y/interactive-supports-focus, jsx-a11y/click-events-have-key-events */
+/* eslint-disable react/jsx-no-bind, jsx-a11y/interactive-supports-focus, jsx-a11y/click-events-have-key-events, react/jsx-handler-names */
 // @flow
 
 import React, { Component } from 'react'
@@ -15,6 +15,7 @@ import {
   ModalBody,
   ModalFooter,
 } from 'carbon-components-react'
+import { Countdown } from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
 import type { RouterHistory } from 'react-router-dom'
 
@@ -220,24 +221,29 @@ class ProvidersPage extends Component<Props, State> {
             third party other than the firm(s) you decide to apply for.
           </div>
           <h1 className='pui-h1'>Choose Your Providers</h1>
-          <h3 className='pui-h3'>
-            Your Polymath dashboard is integrated with several providers to streamline your on-boarding process and
-            access to their services. The information you enter in each associated form will be sent automatically to
-            the firm(s) you apply for. Upon review of your information, the firm(s) will contact you directly to
-            establish the applicable next steps.<br /><br />
-            To get started, please select an Advisory provider, a Legal provider or both. Note that you don’t need
-            to select all at the same time nor have any obligation to select any of the providers below.
-            You can always elect to use your own.
-          </h3>
-          {!token.address ? (
-            <Button
-              kind='secondary'
-              onClick={() => this.handleCreateToken()}
-              style={{ float: 'right', marginTop: '47px', position: 'relative', zIndex: 9 }}
-            >
-              Create Your Token Now
-            </Button>
-          ) : ''}
+          <div className='bx--row'>
+            <div className='bx--col-xs-8'>
+              <h3 className='pui-h3'>
+                Your Polymath dashboard is integrated with several providers to streamline your on-boarding process and
+                access to their services. The information you enter in each associated form will be sent automatically to
+                the firm(s) you apply for. Upon review of your information, the firm(s) will contact you directly to
+                establish the applicable next steps.<br /><br />
+                To get started, please select an Advisory provider, a Legal provider or both. Note that you don’t need
+                to select all at the same time nor have any obligation to select any of the providers below.
+                You can always elect to use your own.
+              </h3>
+            </div>
+            <div className='bx--col-xs-4'>
+              {!token.address && token.expires ? (
+                <Countdown
+                  title='Time Left to Create Your Token'
+                  deadline={token.expires}
+                  buttonTitle='Create Your Token Now'
+                  handleButtonClick={this.handleCreateToken}
+                />
+              ) : ''}
+            </div>
+          </div>
           <Tabs selected={this.state.tabSelected}>
             {categories.map((cat: SPCategory) => (
               <Tab
