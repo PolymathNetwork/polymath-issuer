@@ -50,16 +50,16 @@ export const fetchFactories = () => async (dispatch: Function) => {
     dispatch(factories([{
       title: 'Capped STO',
       name: 'Polymath Inc.',
-      desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore' +
-      'et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip' +
-      ' ex ea commodo consequat.',
+      desc: 'This smart contract creates a maximum number of tokens (i.e hard cap) which the total aggregate of tokens' +
+      ' acquired by all investors cannot exceed. Security tokens are sent to the investor upon reception of the funds ' +
+      '(ETH or POLY), and any security tokens left upon termination of the offering will not be minted.',
       isVerified: true,
       securityAuditLink: {
         title: 'Zeppelin Solutions',
         url: 'https://zeppelin.solutions/',
       },
       address: CappedSTOFactory.address,
-      owner: '0xd4fcfa94c48bd8a20cc9d047b59b79b59c1c324d',
+      owner: await CappedSTOFactory.owner(),
     }]))
     dispatch(ui.fetched())
   } catch (e) {
