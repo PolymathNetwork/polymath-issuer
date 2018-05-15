@@ -6,9 +6,12 @@ import { Form, FormGroup, Button, RadioButtonGroup, RadioButton, Tooltip } from 
 import { TextInput } from 'polymath-ui'
 import {
   url,
+  maxLength,
 } from 'polymath-ui/dist/validate'
 
 export const formName = 'complete_token'
+
+const maxLength32 = maxLength(32)
 
 type Props = {
   handleSubmit: (isDivisible: boolean) => void,
@@ -80,7 +83,7 @@ class CompleteTokenForm extends Component<Props, State> {
             name='details'
             component={TextInput}
             placeholder='Paste link here'
-            validate={[url]}
+            validate={[url, maxLength32]}
           />
         </FormGroup>
         <Button type='submit'>
