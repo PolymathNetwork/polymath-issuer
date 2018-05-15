@@ -8083,9 +8083,9 @@ polymath-core@1.0.3:
     web3 "^1.0.0-beta.33"
     zeppelin-solidity "^1.8.0"
 
-polymath-ui@2.4.1:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-2.4.1.tgz#3c3cc7e805b280dc01352ced870637f8f3560d78"
+polymath-ui@2.4.2:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-2.4.2.tgz#9d24963ebaf793a4bb3341bc8df7df96b252a3a1"
   dependencies:
     apollo-fetch "^0.7.0"
     babel-runtime "6.26.0"
@@ -9314,8 +9314,6 @@ rx-lite@*, rx-lite@^4.0.8:
 rxjs@^5.4.2:
   version "5.5.8"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.5.8.tgz#b2b0809a57614ad6254c03d7446dea0d83ca3791"
-  dependencies:
-    symbol-observable "1.0.1"
 
 safe-buffer@5.1.1, safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.1"
