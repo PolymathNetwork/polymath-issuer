@@ -16,7 +16,7 @@ const maxLength100 = maxLength(100)
 const maxLength300 = maxLength(300)
 
 type Props = {|
-  onSubmit: () => any,
+  handleSubmit: () => void,
 |}
 
 const linkTooltip = (title: string) => (
@@ -35,7 +35,7 @@ class ApplyForm extends Component<Props> {
 
   render () {
     return (
-      <Form onSubmit={this.props.onSubmit}>
+      <Form onSubmit={this.props.handleSubmit}>
         <Field
           name='companyName'
           component={TextInput}

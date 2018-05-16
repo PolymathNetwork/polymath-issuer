@@ -14,8 +14,7 @@ type Props = {|
 
 export default class ApplyModal extends Component<Props> {
 
-  handleSubmit = (e: Object) => {
-    e.preventDefault()
+  handleSubmit = () => {
     this.props.onSubmit()
   }
 

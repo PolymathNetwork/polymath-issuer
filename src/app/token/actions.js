@@ -12,6 +12,10 @@ import type { ExtractReturn } from '../../redux/helpers'
 export const DATA = 'token/DATA'
 export const data = (token: ?SecurityToken) => ({ type: DATA, token })
 
+// TODO @bshevchenko: replace this with RadioInput from polymath-ui
+export const IS_DIVISIBLE = 'token/IS_DIVISIBLE'
+export const isDivisible = (value: boolean) => ({ type: IS_DIVISIBLE, value })
+
 export type Action =
   | ExtractReturn<typeof data>
 
@@ -29,7 +33,7 @@ export const fetch = (ticker: string) => async (dispatch: Function) => {
   dispatch(fetchSTO())
 }
 
-export const complete = (isDivisible: boolean) => async (dispatch: Function, getState: GetState) => {
+export const complete = () => async (dispatch: Function, getState: GetState) => {
   const token = getState().token.token
   // $FlowFixMe
   dispatch(ui.txStart(`Issuing ${token.ticker} token...`))
@@ -41,7 +45,7 @@ export const complete = (isDivisible: boolean) => async (dispatch: Function, get
     const receipt = await SecurityTokenRegistry.generateSecurityToken(
       token.name,
       token.ticker,
-      isDivisible ? 18 : 0,
+      getState().token.isDivisible ? 18 : 0,
       token.details,
     )
     dispatch(fetch(token.ticker))

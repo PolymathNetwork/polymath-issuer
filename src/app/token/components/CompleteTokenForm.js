@@ -9,6 +9,9 @@ import {
   maxLength,
 } from 'polymath-ui/dist/validate'
 
+import { store } from '../../../index'
+import { isDivisible } from '../actions'
+
 export const formName = 'complete_token'
 
 const maxLength32 = maxLength(32)
@@ -17,22 +20,11 @@ type Props = {
   handleSubmit: (isDivisible: boolean) => void,
 }
 
-type State = {|
-  isDivisible: boolean,
-|}
-
-class CompleteTokenForm extends Component<Props, State> {
-
-  state = {
-    isDivisible: false,
-  }
+class CompleteTokenForm extends Component<Props> {
 
   handleChange = (value) => {
-    this.setState({ isDivisible: Number(value) === 1 })
-  }
-  
-  handleSubmit = () => {
-    this.props.handleSubmit(this.state.isDivisible)
+    // TODO @bshevchenko: remove this hotfix!
+    store.dispatch(isDivisible(Number(value) === 1))
   }
 
   render () {

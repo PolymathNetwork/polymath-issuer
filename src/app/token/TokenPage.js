@@ -20,7 +20,7 @@ type StateProps = {|
 |}
 
 type DispatchProps = {|
-  complete: (isDivisible: boolean) => any,
+  complete: () => any,
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -37,23 +37,21 @@ type Props = {|
 
 type State = {|
   isModalOpen: boolean,
-  isDivisible: boolean,
 |}
 
 class TokenPage extends Component<Props, State> {
 
   state = {
     isModalOpen: false,
-    isDivisible: false,
   }
 
-  handleCompleteSubmit = (isDivisible: boolean) => {
-    this.setState({ isModalOpen: true, isDivisible })
+  handleCompleteSubmit = () => {
+    this.setState({ isModalOpen: true })
   }
 
   handleConfirm = () => {
     this.setState({ isModalOpen: false })
-    this.props.complete(this.state.isDivisible)
+    this.props.complete()
   }
 
   handleCancel = () => {
