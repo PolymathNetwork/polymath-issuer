@@ -216,13 +216,16 @@ class ProvidersPage extends Component<Props, State> {
             </ModalFooter>
           </ComposedModal>
           <div className='remark'>
-            <span>Data Privacy</span>
-            None of your data entered in the application form(s) is stored on Polymath servers or shared with any
-            third party other than the firm(s) you decide to apply for.
+            <div className='remark-label'>Data Privacy</div>
+            <div>
+              None of your data entered in the application form(s) is stored on
+              Polymath servers or shared with any third party other than the
+              firm(s) you decide to apply for.
+            </div>
           </div>
           <h1 className='pui-h1'>Choose Your Providers</h1>
           <div className='bx--row'>
-            <div className='bx--col-xs-8'>
+            <div className='bx--col-xs-7'>
               <h3 className='pui-h3'>
                 Your Polymath dashboard is integrated with several providers to streamline your on-boarding process and
                 access to their services. The information you enter in each associated form will be sent automatically to
@@ -233,7 +236,7 @@ class ProvidersPage extends Component<Props, State> {
                 You can always elect to use your own.
               </h3>
             </div>
-            <div className='bx--col-xs-4'>
+            <div className='bx--col-xs-5 countdown-container'>
               {!token.address && token.expires ? (
                 <Countdown
                   title='Time Left to Create Your Token'
@@ -309,8 +312,8 @@ class ProvidersPage extends Component<Props, State> {
                         <p>{p.isToBeAnnounced ? 'To Be Announced' : p.desc}</p>
                         {p.disclosure ? (
                           <div className='remark'>
-                            <span>Disclosure</span>
-                            {p.disclosure}
+                            <div className='remark-label'>Disclosure</div>
+                            <div>{p.disclosure}</div>
                           </div>
                         ) : ''}
                       </div>

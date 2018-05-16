@@ -86,24 +86,21 @@
   margin-bottom: 10px; }
 
 .remark {
+  display: flex;
+  overflow: hidden;
+  margin-bottom: 20px;
+  line-height: 20px;
   border-radius: 4px;
   background-color: #F5F7FA;
   font-size: 14px;
-  line-height: 20px;
-  padding: 12px 16px;
-  height: 42px;
-  overflow: hidden;
-  color: #5A6872;
-  margin-bottom: 20px; }
-  .remark span {
-    display: block;
-    float: left;
+  color: #5A6872; }
+  .remark > div {
+    padding: 12px 16px; }
+  .remark .remark-label {
+    display: flex;
+    align-items: center;
     font-weight: 600;
     background-color: rgba(61, 112, 178, 0.1);
-    margin-top: -11px;
-    margin-left: -15px;
-    margin-right: 16px;
-    padding: 10px 16px;
     border-radius: 4px 0 0 4px; }
 
 .bx--tabs {
@@ -190,18 +187,20 @@
       -o-filter: blur(8px);
       -ms-filter: blur(8px); }
   .providers .provider .remark {
+    display: inline-flex;
     line-height: 12.9px;
-    padding: 2px 6px;
     font-size: 10px;
-    height: 16px;
-    color: #8C9BA5;
-    width: 211px; }
-    .providers .provider .remark span {
-      margin-top: -2.51px;
-      margin-left: -5px;
-      margin-right: 4px;
-      padding: 2px 5px;
+    color: #8C9BA5; }
+    .providers .provider .remark div {
+      padding: 2px 10px;
       color: #5A6872; }
+
+.countdown-container {
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+  .countdown-container .pui-countdown {
+    float: none; }
 
 .tag-my-own {
   background-color: #5596E6 !important; }
