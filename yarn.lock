@@ -8054,9 +8054,9 @@ pn@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
 
-polymath-auth@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/polymath-auth/-/polymath-auth-1.1.1.tgz#ac0b9942096c9d5843daf985cc38c10c5b6f63f9"
+polymath-auth@1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/polymath-auth/-/polymath-auth-1.1.2.tgz#332420753aa766f93215e02500e2095624d99d80"
   dependencies:
     react "16.2.0"
     react-redux "5.0.6"
