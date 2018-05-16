@@ -2,15 +2,12 @@
 
 import React, { Component } from 'react'
 import { reduxForm, Field } from 'redux-form'
-import { Form, FormGroup, Button, RadioButtonGroup, RadioButton, Tooltip } from 'carbon-components-react'
+import { Form, FormGroup, Button, Tooltip } from 'carbon-components-react'
 import { TextInput } from 'polymath-ui'
 import {
   url,
   maxLength,
 } from 'polymath-ui/dist/validate'
-
-import { store } from '../../../index'
-import { isDivisible } from '../actions'
 
 export const formName = 'complete_token'
 
@@ -22,15 +19,9 @@ type Props = {
 
 class CompleteTokenForm extends Component<Props> {
 
-  handleChange = (value) => {
-    // TODO @bshevchenko: remove this hotfix!
-    store.dispatch(isDivisible(Number(value) === 1))
-  }
-
   render () {
-    return (
-      <Form onSubmit={this.props.handleSubmit} className='token-form'>
-        <FormGroup legendText={(
+    /**
+     * <FormGroup legendText={(
           <Tooltip triggerText='My Security Token Must Be'>
             <p className='bx--tooltip__label'>
               Divisible or Indivisible token
@@ -41,25 +32,28 @@ class CompleteTokenForm extends Component<Props> {
             </p>
           </Tooltip>
         )}
-        >
-          <RadioButtonGroup
-            onChange={this.handleChange}
-            name='radio-button-group'
-            defaultSelected='0'
-          >
-            <RadioButton
-              value='1'
-              labelText='Divisible'
-              id='radio-divisible'
-            />
-            <RadioButton
-              value='0'
-              labelText='Indivisible'
-              id='radio-indivisible'
-            />
-          </RadioButtonGroup>
-        </FormGroup>
-        <p>&nbsp;</p>
+     >
+     <RadioButtonGroup
+     onChange={this.handleChange}
+     name='radio-button-group'
+     defaultSelected='0'
+     >
+     <RadioButton
+     value='1'
+     labelText='Divisible'
+     id='radio-divisible'
+     />
+     <RadioButton
+     value='0'
+     labelText='Indivisible'
+     id='radio-indivisible'
+     />
+     </RadioButtonGroup>
+     </FormGroup>
+     <p>&nbsp;</p>
+     */
+    return (
+      <Form onSubmit={this.props.handleSubmit} className='token-form'>
         <FormGroup legendText={(
           <Tooltip triggerText='Additional Token Information'>
             <p className='bx--tooltip__label'>

@@ -13,9 +13,7 @@ import serviceWorkerRegister from './registerServiceWorker'
 
 serviceWorkerRegister()
 
-// TODO @bshevchenko: remove this hotfix!
-// eslint-disable-next-line
-export const store = configureStore()
+const store = configureStore()
 
 render(
   <Provider store={store}>

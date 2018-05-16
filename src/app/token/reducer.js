@@ -20,7 +20,7 @@ const defaultState: TokenState = {
   token: null,
   isFetched: false,
   providers: null,
-  isDivisible: false,
+  isDivisible: true,
 }
 
 export default (state: TokenState = defaultState, action: Action) => {

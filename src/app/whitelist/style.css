@@ -21,7 +21,7 @@
   color: #5A6872; }
 
 .csvModalTableContainer {
-  height: 210px; }
+  min-height: 75px; }
 
 #dropzoneRectangle {
   height: 150px;
