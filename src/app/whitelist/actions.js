@@ -115,10 +115,9 @@ const parseCSV = (csvResult: string) => {
     const entry = allTextLines[i]
     if (entry.includes(zeroX)) {
       const splitArray = entry.split(',', 4)
-      // splitArray[0] is ignored, because it is just a blank string.
-      const address = splitArray[1]
-      const sell = splitArray[2]
-      const buy = splitArray[3]
+      const address = splitArray[0]
+      const sell = splitArray[1]
+      const buy = splitArray[2]
       addresses.push(address)
       sellRestriction.push(sell)
       buyRestriction.push(buy)
