@@ -365,16 +365,16 @@ class WhitelistPage extends Component<Props, State> {
                       Add multiple addresses to the whitelist by uploading a
                       comma separated CSV file. The format should be as follows:
                     </p>
-                    <p className='csvModalText'>Column 1 - Ethereum Address.</p>
+                    <p className='csvModalText'>Column 1 &ndash; Ethereum Address.</p>
                     <p className='csvModalText'>
-                      Column 2 - Sell Restriction Date mm/dd/yyyy
+                      Column 2 &ndash; Sell Restriction Date mm/dd/yyyy
                       (date when the resale restrictions should be lifted for that address).
                     </p>
                     <p className='csvModalText'>
-                      Column 3 - Buy Restriction Date mm/dd/yyyy
+                      Column 3 &ndash; Buy Restriction Date mm/dd/yyyy
                       (date when the resale restrictions should be lifted for that address).
                     </p>
-                    <p className='csvModalTextMini'>
+                    <p className='csvModalTextMini' style={{ display: 'none' }}>
                       You can download a <a href='/whitelist-sample.csv' download>Sample.csv</a> file and edit it
                     </p>
                     <div
