@@ -23,6 +23,7 @@ import Progress from '../token/components/Progress'
 import {
   initialize,
   uploadCSV,
+  ac_csvUpload,
   multiUserSubmit,
   oneUserSubmit,
   getWhitelist,
@@ -73,6 +74,7 @@ type DispatchProps = {|
   updateListLength: number => any,
   removeInvestor: (investors: Array<Address>) => any,
   editInvestors: (investors: Array<Address>) => any,
+  reset: () => any,
 |}
 
 const mapStateToProps = (state) => ({
@@ -92,6 +94,7 @@ const mapDispatchToProps = (dispatch: Function) => ({
     dispatch(removeInvestor(investors)),
   editInvestors: (investors: Array<Address>) =>
     dispatch(editInvestors(investors)),
+  reset: () => dispatch(ac_csvUpload([], [], [], false)),
 })
 
 type Props = StateProps & DispatchProps;
@@ -184,11 +187,6 @@ class WhitelistPage extends Component<Props, State> {
     })
   }
 
-  onHandleInvestorSubmit = () => {
-    this.props.singleSubmit()
-    return true // Must return true, for the component from carbon to work
-  }
-
   // This is used to display the garbage cans in the table
   checkGarbageCell = (index) => {
     if (index === 4) return true
@@ -235,6 +233,11 @@ class WhitelistPage extends Component<Props, State> {
       addresses.push(dataTableRow[i].cells[0].value)
     }
     this.props.removeInvestor(addresses)
+  }
+
+  onHandleInvestorSubmit = () => {
+    this.props.singleSubmit()
+    return true // Must return true, for the component from carbon to work
   }
 
   onHandleMultiSubmit = () => {
@@ -393,18 +396,6 @@ class WhitelistPage extends Component<Props, State> {
                       </div>
                     </div>
                   </div>
-                  {this.props.whitelist.previewCSVShowing ? null : (
-                    <div>
-                      <BasicDropZone onHandleUpload={this.props.handleUpload} />
-                      <FileUploaderButton
-                        labelText='Upload From Desktop'
-                        onChange={this.props.handleUpload}
-                        accept={['.csv']}
-                        multiple
-                        buttonKind='secondary'
-                      />
-                    </div>
-                  )}
                   {this.props.whitelist.previewCSVShowing ? (
                     <div className='csvModalTableContainer'>
                       <table>
@@ -428,7 +419,17 @@ class WhitelistPage extends Component<Props, State> {
                         </tbody>
                       </table>
                     </div>
-                  ) : null}
+                  ) : ''}
+                  <div>
+                    <BasicDropZone onHandleUpload={this.props.handleUpload} />
+                    <FileUploaderButton
+                      labelText='Upload From Desktop'
+                      onChange={this.props.handleUpload}
+                      accept={['.csv']}
+                      multiple
+                      buttonKind='secondary'
+                    />
+                  </div>
                 </div>
               </ModalWrapper>
               <br />

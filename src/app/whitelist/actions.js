@@ -1,6 +1,7 @@
 // @flow
 
 import * as ui from 'polymath-ui'
+import { ethereumAddress } from 'polymath-ui/dist/validate'
 import { TransferManager, SecurityToken } from 'polymathjs'
 import type { Investor, Address } from 'polymathjs/types'
 
@@ -44,7 +45,7 @@ export type Action =
   | ExtractReturn<typeof ac_getWhitelist>
   | ExtractReturn<typeof ac_listLength>;
 
-// initialize grabs transferManager , and stores it in state for other functions to easily call
+// initialize grabs transferManager, and stores it in state for other functions to easily call
 // It then calls getWhiteList() to populate the table for the user
 export const initialize = () => async (
   dispatch: Function,
@@ -96,7 +97,11 @@ export const uploadCSV = (file: Object) => async (dispatch: Function) => {
     reader.readAsText(parseFile)
     reader.onload = function () {
       const parsedData = parseCSV(((reader.result: any): string))
-      dispatch(ac_csvUpload(parsedData[0], parsedData[1], parsedData[2], true))
+      const isSuccess = !!parsedData[0].length
+      if (!isSuccess) {
+        alert('There is no valid entries in your file. Please follow the described format.')
+      }
+      dispatch(ac_csvUpload(parsedData[0], parsedData[1], parsedData[2], isSuccess))
     }
   } else {
     dispatch({ type: UPLOAD_CSV_FAILED })
@@ -114,13 +119,15 @@ const parseCSV = (csvResult: string) => {
   for (let i = 0; i < allTextLines.length; i++) {
     const entry = allTextLines[i]
     if (entry.includes(zeroX)) {
-      const splitArray = entry.split(',', 4)
-      const address = splitArray[0]
-      const sell = splitArray[1]
-      const buy = splitArray[2]
-      addresses.push(address)
-      sellRestriction.push(sell)
-      buyRestriction.push(buy)
+      let [address, sell, buy] = entry.split(',', 4)
+      if (ethereumAddress(address) !== null) {
+        [address, sell, buy] = entry.split(';', 4)
+      }
+      if (ethereumAddress(address) === null && !isNaN(Date.parse(sell)) && !isNaN(Date.parse(buy))) {
+        addresses.push(address)
+        sellRestriction.push(sell)
+        buyRestriction.push(buy)
+      }
     }
   }
   parsedData.push(addresses)
@@ -151,15 +158,14 @@ export const multiUserSubmit = () => async (
   const transferManager = getState().whitelist.transferManager
   dispatch(ui.txStart('Submitting Approved Investors...'))
   try {
-    const receipt = await transferManager.modifyWhitelistMulti(blockchainData)
+    await transferManager.modifyWhitelistMulti(blockchainData)
     dispatch(
       ui.notify(
         'Investors from the CSV were successfully Uploaded',
-        true,
-        'The investor list will be updated when the transaction on the blockchain completes',
-        ui.etherscanTx(receipt.transactionHash)
+        true
       )
     )
+    dispatch(ac_csvUpload([], [], [], false))
   } catch (e) {
     dispatch(ui.txFailed(e))
   }
@@ -181,13 +187,11 @@ export const oneUserSubmit = () => async (
   const transferManager = getState().whitelist.transferManager
   dispatch(ui.txStart('Submitting Approved Investor...'))
   try {
-    const receipt = await transferManager.modifyWhitelist(blockchainData)
+    await transferManager.modifyWhitelist(blockchainData)
     dispatch(
       ui.notify(
         'Investor was submitted to the blockchain',
-        true,
-        'The investor list will be updated when the transaction on the blockchain completes',
-        ui.etherscanTx(receipt.transactionHash)
+        true
       )
     )
   } catch (e) {
