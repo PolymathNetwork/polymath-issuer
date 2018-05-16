@@ -78,7 +78,7 @@ export const complete = (isDivisible: boolean) => async (dispatch: Function, get
     dispatch(
       ui.txSuccess(
         'Token Was Issued Successfully',
-        'Setup Offering Details',
+        'Set Up Offering Details',
         `/dashboard/${token.ticker}/sto`
       )
     )

@@ -70,6 +70,16 @@ export const fetchFactories = () => async (dispatch: Function) => {
 const dateTimeFromDateAndTime = (date: Date, time: TwelveHourTime) =>
   new Date(date.valueOf() + ui.twelveHourTimeToMinutes(time) * 60000)
 
+const getModuleAddressFromReceipt = (receipt: any) => {
+  const log = receipt.events.LogModuleAdded
+  if (!log) {
+    return null
+  }
+
+  // eslint-disable-next-line no-underscore-dangle
+  return log.returnValues._module
+}
+
 export const configure = () => async (dispatch: Function, getState: GetState) => {
   try {
     const factory = getState().sto.factory
@@ -95,6 +105,7 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
       values.currency === 'ETH',
       contract.account,
     )
+    const stoAddress = getModuleAddressFromReceipt(receipt)
     dispatch(fetch())
 
     const accountData = ui.getAccountDataForFetch(getState())
@@ -118,6 +129,7 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
           ticker: token.ticker,
           startDate: startDateWithTime.getTime().toString(),
           endDate: endDateWithTime.getTime().toString(),
+          stoAddress: stoAddress,
           txHash: receipt.transactionHash,
         },
       },
