@@ -12,6 +12,7 @@ import { confirmEmail } from './actions'
 
 export const formName = 'confirmEmail'
 
+// TODO @bshevchenko: extract into the separate file
 class ConfirmEmailFormUnwrapped extends Component<any> {
   render () {
     return (
@@ -66,6 +67,7 @@ const mapDispatchToProps = {
 }
 
 class ConfirmEmailPage extends Component<Props> {
+
   handleSubmit = () => {
     this.props.confirmEmail()
   }

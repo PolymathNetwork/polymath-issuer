@@ -178,7 +178,13 @@ class ProvidersPage extends Component<Props, State> {
     } else {
       tabSelected++
     }
-    this.setState({ isApply: false, selected: [], selectAll: false, tabSelected })
+    let catName
+    categories.map((cat: SPCategory) => {
+      if (cat.id === tabSelected) {
+        catName = cat.title
+      }
+    })
+    this.setState({ isApply: false, selected: [], selectAll: false, tabSelected, catName })
   }
 
   render () {
