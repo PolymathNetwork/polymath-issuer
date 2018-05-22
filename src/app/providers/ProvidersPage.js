@@ -169,16 +169,10 @@ class ProvidersPage extends Component<Props, State> {
   next = () => {
     let tabSelected = this.state.tabSelected
     const isLastCat = tabSelected + 1 === categories.length
-    if (isLastCat) {
-      tabSelected = 0
-      // $FlowFixMe
-      if (!this.props.token.address) {
-        this.handleCreateToken()
-      }
-    } else {
+    if (!isLastCat) {
       tabSelected++
     }
-    let catName
+    let { catName } = this.state
     categories.map((cat: SPCategory) => {
       if (cat.id === tabSelected) {
         catName = cat.title
