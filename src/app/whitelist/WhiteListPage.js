@@ -375,7 +375,7 @@ class WhitelistPage extends Component<Props, State> {
                     </p>
                     <p className='csvModalText'>
                       Column 3 &ndash; Buy Restriction Date mm/dd/yyyy
-                      (date when the resale restrictions should be lifted for that address).
+                      (date when the buy restrictions should be lifted for that address).
                     </p>
                     <p className='csvModalTextMini' style={{ display: 'none' }}>
                       You can download a <a href='/whitelist-sample.csv' download>Sample.csv</a> file and edit it
