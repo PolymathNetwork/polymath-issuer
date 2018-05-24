@@ -13,13 +13,17 @@ import {
   ComposedModal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
+  ModalFooter
 } from 'carbon-components-react'
 import { Countdown } from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
 import type { RouterHistory } from 'react-router-dom'
 
-import { applyProviders, iHaveMyOwnProviders, setProviderStatus } from './actions'
+import {
+  applyProviders,
+  iHaveMyOwnProviders,
+  setProviderStatus
+} from './actions'
 import NotFoundPage from '../NotFoundPage'
 import Progress from '../token/components/Progress'
 import { categories } from './data'
@@ -29,24 +33,24 @@ import ApplyModal from './ApplyModal'
 
 type StateProps = {|
   token: ?SecurityToken,
-  providers: ?Array<ServiceProvider>,
+  providers: ?Array<ServiceProvider>
 |}
 
 type DispatchProps = {|
   applyProviders: (ids: Array<number>) => any,
   iHaveMyOwnProviders: (cat: number) => any,
-  setProviderStatus: (id: number, status: SPStatus) => any,
+  setProviderStatus: (id: number, status: SPStatus) => any
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
   providers: state.providers.data,
-  token: state.token.token,
+  token: state.token.token
 })
 
 const mapDispatchToProps: DispatchProps = {
   applyProviders,
   iHaveMyOwnProviders,
-  setProviderStatus,
+  setProviderStatus
 }
 
 type State = {|
@@ -55,22 +59,22 @@ type State = {|
   selectAll: boolean,
   isApply: boolean,
   catName: string,
-  isModalOpen: boolean,
+  isModalOpen: boolean
 |}
 
 type Props = {|
-  history: RouterHistory,
-|} & StateProps & DispatchProps
+  history: RouterHistory
+|} & StateProps &
+  DispatchProps
 
 class ProvidersPage extends Component<Props, State> {
-
   state = {
     selected: [],
     tabSelected: 0,
     selectAll: false,
     isApply: false,
     catName: '',
-    isModalOpen: false,
+    isModalOpen: false
   }
 
   componentWillMount = () => {
@@ -84,12 +88,15 @@ class ProvidersPage extends Component<Props, State> {
       selected: [],
       tabSelected,
       selectAll: false,
-      catName,
+      catName
     })
   }
 
   handleProviderClick = (provider: ServiceProvider) => {
-    if ((provider.progress && provider.progress.isApplied) || provider.isToBeAnnounced) {
+    if (
+      (provider.progress && provider.progress.isApplied) ||
+      provider.isToBeAnnounced
+    ) {
       return
     }
     const { selected } = this.state
@@ -109,7 +116,11 @@ class ProvidersPage extends Component<Props, State> {
     if (isChecked) {
       // $FlowFixMe
       for (let p: ServiceProvider of providers) {
-        if (p.cat === this.state.tabSelected && (!p.progress || !p.progress.isApplied) && !p.isToBeAnnounced) {
+        if (
+          p.cat === this.state.tabSelected &&
+          (!p.progress || !p.progress.isApplied) &&
+          !p.isToBeAnnounced
+        ) {
           selected.push(p.id)
         }
       }
@@ -131,7 +142,9 @@ class ProvidersPage extends Component<Props, State> {
   }
 
   handleIHaveMyOwn = (cat: ?number) => {
-    this.props.iHaveMyOwnProviders((cat === null || cat === undefined) ? this.state.tabSelected : cat)
+    this.props.iHaveMyOwnProviders(
+      cat === null || cat === undefined ? this.state.tabSelected : cat
+    )
     this.next()
   }
 
@@ -178,10 +191,16 @@ class ProvidersPage extends Component<Props, State> {
         catName = cat.title
       }
     })
-    this.setState({ isApply: false, selected: [], selectAll: false, tabSelected, catName })
+    this.setState({
+      isApply: false,
+      selected: [],
+      selectAll: false,
+      tabSelected,
+      catName
+    })
   }
 
-  render () {
+  render() {
     const { token, providers } = this.props
     if (!token || !providers) {
       return <NotFoundPage />
@@ -190,91 +209,116 @@ class ProvidersPage extends Component<Props, State> {
       <DocumentTitle title={`${token.ticker} Providers – Polymath`}>
         <div>
           <Progress />
-          <ComposedModal open={this.state.isModalOpen} className='pui-confirm-modal'>
+          <ComposedModal
+            open={this.state.isModalOpen}
+            className="pui-confirm-modal"
+          >
             <ModalHeader
-              title={(
+              title={
                 <span>
-                  <Icon name='warning--glyph' fill='#EFC100' width='24' height='24' />&nbsp;
-                  Before You Proceed
+                  <Icon
+                    name="warning--glyph"
+                    fill="#EFC100"
+                    width="24"
+                    height="24"
+                  />&nbsp; Before You Proceed
                 </span>
-              )}
+              }
             />
             <ModalBody>
-              <div className='bx--modal-content__text'>
+              <div className="bx--modal-content__text">
                 <p>
-                  Please make sure you have received sufficient information from one of the Advisors or the Legal
-                  firms listed below or your own advisor before you proceed with the token creation.
+                  Please make sure you have received sufficient information from
+                  one of the Advisors or the Legal firms listed below or your
+                  own advisor before you proceed with the token creation.
                 </p>
               </div>
             </ModalBody>
-
             <ModalFooter>
-              <Button kind='secondary' onClick={this.handleCancelCreate}>
+              <Button kind="secondary" onClick={this.handleCancelCreate}>
                 Cancel
               </Button>
               <Button onClick={this.handleConfirmCreate}>Create Token</Button>
             </ModalFooter>
           </ComposedModal>
-          <div className='remark'>
-            <div className='remark-label'>Data Privacy</div>
+          <div className="remark">
+            <div className="remark-label">Data Privacy</div>
             <div>
               None of your data entered in the application form(s) is stored on
               Polymath servers or shared with any third party other than the
               firm(s) you decide to apply for.
             </div>
           </div>
-          <h1 className='pui-h1'>Choose Your Providers</h1>
-          <div className='bx--row'>
-            <div className='bx--col-xs-7'>
-              <h3 className='pui-h3'>
-                Your Polymath dashboard is integrated with several providers to streamline your on-boarding process and
-                access to their services. The information you enter in each associated form will be sent automatically to
-                the firm(s) you apply for. Upon review of your information, the firm(s) will contact you directly to
-                establish the applicable next steps.<br /><br />
-                To get started, please select an Advisory provider, a Legal provider or both. Note that you don’t need
-                to select all at the same time nor have any obligation to select any of the providers below.
-                You can always elect to use your own.
+          <h1 className="pui-h1">Choose Your Providers</h1>
+          <div className="bx--row">
+            <div className="bx--col-xs-7">
+              <h3 className="pui-h3">
+                Your Polymath dashboard is integrated with several providers to
+                streamline your on-boarding process and access to their
+                services. The information you enter in each associated form will
+                be sent automatically to the firm(s) you apply for. Upon review
+                of your information, the firm(s) will contact you directly to
+                establish the applicable next steps.<br />
+                <br />
+                To get started, please select an Advisory provider, a Legal
+                provider or both. Note that you don’t need to select all at the
+                same time nor have any obligation to select any of the providers
+                below. You can always elect to use your own.
               </h3>
             </div>
-            <div className='bx--col-xs-5 countdown-container'>
+            <div className="bx--col-xs-5 countdown-container">
               {!token.address && token.expires ? (
                 <Countdown
-                  title='Time Left to Create Your Token'
+                  title="Time Left to Create Your Token"
                   deadline={token.expires}
-                  buttonTitle='Create Your Token Now'
+                  buttonTitle="Create Your Token Now"
                   handleButtonClick={this.handleCreateToken}
                 />
-              ) : ''}
+              ) : (
+                ''
+              )}
             </div>
           </div>
           <Tabs selected={this.state.tabSelected}>
             {categories.map((cat: SPCategory) => (
               <Tab
                 key={cat.id}
-                label={(
+                label={
                   <div>
                     {cat.title}&nbsp;
                     {this.applied(cat.id) !== -1 ? (
-                      <span className={'bx--tag' + (!this.applied(cat.id) ? ' tag-my-own' : '')}>
-                        {this.applied(cat.id) ? this.applied(cat.id) + ' Applied' : 'I Have My Own'}
+                      <span
+                        className={
+                          'bx--tag' +
+                          (!this.applied(cat.id) ? ' tag-my-own' : '')
+                        }
+                      >
+                        {this.applied(cat.id)
+                          ? this.applied(cat.id) + ' Applied'
+                          : 'I Have My Own'}
                       </span>
-                    ) : ''}
+                    ) : (
+                      ''
+                    )}
                   </div>
-                )}
+                }
                 onClick={() => this.handleTabClick(cat.id, cat.title)}
                 href={'#' + cat.id}
               >
                 <div>
-                  <h2 className='pui-h2'>
-                    {cat.title}
-                  </h2>
-                  <h4 className='pui-h4' style={{ width: '721px', float: 'left' }}>{cat.desc}</h4>
-                  <div className='providers-controls'>
+                  <h2 className="pui-h2">{cat.title}</h2>
+                  <h4
+                    className="pui-h4"
+                    style={{ width: '721px', float: 'left' }}
+                  >
+                    {cat.desc}
+                  </h4>
+                  <div className="providers-controls">
                     <Checkbox
-                      id='select-all-providers'
+                      id="select-all-providers"
                       onClick={this.handleSelectAll}
                       checked={this.state.selectAll}
-                      labelText='Select all'
+                      labelText="Select all"
                     />
                     <Button
                       disabled={this.state.selected.length === 0}
@@ -282,42 +326,65 @@ class ProvidersPage extends Component<Props, State> {
                     >
                       Apply to selected
                     </Button>
-                    <Button kind='secondary' onClick={() => this.handleIHaveMyOwn(cat.id)}>I have my own</Button>
+                    <Button
+                      kind="secondary"
+                      onClick={() => this.handleIHaveMyOwn(cat.id)}
+                    >
+                      I have my own
+                    </Button>
                   </div>
-                  <div className='pui-clearfix' />
-                  <div className='providers pui-no-select'>
-                    {providers.map((p: ServiceProvider) => p.cat !== cat.id ? '' : (
-                      <div
-                        role='button'
-                        key={p.id}
-                        onClick={() => this.handleProviderClick(p)}
-                        className={
-                          'provider' +
-                          (this.state.selected.includes(p.id) ? ' provider-selected' : '') +
-                          (p.progress && p.progress.isApplied ? ' provider-applied' : '') +
-                          (p.isToBeAnnounced ? ' provider-to-be-announced' : '')
-                        }
-                      >
-                        {p.progress && p.progress.isApplied ? (
-                          <div className='provider-applied'>
-                            Applied
-                            <Icon
-                              name='checkmark--glyph'
-                              fill='#00AA5E'
-                            />
+                  <div className="pui-clearfix" />
+                  <div className="providers pui-no-select">
+                    {providers.map(
+                      (p: ServiceProvider) =>
+                        p.cat !== cat.id ? (
+                          ''
+                        ) : (
+                          <div
+                            role="button"
+                            key={p.id}
+                            onClick={() => this.handleProviderClick(p)}
+                            className={
+                              'provider' +
+                              (this.state.selected.includes(p.id)
+                                ? ' provider-selected'
+                                : '') +
+                              (p.progress && p.progress.isApplied
+                                ? ' provider-applied'
+                                : '') +
+                              (p.isToBeAnnounced
+                                ? ' provider-to-be-announced'
+                                : '')
+                            }
+                          >
+                            {p.progress && p.progress.isApplied ? (
+                              <div className="provider-applied">
+                                Applied
+                                <Icon name="checkmark--glyph" fill="#00AA5E" />
+                              </div>
+                            ) : (
+                              ''
+                            )}
+                            <div className="provider-img">
+                              <img src={p.logo} alt={p.title} />
+                            </div>
+                            <h3 className="pui-h3">
+                              {p.isToBeAnnounced ? 'SOON...' : p.title}
+                            </h3>
+                            <p>
+                              {p.isToBeAnnounced ? 'To Be Announced' : p.desc}
+                            </p>
+                            {p.disclosure ? (
+                              <div className="remark">
+                                <div className="remark-label">Disclosure</div>
+                                <div>{p.disclosure}</div>
+                              </div>
+                            ) : (
+                              ''
+                            )}
                           </div>
-                        ) : ''}
-                        <div className='provider-img'><img src={p.logo} alt={p.title} /></div>
-                        <h3 className='pui-h3'>{p.isToBeAnnounced ? 'SOON...' : p.title}</h3>
-                        <p>{p.isToBeAnnounced ? 'To Be Announced' : p.desc}</p>
-                        {p.disclosure ? (
-                          <div className='remark'>
-                            <div className='remark-label'>Disclosure</div>
-                            <div>{p.disclosure}</div>
-                          </div>
-                        ) : ''}
-                      </div>
-                    ))}
+                        )
+                    )}
                   </div>
                 </div>
               </Tab>
@@ -329,7 +396,7 @@ class ProvidersPage extends Component<Props, State> {
             onClose={this.handleCancelApply}
             onSubmit={this.handleApply}
           />
-          <div className='pui-clearfix' />
+          <div className="pui-clearfix" />
         </div>
       </DocumentTitle>
     )

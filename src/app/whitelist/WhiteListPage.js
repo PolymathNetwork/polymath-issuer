@@ -12,8 +12,7 @@ import {
   Modal,
   ModalWrapper,
   DatePicker,
-  DatePickerInput,
-  FileUploaderButton,
+  DatePickerInput
 } from 'carbon-components-react'
 
 import type { Address, SecurityToken } from 'polymathjs/types'
@@ -29,7 +28,7 @@ import {
   getWhitelist,
   listLength,
   removeInvestor,
-  editInvestors,
+  editInvestors
 } from './actions'
 import InvestorForm from './components/addInvestorForm'
 import EditInvestorsForm from './components/editInvestorsForm'
@@ -40,7 +39,7 @@ import type { WhitelistState } from './reducer'
 import './style.css'
 
 const tableStyle = {
-  backgroundColor: 'white',
+  backgroundColor: 'white'
 }
 
 const {
@@ -57,12 +56,12 @@ const {
   TableBatchAction,
   TableBatchActions,
   TableToolbarSearch,
-  TableToolbarContent,
+  TableToolbarContent
 } = DataTable
 
 type StateProps = {|
   whitelist: WhitelistState,
-  token: SecurityToken,
+  token: SecurityToken
 |}
 
 type DispatchProps = {|
@@ -74,17 +73,17 @@ type DispatchProps = {|
   updateListLength: number => any,
   removeInvestor: (investors: Array<Address>) => any,
   editInvestors: (investors: Array<Address>) => any,
-  reset: () => any,
+  reset: () => any
 |}
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   whitelist: state.whitelist,
-  token: state.token.token,
+  token: state.token.token
 })
 
 const mapDispatchToProps = (dispatch: Function) => ({
   initialize: () => dispatch(initialize()),
-  handleUpload: (file) => dispatch(uploadCSV(file)),
+  handleUpload: file => dispatch(uploadCSV(file)),
   multiSubmit: () => dispatch(multiUserSubmit()),
   singleSubmit: () => dispatch(oneUserSubmit()),
   getWhitelist: (calenderStart: Date, calenderEnd: Date) =>
@@ -94,15 +93,15 @@ const mapDispatchToProps = (dispatch: Function) => ({
     dispatch(removeInvestor(investors)),
   editInvestors: (investors: Array<Address>) =>
     dispatch(editInvestors(investors)),
-  reset: () => dispatch(ac_csvUpload([], [], [], false)),
+  reset: () => dispatch(ac_csvUpload([], [], [], false))
 })
 
-type Props = StateProps & DispatchProps;
+type Props = StateProps & DispatchProps
 
 type State = {|
   page: number,
   editInvestorsShowing: boolean,
-  editInvestors: Array<Address>,
+  editInvestors: Array<Address>
 |}
 
 type EventData = {|
@@ -111,12 +110,12 @@ type EventData = {|
   added: ?string,
   addedBy: ?Address,
   from: string,
-  to: string,
+  to: string
 |}
 
 type PageChanger = {|
   page: number,
-  pageSize: number,
+  pageSize: number
 |}
 
 type DatePickerType = [Date, Date]
@@ -125,7 +124,7 @@ const dateFormat = (date: Date) =>
   date.toLocaleDateString('en', {
     year: 'numeric',
     month: 'short',
-    day: 'numeric',
+    day: 'numeric'
   })
 
 const tableHeaders = [
@@ -133,31 +132,31 @@ const tableHeaders = [
   { key: 'added', header: 'Date Added' },
   { key: 'addedBy', header: 'Added By' },
   { key: 'from', header: 'Sell Restriction Until' },
-  { key: 'to', header: 'Buy Restriction Until' },
+  { key: 'to', header: 'Buy Restriction Until' }
 ]
 
 class WhitelistPage extends Component<Props, State> {
   state = {
     page: 0,
     editInvestorsShowing: false,
-    editInvestors: [],
+    editInvestors: []
   }
 
-  componentWillMount () {
+  componentWillMount() {
     this.props.initialize()
   }
 
   handleChangePages = (pc: PageChanger) => {
     this.props.updateListLength(pc.pageSize)
     this.setState({
-      page: pc.page - 1,
+      page: pc.page - 1
     })
   }
 
   handleDatePicker = (picker: DatePickerType) => {
     if (picker.length === 2) {
       this.setState({
-        page: 0, // TODO @davekaj: make sure that resetting to initial page is truly needed
+        page: 0 // TODO @davekaj: make sure that resetting to initial page is truly needed
       })
       this.props.getWhitelist(picker[0], picker[1])
     }
@@ -170,35 +169,35 @@ class WhitelistPage extends Component<Props, State> {
     }
     this.setState({
       editInvestorsShowing: true,
-      editInvestors: addresses,
+      editInvestors: addresses
     })
   }
 
   handleRequestSubmit = () => {
     this.props.editInvestors(this.state.editInvestors)
     this.setState({
-      editInvestorsShowing: false,
+      editInvestorsShowing: false
     })
   }
 
   handleRequestClose = () => {
     this.setState({
-      editInvestorsShowing: false,
+      editInvestorsShowing: false
     })
   }
 
   // This is used to display the garbage cans in the table
-  checkGarbageCell = (index) => {
+  checkGarbageCell = index => {
     if (index === 4) return true
   }
 
   // This is used to add etherscan links on the addressed in the table
-  checkAddressCell = (index) => {
+  checkAddressCell = index => {
     if (index === 0 || index === 2) return true
   }
 
   // renders the list by making it date strings and splitting up in pages, at the start of the render function
-  paginationRendering () {
+  paginationRendering() {
     const investors = this.props.whitelist.investors
     const pageNum = this.state.page
     const listLength = this.props.whitelist.listLength
@@ -220,7 +219,7 @@ class WhitelistPage extends Component<Props, State> {
         added: stringifyAdded,
         addedBy: paginatedArray[i].addedBy,
         from: stringifyFrom,
-        to: stringifyTo,
+        to: stringifyTo
       }
       stringifiedArray.push(stringifyInvestor)
     }
@@ -252,7 +251,7 @@ class WhitelistPage extends Component<Props, State> {
     getSelectionProps,
     getBatchActionProps,
     onInputChange,
-    selectedRows,
+    selectedRows
   }) => (
     <TableContainer>
       <TableToolbar>
@@ -271,14 +270,14 @@ class WhitelistPage extends Component<Props, State> {
         <TableToolbarSearch onChange={onInputChange} />
         <TableToolbarContent>
           <ModalWrapper
-            id='transactional-modal'
-            buttonTriggerText='Add New'
-            modalHeading='Add New Investor'
+            id="transactional-modal"
+            buttonTriggerText="Add New"
+            modalHeading="Add New Investor"
             handleSubmit={this.onHandleInvestorSubmit}
             shouldCloseAfterSubmit
-            primaryButtonText='Add New Investor'
+            primaryButtonText="Add New Investor"
           >
-            <p className='bx--modal-content__text'>
+            <p className="bx--modal-content__text">
               Please enter the information below to add a single investor.
             </p>
             <br />
@@ -290,7 +289,7 @@ class WhitelistPage extends Component<Props, State> {
         <TableHead>
           <TableRow>
             <TableSelectAll {...getSelectionProps()} />
-            {headers.map((header) => (
+            {headers.map(header => (
               <TableHeader {...getHeaderProps({ header })}>
                 {header.header}
               </TableHeader>
@@ -304,23 +303,23 @@ class WhitelistPage extends Component<Props, State> {
               {row.cells.map((cell, i) => (
                 <TableCell key={cell.id}>
                   {this.checkGarbageCell(i) ? (
-                    <div className='garbageFlexBox'>
+                    <div className="garbageFlexBox">
                       {cell.value}
-                      <div className='garbage'>
+                      <div className="garbage">
                         <svg
-                          className='garbageCan'
-                          width='16'
-                          height='24'
-                          viewBox='0 0 16 24'
-                          fillRule='evenodd'
+                          className="garbageCan"
+                          width="16"
+                          height="24"
+                          viewBox="0 0 16 24"
+                          fillRule="evenodd"
                           onClick={() =>
                             this.props.removeInvestor([
-                              this.props.whitelist.investors[rowIndex].address,
+                              this.props.whitelist.investors[rowIndex].address
                             ])
                           }
                         >
-                          <path d='M4 0h8v2H4zM0 3v4h1v17h14V7h1V3H0zm13 18H3V8h10v13z' />
-                          <path d='M5 10h2v9H5zm4 0h2v9H9z' />
+                          <path d="M4 0h8v2H4zM0 3v4h1v17h14V7h1V3H0zm13 18H3V8h10v13z" />
+                          <path d="M5 10h2v9H5zm4 0h2v9H9z" />
                         </svg>
                       </div>
                     </div>
@@ -338,58 +337,66 @@ class WhitelistPage extends Component<Props, State> {
     </TableContainer>
   )
 
-  render () {
+  render() {
     const { token } = this.props
     if (!token || !token.address) {
       return <NotFoundPage />
     }
     const paginatedRows = this.paginationRendering()
     return (
-      <DocumentTitle title='Whitelist – Polymath'>
+      <DocumentTitle title="Whitelist – Polymath">
         <div>
           <Progress />
-          <h1 className='pui-h1'>Whitelist Investors</h1>
-          <div className='bx--row'>
-            <div className='bx--col-xs-6'>
+          <h1 className="pui-h1">Whitelist Investors</h1>
+          <div className="bx--row">
+            <div className="bx--col-xs-6">
               <ModalWrapper
-                id='input-modal'
-                buttonTriggerText='Import Whitelist'
-                modalLabel=''
-                modalHeading='Import Whitelist'
+                id="input-modal"
+                buttonTriggerText="Import Whitelist"
+                modalLabel=""
+                modalHeading="Import Whitelist"
                 handleSubmit={this.onHandleMultiSubmit}
-                primaryButtonText='Add Investors'
+                primaryButtonText="Add Investors"
                 shouldCloseAfterSubmit
               >
                 <div
                   className={this.props.whitelist.previewCSVShowing ? '' : ''}
                 >
                   <div>
-                    <p className='csvModalText'>
+                    <p className="csvModalText">
                       Add multiple addresses to the whitelist by uploading a
                       comma separated CSV file. The format should be as follows:
                     </p>
-                    <p className='csvModalText'>Column 1 &ndash; Ethereum Address.</p>
-                    <p className='csvModalText'>
-                      Column 2 &ndash; Sell Restriction Date mm/dd/yyyy
-                      (date when the resale restrictions should be lifted for that address).
+                    <p className="csvModalText">
+                      Column 1 &ndash; Ethereum Address.
                     </p>
-                    <p className='csvModalText'>
-                      Column 3 &ndash; Buy Restriction Date mm/dd/yyyy
-                      (date when the buy restrictions should be lifted for that address).
+                    <p className="csvModalText">
+                      Column 2 &ndash; Sell Restriction Date mm/dd/yyyy (date
+                      when the resale restrictions should be lifted for that
+                      address).
                     </p>
-                    <p className='csvModalTextMini' style={{ display: 'none' }}>
-                      You can download a <a href='/whitelist-sample.csv' download>Sample.csv</a> file and edit it
+                    <p className="csvModalText">
+                      Column 3 &ndash; Buy Restriction Date mm/dd/yyyy (date
+                      when the buy restrictions should be lifted for that
+                      address).
+                    </p>
+                    <p className="csvModalTextMini" style={{ display: 'none' }}>
+                      You can download a{' '}
+                      <a href="/whitelist-sample.csv" download>
+                        Sample.csv
+                      </a>{' '}
+                      file and edit it
                     </p>
                     <div
                       data-notification
-                      className='bx--inline-notification bx--inline-notification--error'
-                      role='alert'
+                      className="bx--inline-notification bx--inline-notification--error"
+                      role="alert"
                     >
-                      <div className='bx--inline-notification__details'>
-                        <h3 className='bx--inline-notification__title'>
+                      <div className="bx--inline-notification__details">
+                        <h3 className="bx--inline-notification__title">
                           REMINDER:
                         </h3>
-                        <p className='bx--inline-notification__subtitle'>
+                        <p className="bx--inline-notification__subtitle">
                           Investors must be approved before they are added to
                           the whitelist.
                         </p>
@@ -397,17 +404,17 @@ class WhitelistPage extends Component<Props, State> {
                     </div>
                   </div>
                   {this.props.whitelist.previewCSVShowing ? (
-                    <div className='csvModalTableContainer'>
+                    <div className="csvModalTableContainer">
                       <table>
                         <tbody>
-                          <tr className='csvPreviewHeader'>
+                          <tr className="csvPreviewHeader">
                             <th>Investor&apos;s Eth Address</th>
                             <th>Sale Lockup End Date</th>
                             <th>Purchase Lockup End Date</th>
                           </tr>
                           {this.props.whitelist.addresses.map((user, i) => (
-                            <tr key={uuidv4()} className='csvPreviewTable'>
-                              <td className='csvTableEthAddress'>
+                            <tr key={uuidv4()} className="csvPreviewTable">
+                              <td className="csvTableEthAddress">
                                 {addressShortifier(
                                   this.props.whitelist.addresses[i]
                                 )}
@@ -419,41 +426,36 @@ class WhitelistPage extends Component<Props, State> {
                         </tbody>
                       </table>
                     </div>
-                  ) : ''}
+                  ) : (
+                    ''
+                  )}
                   <div>
                     <BasicDropZone onHandleUpload={this.props.handleUpload} />
-                    <FileUploaderButton
-                      labelText='Upload From Desktop'
-                      onChange={this.props.handleUpload}
-                      accept={['.csv']}
-                      multiple
-                      buttonKind='secondary'
-                    />
                   </div>
                 </div>
               </ModalWrapper>
               <br />
             </div>
           </div>
-          <div className='bx--row'>
-            <div className='bx--col-xs-2'>
+          <div className="bx--row">
+            <div className="bx--col-xs-2">
               <DatePicker
-                id='date-picker'
+                id="date-picker"
                 onChange={this.handleDatePicker}
-                datePickerType='range'
+                datePickerType="range"
               >
                 {/* include onClick to get rid of error being passed onto the
                 component and shown in console */}
                 <DatePickerInput
-                  labelText='Start Date Added'
-                  placeholder='mm/dd/yyyy'
-                  id='date-picker-input-id'
+                  labelText="Start Date Added"
+                  placeholder="mm/dd/yyyy"
+                  id="date-picker-input-id"
                   onClick={() => {}}
                 />
                 <DatePickerInput
-                  labelText='End Date Added'
-                  placeholder='mm/dd/yyyy'
-                  id='date-picker-input-id-2'
+                  labelText="End Date Added"
+                  placeholder="mm/dd/yyyy"
+                  id="date-picker-input-id-2"
                   onClick={() => {}}
                 />
               </DatePicker>
@@ -474,11 +476,11 @@ class WhitelistPage extends Component<Props, State> {
               onRequestSubmit={this.handleRequestSubmit}
               onRequestClose={this.handleRequestClose}
               open
-              modalHeading='Edit Existing Investors'
-              primaryButtonText='Send'
-              secondaryButtonText='Cancel'
+              modalHeading="Edit Existing Investors"
+              primaryButtonText="Send"
+              secondaryButtonText="Cancel"
             >
-              <p className='bx--modal-content__text'>
+              <p className="bx--modal-content__text">
                 Please enter the information below to edit the chosen investors.
               </p>
               <br />
