@@ -225,7 +225,7 @@ class ProvidersPage extends Component<Props, State> {
           </div>
           <h1 className='pui-h1'>Choose Your Providers</h1>
           <div className='bx--row'>
-            <div className='bx--col-xs-7'>
+            <div className='bx--col-xs-8'>
               <h3 className='pui-h3'>
                 Your Polymath dashboard is integrated with several providers to streamline your on-boarding process and
                 access to their services. The information you enter in each associated form will be sent automatically to

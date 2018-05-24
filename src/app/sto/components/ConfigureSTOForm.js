@@ -72,7 +72,7 @@ class ConfigureSTOForm extends Component<Props, State> {
           name='start-end'
           component={DatePickerRangeInput}
           label='Start Date;End Date'
-          placeholder='mm/dd/yyyy'
+          placeholder='mm / dd / yyyy'
           validate={[required, dateRange, dateRangeTodayOrLater]}
           style={{ width: '235px' }}
         />

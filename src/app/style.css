@@ -1,13 +1,9 @@
-.splash-background-color,
 .splash-background {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: white; }
-
-.splash-background {
   background: url("/hero.png") no-repeat right bottom !important; }
 
 .splash-background-pattern {
@@ -31,10 +27,10 @@
     margin-bottom: 62px; }
 
 .ticker-field {
-  margin-bottom: 1.5rem;
   background: #EBF0F7;
-  padding: 12px 48px 48px 48px;
-  margin-top: 30px;
+  padding: 12px 48px 31px 48px;
+  margin-bottom: 1.5rem;
+  margin-top: 24px;
   text-align: center;
   border-radius: 4px; }
   .ticker-field .bx--label {
@@ -67,15 +63,7 @@
   text-align: center;
   font-size: 18px; }
 
-.pui-page-box hr {
-  border: 0;
-  border-top: 1px solid #EBF0F7;
-  margin-bottom: 18px;
-  margin-top: -3px; }
-
-.pui-page-box .ticker-field {
-  margin-top: 0; }
-
+/* TODO @bshevchenko: consider extracting of the following into the polymath-ui */
 .pui-page-box .bx--form-item p a {
   word-break: break-word; }
 
@@ -201,9 +189,6 @@
   align-items: center; }
   .countdown-container .pui-countdown {
     float: none; }
-
-.tag-my-own {
-  background-color: #5596E6 !important; }
 
 .providers-controls {
   float: right; }

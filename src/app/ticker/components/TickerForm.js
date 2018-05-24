@@ -40,7 +40,7 @@ class TickerForm extends Component<Props> {
           label={
             <Tooltip triggerText='Token Name'>
               <p className='bx--tooltip__label'>
-                Token name
+                Token Name
               </p>
               <p>
                 This is the name of your token for display purposes.<br />

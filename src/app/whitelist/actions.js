@@ -5,8 +5,8 @@ import { ethereumAddress } from 'polymath-ui/dist/validate'
 import { TransferManager, SecurityToken } from 'polymathjs'
 import type { Investor, Address } from 'polymathjs/types'
 
-import { formName as addInvestorFormName } from './components/addInvestorForm'
-import { formName as editInvestorsFormName } from './components/editInvestorsForm'
+import { formName as addInvestorFormName } from './components/AddInvestorForm'
+import { formName as editInvestorsFormName } from './components/EditInvestorsForm'
 import type { GetState } from '../../redux/reducer'
 import type { ExtractReturn } from '../../redux/helpers'
 

@@ -33,7 +33,7 @@ const mapDispatchToProps: DispatchProps = {
 type Props = {|
 |} & StateProps & DispatchProps
 
-class SelectSTO extends Component<Props> {
+class SelectSTOTemplate extends Component<Props> {
 
   componentWillMount () {
     this.props.fetchFactories()
@@ -49,7 +49,7 @@ class SelectSTO extends Component<Props> {
           <Progress />
           <div className='bx--row'>
             <div className='bx--col-xs-12'>
-              <h1 className='pui-h1'>Security Token Offerings</h1>
+              <h1 className='pui-h1'>Security Token Offering Templates</h1>
               <h3 className='pui-h3'>
                 Browse the STO models below, and choose the model that best fits your needs.<br />
                 To select the model you desire, press &laquo;SELECT AND CONFIGURE STO&raquo;.
@@ -66,4 +66,4 @@ class SelectSTO extends Component<Props> {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SelectSTO)
+export default connect(mapStateToProps, mapDispatchToProps)(SelectSTOTemplate)

@@ -92,7 +92,7 @@ class TickerPage extends Component<Props, State> {
     }
 
     return (
-      <DocumentTitle title='Token Symbol Registration – Polymath'>
+      <DocumentTitle title='Token Symbol Reservation – Polymath'>
         <Fragment>
           <ComposedModal open={this.state.isModalOpen} className='pui-confirm-modal'>
             <ModalHeader
@@ -129,7 +129,7 @@ class TickerPage extends Component<Props, State> {
           </ComposedModal>
           <div className='pui-single-box'>
             <div className='pui-single-box-header'>
-              <div className='pui-single-box-bull' style={{ height: '200px' }}>
+              <div className='pui-single-box-bull'>
                 <img src={bull} alt='Bull' />
               </div>
               <h1 className='pui-h1'>Reserve Your Token Symbol</h1>

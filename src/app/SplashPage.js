@@ -9,7 +9,6 @@ export default class SplashPage extends Component {
     return (
       <DocumentTitle title='Polymath'>
         <div className='bx--row'>
-          <div className='splash-background-color' />
           <div className='splash-background-pattern' />
           <div className='splash-background' />
           <div className='bx--col-xs-8'>

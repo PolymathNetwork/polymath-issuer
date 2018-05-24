@@ -31,8 +31,8 @@ import {
   removeInvestor,
   editInvestors,
 } from './actions'
-import InvestorForm from './components/addInvestorForm'
-import EditInvestorsForm from './components/editInvestorsForm'
+import AddInvestorForm from './components/AddInvestorForm'
+import EditInvestorsForm from './components/EditInvestorsForm'
 import BasicDropZone from './components/ReactDropZone'
 
 import type { WhitelistState } from './reducer'
@@ -129,7 +129,7 @@ const dateFormat = (date: Date) =>
   })
 
 const tableHeaders = [
-  { key: 'address', header: 'Investor Eth Address' },
+  { key: 'address', header: 'Investor\'s ETH Address' },
   { key: 'added', header: 'Date Added' },
   { key: 'addedBy', header: 'Added By' },
   { key: 'from', header: 'Sell Restriction Until' },
@@ -279,10 +279,10 @@ class WhitelistPage extends Component<Props, State> {
             primaryButtonText='Add New Investor'
           >
             <p className='bx--modal-content__text'>
-              Please enter the information below to add a single investor.
+              Add individual addresses to the whitelist by inputting their ETH Address below.
             </p>
             <br />
-            <InvestorForm />
+            <AddInvestorForm />
           </ModalWrapper>
         </TableToolbarContent>
       </TableToolbar>
@@ -348,11 +348,10 @@ class WhitelistPage extends Component<Props, State> {
       <DocumentTitle title='Whitelist – Polymath'>
         <div>
           <Progress />
-          <h1 className='pui-h1'>Whitelist Investors</h1>
+          <h1 className='pui-h1'>Whitelist</h1>
           <div className='bx--row'>
             <div className='bx--col-xs-6'>
               <ModalWrapper
-                id='input-modal'
                 buttonTriggerText='Import Whitelist'
                 modalLabel=''
                 modalHeading='Import Whitelist'
@@ -370,11 +369,11 @@ class WhitelistPage extends Component<Props, State> {
                     </p>
                     <p className='csvModalText'>Column 1 &ndash; Ethereum Address.</p>
                     <p className='csvModalText'>
-                      Column 2 &ndash; Sell Restriction Date mm/dd/yyyy
+                      Column 2 &ndash; Sell Restriction Date mm / dd / yyyy
                       (date when the resale restrictions should be lifted for that address).
                     </p>
                     <p className='csvModalText'>
-                      Column 3 &ndash; Buy Restriction Date mm/dd/yyyy
+                      Column 3 &ndash; Buy Restriction Date mm / dd / yyyy
                       (date when the resale restrictions should be lifted for that address).
                     </p>
                     <p className='csvModalTextMini' style={{ display: 'none' }}>
@@ -401,7 +400,7 @@ class WhitelistPage extends Component<Props, State> {
                       <table>
                         <tbody>
                           <tr className='csvPreviewHeader'>
-                            <th>Investor&apos;s Eth Address</th>
+                            <th>Investor&apos;s ETH Address</th>
                             <th>Sale Lockup End Date</th>
                             <th>Purchase Lockup End Date</th>
                           </tr>
@@ -436,25 +435,18 @@ class WhitelistPage extends Component<Props, State> {
             </div>
           </div>
           <div className='bx--row'>
-            <div className='bx--col-xs-2'>
+            <div className='bx--col-xs-4'>
               <DatePicker
-                id='date-picker'
                 onChange={this.handleDatePicker}
                 datePickerType='range'
               >
-                {/* include onClick to get rid of error being passed onto the
-                component and shown in console */}
                 <DatePickerInput
                   labelText='Start Date Added'
-                  placeholder='mm/dd/yyyy'
-                  id='date-picker-input-id'
-                  onClick={() => {}}
+                  placeholder='mm / dd / yyyy'
                 />
                 <DatePickerInput
                   labelText='End Date Added'
-                  placeholder='mm/dd/yyyy'
-                  id='date-picker-input-id-2'
-                  onClick={() => {}}
+                  placeholder='mm / dd / yyyy'
                 />
               </DatePicker>
             </div>
