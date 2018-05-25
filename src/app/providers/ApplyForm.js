@@ -102,6 +102,7 @@ class ApplyForm extends Component<Props> {
           Advisory firm(s) you have selected. None of this information is stored on Polymath servers, only your
           browser&apos;s cache. To clear this information, simply clear your browser&apos;s cache.
         </p>
+        <br />
       </Form>
     )
   }

@@ -14,6 +14,8 @@ import Progress from './components/Progress'
 import CompleteTokenForm from './components/CompleteTokenForm'
 import type { RootState } from '../../redux/reducer'
 
+import './style.css'
+
 type StateProps = {|
   token: ?SecurityToken,
   isDeploySuccess: boolean,
@@ -103,27 +105,24 @@ class TokenPage extends Component<Props, State> {
                 {!token.address && token.expires ? (
                   <div className='bx--col-xs-7'>
                     <div className='pui-page-box'>
-                      <div className='bx--row'>
-                        <div className='bx--col-xs-8'>
-                          <h2 className='pui-h2'>
-                            Create Your Security Token
-                          </h2>
-                          <h3 className='pui-h3'>
-                            Create your security token before your token reservation expires. If your reservation
-                            expire, the token symbol you selected will be available for others to claim.
-                          </h3>
-                          <h3 className='pui-h3'>
-                            To proceed with the creation of your security token,
-                            we recommend you work with your Advisory to answer
-                            the following questions:
-                          </h3>
-                          <br />
-                          <CompleteTokenForm onSubmit={this.handleCompleteSubmit} />
-                        </div>
-                        <div className='bx--col-xs-4'>
-                          <Countdown small title='Time Left' deadline={token.expires} />
-                        </div>
+                      <div className='token-countdown-container'>
+                        <Countdown small title='Time Left' deadline={token.expires} />
                       </div>
+                      <h2 className='pui-h2'>
+                        Create Your Security Token
+                      </h2>
+                      <h3 className='pui-h3'>
+                        Create your security token before your token registration expires.
+                        If you let your token reservation expire, the token symbol you selected will be
+                        available for others to claim.
+                      </h3>
+                      <h3 className='pui-h3'>
+                        To proceed with the creation of your security token,
+                        we recommend you work with your Advisory to answer
+                        the following questions:
+                      </h3>
+                      <br />
+                      <CompleteTokenForm onSubmit={this.handleCompleteSubmit} />
                     </div>
                   </div>
                 ) : ''}

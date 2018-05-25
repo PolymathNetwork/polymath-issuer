@@ -8083,9 +8083,9 @@ polymath-core@1.0.3:
     web3 "^1.0.0-beta.33"
     zeppelin-solidity "^1.8.0"
 
-polymath-ui@2.6.0:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-2.6.0.tgz#d0923db6ce28067f0b6c592302ddc7014f713a62"
+polymath-ui@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-3.0.0.tgz#25b410b904f2516f5ef66b970eee3deab4d1a58f"
   dependencies:
     apollo-fetch "^0.7.0"
     babel-runtime "6.26.0"

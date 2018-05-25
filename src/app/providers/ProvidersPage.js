@@ -15,7 +15,7 @@ import {
   ModalBody,
   ModalFooter,
 } from 'carbon-components-react'
-import { Countdown } from 'polymath-ui'
+import { Countdown, Remark } from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
 import type { RouterHistory } from 'react-router-dom'
 
@@ -26,6 +26,8 @@ import { categories } from './data'
 import type { RootState } from '../../redux/reducer'
 import type { SPStatus, SPCategory, ServiceProvider } from './data'
 import ApplyModal from './ApplyModal'
+
+import './style.css'
 
 type StateProps = {|
   token: ?SecurityToken,
@@ -215,14 +217,11 @@ class ProvidersPage extends Component<Props, State> {
               <Button onClick={this.handleConfirmCreate}>Create Token</Button>
             </ModalFooter>
           </ComposedModal>
-          <div className='remark'>
-            <div className='remark-label'>Data Privacy</div>
-            <div>
-              None of your data entered in the application form(s) is stored on
-              Polymath servers or shared with any third party other than the
-              firm(s) you decide to apply for.
-            </div>
-          </div>
+          <Remark title='Data Privacy'>
+            None of your data entered in the application form(s) is stored on
+            Polymath servers or shared with any third party other than the
+            firm(s) you decide to apply for.
+          </Remark>
           <h1 className='pui-h1'>Choose Your Providers</h1>
           <div className='bx--row'>
             <div className='bx--col-xs-8'>
@@ -236,7 +235,7 @@ class ProvidersPage extends Component<Props, State> {
                 You can always elect to use your own.
               </h3>
             </div>
-            <div className='bx--col-xs-5 countdown-container'>
+            <div className='bx--col-xs-4 countdown-container'>
               {!token.address && token.expires ? (
                 <Countdown
                   title='Time Left to Create Your Token'
@@ -311,10 +310,9 @@ class ProvidersPage extends Component<Props, State> {
                         <h3 className='pui-h3'>{p.isToBeAnnounced ? 'SOON...' : p.title}</h3>
                         <p>{p.isToBeAnnounced ? 'To Be Announced' : p.desc}</p>
                         {p.disclosure ? (
-                          <div className='remark'>
-                            <div className='remark-label'>Disclosure</div>
-                            <div>{p.disclosure}</div>
-                          </div>
+                          <Remark title='Disclosure' small>
+                            {p.disclosure}
+                          </Remark>
                         ) : ''}
                       </div>
                     ))}

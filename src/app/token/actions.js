@@ -49,6 +49,13 @@ export const complete = () => async (dispatch: Function, getState: GetState) => 
       token.details,
     )
     dispatch(fetch(token.ticker))
+    dispatch(
+      ui.txSuccess(
+        'Token Was Issued Successfully',
+        'Set Up Offering Details',
+        `/dashboard/${token.ticker}/sto`
+      )
+    )
 
     const accountData = ui.getAccountDataForFetch(getState())
     if (!accountData) {
@@ -78,14 +85,6 @@ export const complete = () => async (dispatch: Function, getState: GetState) => 
       // eslint-disable-next-line no-console
       console.error('sendEmailTokenIssued failed:', emailResult.errors)
     }
-
-    dispatch(
-      ui.txSuccess(
-        'Token Was Issued Successfully',
-        'Set Up Offering Details',
-        `/dashboard/${token.ticker}/sto`
-      )
-    )
   } catch (e) {
     dispatch(ui.txFailed(e))
   }

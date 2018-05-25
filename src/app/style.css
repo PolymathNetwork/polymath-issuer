@@ -53,160 +53,6 @@
       font-size: 26px !important;
       text-transform: initial !important; }
 
-.confirm-email-form button {
-  display: block;
-  margin-left: auto;
-  margin-right: auto; }
-
-.confirm-email-form .bx--text-input {
-  height: 60px;
-  text-align: center;
-  font-size: 18px; }
-
-/* TODO @bshevchenko: consider extracting of the following into the polymath-ui */
-.pui-page-box .bx--form-item p a {
-  word-break: break-word; }
-
-.pui-page-box.sto-factory .bx--form-item p, .pui-page-box.sto-factory .bx--form-item div, .pui-page-box.sto-factory .bx--form-item li {
-  font-size: 14px !important; }
-
-.pui-page-box.sto-factory .bx--form-item li {
-  margin-bottom: 10px; }
-
-.remark {
-  display: flex;
-  overflow: hidden;
-  margin-bottom: 20px;
-  line-height: 20px;
-  border-radius: 4px;
-  background-color: #F5F7FA;
-  font-size: 14px;
-  color: #5A6872; }
-  .remark > div {
-    padding: 12px 16px; }
-  .remark .remark-label {
-    display: flex;
-    align-items: center;
-    font-weight: 600;
-    background-color: rgba(61, 112, 178, 0.1);
-    border-radius: 4px 0 0 4px; }
-
-.bx--tabs {
-  margin-top: 48px; }
-  .bx--tabs .bx--tabs__nav-item + .bx--tabs__nav-item {
-    margin-left: 0; }
-  .bx--tabs .bx--tabs__nav-item + .bx--tabs__nav-item {
-    margin-left: 0; }
-  .bx--tabs .bx--tabs__nav {
-    margin-left: 0;
-    border-bottom: 1px solid #DFE3E6; }
-  .bx--tabs .bx--tabs__nav-item {
-    padding: 16px 24px 36px 24px;
-    width: 200px; }
-    .bx--tabs .bx--tabs__nav-item .bx--tabs__nav-link {
-      font-size: 16px;
-      font-weight: 600;
-      color: #5A6872; }
-      .bx--tabs .bx--tabs__nav-item .bx--tabs__nav-link div {
-        display: inline-flex;
-        align-items: center; }
-    .bx--tabs .bx--tabs__nav-item:hover .bx--tabs__nav-link {
-      color: #252E6A !important; }
-    .bx--tabs .bx--tabs__nav-item .bx--tag {
-      font-size: 10px;
-      font-weight: 300;
-      background-color: #3D70B2;
-      color: white; }
-  .bx--tabs .bx--tabs__nav-item--selected {
-    border-bottom: 4px solid #252E6A; }
-    .bx--tabs .bx--tabs__nav-item--selected .bx--tabs__nav-link {
-      color: #252E6A; }
-
-.tab-content {
-  padding-top: 60px;
-  padding-bottom: 60px; }
-
-.providers .provider {
-  width: 297px;
-  height: 323px;
-  color: #5A6872;
-  padding-top: 40px;
-  padding-left: 24px;
-  padding-right: 24px;
-  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1);
-  float: left;
-  margin-right: 20px;
-  margin-top: 20px;
-  cursor: pointer; }
-  .providers .provider .provider-img {
-    height: 46px;
-    display: flex;
-    align-items: flex-end;
-    margin-bottom: 23px; }
-  .providers .provider .provider-applied {
-    font-size: 12px;
-    font-weight: 300;
-    color: #8C9BA5;
-    display: inline-flex;
-    align-items: center;
-    float: right;
-    margin-top: -23px; }
-    .providers .provider .provider-applied svg {
-      margin-left: 5px; }
-  .providers .provider p {
-    font-size: 12px;
-    font-weight: 300;
-    height: 153px; }
-  .providers .provider h3 {
-    color: #152935 !important; }
-  .providers .provider:last-child {
-    margin-right: 0; }
-  .providers .provider.provider-selected {
-    outline: 1px solid #3D70B2; }
-  .providers .provider.provider-applied {
-    outline: 1px solid #00AA5E;
-    cursor: default; }
-  .providers .provider.provider-to-be-announced {
-    cursor: default; }
-    .providers .provider.provider-to-be-announced img {
-      filter: blur(8px);
-      -webkit-filter: blur(8px);
-      -moz-filter: blur(8px);
-      -o-filter: blur(8px);
-      -ms-filter: blur(8px); }
-  .providers .provider .remark {
-    display: inline-flex;
-    line-height: 12.9px;
-    font-size: 10px;
-    color: #8C9BA5; }
-    .providers .provider .remark div {
-      padding: 2px 10px;
-      color: #5A6872; }
-
-.countdown-container {
-  display: flex;
-  justify-content: center;
-  align-items: center; }
-  .countdown-container .pui-countdown {
-    float: none; }
-
-.providers-controls {
-  float: right; }
-  .providers-controls .bx--checkbox-wrapper {
-    display: inline-block; }
-  .providers-controls .bx--btn--primary,
-  .providers-controls .bx--checkbox-wrapper {
-    margin-right: 16px !important; }
-  .providers-controls button {
-    margin-top: 0; }
-
-.providers-apply-modal .bx--modal-container {
-  width: 736px;
-  max-width: 736px; }
-
-.sto-search-container {
-  max-width: 612px; }
-
 .time-pickers-container {
   display: flex; }
   .time-pickers-container .bx--form-item {
@@ -216,8 +62,12 @@
   .time-pickers-container .bx--time-picker__select {
     min-width: 4rem; }
 
-.bx--fieldset {
-  margin-bottom: 0; }
+.confirm-email-form button {
+  display: block;
+  margin-left: auto;
+  margin-right: auto; }
 
-.token-form .bx--tooltip__trigger {
-  font-size: 17px; }
+.confirm-email-form .bx--text-input {
+  height: 60px;
+  text-align: center;
+  font-size: 18px; }

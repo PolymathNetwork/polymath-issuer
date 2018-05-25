@@ -1,4 +1,8 @@
+.token-countdown-container {
+  float: right; }
+
+.token-form .bx--tooltip__trigger {
+  font-size: 17px; }
+
 .ticker-field {
-  margin-bottom: 1.5rem; }
-  .ticker-field input {
-    height: 64px; }
+  margin-top: 13px; }

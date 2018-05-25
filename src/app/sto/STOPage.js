@@ -8,10 +8,12 @@ import type { SecurityToken } from 'polymathjs/types'
 import NotFoundPage from '../NotFoundPage'
 import { fetch } from './actions'
 import { STAGE_SELECT, STAGE_CONFIGURE, STAGE_OVERVIEW } from './reducer'
-import SelectSTO from './components/SelectSTOTemplate'
+import SelectSTOTemplate from './components/SelectSTOTemplate'
 import OverviewSTO from './components/OverviewSTO'
 import ConfigureSTO from './components/ConfigureSTO'
 import type { RootState } from '../../redux/reducer'
+
+import './style.css'
 
 type StateProps = {|
   token: ?SecurityToken,
@@ -46,7 +48,7 @@ class STOPage extends Component<Props> {
     }
     switch (this.props.stage) {
       case STAGE_SELECT:
-        return <SelectSTO />
+        return <SelectSTOTemplate />
       case STAGE_CONFIGURE:
         return <ConfigureSTO />
       case STAGE_OVERVIEW:

@@ -1,0 +1,13 @@
+.pui-page-box {
+  &.sto-factory {
+    .bx--form-item {
+      p, div, li {
+        font-size: 14px !important;
+      }
+
+      li {
+        margin-bottom: 10px;
+      }
+    }
+  }
+}
