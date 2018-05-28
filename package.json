@@ -31,7 +31,7 @@
     "moment": "2.20.1",
     "normalize.css": "7.0.0",
     "polymath-auth": "1.1.2",
-    "polymath-ui": "2.6.0",
+    "polymath-ui": "^3.0.0",
     "polymathjs": "1.2.7",
     "react": "16.2.0",
     "react-addons-css-transition-group": "15.0.1",
@@ -67,9 +67,6 @@
     "tconsole": "cd node_modules/polymath-core && yarn && node ../truffle/build/cli.bundled.js console"
   },
   "lint-staged": {
-    "src/**/*.js": [
-      "eslint --fix",
-      "git add"
-    ]
+    "src/**/*.js": [ "eslint --fix", "git add" ]
   }
 }
