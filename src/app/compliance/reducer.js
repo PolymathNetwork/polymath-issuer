@@ -45,7 +45,7 @@ export default (state: WhitelistState = defaultState, action: Action) => {
       return {
         ...state,
       }
-    case a.GET_WHITELIST:
+    case a.WHITELIST:
       return {
         ...state,
         investors: [...action.investors],

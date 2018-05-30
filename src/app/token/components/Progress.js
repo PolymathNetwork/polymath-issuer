@@ -43,7 +43,7 @@ class Progress extends Component<Props> {
       <div className='bx--row'>
         <div className='bx--col-xs-12'>
           <ProgressIndicator currentIndex={index}>
-            <ProgressStep label='Register Token Symbol' />
+            <ProgressStep label='Reserve Token Symbol' />
             <ProgressStep label='Choose Your Providers' />
             <ProgressStep label='Create Token' />
             <ProgressStep label='Set Up Offering Details' />

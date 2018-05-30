@@ -31,10 +31,8 @@ export type Action =
 export const fetch = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
   try {
-    const token = getState().token.token
-    if (!token || !token.contract) {
-      return dispatch(ui.fetched())
-    }
+    const { token } = getState().token
+    // $FlowFixMe
     const sto = await token.contract.getSTO()
     dispatch(data(sto, sto ? await sto.getDetails() : null))
     dispatch(ui.fetched())
@@ -108,6 +106,14 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
     const stoAddress = getModuleAddressFromReceipt(receipt)
     dispatch(fetch())
 
+    dispatch(
+      ui.txSuccess(
+        'STO Details Configured Successfully',
+        'Whitelist your investors',
+        `/dashboard/${token.ticker}/compliance`
+      )
+    )
+
     const accountData = ui.getAccountDataForFetch(getState())
     if (!accountData) {
       throw new Error('Not signed in')
@@ -139,14 +145,6 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
       // eslint-disable-next-line no-console
       console.error('sendEmailSTOLaunched failed:', emailResult.errors)
     }
-
-    dispatch(
-      ui.txSuccess(
-        'STO Details Configured Successfully',
-        'Whitelist your investors',
-        `/dashboard/${token.ticker}/whitelist`
-      )
-    )
   } catch (e) {
     dispatch(ui.txFailed(e))
   }

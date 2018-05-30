@@ -32,7 +32,7 @@ export default class ApplyModal extends Component<Props> {
           The information you enter below will be sent to the {catName} Providers your selected.
         </h4>
         <br /><br />
-        <ApplyForm onSubmit={this.handleSubmit} />
+        <ApplyForm onSubmit={this.handleSubmit} onClose={onClose} />
       </Modal>
     )
   }
