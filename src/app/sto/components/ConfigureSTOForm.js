@@ -74,7 +74,6 @@ class ConfigureSTOForm extends Component<Props, State> {
           label='Start Date;End Date'
           placeholder='mm / dd / yyyy'
           validate={[required, dateRange, dateRangeTodayOrLater]}
-          style={{ width: '235px' }}
         />
         <div className='time-pickers-container'>
           <Field
@@ -146,7 +145,7 @@ class ConfigureSTOForm extends Component<Props, State> {
         />
         <FormGroup
           legendText='Amount Of Funds The STO Will Raise'
-          style={{ marginTop: '20px', fontSize: '14px', color: '#5A6872' }}
+          style={{ marginTop: '20px', fontSize: '14px' }}
         >
           {this.state.amountOfFunds} {this.state.currency}
         </FormGroup>

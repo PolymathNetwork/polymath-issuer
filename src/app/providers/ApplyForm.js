@@ -17,6 +17,7 @@ const maxLength300 = maxLength(300)
 
 type Props = {|
   handleSubmit: () => void,
+  onClose: () => void,
 |}
 
 const linkTooltip = (title: string) => (
@@ -93,6 +94,9 @@ class ApplyForm extends Component<Props> {
           validate={[maxLength300]}
         />
         <p align='right'>
+          <Button kind='secondary' onClick={this.props.onClose}>
+            Cancel
+          </Button>
           <Button type='submit' style={{ width: '154px' }}>
             Submit
           </Button>

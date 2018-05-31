@@ -11,12 +11,12 @@ import providers  from '../app/providers/reducer'
 import token from '../app/token/reducer'
 import sto from '../app/sto/reducer'
 import ticker from '../app/ticker/reducer'
-import whitelist from '../app/whitelist/reducer'
+import whitelist from '../app/compliance/reducer'
 import type { ProvidersState } from '../app/providers/reducer'
 import type { TokenState } from '../app/token/reducer'
 import type { STOState } from '../app/sto/reducer'
 import type { TickerState } from '../app/ticker/reducer'
-import type { WhitelistState } from '../app/whitelist/reducer'
+import type { WhitelistState } from '../app/compliance/reducer'
 
 export default combineReducers({
   network,

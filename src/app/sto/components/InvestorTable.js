@@ -55,7 +55,7 @@ const InvestorTable = (props: {
     <DataTable
       headers={[
         { key: 'id', header: '#' },
-        { key: 'investor', header: 'Ethereum Address of Investor' },
+        { key: 'investor', header: 'Investor\'s ETH Address' },
         { key: 'txHash', header: 'Transaction Hash' },
         { key: 'amount', header: 'Tokens Bought' },
         { key: 'paid', header: 'Amount Invested' },

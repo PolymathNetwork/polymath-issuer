@@ -1,10 +1,6 @@
 .tag-my-own {
   background-color: #5596E6 !important; }
 
-.countdown-container {
-  display: flex;
-  justify-content: flex-end; }
-
 .providers-controls {
   float: right; }
   .providers-controls .bx--checkbox-wrapper {

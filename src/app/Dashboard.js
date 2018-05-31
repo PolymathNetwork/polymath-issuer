@@ -107,10 +107,10 @@ class Dashboard extends Component<Props> {
         isDisabled: !token || !token.address,
       },
       {
-        title: 'Whitelist',
+        title: 'Compliance',
         icon: icoWhitelist,
-        to: `${tokenUrl}/whitelist`,
-        isActive: location.slice(-10) === '/whitelist',
+        to: `${tokenUrl}/compliance`,
+        isActive: location.slice(-11) === '/compliance',
         isDisabled: !token || !token.address,
       },
     ]

@@ -235,7 +235,7 @@ class ProvidersPage extends Component<Props, State> {
                 You can always elect to use your own.
               </h3>
             </div>
-            <div className='bx--col-xs-4 countdown-container'>
+            <div className='bx--col-xs-4 pui-countdown-container'>
               {!token.address && token.expires ? (
                 <Countdown
                   title='Time Left to Create Your Token'
