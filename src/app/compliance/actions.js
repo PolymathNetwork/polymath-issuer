@@ -7,28 +7,18 @@ import type { Investor, Address } from 'polymathjs/types'
 import { formName as addInvestorFormName } from './components/AddInvestorForm'
 import { formName as editInvestorsFormName } from './components/EditInvestorsForm'
 import type { GetState } from '../../redux/reducer'
-import type { ExtractReturn } from '../../redux/helpers'
 
 export const PERMANENT_LOCKUP_TS = 67184812800000 // milliseconds
 
 export const TRANSFER_MANAGER = 'compliance/TRANSFER_MANAGER'
-
-export const UPLOAD_CSV = 'compliance/UPLOAD_CSV'
-export const ac_csvUpload = (
-  addresses: Array<Address>,
-  sell: Array<Address>,
-  buy: Array<Address>,
-  previewCSVShowing: boolean
-) => ({ type: UPLOAD_CSV, addresses, sell, buy, previewCSVShowing })
-export const UPLOAD_CSV_FAILED = 'compliance/UPLOAD_CSV_FAILED'
-
 export const WHITELIST = 'compliance/WHITELIST'
+export const UPLOADED = 'compliance/UPLOADED'
 
 export const LIST_LENGTH = 'compliance/WHITELIST_LENGTH'
 export const listLength = (listLength: number) => ({ type: LIST_LENGTH, listLength })
 
-export type Action =
-  | ExtractReturn<typeof ac_csvUpload>
+export const RESET_UPLOADED = 'compliance/RESET_UPLOADED'
+export const resetUploaded = () => ({ type: RESET_UPLOADED })
 
 export const fetchWhitelist = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
@@ -77,100 +67,58 @@ export const fetchWhitelist = () => async (dispatch: Function, getState: GetStat
   }
 }
 
-// Uploads the CSV file, reads it with built in js FileReader(), dispatches to the store the csv file information,
-// which can then be sent to the blockchain with multiUserSubmit()
-
-// Note: We just Object type, instead of File type, because here
-// we get passed a File directly from the dropzone, and an event
-// from the upload button, and then we determine whether it is a file or not inside of uploadCSV()
-
-// TODO @bshevchenko: we need to limit CSV file to 75
-// them that it is too long? also keep in mind gas limit and WS packet size
 export const uploadCSV = (file: Object) => async (dispatch: Function) => {
-  let parseFile
-  if (file.target === undefined) {
-    parseFile = file
-  } else {
-    parseFile = file.target.files[0]
-  }
-  const textType = /csv.*/
-  if (parseFile.type.match(textType)) {
+  if (file.type.match(/csv.*/)) {
     const reader = new FileReader()
-    reader.readAsText(parseFile)
-    reader.onload = function () {
-      const parsedData = parseCSV(((reader.result: any): string))
-      const isSuccess = !!parsedData[0].length
-      if (!isSuccess) {
-        alert('There is no valid entries in your file. Please follow the described format.')
+    reader.readAsText(file)
+    reader.onload = () => {
+      const investors: Array<Investor> = []
+      const criticals: Array<[number,string,string,string]> = []
+      let isTooMany = false
+      let string = 0
+      // $FlowFixMe
+      for (let entry of reader.result.split(/\r\n|\n/)) {
+        string++
+        let [address, sale, purchase] = entry.split(',', 4)
+        if (ethereumAddress(address) !== null) {
+          [address, sale, purchase] = entry.split(';', 4)
+        }
+        const handleDate = (d: string) => d === '' ? new Date(PERMANENT_LOCKUP_TS) : new Date(Date.parse(d))
+        const from = handleDate(sale)
+        const to = handleDate(purchase)
+        if (ethereumAddress(address) === null && !isNaN(from) && !isNaN(to)) {
+          if (investors.length === 75) {
+            isTooMany = true
+            continue
+          }
+          investors.push({ address, from, to })
+        } else {
+          criticals.push([string, address, sale, purchase])
+        }
       }
-      dispatch(ac_csvUpload(parsedData[0], parsedData[1], parsedData[2], isSuccess))
+      dispatch({ type: UPLOADED, investors, criticals, isTooMany })
     }
-  } else {
-    dispatch({ type: UPLOAD_CSV_FAILED })
   }
 }
 
-// Takes the CSV data, turns it into two arrays, split up by addresses and time they are allowed to trade for , in order
-const parseCSV = (csvResult: string) => {
-  const parsedData = []
-  const addresses = []
-  const sellRestriction = []
-  const buyRestriction = []
-  const allTextLines = csvResult.split(/\r\n|\n/)
-  const zeroX = '0x'
-  for (let i = 0; i < allTextLines.length; i++) {
-    const entry = allTextLines[i]
-    if (entry.includes(zeroX)) {
-      let [address, sell, buy] = entry.split(',', 4)
-      if (ethereumAddress(address) !== null) {
-        [address, sell, buy] = entry.split(';', 4)
-      }
-      if (ethereumAddress(address) === null && !isNaN(Date.parse(sell)) && !isNaN(Date.parse(buy))) {
-        addresses.push(address)
-        sellRestriction.push(sell)
-        buyRestriction.push(buy)
-      }
-    }
-  }
-  parsedData.push(addresses)
-  parsedData.push(sellRestriction)
-  parsedData.push(buyRestriction)
-  return parsedData
-}
-
-// This takes the CSV data we have stored in the store from uploadCSV, and then submits it to the blockchain
-export const multiUserSubmit = () => async (dispatch: Function, getState: GetState) => {
-  const blockchainData = []
-  const csvAddresses = getState().whitelist.addresses
-  const csvSell = getState().whitelist.sell
-  const csvBuy = getState().whitelist.buy
-  for (let i = 0; i < csvAddresses.length; i++) {
-    const newSellDate = new Date(csvSell[i])
-    const newBuyDate = new Date(csvBuy[i])
-    const investorData: Investor = {
-      address: csvAddresses[i],
-      from: newSellDate,
-      to: newBuyDate,
-    }
-    blockchainData.push(investorData)
-  }
-  const transferManager = getState().whitelist.transferManager
+export const importWhitelist = () => async (dispatch: Function, getState: GetState) => {
+  const { uploaded, transferManager } = getState().whitelist
   dispatch(ui.txStart('Submitting Approved Investors...'))
   try {
-    const receipt = await transferManager.modifyWhitelistMulti(blockchainData)
+    const receipt = await transferManager.modifyWhitelistMulti(uploaded)
     dispatch(
       ui.notify(
-        'Investors from the CSV were successfully Uploaded',
+        'Investors has been added successfully',
         true,
         null,
         ui.etherscanTx(receipt.transactionHash)
       )
     )
-    dispatch(ac_csvUpload([], [], [], false))
+    dispatch(resetUploaded())
+    dispatch(fetchWhitelist())
   } catch (e) {
     dispatch(ui.txFailed(e))
   }
-  dispatch(fetchWhitelist())
 }
 
 export const addInvestor = () => async (dispatch: Function, getState: GetState) => {
@@ -192,10 +140,10 @@ export const addInvestor = () => async (dispatch: Function, getState: GetState) 
         ui.etherscanTx(receipt.transactionHash)
       )
     )
+    dispatch(fetchWhitelist())
   } catch (e) {
     dispatch(ui.txFailed(e))
   }
-  dispatch(fetchWhitelist())
 }
 
 export const editInvestors = (addresses: Array<Address>) => async (dispatch: Function, getState: GetState) => {
@@ -221,10 +169,10 @@ export const editInvestors = (addresses: Array<Address>) => async (dispatch: Fun
         ui.etherscanTx(receipt.transactionHash)
       )
     )
+    dispatch(fetchWhitelist())
   } catch (e) {
     dispatch(ui.txFailed(e))
   }
-  dispatch(fetchWhitelist())
 }
 
 export const removeInvestors = (addresses: Array<Address>) => async (dispatch: Function, getState: GetState) => {
@@ -250,8 +198,8 @@ export const removeInvestors = (addresses: Array<Address>) => async (dispatch: F
         ui.etherscanTx(receipt.transactionHash)
       )
     )
+    dispatch(fetchWhitelist())
   } catch (e) {
     dispatch(ui.txFailed(e))
   }
-  dispatch(fetchWhitelist())
 }

@@ -5,8 +5,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { reset } from 'redux-form'
 import DocumentTitle from 'react-document-title'
-import uuidv4 from 'uuid/v4'
-import { etherscanAddress } from 'polymath-ui'
+import { etherscanAddress, addressShortifier } from 'polymath-ui'
 import {
   Button,
   DataTable,
@@ -15,25 +14,31 @@ import {
   DatePicker,
   DatePickerInput,
   Icon,
+  ComposedModal,
+  ModalBody,
+  ModalHeader,
+  ModalFooter,
+  InlineNotification,
 } from 'carbon-components-react'
-
-import type { Address, SecurityToken } from 'polymathjs/types'
+import type { Investor, Address, SecurityToken } from 'polymathjs/types'
 
 import NotFoundPage from '../NotFoundPage'
 import Progress from '../token/components/Progress'
 import {
-  multiUserSubmit,
+  importWhitelist,
   addInvestor,
   fetchWhitelist,
   listLength,
   removeInvestors,
   editInvestors,
+  resetUploaded,
   PERMANENT_LOCKUP_TS,
 } from './actions'
 import AddInvestorForm, { formName as addInvestorFormName } from './components/AddInvestorForm'
 import EditInvestorsForm, { formName as editInvestorsFormName } from './components/EditInvestorsForm'
+import ImportWhitelistModal from './components/ImportWhitelistModal'
 
-import type { WhitelistState } from './reducer'
+import type { RootState } from '../../redux/reducer'
 
 import './style.css'
 
@@ -54,7 +59,9 @@ const {
 } = DataTable
 
 type StateProps = {|
-  whitelist: WhitelistState,
+  investors: Array<Investor>,
+  criticals: Array<[number,string,string,string]>,
+  stateListLength: number,
   token: SecurityToken,
 |}
 
@@ -62,14 +69,17 @@ type DispatchProps = {|
   fetchWhitelist: () => any,
   listLength: number => any,
   addInvestor: () => any,
-  multiUserSubmit: () => any,
+  importWhitelist: () => any,
   editInvestors: (investors: Array<Address>) => any,
   removeInvestors: (investors: Array<Address>) => any,
   reset: (formName: string) => any,
+  resetUploaded: () => any,
 |}
 
-const mapStateToProps = (state) => ({
-  whitelist: state.whitelist,
+const mapStateToProps = (state: RootState) => ({
+  investors: state.whitelist.investors,
+  criticals: state.whitelist.criticals,
+  stateListLength: state.whitelist.listLength,
   token: state.token.token,
 })
 
@@ -77,9 +87,10 @@ const mapDispatchToProps = {
   fetchWhitelist,
   listLength,
   addInvestor,
-  multiUserSubmit,
+  importWhitelist,
   editInvestors,
   removeInvestors,
+  resetUploaded,
   reset,
 }
 
@@ -90,7 +101,8 @@ type State = {|
   editInvestors: Array<Address>,
   isAddModalOpen: boolean,
   isEditModalOpen: boolean,
-  // isImportModalOpen: boolean,
+  isImportModalOpen: boolean,
+  isImportConfirmModalOpen: boolean,
   startDateAdded: ?Date,
   endDateAdded: ?Date,
 |}
@@ -109,7 +121,8 @@ class CompliancePage extends Component<Props, State> {
     editInvestors: [],
     isAddModalOpen: false,
     isEditModalOpen: false,
-    // isImportModalOpen: false,
+    isImportModalOpen: false,
+    isImportConfirmModalOpen: false,
     startDateAdded: null,
     endDateAdded: null,
   }
@@ -147,6 +160,28 @@ class CompliancePage extends Component<Props, State> {
     this.props.addInvestor()
   }
 
+  handleImportModalOpen = () => {
+    this.props.resetUploaded()
+    this.setState({ isImportModalOpen: true })
+  }
+
+  handleImportModalClose = () => {
+    this.setState({ isImportModalOpen: false })
+  }
+
+  handleImportConfirmModalClose = () => {
+    this.setState({ isImportConfirmModalOpen: false })
+  }
+
+  handleImportConfirm = () => {
+    this.setState({ isImportConfirmModalOpen: true })
+  }
+
+  handleImport = () => {
+    this.setState({ isImportConfirmModalOpen: false })
+    this.props.importWhitelist()
+  }
+
   handleBatchEdit = (selectedRows: Array<Object>) => {
     const addresses = []
     for (let i = 0; i < selectedRows.length; i++) {
@@ -172,14 +207,6 @@ class CompliancePage extends Component<Props, State> {
     })
   }
 
-  handleImportModalOpen = () => {
-    // this.setState({ isImportModalOpen: true })
-  }
-
-  handleImportModalClose = () => {
-    // this.setState({ isImportModalOpen: false })
-  }
-
   handleBatchDelete = (selectedRows: Array<Object>) => {
     let addresses = []
     for (let i = 0; i < selectedRows.length; i++) {
@@ -188,46 +215,33 @@ class CompliancePage extends Component<Props, State> {
     this.props.removeInvestors(addresses)
   }
 
-  // renders the list by making it date strings and splitting up in pages, at the start of the render function
   paginationRendering () {
-    const { investors, listLength } = this.props.whitelist
+    const { investors, stateListLength } = this.props
     const pageNum = this.state.page
-    const startSlice = pageNum * listLength
-    const endSlice = (pageNum + 1) * listLength
-    const paginatedArray = investors.slice(startSlice, endSlice)
-    const stringifiedArray = []
-    for (let i = 0; i < paginatedArray.length; i++) {
+    const startSlice = pageNum * stateListLength
+    const endSlice = (pageNum + 1) * stateListLength
+    const paginated = investors.slice(startSlice, endSlice)
+    const stringified = []
+    for (let investor of paginated) {
+      // filter by date added
       if (
         // $FlowFixMe
-        (this.state.startDateAdded && paginatedArray[i].added < this.state.startDateAdded) ||
+        (this.state.startDateAdded && investor.added < this.state.startDateAdded) ||
         // $FlowFixMe
-        (this.state.endDateAdded && paginatedArray[i].added > this.state.endDateAdded)
+        (this.state.endDateAdded && investor.added > this.state.endDateAdded)
       ) {
         continue
       }
-      const csvRandomID: string = uuidv4()
-      let stringifyAdded = null
-      if (paginatedArray[i].added) {
-        stringifyAdded = dateFormat(paginatedArray[i].added)
-      }
-      const stringifyFrom = dateFormat(paginatedArray[i].from)
-      const stringifyTo = dateFormat(paginatedArray[i].to)
-      const stringifyInvestor = {
-        id: csvRandomID,
-        address: paginatedArray[i].address,
-        added: stringifyAdded,
-        addedBy: paginatedArray[i].addedBy,
-        from: stringifyFrom,
-        to: stringifyTo,
-      }
-      stringifiedArray.push(stringifyInvestor)
+      stringified.push({
+        id: investor.address,
+        address: investor.address,
+        added: investor.added ? dateFormat(investor.added) : null,
+        addedBy: investor.addedBy,
+        from: dateFormat(investor.from),
+        to: dateFormat(investor.to),
+      })
     }
-    return stringifiedArray
-  }
-
-  onHandleMultiSubmit = () => {
-    this.props.multiUserSubmit()
-    return true // Must return true, for the component from carbon to work
+    return stringified
   }
 
   dataTableRender = ({
@@ -243,14 +257,14 @@ class CompliancePage extends Component<Props, State> {
       <TableToolbar>
         <TableBatchActions {...getBatchActionProps()}>
           <Button
-            icon='delete--glyph'
+            icon='delete'
             iconDescription='Delete'
             onClick={() => this.handleBatchDelete(selectedRows)}
           >
             Delete
           </Button>
           <Button
-            icon='edit--glyph'
+            icon='edit'
             iconDescription='Edit Lockup Dates'
             onClick={() => this.handleBatchEdit(selectedRows)}
           >
@@ -336,13 +350,13 @@ class CompliancePage extends Component<Props, State> {
   )
 
   render () {
-    const { token } = this.props
+    const { token, investors, criticals } = this.props
     if (!token || !token.address) {
       return <NotFoundPage />
     }
     const paginatedRows = this.paginationRendering()
     return (
-      <DocumentTitle title='Whitelist – Polymath'>
+      <DocumentTitle title='Compliance – Polymath'>
         <div>
           <Progress />
 
@@ -353,6 +367,74 @@ class CompliancePage extends Component<Props, State> {
           >
             Import Whitelist
           </Button>
+          <ImportWhitelistModal
+            isOpen={this.state.isImportModalOpen}
+            onSubmit={this.handleImportConfirm}
+            onClose={this.handleImportModalClose}
+          />
+          <ComposedModal
+            open={this.state.isImportConfirmModalOpen}
+            className='pui-confirm-modal whitelist-import-confirm-modal'
+          >
+            <ModalHeader
+              label='Confirmation required'
+              title={(
+                <span>
+                  <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
+                  Before You Proceed
+                </span>
+              )}
+            />
+            <ModalBody>
+              <div className='bx--modal-content__text'>
+                <p>
+                  Please confirm that all previous information is correct and all investors are approved.
+                  Once you hit &laquo;CONFIRM&raquo;, investors will be submitted to the blockchain.
+                  Any change will require that you start the process over. If you wish to review your information,
+                  please select &laquo;CANCEL&raquo;.
+                </p>
+                {criticals.length ? (
+                  <div>
+                    <InlineNotification
+                      hideCloseButton
+                      title={criticals.length + ' Errors in Your .csv File'}
+                      subtitle={'Please note that the entries below contains error that prevent their content to be ' +
+                      'committed to the blockchain. Entries were automatically deselected so they are not submitted ' +
+                      'to the blockchain. You can also elect to cancel the operation to review the csv file offline.'}
+                      kind='error'
+                    />
+                    <table className='import-criticals'>
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Address</th>
+                          <th>Sale Lockup</th>
+                          <th>Purchase Lockup</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {criticals.map(([id,address,sale,purchase]: [number,string,string,string]) => (
+                          <tr key={id}>
+                            <td>{id}</td>
+                            <td>{addressShortifier(address)}</td>
+                            <td>{sale}</td>
+                            <td>{purchase}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : ''}
+              </div>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button kind='secondary' onClick={this.handleImportConfirmModalClose}>
+                Cancel
+              </Button>
+              <Button onClick={this.handleImport}>Confirm</Button>
+            </ModalFooter>
+          </ComposedModal>
 
           <DatePicker
             onChange={this.handleDateAddedChange}
@@ -389,7 +471,7 @@ class CompliancePage extends Component<Props, State> {
           <PaginationV2
             onChange={this.handleChangePages}
             pageSizes={[10, 20, 30, 40, 50]}
-            totalItems={this.props.whitelist.investors.length}
+            totalItems={investors.length}
           />
           <Modal
             className='whitelist-investor-modal'
