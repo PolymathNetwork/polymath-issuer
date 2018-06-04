@@ -16,8 +16,7 @@ export const data = (token: ?SecurityToken) => ({ type: DATA, token })
 export const IS_DIVISIBLE = 'token/IS_DIVISIBLE'
 export const isDivisible = (value: boolean) => ({ type: IS_DIVISIBLE, value })
 
-export type Action =
-  | ExtractReturn<typeof data>
+export type Action = ExtractReturn<typeof data>
 
 export const fetch = (ticker: string) => async (dispatch: Function) => {
   dispatch(ui.fetching())
@@ -35,57 +34,72 @@ export const fetch = (ticker: string) => async (dispatch: Function) => {
 
 export const complete = () => async (dispatch: Function, getState: GetState) => {
   const token = getState().token.token
-  // $FlowFixMe
-  dispatch(ui.txStart(`Issuing ${token.ticker} token...`))
-  try {
-    const token: SecurityToken = {
-      ...getState().token.token,
-      ...getState().form[completeFormName].values,
-    }
-    const receipt = await SecurityTokenRegistry.generateSecurityToken(
-      token.name,
-      token.ticker,
-      getState().token.isDivisible ? 18 : 0,
-      token.details,
-    )
-    dispatch(fetch(token.ticker))
-    dispatch(
-      ui.txSuccess(
-        'Token Was Issued Successfully',
-        'Set Up Offering Details',
-        `/dashboard/${token.ticker}/sto`
-      )
-    )
+  dispatch(
+    ui.showModal(
+      'Before you proceed with your Token Creation',
+      'Confirmation Required',
+      'Confirm',
+      'Please confirm that all previous information is correct and that you are ' +
+        'not violating any trademarks. Once you hit & laquo; CONFIRM & raquo;, ' +
+        'your Token will be created on the blockchain and will be immutable.' +
+        'Any change will require that you start the process over.If you wish to ' +
+        'review your information, please select & laquo; CANCEL & raquo;.',
+      'red',
+      'warning--glyph',
+      () => {
+        dispatch(ui.closeModalAction())
+      },
+      async () => {
+        // $FlowFixMe
+        dispatch(ui.txStart(`Issuing ${token.ticker} token...`))
+        try {
+          const token: SecurityToken = {
+            ...getState().token.token,
+            ...getState().form[completeFormName].values,
+          }
+          const receipt = await SecurityTokenRegistry.generateSecurityToken(
+            token.name,
+            token.ticker,
+            getState().token.isDivisible ? 18 : 0,
+            token.details,
+          )
+          dispatch(fetch(token.ticker))
+          dispatch(
+            ui.txSuccess('Token Was Issued Successfully', 'Set Up Offering Details', `/dashboard/${token.ticker}/sto`),
+          )
 
-    const accountData = ui.getAccountDataForFetch(getState())
-    if (!accountData) {
-      throw new Error('Not signed in')
-    }
+          const accountData = ui.getAccountDataForFetch(getState())
+          if (!accountData) {
+            throw new Error('Not signed in')
+          }
 
-    const emailResult = await ui.offchainFetch({
-      query: `
+          const emailResult = await ui.offchainFetch({
+            query: `
         mutation ($account: WithAccountInput!, $input: EmailTokenIssuedInput!) {
           withAccount(input: $account) {
             sendEmailTokenIssued(input: $input)
           }
         }
       `,
-      variables: {
-        account: {
-          accountData: accountData,
-        },
-        input: {
-          ticker: token.ticker,
-          txHash: receipt.transactionHash,
-        },
-      },
-    })
+            variables: {
+              account: {
+                accountData: accountData,
+              },
+              input: {
+                ticker: token.ticker,
+                txHash: receipt.transactionHash,
+              },
+            },
+          })
 
-    if (emailResult.errors) {
-      // eslint-disable-next-line no-console
-      console.error('sendEmailTokenIssued failed:', emailResult.errors)
-    }
-  } catch (e) {
-    dispatch(ui.txFailed(e))
-  }
+          if (emailResult.errors) {
+            // eslint-disable-next-line no-console
+            console.error('sendEmailTokenIssued failed:', emailResult.errors)
+          }
+        } catch (e) {
+          dispatch(ui.txFailed(e))
+        }
+      },
+    ),
+  )
 }

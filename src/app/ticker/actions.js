@@ -31,16 +31,35 @@ export type Action =
 
 // eslint-disable-next-line
 export const register = () => async (dispatch: Function, getState: GetState) => {
-  dispatch(ui.txStart('Submitting token symbol registration...'))
-  try {
-    const details: SymbolDetails = getState().form[formName].values
-    await TickerRegistry.registerTicker(details)
+  dispatch(
+    ui.showModal(
+      'Before you proceed with your Token Symbol Reservation',
+      'Confirmation Required',
+      'Reserve Ticker',
+      'Once you hit &laquo;RESERVE TICKER&raquo;, your Token Symbol ' +
+        'reservation will be sent to the blockchain and will be ' +
+        'immutable.Any change will require that you start the process ' +
+        'over.If you wish to review your information, please select' +
+        '& laquo; CANCEL & raquo;.',
+      'red',
+      'warning--glyph',
+      () => {
+        dispatch(ui.closeModalAction())
+      },
+      async () => {
+        dispatch(ui.txStart('Submitting token symbol registration...'))
+        try {
+          const details: SymbolDetails = getState().form[formName].values
+          await TickerRegistry.registerTicker(details)
 
-    dispatch(ui.txEnd(null))
-    dispatch(registered())
-  } catch (e) {
-    dispatch(ui.txFailed(e))
-  }
+          dispatch(ui.txEnd(null))
+          dispatch(registered())
+        } catch (e) {
+          dispatch(ui.txFailed(e))
+        }
+      },
+    ),
+  )
 }
 
 export const initSuccessPage = () => async (dispatch: Function) => {
@@ -51,8 +70,7 @@ export const initSuccessPage = () => async (dispatch: Function) => {
 
   const latestEvent = results.reduce(
     // eslint-disable-next-line no-underscore-dangle
-    (latest, event) => latest && latest.returnValues._timestamp > event.returnValues._timestamp ?
-      latest : event,
+    (latest, event) => (latest && latest.returnValues._timestamp > event.returnValues._timestamp ? latest : event),
     null,
   )
 
@@ -71,11 +89,13 @@ export const initSuccessPage = () => async (dispatch: Function) => {
   }
 
   dispatch(ui.txHash(tx.txHash))
-  dispatch(ui.txSuccess(
-    'Your Token Symbol Was Reserved Successfully',
-    'Choose your providers',
-    `/dashboard/${tx.ticker}/providers`,
-  ))
+  dispatch(
+    ui.txSuccess(
+      'Your Token Symbol Was Reserved Successfully',
+      'Choose your providers',
+      `/dashboard/${tx.ticker}/providers`,
+    ),
+  )
 
   dispatch(setTransaction(tx))
   dispatch(successPageInitialized(true))
@@ -137,10 +157,7 @@ export const confirmEmail = () => async (dispatch: Function, getState: GetState)
     await dispatch(ui.sendActivationEmail())
     dispatch(confirmationEmailSent(account.email))
 
-    dispatch(ui.notify(
-      'Check your inbox for a confirmation email.',
-      true
-    ))
+    dispatch(ui.notify('Check your inbox for a confirmation email.', true))
     dispatch(ui.txEnd({}))
   } catch (e) {
     dispatch(ui.txFailed(e))
