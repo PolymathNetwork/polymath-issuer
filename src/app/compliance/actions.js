@@ -79,10 +79,7 @@ export const uploadCSV = (file: Object) => async (dispatch: Function) => {
       // $FlowFixMe
       for (let entry of reader.result.split(/\r\n|\n/)) {
         string++
-        let [address, sale, purchase] = entry.split(',', 4)
-        if (ethereumAddress(address) !== null) {
-          [address, sale, purchase] = entry.split(';', 4)
-        }
+        const [address, sale, purchase] = entry.split(',')
         const handleDate = (d: string) => d === '' ? new Date(PERMANENT_LOCKUP_TS) : new Date(Date.parse(d))
         const from = handleDate(sale)
         const to = handleDate(purchase)
