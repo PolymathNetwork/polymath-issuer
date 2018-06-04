@@ -4,7 +4,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: url("/hero.png") no-repeat right bottom !important; }
+  background: url("/hero.png") no-repeat right bottom !important;
+}
 
 .splash-background-pattern {
   position: fixed;
@@ -13,61 +14,101 @@
   width: 80%;
   height: 80%;
   background: url("/hero-pattern.svg") no-repeat;
-  background-size: cover; }
+  background-size: cover;
+}
 
 .splash-logo {
-  margin-bottom: 55px; }
+  margin-bottom: 55px;
+}
+
+.dummy-page {
+  justify-content: center;
+  text-align: center;
+}
+
+.dummy-page h3 {
+  color: #152935;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.dummy-page h3 span {
+  color: #f79221;
+}
+
+.dummy-page img {
+  width: 100%;
+  height: auto;
+}
+
+.dummy-page .logo-dark {
+  height: 29px;
+  width: 188px;
+}
 
 .dashboard {
   padding-left: 46px;
   padding-bottom: 46px;
-  padding-top: 56px; }
-  .dashboard .bx--progress {
-    margin-top: 0;
-    margin-bottom: 62px; }
+  padding-top: 56px;
+}
+.dashboard .bx--progress {
+  margin-top: 0;
+  margin-bottom: 62px;
+}
 
 .ticker-field {
-  background: #EBF0F7;
+  background: #ebf0f7;
   padding: 12px 48px 31px 48px;
   margin-bottom: 1.5rem;
   margin-top: 24px;
   text-align: center;
-  border-radius: 4px; }
-  .ticker-field .bx--label {
-    font-size: 18px;
-    margin-bottom: 10px;
-    margin-top: 4px; }
-  .ticker-field .bx--form-requirement {
-    display: block;
-    margin-bottom: -30px !important; }
-  .ticker-field input {
-    height: 64px;
-    font-size: 34px;
-    text-align: center;
-    color: #152935;
-    background: white;
-    text-transform: uppercase; }
-    .ticker-field input::placeholder {
-      color: #DFE3E6 !important;
-      font-weight: 300 !important;
-      font-size: 26px !important;
-      text-transform: initial !important; }
+  border-radius: 4px;
+}
+.ticker-field .bx--label {
+  font-size: 18px;
+  margin-bottom: 10px;
+  margin-top: 4px;
+}
+.ticker-field .bx--form-requirement {
+  display: block;
+  margin-bottom: -30px !important;
+}
+.ticker-field input {
+  height: 64px;
+  font-size: 34px;
+  text-align: center;
+  color: #152935;
+  background: white;
+  text-transform: uppercase;
+}
+.ticker-field input::placeholder {
+  color: #dfe3e6 !important;
+  font-weight: 300 !important;
+  font-size: 26px !important;
+  text-transform: initial !important;
+}
 
 .time-pickers-container {
-  display: flex; }
-  .time-pickers-container .bx--form-item {
-    flex-grow: 0; }
-    .time-pickers-container .bx--form-item:first-child {
-      padding-right: 0.5rem; }
-  .time-pickers-container .bx--time-picker__select {
-    min-width: 4rem; }
+  display: flex;
+}
+.time-pickers-container .bx--form-item {
+  flex-grow: 0;
+}
+.time-pickers-container .bx--form-item:first-child {
+  padding-right: 0.5rem;
+}
+.time-pickers-container .bx--time-picker__select {
+  min-width: 4rem;
+}
 
 .confirm-email-form button {
   display: block;
   margin-left: auto;
-  margin-right: auto; }
+  margin-right: auto;
+}
 
 .confirm-email-form .bx--text-input {
   height: 60px;
   text-align: center;
-  font-size: 18px; }
+  font-size: 18px;
+}
