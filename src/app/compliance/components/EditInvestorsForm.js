@@ -41,7 +41,7 @@ class EditInvestorsForm extends Component<Props> {
             Cancel
           </Button>
           <Button type='submit'>
-            Edit Lockup Dates
+            Edit Dates
           </Button>
         </p>
       </Form>

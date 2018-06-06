@@ -36,7 +36,6 @@ export default class LockupDatesFields extends Component<Props> {
               name='sale'
               component={DatePickerInput}
               label='Sale Lockup End Date'
-              placeholder='mm / dd / yyyy'
               disabled={this.props.isSalePermanent}
             />
           </div>
@@ -54,7 +53,6 @@ export default class LockupDatesFields extends Component<Props> {
               name='purchase'
               component={DatePickerInput}
               label='Purchase Lockup End Date'
-              placeholder='mm / dd / yyyy'
               disabled={this.props.isPurchasePermanent}
             />
           </div>
@@ -66,6 +64,12 @@ export default class LockupDatesFields extends Component<Props> {
             />
           </div>
         </div>
+        <Field
+          name='expiry'
+          component={DatePickerInput}
+          label='KYC/AML Expiry Date'
+          validate={[ required, tomorrowOrLater ]}
+        />
       </div>
     )
   }

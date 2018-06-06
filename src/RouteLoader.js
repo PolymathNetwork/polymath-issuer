@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { renderRoutes } from 'react-router-config'
 import { Loading } from 'carbon-components-react'
-import PolymathAuth, { NETWORK_RINKEBY } from 'polymath-auth'
+import PolymathAuth, { NETWORK_KOVAN } from 'polymath-auth'
 import { MetamaskPage } from 'polymath-ui'
 
 import Root from './app/Root'
@@ -29,10 +29,10 @@ class RouteLoader extends Component<Props> {
       )
     }
     const networks = [
-      NETWORK_RINKEBY,
+      NETWORK_KOVAN,
     ]
     return (
-      <PolymathAuth loading={<Loading />} guide={<MetamaskPage networks='Rinkeby' />} networks={networks}>
+      <PolymathAuth loading={<Loading />} guide={<MetamaskPage networks='Kovan' />} networks={networks}>
         {renderRoutes(routes)}
       </PolymathAuth>
     )

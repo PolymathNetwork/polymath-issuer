@@ -3,15 +3,10 @@
 import React, { Component } from 'react'
 import { reduxForm, Field } from 'redux-form'
 import { Form, FormGroup, Button, Tooltip } from 'carbon-components-react'
-import { TextInput } from 'polymath-ui'
-import {
-  url,
-  maxLength,
-} from 'polymath-ui/dist/validate'
+import { TextInput, RadioInput } from 'polymath-ui'
+import { url } from 'polymath-ui/dist/validate'
 
 export const formName = 'complete_token'
-
-const maxLength32 = maxLength(32)
 
 type Props = {
   handleSubmit: (isDivisible: boolean) => void,
@@ -20,8 +15,9 @@ type Props = {
 class CompleteTokenForm extends Component<Props> {
 
   render () {
-    /**
-     * <FormGroup legendText={(
+    return (
+      <Form onSubmit={this.props.handleSubmit} className='token-form'>
+        <FormGroup legendText={(
           <Tooltip triggerText='My Security Token Must Be'>
             <p className='bx--tooltip__label'>
               Divisible or Indivisible token
@@ -32,28 +28,17 @@ class CompleteTokenForm extends Component<Props> {
             </p>
           </Tooltip>
         )}
-     >
-     <RadioButtonGroup
-     onChange={this.handleChange}
-     name='radio-button-group'
-     defaultSelected='0'
-     >
-     <RadioButton
-     value='1'
-     labelText='Divisible'
-     id='radio-divisible'
-     />
-     <RadioButton
-     value='0'
-     labelText='Indivisible'
-     id='radio-indivisible'
-     />
-     </RadioButtonGroup>
-     </FormGroup>
-     <p>&nbsp;</p>
-     */
-    return (
-      <Form onSubmit={this.props.handleSubmit} className='token-form'>
+        >
+          <Field
+            name='isDivisible'
+            options={[
+              { label: 'Divisible', value: '0' },
+              { label: 'Indivisible', value: '1' },
+            ]}
+            component={RadioInput}
+          />
+        </FormGroup>
+        <br />
         <FormGroup legendText={(
           <Tooltip triggerText='Additional Token Information'>
             <p className='bx--tooltip__label'>
@@ -69,7 +54,7 @@ class CompleteTokenForm extends Component<Props> {
             name='details'
             component={TextInput}
             placeholder='Paste link here'
-            validate={[url, maxLength32]}
+            validate={[url]}
           />
         </FormGroup>
         <Button type='submit'>

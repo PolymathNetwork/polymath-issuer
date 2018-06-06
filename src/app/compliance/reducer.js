@@ -4,12 +4,13 @@ import { TransferManager } from 'polymathjs'
 import type { Investor } from 'polymathjs/types'
 
 import * as a from './actions'
+import type { InvestorCSVRow } from './actions'
 
 export type WhitelistState = {|
   transferManager: TransferManager,
   investors: Array<Investor>,
   uploaded: Array<Investor>,
-  criticals: Array<[number,string,string,string]>,
+  criticals: Array<InvestorCSVRow>,
   isTooMany: boolean,
   listLength: number,
 |}

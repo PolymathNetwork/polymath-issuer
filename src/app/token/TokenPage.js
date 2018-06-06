@@ -146,13 +146,15 @@ class TokenPage extends Component<Props, State> {
                       <p>{token.name}</p>
                     </div>
                     <div className='bx--form-item'>
-                      <label htmlFor='owner' className='bx--label'>Symbol Registration Transaction</label>
-                      <p>
-                        {etherscanTx(token.txHash, token.txHash)}
-                      </p>
+                      <label htmlFor='owner' className='bx--label'>
+                        Symbol {!token.address ? 'Reservation' : 'Issuing'} Transaction
+                      </label>
+                      <p>{etherscanTx(token.txHash, token.txHash)}</p>
                     </div>
                     <div className='bx--form-item'>
-                      <label htmlFor='name' className='bx--label'>Symbol Registration Date</label>
+                      <label htmlFor='name' className='bx--label'>
+                        Symbol {!token.address ? 'Reservation' : 'Issuing'} Date
+                      </label>
                       <p>{moment(token.timestamp).format('D MMMM, YYYY')}</p>
                     </div>
                     <hr />

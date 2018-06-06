@@ -39,6 +39,7 @@ import EditInvestorsForm, { formName as editInvestorsFormName } from './componen
 import ImportWhitelistModal from './components/ImportWhitelistModal'
 
 import type { RootState } from '../../redux/reducer'
+import type { InvestorCSVRow } from './actions'
 
 import './style.css'
 
@@ -60,7 +61,7 @@ const {
 
 type StateProps = {|
   investors: Array<Investor>,
-  criticals: Array<[number,string,string,string]>,
+  criticals: Array<InvestorCSVRow>,
   stateListLength: number,
   token: SecurityToken,
 |}
@@ -239,6 +240,7 @@ class CompliancePage extends Component<Props, State> {
         addedBy: investor.addedBy,
         from: dateFormat(investor.from),
         to: dateFormat(investor.to),
+        expiry: dateFormat(investor.expiry),
       })
     }
     return stringified
@@ -265,10 +267,10 @@ class CompliancePage extends Component<Props, State> {
           </Button>
           <Button
             icon='edit'
-            iconDescription='Edit Lockup Dates'
+            iconDescription='Edit Dates'
             onClick={() => this.handleBatchEdit(selectedRows)}
           >
-            Edit Lockup Dates
+            Edit Dates
           </Button>
         </TableBatchActions>
         <TableToolbarSearch onChange={onInputChange} />
@@ -312,9 +314,11 @@ class CompliancePage extends Component<Props, State> {
               <TableSelectRow {...getSelectionProps({ row })} />
               {row.cells.map((cell, i) => (
                 <TableCell key={cell.id}>
-                  {(i === 0 || i === 2) ? (
+                  {i === 0 ? (
                     <div>{etherscanAddress(cell.value, cell.value)}</div>
-                  ) : i === 5 ? (
+                  ) : i === 2 ? (
+                    <div>{etherscanAddress(cell.value, addressShortifier(cell.value))}</div>
+                  ) : i === 6 ? (
                     <div>
                       <Icon
                         name='edit--glyph'
@@ -410,15 +414,17 @@ class CompliancePage extends Component<Props, State> {
                           <th>Address</th>
                           <th>Sale Lockup</th>
                           <th>Purchase Lockup</th>
+                          <th>KYC/AML Expiry</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {criticals.map(([id,address,sale,purchase]: [number,string,string,string]) => (
+                        {criticals.map(([id, address, sale, purchase, expiry]: InvestorCSVRow) => (
                           <tr key={id}>
                             <td>{id}</td>
                             <td>{addressShortifier(address)}</td>
                             <td>{sale}</td>
                             <td>{purchase}</td>
+                            <td>{expiry}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -464,6 +470,7 @@ class CompliancePage extends Component<Props, State> {
               { key: 'addedBy', header: 'Added by' },
               { key: 'from', header: 'Sale lockup' },
               { key: 'to', header: 'Purchase lockup' },
+              { key: 'expiry', header: 'KYC/AML Expiry' },
               { key: 'actions', header: '' },
             ]}
             render={this.dataTableRender}
@@ -477,7 +484,7 @@ class CompliancePage extends Component<Props, State> {
             className='whitelist-investor-modal'
             open={this.state.isEditModalOpen}
             onRequestClose={this.handleEditModalClose}
-            modalHeading='Edit Lockup Dates'
+            modalHeading='Edit Dates'
             passiveModal
           >
             <p className='bx--modal-content__text'>

@@ -13,14 +13,12 @@ export type TokenState = {
   token: ?SecurityToken,
   isFetched: boolean,
   providers: ?Array<ServiceProvider>,
-  isDivisible: boolean,
 }
 
 const defaultState: TokenState = {
   token: null,
   isFetched: false,
   providers: null,
-  isDivisible: true,
 }
 
 export default (state: TokenState = defaultState, action: Action) => {
@@ -30,11 +28,6 @@ export default (state: TokenState = defaultState, action: Action) => {
         ...state,
         token: action.token,
         isFetched: true,
-      }
-    case a.IS_DIVISIBLE:
-      return {
-        ...state,
-        isDivisible: action.value,
       }
     case DATA:
       return {

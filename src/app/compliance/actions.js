@@ -20,6 +20,8 @@ export const listLength = (listLength: number) => ({ type: LIST_LENGTH, listLeng
 export const RESET_UPLOADED = 'compliance/RESET_UPLOADED'
 export const resetUploaded = () => ({ type: RESET_UPLOADED })
 
+export type InvestorCSVRow = [number,string,string,string,string]
+
 export const fetchWhitelist = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
   try {
@@ -73,24 +75,25 @@ export const uploadCSV = (file: Object) => async (dispatch: Function) => {
     reader.readAsText(file)
     reader.onload = () => {
       const investors: Array<Investor> = []
-      const criticals: Array<[number,string,string,string]> = []
+      const criticals: Array<InvestorCSVRow> = []
       let isTooMany = false
       let string = 0
       // $FlowFixMe
       for (let entry of reader.result.split(/\r\n|\n/)) {
         string++
-        const [address, sale, purchase] = entry.split(',')
+        const [address, sale, purchase, expiryIn] = entry.split(',')
         const handleDate = (d: string) => d === '' ? new Date(PERMANENT_LOCKUP_TS) : new Date(Date.parse(d))
         const from = handleDate(sale)
         const to = handleDate(purchase)
-        if (ethereumAddress(address) === null && !isNaN(from) && !isNaN(to)) {
+        const expiry = new Date(Date.parse(expiryIn))
+        if (ethereumAddress(address) === null && !isNaN(from) && !isNaN(to) && !isNaN(expiry)) {
           if (investors.length === 75) {
             isTooMany = true
             continue
           }
-          investors.push({ address, from, to })
+          investors.push({ address, from, to, expiry })
         } else {
-          criticals.push([string, address, sale, purchase])
+          criticals.push([string, address, sale, purchase, expiryIn])
         }
       }
       dispatch({ type: UPLOADED, investors, criticals, isTooMany })
@@ -124,6 +127,7 @@ export const addInvestor = () => async (dispatch: Function, getState: GetState) 
     address: values.address,
     from: new Date(values.permanentSale ? PERMANENT_LOCKUP_TS : values.sale),
     to: new Date(values.permanentPurchase ? PERMANENT_LOCKUP_TS : values.purchase),
+    expiry: new Date(values.expiry),
   }
   const { transferManager } = getState().whitelist
   dispatch(ui.txStart('Submitting Approved Investor...'))
@@ -149,6 +153,7 @@ export const editInvestors = (addresses: Array<Address>) => async (dispatch: Fun
     address: '',
     from: new Date(values['e_permanentSale'] ? PERMANENT_LOCKUP_TS : values.sale),
     to: new Date(values['e_permanentPurchase'] ? PERMANENT_LOCKUP_TS : values.purchase),
+    expiry: new Date(values.expiry),
   }
   const investors = []
   for (let i = 0; i < addresses.length; i++) {
@@ -179,6 +184,7 @@ export const removeInvestors = (addresses: Array<Address>) => async (dispatch: F
       address: addresses[i],
       from: new Date(0),
       to: new Date(0),
+      expiry: new Date(0),
     }
     investors.push(removeInvestor)
   }
