@@ -70,34 +70,32 @@ export const fetchWhitelist = () => async (dispatch: Function, getState: GetStat
 }
 
 export const uploadCSV = (file: Object) => async (dispatch: Function) => {
-  if (file.type.match(/csv.*/)) {
-    const reader = new FileReader()
-    reader.readAsText(file)
-    reader.onload = () => {
-      const investors: Array<Investor> = []
-      const criticals: Array<InvestorCSVRow> = []
-      let isTooMany = false
-      let string = 0
-      // $FlowFixMe
-      for (let entry of reader.result.split(/\r\n|\n/)) {
-        string++
-        const [address, sale, purchase, expiryIn] = entry.split(',')
-        const handleDate = (d: string) => d === '' ? new Date(PERMANENT_LOCKUP_TS) : new Date(Date.parse(d))
-        const from = handleDate(sale)
-        const to = handleDate(purchase)
-        const expiry = new Date(Date.parse(expiryIn))
-        if (ethereumAddress(address) === null && !isNaN(from) && !isNaN(to) && !isNaN(expiry)) {
-          if (investors.length === 75) {
-            isTooMany = true
-            continue
-          }
-          investors.push({ address, from, to, expiry })
-        } else {
-          criticals.push([string, address, sale, purchase, expiryIn])
+  const reader = new FileReader()
+  reader.readAsText(file)
+  reader.onload = () => {
+    const investors: Array<Investor> = []
+    const criticals: Array<InvestorCSVRow> = []
+    let isTooMany = false
+    let string = 0
+    // $FlowFixMe
+    for (let entry of reader.result.split(/\r\n|\n/)) {
+      string++
+      const [address, sale, purchase, expiryIn] = entry.split(',')
+      const handleDate = (d: string) => d === '' ? new Date(PERMANENT_LOCKUP_TS) : new Date(Date.parse(d))
+      const from = handleDate(sale)
+      const to = handleDate(purchase)
+      const expiry = new Date(Date.parse(expiryIn))
+      if (ethereumAddress(address) === null && !isNaN(from) && !isNaN(to) && !isNaN(expiry)) {
+        if (investors.length === 75) {
+          isTooMany = true
+          continue
         }
+        investors.push({ address, from, to, expiry })
+      } else {
+        criticals.push([string, address, sale, purchase, expiryIn])
       }
-      dispatch({ type: UPLOADED, investors, criticals, isTooMany })
     }
+    dispatch({ type: UPLOADED, investors, criticals, isTooMany })
   }
 }
 
