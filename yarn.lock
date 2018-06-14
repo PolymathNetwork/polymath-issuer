@@ -482,7 +482,7 @@ async-eventemitter@^0.2.2:
   dependencies:
     async "^2.4.0"
 
-"async-eventemitter@github:ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c":
+async-eventemitter@ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c:
   version "0.2.3"
   resolved "https://codeload.github.com/ahultgren/async-eventemitter/tar.gz/fa06e39e56786ba541c180061dbf2c0a5bbf951c"
   dependencies:
@@ -8231,9 +8231,9 @@ polymath-core@1.1.1:
     truffle-hdwallet-provider-privkey "^0.1.0"
     web3 "^1.0.0-beta.33"
 
-polymath-ui@4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-4.0.0.tgz#905c8aef1d1d9a4c806ebb2ea321660ac3d60722"
+polymath-ui@4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-4.0.1.tgz#bee0c1120a9b33ee94ff5cc576da55f6d5ba7163"
   dependencies:
     apollo-fetch "^0.7.0"
     babel-runtime "6.26.0"
@@ -11084,9 +11084,9 @@ web3-core-helpers@1.0.0-beta.34:
     web3-eth-iban "1.0.0-beta.34"
     web3-utils "1.0.0-beta.34"
 
-web3-core-method@1.0.0-beta.30:
+web3-core-method@1.0.0-beta.30, web3-core-method@bshevchenko/web3-core-method#master, "web3-core-method@github:bshevchenko/web3-core-method#master":
   version "1.0.0-beta.30"
-  resolved "https://registry.yarnpkg.com/web3-core-method/-/web3-core-method-1.0.0-beta.30.tgz#8dd6ff789e8d1563b8786d13a78c7facefae471c"
+  resolved "https://codeload.github.com/bshevchenko/web3-core-method/tar.gz/9199df8b1ea8658503ee48ba7ad391fec8e61838"
   dependencies:
     underscore "1.8.3"
     web3-core-helpers "1.0.0-beta.30"
@@ -11103,16 +11103,6 @@ web3-core-method@1.0.0-beta.34:
     web3-core-promievent "1.0.0-beta.34"
     web3-core-subscriptions "1.0.0-beta.34"
     web3-utils "1.0.0-beta.34"
-
-"web3-core-method@github:bshevchenko/web3-core-method#master":
-  version "1.0.0-beta.30"
-  resolved "https://codeload.github.com/bshevchenko/web3-core-method/tar.gz/9199df8b1ea8658503ee48ba7ad391fec8e61838"
-  dependencies:
-    underscore "1.8.3"
-    web3-core-helpers "1.0.0-beta.30"
-    web3-core-promievent "1.0.0-beta.30"
-    web3-core-subscriptions "1.0.0-beta.30"
-    web3-utils "1.0.0-beta.30"
 
 web3-core-promievent@1.0.0-beta.30:
   version "1.0.0-beta.30"

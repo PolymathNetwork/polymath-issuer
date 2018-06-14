@@ -12,6 +12,7 @@ import { complete } from './actions'
 import NotFoundPage from '../NotFoundPage'
 import Progress from './components/Progress'
 import CompleteTokenForm from './components/CompleteTokenForm'
+import MintTokens from './components/MintTokens'
 import type { RootState } from '../../redux/reducer'
 
 import './style.css'
@@ -81,7 +82,8 @@ class TokenPage extends Component<Props, State> {
               <div className='bx--modal-content__text'>
                 <p>
                   Please confirm that all previous information is correct and that you are not violating any trademarks.
-                  Once you hit &laquo;CONFIRM&raquo;, your Token will be created on the blockchain and will be immutable.
+                  Once you hit &laquo;CONFIRM&raquo;, your Token will be created on the
+                  blockchain and will be immutable.
                   Any change will require that you start the process over. If you wish to review your information,
                   please select &laquo;CANCEL&raquo;.
                 </p>
@@ -120,6 +122,9 @@ class TokenPage extends Component<Props, State> {
                     <CompleteTokenForm onSubmit={this.handleCompleteSubmit} />
                   </div>
                 </div>
+              ) : ''}
+              {token.address ? (
+                <MintTokens />
               ) : ''}
               <div className='bx--col-xs-5'>
                 <div className='pui-page-box'>

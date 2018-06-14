@@ -20,7 +20,7 @@ export const listLength = (listLength: number) => ({ type: LIST_LENGTH, listLeng
 export const RESET_UPLOADED = 'compliance/RESET_UPLOADED'
 export const resetUploaded = () => ({ type: RESET_UPLOADED })
 
-export type InvestorCSVRow = [number,string,string,string,string]
+export type InvestorCSVRow = [number, string, string, string, string]
 
 export const fetchWhitelist = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
