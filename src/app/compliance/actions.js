@@ -101,22 +101,20 @@ export const uploadCSV = (file: Object) => async (dispatch: Function) => {
 
 export const importWhitelist = () => async (dispatch: Function, getState: GetState) => {
   const { uploaded, transferManager } = getState().whitelist
-  dispatch(ui.txStart('Submitting Approved Investors...'))
-  try {
-    const receipt = await transferManager.modifyWhitelistMulti(uploaded)
-    dispatch(
-      ui.notify(
-        'Investors has been added successfully',
-        true,
-        null,
-        ui.etherscanTx(receipt.transactionHash)
-      )
-    )
-    dispatch(resetUploaded())
-    dispatch(fetchWhitelist())
-  } catch (e) {
-    dispatch(ui.txFailed(e))
-  }
+  dispatch(ui.tx(
+    'Submitting Approved Investors',
+    async () => {
+      await transferManager.modifyWhitelistMulti(uploaded)
+    },
+    'Investors has been added successfully',
+    () => {
+      dispatch(resetUploaded())
+      return dispatch(fetchWhitelist())
+    },
+    undefined,
+    undefined,
+    true
+  ))
 }
 
 export const addInvestor = () => async (dispatch: Function, getState: GetState) => {
@@ -128,21 +126,20 @@ export const addInvestor = () => async (dispatch: Function, getState: GetState) 
     expiry: new Date(values.expiry),
   }
   const { transferManager } = getState().whitelist
-  dispatch(ui.txStart('Submitting Approved Investor...'))
-  try {
-    const receipt = await transferManager.modifyWhitelist(investor)
-    dispatch(
-      ui.notify(
-        'Investor has been added successfully',
-        true,
-        null,
-        ui.etherscanTx(receipt.transactionHash)
-      )
-    )
-    dispatch(fetchWhitelist())
-  } catch (e) {
-    dispatch(ui.txFailed(e))
-  }
+
+  dispatch(ui.tx(
+    'Submitting Approved Investor',
+    async () => {
+      await transferManager.modifyWhitelist(investor)
+    },
+    'Investor has been added successfully',
+    () => {
+      return dispatch(fetchWhitelist())
+    },
+    undefined,
+    undefined,
+    true
+  ))
 }
 
 export const editInvestors = (addresses: Array<Address>) => async (dispatch: Function, getState: GetState) => {
@@ -158,21 +155,20 @@ export const editInvestors = (addresses: Array<Address>) => async (dispatch: Fun
     investors.push({ ...investor, address: addresses[i] })
   }
   const { transferManager } = getState().whitelist
-  dispatch(ui.txStart('Updating Lockup Dates...'))
-  try {
-    const receipt = await transferManager.modifyWhitelistMulti(investors)
-    dispatch(
-      ui.notify(
-        'Lockup dates has been updated successfully',
-        true,
-        null,
-        ui.etherscanTx(receipt.transactionHash)
-      )
-    )
-    dispatch(fetchWhitelist())
-  } catch (e) {
-    dispatch(ui.txFailed(e))
-  }
+
+  dispatch(ui.tx(
+    'Updating Lockup Dates',
+    async () => {
+      await transferManager.modifyWhitelistMulti(investors)
+    },
+    'Lockup dates has been updated successfully',
+    () => {
+      return dispatch(fetchWhitelist())
+    },
+    undefined,
+    undefined,
+    true
+  ))
 }
 
 export const removeInvestors = (addresses: Array<Address>) => async (dispatch: Function, getState: GetState) => {
@@ -188,19 +184,18 @@ export const removeInvestors = (addresses: Array<Address>) => async (dispatch: F
   }
   const { transferManager } = getState().whitelist
   const plural = addresses.length > 1 ? 's' : ''
-  dispatch(ui.txStart(`Removing investor${plural}...`))
-  try {
-    const receipt = await transferManager.modifyWhitelistMulti(investors)
-    dispatch(
-      ui.notify(
-        `Investor${plural} has been removed successfully`,
-        true,
-        null,
-        ui.etherscanTx(receipt.transactionHash)
-      )
-    )
-    dispatch(fetchWhitelist())
-  } catch (e) {
-    dispatch(ui.txFailed(e))
-  }
+
+  dispatch(ui.tx(
+    `Removing investor${plural}`,
+    async () => {
+      await transferManager.modifyWhitelistMulti(investors)
+    },
+    `Investor${plural} has been removed successfully`,
+    () => {
+      return dispatch(fetchWhitelist())
+    },
+    undefined,
+    undefined,
+    true
+  ))
 }

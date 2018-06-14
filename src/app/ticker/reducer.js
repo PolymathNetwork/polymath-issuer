@@ -10,7 +10,6 @@ export type TickerTransaction = {
 }
 
 export type TickerState = {
-  isRegistered: boolean,
   isSuccessPageInitialized: boolean,
   transaction: ?TickerTransaction,
   isTickerEmailSent: boolean,
@@ -18,7 +17,6 @@ export type TickerState = {
 }
 
 const defaultState: TickerState = {
-  isRegistered: false,
   isSuccessPageInitialized: false,
   transaction: null,
   isTickerEmailSent: false,
@@ -27,11 +25,6 @@ const defaultState: TickerState = {
 
 export default (state: TickerState = defaultState, action: Action) => {
   switch (action.type) {
-    case a.REGISTERED:
-      return {
-        ...state,
-        isRegistered: true,
-      }
     case a.SUCCESS_PAGE_INIT:
       return {
         ...state,

@@ -7,9 +7,6 @@ import { formName as confirmEmailFormName } from './ConfirmEmailPage'
 import type { GetState } from '../../redux/reducer'
 import type { ExtractReturn } from '../../redux/helpers'
 
-export const REGISTERED = 'ticker/REGISTERED'
-export const registered = () => ({ type: REGISTERED })
-
 export const SUCCESS_PAGE_INIT = 'ticker/SUCCESS_PAGE_INIT'
 export const successPageInitialized = (initialized: boolean) => ({ type: SUCCESS_PAGE_INIT, initialized })
 
@@ -23,24 +20,25 @@ export const LAST_CONFIRMATION_EMAIL = 'ticker/LAST_CONFIRMATION_EMAIL'
 export const confirmationEmailSent = (email: string) => ({ type: LAST_CONFIRMATION_EMAIL, email })
 
 export type Action =
-  | ExtractReturn<typeof registered>
   | ExtractReturn<typeof successPageInitialized>
   | ExtractReturn<typeof setTransaction>
   | ExtractReturn<typeof emailSent>
   | ExtractReturn<typeof confirmationEmailSent>
 
 // eslint-disable-next-line
-export const register = () => async (dispatch: Function, getState: GetState) => {
-  dispatch(ui.txStart('Submitting token symbol registration...'))
-  try {
-    const details: SymbolDetails = getState().form[formName].values
-    await TickerRegistry.registerTicker(details)
-
-    dispatch(ui.txEnd(null))
-    dispatch(registered())
-  } catch (e) {
-    dispatch(ui.txFailed(e))
-  }
+export const reserve = () => async (dispatch: Function, getState: GetState) => {
+  dispatch(ui.tx(
+    'Token symbol reservation',
+    async () => {
+      const details: SymbolDetails = getState().form[formName].values
+      await TickerRegistry.registerTicker(details)
+    },
+    'Your Token Symbol Was Reserved Successfully',
+    null,
+    '/ticker/success',
+    null,
+    true
+  ))
 }
 
 export const initSuccessPage = () => async (dispatch: Function) => {
@@ -69,13 +67,6 @@ export const initSuccessPage = () => async (dispatch: Function) => {
     ticker: latestEvent.returnValues._symbol,
     txHash: latestEvent.transactionHash,
   }
-
-  dispatch(ui.txHash(tx.txHash))
-  dispatch(ui.txSuccess(
-    'Your Token Symbol Was Reserved Successfully',
-    'Choose your providers',
-    `/dashboard/${tx.ticker}/providers`,
-  ))
 
   dispatch(setTransaction(tx))
   dispatch(successPageInitialized(true))
@@ -120,7 +111,7 @@ export const sendRegisterTickerEmail = () => async (dispatch: Function, getState
 }
 
 export const confirmEmail = () => async (dispatch: Function, getState: GetState) => {
-  dispatch(ui.txStart('Requesting your signature...'))
+  dispatch(ui.fetching())
   try {
     const prevAccountData = ui.getAccountData(getState())
     if (!prevAccountData) {
@@ -133,7 +124,6 @@ export const confirmEmail = () => async (dispatch: Function, getState: GetState)
     }
 
     await dispatch(ui.updateAccount(account))
-    dispatch(ui.txStart('Sending a confirmation email...'))
     await dispatch(ui.sendActivationEmail())
     dispatch(confirmationEmailSent(account.email))
 
@@ -141,8 +131,8 @@ export const confirmEmail = () => async (dispatch: Function, getState: GetState)
       'Check your inbox for a confirmation email.',
       true
     ))
-    dispatch(ui.txEnd({}))
+    dispatch(ui.fetched())
   } catch (e) {
-    dispatch(ui.txFailed(e))
+    dispatch(ui.fetchingFailed(e))
   }
 }

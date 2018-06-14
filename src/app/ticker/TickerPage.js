@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { change } from 'redux-form'
 import { bull } from 'polymath-ui'
-import { Redirect } from 'react-router'
 import { TickerRegistry } from 'polymathjs'
 import type { RouterHistory } from 'react-router'
 import {
@@ -18,33 +17,31 @@ import {
 } from 'carbon-components-react'
 
 import TickerForm, { formName } from './components/TickerForm'
-import { register } from './actions'
+import { reserve } from './actions'
 import type { TickerTransaction } from './reducer'
 import { data as tokenData } from '../token/actions'
 
 type StateProps = {|
   account: ?string,
   token: Object,
-  isRegistered: boolean,
   transaction: TickerTransaction,
 |}
 
 type DispatchProps = {|
   change: (?string) => any,
-  register: () => any,
+  reserve: () => any,
   tokenData: (data: any) => any
 |}
 
 const mapStateToProps = (state): StateProps => ({
   account: state.network.account,
   token: state.token.token,
-  isRegistered: state.ticker.isRegistered,
   transaction: state.ticker.transaction,
 })
 
 const mapDispatchToProps: DispatchProps = {
   change: (value) => change(formName, 'owner', value, false, false),
-  register,
+  reserve,
   tokenData,
 }
 
@@ -79,7 +76,7 @@ class TickerPage extends Component<Props, State> {
 
   handleConfirm = () => {
     this.setState({ isModalOpen: false })
-    this.props.register()
+    this.props.reserve()
   }
 
   handleCancel = () => {
@@ -87,10 +84,6 @@ class TickerPage extends Component<Props, State> {
   }
 
   render () {
-    if (this.props.isRegistered) {
-      return <Redirect to='/ticker/success' />
-    }
-
     return (
       <DocumentTitle title='Token Symbol Reservation – Polymath'>
         <Fragment>
