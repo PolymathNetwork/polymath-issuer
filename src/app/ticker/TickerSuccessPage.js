@@ -2,17 +2,17 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import DocumentTitle from 'react-document-title'
 import { Redirect } from 'react-router'
-import { TxSuccess } from 'polymath-ui'
+import { Loading } from 'carbon-components-react'
 
 import { initSuccessPage, sendRegisterTickerEmail } from './actions'
+import type { TickerTransaction } from './reducer'
 
 type StateProps = {|
   isAccountInitialized: boolean,
   isAccountActivated: boolean,
   isSuccessPageInitialized: boolean,
-  transaction: boolean,
+  transaction: TickerTransaction,
 |}
 
 type DispatchProps = {|
@@ -41,19 +41,9 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 class TickerSuccessPage extends Component<Props> {
+
   componentWillMount () {
     this.props.initSuccessPage()
-  }
-
-  componentDidUpdate () {
-    const props = this.props
-    const locationState = props.location.state
-
-    if (props.isAccountInitialized && props.isAccountActivated &&
-      props.isSuccessPageInitialized && props.transaction && locationState &&
-      locationState.fromEmailConfirmation) {
-      props.sendRegisterTickerEmail()
-    }
   }
 
   render () {
@@ -65,19 +55,16 @@ class TickerSuccessPage extends Component<Props> {
     } = this.props
 
     if (!isSuccessPageInitialized || !isAccountInitialized) {
-      return <span />
+      return <Loading />
     }
 
     if (!isAccountActivated || !transaction) {
       return <Redirect to='/confirm-email' />
     }
 
-    return (
-      <DocumentTitle title='Token Symbol Registration – Polymath'>
-        { /* $FlowFixMe */ }
-        <TxSuccess />
-      </DocumentTitle>
-    )
+    this.props.sendRegisterTickerEmail()
+
+    return <Redirect to={`/dashboard/${transaction.ticker}/providers`} />
   }
 }
 

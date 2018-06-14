@@ -30,54 +30,52 @@ export const fetch = (ticker: string) => async (dispatch: Function) => {
 }
 
 export const complete = () => async (dispatch: Function, getState: GetState) => {
-  const token = getState().token.token
-  // $FlowFixMe
-  dispatch(ui.txStart(`Issuing ${token.ticker} token...`))
-  try {
-    const token: SecurityToken = {
-      ...getState().token.token,
-      ...getState().form[completeFormName].values,
-    }
-    token.isDivisible = token.isDivisible !== '1'
-    const receipt = await SecurityTokenRegistry.generateSecurityToken(token)
-    dispatch(fetch(token.ticker))
-    dispatch(
-      ui.txSuccess(
-        'Token Was Issued Successfully',
-        'Set Up Offering Details',
-        `/dashboard/${token.ticker}/sto`
-      )
-    )
+  const { token } = getState().token // $FlowFixMe
+  const ticker = token.ticker
 
-    const accountData = ui.getAccountDataForFetch(getState())
-    if (!accountData) {
-      throw new Error('Not signed in')
-    }
+  dispatch(ui.tx(
+    `Issuing ${ticker} token...`,
+    async () => {
+      const token: SecurityToken = {
+        ...getState().token.token,
+        ...getState().form[completeFormName].values,
+      }
+      token.isDivisible = token.isDivisible !== '1'
+      const receipt = await SecurityTokenRegistry.generateSecurityToken(token)
 
-    const emailResult = await ui.offchainFetch({
-      query: `
+      const accountData = ui.getAccountDataForFetch(getState())
+      if (!accountData) {
+        throw new Error('Not signed in')
+      }
+
+      const emailResult = await ui.offchainFetch({
+        query: `
         mutation ($account: WithAccountInput!, $input: EmailTokenIssuedInput!) {
           withAccount(input: $account) {
             sendEmailTokenIssued(input: $input)
           }
         }
       `,
-      variables: {
-        account: {
-          accountData: accountData,
+        variables: {
+          account: {
+            accountData: accountData,
+          },
+          input: {
+            ticker: token.ticker,
+            txHash: receipt.transactionHash,
+          },
         },
-        input: {
-          ticker: token.ticker,
-          txHash: receipt.transactionHash,
-        },
-      },
-    })
+      })
 
-    if (emailResult.errors) {
-      // eslint-disable-next-line no-console
-      console.error('sendEmailTokenIssued failed:', emailResult.errors)
-    }
-  } catch (e) {
-    dispatch(ui.txFailed(e))
-  }
+      if (emailResult.errors) {
+        // eslint-disable-next-line no-console
+        console.error('sendEmailTokenIssued failed:', emailResult.errors)
+      }
+    },
+    'Token Was Issued Successfully',
+    () => {
+      return dispatch(fetch(ticker))
+    },
+    `/dashboard/${ticker}/sto`
+  ))
 }
