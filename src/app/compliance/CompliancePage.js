@@ -401,7 +401,7 @@ class CompliancePage extends Component<Props, State> {
                   <div>
                     <InlineNotification
                       hideCloseButton
-                      title={criticals.length + ' Errors in Your .csv File'}
+                      title={criticals.length + ' Error' + (criticals.length > 1 ? 's' : '') + ' in Your .csv File'}
                       subtitle={'Please note that the entries below contains error that prevent their content to be ' +
                       'committed to the blockchain. Entries were automatically deselected so they are not submitted ' +
                       'to the blockchain. You can also elect to cancel the operation to review the csv file offline.'}

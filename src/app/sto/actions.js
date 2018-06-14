@@ -51,9 +51,10 @@ export const fetchFactories = () => async (dispatch: Function) => {
     dispatch(factories([{
       title: 'Capped STO',
       name: 'Polymath Inc.',
-      desc: 'This smart contract creates a maximum number of tokens (i.e hard cap) which the total aggregate of tokens' +
-      ' acquired by all investors cannot exceed. Security tokens are sent to the investor upon reception of the funds ' +
-      '(ETH or POLY), and any security tokens left upon termination of the offering will not be minted.',
+      desc: 'This smart contract creates a maximum number of tokens (i.e hard cap) which the total ' +
+      'aggregate of tokens acquired by all investors cannot exceed. Security tokens are sent to the investor upon' +
+      ' reception of the funds (ETH or POLY), and any security tokens left upon termination of the offering ' +
+      'will not be minted.',
       isVerified: true,
       securityAuditLink: {
         title: 'Zeppelin Solutions',
