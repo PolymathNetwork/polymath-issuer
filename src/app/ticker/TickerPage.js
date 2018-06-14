@@ -16,15 +16,15 @@ import { data as tokenData } from '../token/actions'
 
 type StateProps = {|
   account: ?string,
-  token: Object,
-  isRegistered: boolean,
-  transaction: TickerTransaction,
+    token: Object,
+      isRegistered: boolean,
+        transaction: TickerTransaction,
 |}
 
 type DispatchProps = {|
-  change: (?string) => any,
-  register: () => any,
-  tokenData: (data: any) => any,
+  change: (? string) => any,
+    register: () => any,
+      tokenData: (data: any) => any,
 |}
 
 const mapStateToProps = (state): StateProps => ({
@@ -42,8 +42,7 @@ const mapDispatchToProps: DispatchProps = {
 
 type Props = {|
   history: RouterHistory,
-|} & StateProps &
-  DispatchProps
+|} & StateProps & DispatchProps
 
 type State = {|
   expiryLimit: number,

@@ -17,7 +17,7 @@ import './style.css'
 
 type StateProps = {|
   token: ?SecurityToken,
-  isDeploySuccess: boolean,
+    isDeploySuccess: boolean,
 |}
 
 type DispatchProps = {|
@@ -65,26 +65,24 @@ class TokenPage extends Component<Props> {
                       </div>
                       <h2 className='pui-h2'>Create Your Security Token</h2>
                       <h3 className='pui-h3'>
-                        Create your security token before your token registration expires. If you let your token
-                        reservation expire, the token symbol you selected will be available for others to claim.
+                          Create your security token before your token registration expires. If you let your token
+                          reservation expire, the token symbol you selected will be available for others to claim.
                       </h3>
                       <h3 className='pui-h3'>
-                        To proceed with the creation of your security token, we recommend you work with your Advisory to
-                        answer the following questions:
+                          To proceed with the creation of your security token, we recommend you work with your Advisory to
+                          answer the following questions:
                       </h3>
                       <br />
                       <CompleteTokenForm onSubmit={this.handleCompleteSubmit} />
                     </div>
                   </div>
-                ) : (
-                  ''
-                )}
+                ) : ''}
                 <div className='bx--col-xs-5'>
                   <div className='pui-page-box'>
                     <div className='ticker-field'>
                       <div className='bx--form-item'>
                         <label htmlFor='ticker' className='bx--label'>
-                          Token Symbol
+                            Token Symbol
                         </label>
                         <input
                           type='text'
@@ -98,26 +96,26 @@ class TokenPage extends Component<Props> {
                     </div>
                     <div className='bx--form-item'>
                       <label htmlFor='name' className='bx--label'>
-                        Token Name
+                          Token Name
                       </label>
                       <p>{token.name}</p>
                     </div>
                     <div className='bx--form-item'>
                       <label htmlFor='owner' className='bx--label'>
-                        Symbol Registration Transaction
+                          Symbol Registration Transaction
                       </label>
                       <p>{etherscanTx(token.txHash, token.txHash)}</p>
                     </div>
                     <div className='bx--form-item'>
                       <label htmlFor='name' className='bx--label'>
-                        Symbol Registration Date
+                          Symbol Registration Date
                       </label>
                       <p>{moment(token.timestamp).format('D MMMM, YYYY')}</p>
                     </div>
                     <hr />
                     <div className='bx--form-item'>
                       <label htmlFor='name' className='bx--label'>
-                        Issuer&apos;s ETH Address
+                          Issuer&apos;s ETH Address
                       </label>
                       <p>{token.owner}</p>
                     </div>

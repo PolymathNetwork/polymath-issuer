@@ -1,5 +1,6 @@
 // @flow
 
+import React from 'react'
 import { SecurityTokenRegistry } from 'polymathjs'
 import * as ui from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
@@ -35,20 +36,16 @@ export const fetch = (ticker: string) => async (dispatch: Function) => {
 export const complete = () => async (dispatch: Function, getState: GetState) => {
   const token = getState().token.token
   dispatch(
-    ui.showModal(
+    ui.confirm(
       'Before you proceed with your Token Creation',
-      'Confirmation Required',
-      'Confirm',
-      'Please confirm that all previous information is correct and that you are ' +
-        'not violating any trademarks. Once you hit & laquo; CONFIRM & raquo;, ' +
-        'your Token will be created on the blockchain and will be immutable.' +
-        'Any change will require that you start the process over.If you wish to ' +
-        'review your information, please select & laquo; CANCEL & raquo;.',
+      <div>
+        <p>Please confirm that all previous information is correct and that you are not violating any trademarks.</p>
+        <p>
+          Once you hit “CONFIRM”, your Token will be created on the blockchain and will be immutable. Any change will
+          require that you start the process over. If you wish to review your information, please select “CANCEL”.
+        </p>
+      </div>,
       'red',
-      'warning--glyph',
-      () => {
-        dispatch(ui.closeModalAction())
-      },
       async () => {
         // $FlowFixMe
         dispatch(ui.txStart(`Issuing ${token.ticker} token...`))
@@ -75,12 +72,12 @@ export const complete = () => async (dispatch: Function, getState: GetState) => 
 
           const emailResult = await ui.offchainFetch({
             query: `
-        mutation ($account: WithAccountInput!, $input: EmailTokenIssuedInput!) {
-          withAccount(input: $account) {
-            sendEmailTokenIssued(input: $input)
-          }
-        }
-      `,
+              mutation ($account: WithAccountInput!, $input: EmailTokenIssuedInput!) {
+                withAccount(input: $account) {
+                  sendEmailTokenIssued(input: $input)
+                }
+              }
+            `,
             variables: {
               account: {
                 accountData: accountData,

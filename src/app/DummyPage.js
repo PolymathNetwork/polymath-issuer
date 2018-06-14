@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import DocumentTitle from 'react-document-title'
 import { Button } from 'carbon-components-react'
 import { logo } from 'polymath-ui'
+
 import illustration from './illustration.png'
 
 export default class DummyPage extends Component {

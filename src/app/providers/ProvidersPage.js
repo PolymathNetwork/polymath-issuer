@@ -31,13 +31,13 @@ import './style.css'
 
 type StateProps = {|
   token: ?SecurityToken,
-  providers: ?Array<ServiceProvider>,
+    providers: ?Array < ServiceProvider >,
 |}
 
 type DispatchProps = {|
   applyProviders: (ids: Array<number>) => any,
-  iHaveMyOwnProviders: (cat: number) => any,
-  setProviderStatus: (id: number, status: SPStatus) => any,
+    iHaveMyOwnProviders: (cat: number) => any,
+      setProviderStatus: (id: number, status: SPStatus) => any,
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -52,18 +52,17 @@ const mapDispatchToProps: DispatchProps = {
 }
 
 type State = {|
-  selected: Array<number>,
-  tabSelected: number,
-  selectAll: boolean,
-  isApply: boolean,
-  catName: string,
-  isModalOpen: boolean,
+  selected: Array < number >,
+    tabSelected: number,
+      selectAll: boolean,
+        isApply: boolean,
+          catName: string,
+            isModalOpen: boolean,
 |}
 
 type Props = {|
   history: RouterHistory,
-|} & StateProps &
-  DispatchProps
+|} & StateProps & DispatchProps
 
 class ProvidersPage extends Component<Props, State> {
   state = {
@@ -133,7 +132,7 @@ class ProvidersPage extends Component<Props, State> {
   }
 
   handleIHaveMyOwn = (cat: ?number) => {
-    this.props.iHaveMyOwnProviders(cat === null || cat === undefined ? this.state.tabSelected : cat)
+    this.props.iHaveMyOwnProviders((cat === null || cat === undefined) ? this.state.tabSelected : cat)
     this.next()
   }
 
@@ -242,9 +241,7 @@ class ProvidersPage extends Component<Props, State> {
                   buttonTitle='Create Your Token Now'
                   handleButtonClick={this.handleCreateToken}
                 />
-              ) : (
-                ''
-              )}
+              ) : ''}
             </div>
           </div>
           <Tabs selected={this.state.tabSelected}>
@@ -258,9 +255,7 @@ class ProvidersPage extends Component<Props, State> {
                       <span className={'bx--tag' + (!this.applied(cat.id) ? ' tag-my-own' : '')}>
                         {this.applied(cat.id) ? this.applied(cat.id) + ' Applied' : 'I Have My Own'}
                       </span>
-                    ) : (
-                      ''
-                    )}
+                    ) : ''}
                   </div>
                 }
                 onClick={() => this.handleTabClick(cat.id, cat.title)}
@@ -281,21 +276,13 @@ class ProvidersPage extends Component<Props, State> {
                     <Button disabled={this.state.selected.length === 0} onClick={this.handleStartApply}>
                       Apply to selected
                     </Button>
-                    <Button
-                      kind={this.applied(cat.id) ? 'secondary' : 'primary'}
-                      onClick={() => this.handleIHaveMyOwn(cat.id)}
-                    >
-                      I have my own{'  '}
-                      {!this.applied(cat.id) ? <Icon name='checkmark' fill='#FFFFFF' /> : ''}
-                    </Button>
+                    <Button onClick={() => this.handleIHaveMyOwn(cat.id)}>I have my own</Button>
                   </div>
                   <div className='pui-clearfix' />
                   <div className='providers pui-no-select'>
                     {providers.map(
                       (p: ServiceProvider) =>
-                        p.cat !== cat.id ? (
-                          ''
-                        ) : (
+                        p.cat !== cat.id ? '' : (
                           <div
                             role='button'
                             key={p.id}

@@ -1,3 +1,4 @@
+import React from 'react'
 import { TickerRegistry } from 'polymathjs'
 import * as ui from 'polymath-ui'
 import type { SymbolDetails } from 'polymathjs/types'
@@ -32,22 +33,21 @@ export type Action =
 // eslint-disable-next-line
 export const register = () => async (dispatch: Function, getState: GetState) => {
   dispatch(
-    ui.showModal(
+    ui.confirm(
       'Before you proceed with your Token Symbol Reservation',
-      'Confirmation Required',
-      'Reserve Ticker',
-      'Once you hit &laquo;RESERVE TICKER&raquo;, your Token Symbol ' +
-        'reservation will be sent to the blockchain and will be ' +
-        'immutable.Any change will require that you start the process ' +
-        'over.If you wish to review your information, please select' +
-        '& laquo; CANCEL & raquo;.',
+      <div>
+        <p>
+          Please confirmed that all previous information is correct and that you are not violating any trademarks.<br />
+        </p>
+        <p>
+          Once you hit “CONFIRM”, your Token Symbol registration will be sent to the blockchain and will be
+          immutable.Any change will require that you start the process over.If you wish to review your information,
+          please select “CANCEL”
+        </p>
+      </div>,
       'red',
-      'warning--glyph',
-      () => {
-        dispatch(ui.closeModalAction())
-      },
       async () => {
-        dispatch(ui.txStart('Submitting token symbol registration...'))
+        dispatch(ui.txStart('Submitting token symbol reservation...'))
         try {
           const details: SymbolDetails = getState().form[formName].values
           await TickerRegistry.registerTicker(details)

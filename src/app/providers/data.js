@@ -1,31 +1,31 @@
 export type SPStatus = {|
   title: string,
-  message: string,
+    message: string,
 |}
 
 export type SPProgress = {|
   isApplied: boolean,
-  status?: SPStatus,
+    status ?: SPStatus,
 |}
 
 export type ServiceProvider = {|
   id: number,
-  cat: number,
-  title: string,
-  logo: string,
-  desc: string,
-  progress?: SPProgress,
-  disclosure?: string,
-  isToBeAnnounced?: boolean,
+    cat: number,
+      title: string,
+        logo: string,
+          desc: string,
+            progress ?: SPProgress,
+            disclosure ?: string,
+            isToBeAnnounced ?: boolean,
 |}
 
 export type SPCategory = {|
   id: number,
-  title: string,
-  desc: string,
+    title: string,
+      desc: string,
 |}
 
-export const statuses = [ 'Selected as Provider', 'Provider Declined', 'Other' ]
+export const statuses = ['Selected as Provider', 'Provider Declined', 'Other']
 
 export const categories: Array<SPCategory> = [
   {
@@ -227,7 +227,7 @@ export const getProviders = () => {
     } else if (b.isToBeAnnounced) {
       return -1
     }
-    return textA < textB ? -1 : textA > textB ? 1 : 0
+    return (textA < textB) ? -1 : textA > textB ? 1 : 0
   })
   return providers
 }
@@ -244,8 +244,7 @@ export const isProvidersPassed = (providers: ?Array<ServiceProvider>) => {
   let isProvidersPassed = true
   if (providers) {
     for (let p: ServiceProvider of providers) {
-      if (p.cat === 0) {
-        // only cat 0 is obligatory
+      if (p.cat === 0) {// only cat 0 is obligatory
         if (p.progress && p.progress.isApplied) {
           isProvidersPassed = true
           break
