@@ -1,5 +1,6 @@
 // @flow
 
+import React from 'react'
 import { SecurityTokenRegistry } from 'polymathjs'
 import * as ui from 'polymath-ui'
 import type { SecurityToken } from 'polymathjs/types'
@@ -12,8 +13,11 @@ import type { ExtractReturn } from '../../redux/helpers'
 export const DATA = 'token/DATA'
 export const data = (token: ?SecurityToken) => ({ type: DATA, token })
 
-export type Action =
-  | ExtractReturn<typeof data>
+// TODO @bshevchenko: replace this with RadioInput from polymath-ui
+export const IS_DIVISIBLE = 'token/IS_DIVISIBLE'
+export const isDivisible = (value: boolean) => ({ type: IS_DIVISIBLE, value })
+
+export type Action = ExtractReturn<typeof data>
 
 export const fetch = (ticker: string) => async (dispatch: Function) => {
   dispatch(ui.fetching())
@@ -31,53 +35,64 @@ export const fetch = (ticker: string) => async (dispatch: Function) => {
 
 export const complete = () => async (dispatch: Function, getState: GetState) => {
   const token = getState().token.token
-  // $FlowFixMe
-  dispatch(ui.txStart(`Issuing ${token.ticker} token...`))
-  try {
-    const token: SecurityToken = {
-      ...getState().token.token,
-      ...getState().form[completeFormName].values,
-    }
-    token.isDivisible = token.isDivisible !== '1'
-    const receipt = await SecurityTokenRegistry.generateSecurityToken(token)
-    dispatch(fetch(token.ticker))
-    dispatch(
-      ui.txSuccess(
-        'Token Was Issued Successfully',
-        'Set Up Offering Details',
-        `/dashboard/${token.ticker}/sto`
-      )
-    )
-
-    const accountData = ui.getAccountDataForFetch(getState())
-    if (!accountData) {
-      throw new Error('Not signed in')
-    }
-
-    const emailResult = await ui.offchainFetch({
-      query: `
-        mutation ($account: WithAccountInput!, $input: EmailTokenIssuedInput!) {
-          withAccount(input: $account) {
-            sendEmailTokenIssued(input: $input)
+  dispatch(
+    ui.confirm(
+      'Before you proceed with your Token Creation',
+      <div>
+        <p>Please confirm that all previous information is correct and that you are not violating any trademarks.</p>
+        <p>
+          Once you hit “CONFIRM”, your Token will be created on the blockchain and will be immutable. Any change will
+          require that you start the process over. If you wish to review your information, please select “CANCEL”.
+        </p>
+      </div>,
+      'red',
+      async () => {
+        // $FlowFixMe
+        dispatch(ui.txStart(`Issuing ${token.ticker} token...`))
+        try {
+          const token: SecurityToken = {
+            ...getState().token.token,
+            ...getState().form[completeFormName].values,
           }
-        }
-      `,
-      variables: {
-        account: {
-          accountData: accountData,
-        },
-        input: {
-          ticker: token.ticker,
-          txHash: receipt.transactionHash,
-        },
-      },
-    })
+          token.isDivisible = token.isDivisible !== '1'
+          const receipt = await SecurityTokenRegistry.generateSecurityToken(token)
+          dispatch(fetch(token.ticker))
+          dispatch(
+            ui.txSuccess('Token Was Issued Successfully', 'Set Up Offering Details', `/dashboard/${token.ticker}/sto`),
+          )
 
-    if (emailResult.errors) {
-      // eslint-disable-next-line no-console
-      console.error('sendEmailTokenIssued failed:', emailResult.errors)
-    }
-  } catch (e) {
-    dispatch(ui.txFailed(e))
-  }
+          const accountData = ui.getAccountDataForFetch(getState())
+          if (!accountData) {
+            throw new Error('Not signed in')
+          }
+
+          const emailResult = await ui.offchainFetch({
+            query: `
+              mutation ($account: WithAccountInput!, $input: EmailTokenIssuedInput!) {
+                withAccount(input: $account) {
+                  sendEmailTokenIssued(input: $input)
+                }
+              }
+            `,
+            variables: {
+              account: {
+                accountData: accountData,
+              },
+              input: {
+                ticker: token.ticker,
+                txHash: receipt.transactionHash,
+              },
+            },
+          })
+
+          if (emailResult.errors) {
+            // eslint-disable-next-line no-console
+            console.error('sendEmailTokenIssued failed:', emailResult.errors)
+          }
+        } catch (e) {
+          dispatch(ui.txFailed(e))
+        }
+      },
+    ),
+  )
 }
