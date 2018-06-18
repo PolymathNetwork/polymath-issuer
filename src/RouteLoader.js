@@ -9,6 +9,7 @@ import { MetamaskPage } from 'polymath-ui'
 
 import Root from './app/Root'
 import SplashPage from './app/SplashPage'
+import DummyPage from './app/DummyPage'
 import routes from './routes'
 
 type Props = {
@@ -18,16 +19,59 @@ type Props = {
   }
 }
 
-class RouteLoader extends Component<Props> {
+type State = {|
+  screenWidth: number,
+|}
+
+class RouteLoader extends Component<Props, State> {
+
+  constructor () {
+    super()
+    this.state = {
+      screenWidth: window.innerWidth,
+    }
+  }
+
+  componentWillMount () {
+    window.addEventListener('resize', this.handleWindowSizeChange)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('resize', this.handleWindowSizeChange)
+  }
+
+  handleWindowSizeChange = () => {
+    this.setState({ screenWidth: window.innerWidth })
+  }
+
+  checkIfMobile = () => {
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   render () {
-    if (this.props.location.pathname === '/') {
+    const { screenWidth } = this.state
+
+    const isMobile = this.checkIfMobile()
+
+    if (isMobile || screenWidth < 1024) {
+      return (
+        <Root>
+          <DummyPage />
+        </Root>
+      )
+    } else if (this.props.location.pathname === '/') {
       // noinspection RequiredAttributes
       return (
         <Root>
           <SplashPage />
         </Root>
       )
-    }
+    } 
+    
     const networks = [
       NETWORK_KOVAN,
     ]
