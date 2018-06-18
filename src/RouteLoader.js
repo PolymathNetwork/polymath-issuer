@@ -10,6 +10,8 @@ import { MetamaskPage } from 'polymath-ui'
 import Root from './app/Root'
 import SplashPage from './app/SplashPage'
 import DummyPage from './app/DummyPage'
+import TermsOfUsePage from './app/terms/TermsOfUsePage'
+import PrivacyPolicyPage from './app/terms/PrivacyPage'
 import routes from './routes'
 
 type Props = {
@@ -70,7 +72,19 @@ class RouteLoader extends Component<Props, State> {
           <SplashPage />
         </Root>
       )
-    } 
+    } else if (this.props.location.pathname === '/termsofuse') {
+      return (
+        <Root>
+          <TermsOfUsePage />
+        </Root>
+      )
+    } else if (this.props.location.pathname === '/privacypolicy') {
+      return (
+        <Root>
+          <PrivacyPolicyPage />
+        </Root>
+      )
+    }
     
     const networks = [
       NETWORK_KOVAN,
