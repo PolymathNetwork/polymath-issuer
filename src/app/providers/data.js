@@ -228,7 +228,7 @@ export const getProviders = () => {
     } else if (b.isToBeAnnounced) {
       return -1
     }
-    return textA < textB ? -1 : textA > textB ? 1 : 0
+    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
   })
   return providers
 }
@@ -245,8 +245,7 @@ export const isProvidersPassed = (providers: ?Array<ServiceProvider>) => {
   let isProvidersPassed = true
   if (providers) {
     for (let p: ServiceProvider of providers) {
-      if (p.cat === 0) {
-        // only cat 0 is obligatory
+      if (p.cat === 0) { // only cat 0 is obligatory
         if (p.progress && p.progress.isApplied) {
           isProvidersPassed = true
           break
