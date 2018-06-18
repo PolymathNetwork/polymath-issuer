@@ -21,6 +21,57 @@
   margin-bottom: 55px;
 }
 
+.dummy-page {
+  justify-content: center;
+  text-align: center;
+}
+
+.dummy-page h3 {
+  color: #152935;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.dummy-page h3 span {
+  color: #f79221;
+}
+
+.dummy-page img {
+  width: 100%;
+  height: auto;
+}
+
+.dummy-page .logo-dark {
+  height: 29px;
+  width: 188px;
+}
+
+.sidenav {
+    
+    position: fixed;
+    width:300px;
+    
+    
+}
+
+.pui-list a{
+  text-decoration:none;
+}
+
+.pui-list li {
+	color: #252E6A;
+	font-family: Overpass;
+	font-size: 20px;
+	line-height: 31px;
+}
+
+.terms-of-service p {
+	color: #5A6872;
+	font-family: Overpass;
+	font-size: 16px;
+	line-height: 24px;
+}
+
 .dashboard {
   padding-left: 46px;
   padding-bottom: 46px;
@@ -33,7 +84,7 @@
 }
 
 .ticker-field {
-  background: #EBF0F7;
+  background: #ebf0f7;
   padding: 12px 48px 31px 48px;
   margin-bottom: 1.5rem;
   margin-top: 24px;
@@ -60,7 +111,7 @@
     text-transform: uppercase;
 
     &::placeholder {
-      color: #DFE3E6 !important;
+      color: #dfe3e6 !important;
       font-weight: 300 !important;
       font-size: 26px !important;
       text-transform: initial !important;

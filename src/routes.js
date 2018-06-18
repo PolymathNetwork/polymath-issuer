@@ -6,6 +6,7 @@ import ConfirmEmailPage from './app/ticker/ConfirmEmailPage'
 import EmailConfirmedPage from './app/EmailConfirmedPage'
 import WhitelistPage from './app/compliance/CompliancePage'
 import TickerPage from './app/ticker/TickerPage'
+import PrivacyPage from './app/terms/PrivacyPage'
 import TickerSuccessPage from './app/ticker/TickerSuccessPage'
 import Dashboard from './app/Dashboard'
 import ProvidersPage from './app/providers/ProvidersPage'
@@ -19,6 +20,11 @@ export default [
       {
         path: '/ticker',
         component: TickerPage,
+        exact: true,
+      },
+      {
+        path: '/privacypolicy',
+        component: PrivacyPage,
         exact: true,
       },
       {
