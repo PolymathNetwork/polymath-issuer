@@ -20,7 +20,7 @@ export const listLength = (listLength: number) => ({ type: LIST_LENGTH, listLeng
 export const RESET_UPLOADED = 'compliance/RESET_UPLOADED'
 export const resetUploaded = () => ({ type: RESET_UPLOADED })
 
-export type InvestorCSVRow = [number,string,string,string,string]
+export type InvestorCSVRow = [number, string, string, string, string]
 
 export const fetchWhitelist = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
@@ -70,55 +70,51 @@ export const fetchWhitelist = () => async (dispatch: Function, getState: GetStat
 }
 
 export const uploadCSV = (file: Object) => async (dispatch: Function) => {
-  if (file.type.match(/csv.*/)) {
-    const reader = new FileReader()
-    reader.readAsText(file)
-    reader.onload = () => {
-      const investors: Array<Investor> = []
-      const criticals: Array<InvestorCSVRow> = []
-      let isTooMany = false
-      let string = 0
-      // $FlowFixMe
-      for (let entry of reader.result.split(/\r\n|\n/)) {
-        string++
-        const [address, sale, purchase, expiryIn] = entry.split(',')
-        const handleDate = (d: string) => d === '' ? new Date(PERMANENT_LOCKUP_TS) : new Date(Date.parse(d))
-        const from = handleDate(sale)
-        const to = handleDate(purchase)
-        const expiry = new Date(Date.parse(expiryIn))
-        if (ethereumAddress(address) === null && !isNaN(from) && !isNaN(to) && !isNaN(expiry)) {
-          if (investors.length === 75) {
-            isTooMany = true
-            continue
-          }
-          investors.push({ address, from, to, expiry })
-        } else {
-          criticals.push([string, address, sale, purchase, expiryIn])
+  const reader = new FileReader()
+  reader.readAsText(file)
+  reader.onload = () => {
+    const investors: Array<Investor> = []
+    const criticals: Array<InvestorCSVRow> = []
+    let isTooMany = false
+    let string = 0
+    // $FlowFixMe
+    for (let entry of reader.result.split(/\r\n|\n/)) {
+      string++
+      const [address, sale, purchase, expiryIn] = entry.split(',')
+      const handleDate = (d: string) => d === '' ? new Date(PERMANENT_LOCKUP_TS) : new Date(Date.parse(d))
+      const from = handleDate(sale)
+      const to = handleDate(purchase)
+      const expiry = new Date(Date.parse(expiryIn))
+      if (ethereumAddress(address) === null && !isNaN(from) && !isNaN(to) && !isNaN(expiry)) {
+        if (investors.length === 75) {
+          isTooMany = true
+          continue
         }
+        investors.push({ address, from, to, expiry })
+      } else {
+        criticals.push([string, address, sale, purchase, expiryIn])
       }
-      dispatch({ type: UPLOADED, investors, criticals, isTooMany })
     }
+    dispatch({ type: UPLOADED, investors, criticals, isTooMany })
   }
 }
 
 export const importWhitelist = () => async (dispatch: Function, getState: GetState) => {
   const { uploaded, transferManager } = getState().whitelist
-  dispatch(ui.txStart('Submitting Approved Investors...'))
-  try {
-    const receipt = await transferManager.modifyWhitelistMulti(uploaded)
-    dispatch(
-      ui.notify(
-        'Investors has been added successfully',
-        true,
-        null,
-        ui.etherscanTx(receipt.transactionHash)
-      )
-    )
-    dispatch(resetUploaded())
-    dispatch(fetchWhitelist())
-  } catch (e) {
-    dispatch(ui.txFailed(e))
-  }
+  dispatch(ui.tx(
+    'Submitting Approved Investors',
+    async () => {
+      await transferManager.modifyWhitelistMulti(uploaded)
+    },
+    'Investors has been added successfully',
+    () => {
+      dispatch(resetUploaded())
+      return dispatch(fetchWhitelist())
+    },
+    undefined,
+    undefined,
+    true
+  ))
 }
 
 export const addInvestor = () => async (dispatch: Function, getState: GetState) => {
@@ -130,21 +126,20 @@ export const addInvestor = () => async (dispatch: Function, getState: GetState) 
     expiry: new Date(values.expiry),
   }
   const { transferManager } = getState().whitelist
-  dispatch(ui.txStart('Submitting Approved Investor...'))
-  try {
-    const receipt = await transferManager.modifyWhitelist(investor)
-    dispatch(
-      ui.notify(
-        'Investor has been added successfully',
-        true,
-        null,
-        ui.etherscanTx(receipt.transactionHash)
-      )
-    )
-    dispatch(fetchWhitelist())
-  } catch (e) {
-    dispatch(ui.txFailed(e))
-  }
+
+  dispatch(ui.tx(
+    'Submitting Approved Investor',
+    async () => {
+      await transferManager.modifyWhitelist(investor)
+    },
+    'Investor has been added successfully',
+    () => {
+      return dispatch(fetchWhitelist())
+    },
+    undefined,
+    undefined,
+    true
+  ))
 }
 
 export const editInvestors = (addresses: Array<Address>) => async (dispatch: Function, getState: GetState) => {
@@ -160,21 +155,20 @@ export const editInvestors = (addresses: Array<Address>) => async (dispatch: Fun
     investors.push({ ...investor, address: addresses[i] })
   }
   const { transferManager } = getState().whitelist
-  dispatch(ui.txStart('Updating Lockup Dates...'))
-  try {
-    const receipt = await transferManager.modifyWhitelistMulti(investors)
-    dispatch(
-      ui.notify(
-        'Lockup dates has been updated successfully',
-        true,
-        null,
-        ui.etherscanTx(receipt.transactionHash)
-      )
-    )
-    dispatch(fetchWhitelist())
-  } catch (e) {
-    dispatch(ui.txFailed(e))
-  }
+
+  dispatch(ui.tx(
+    'Updating Lockup Dates',
+    async () => {
+      await transferManager.modifyWhitelistMulti(investors)
+    },
+    'Lockup dates has been updated successfully',
+    () => {
+      return dispatch(fetchWhitelist())
+    },
+    undefined,
+    undefined,
+    true
+  ))
 }
 
 export const removeInvestors = (addresses: Array<Address>) => async (dispatch: Function, getState: GetState) => {
@@ -190,19 +184,18 @@ export const removeInvestors = (addresses: Array<Address>) => async (dispatch: F
   }
   const { transferManager } = getState().whitelist
   const plural = addresses.length > 1 ? 's' : ''
-  dispatch(ui.txStart(`Removing investor${plural}...`))
-  try {
-    const receipt = await transferManager.modifyWhitelistMulti(investors)
-    dispatch(
-      ui.notify(
-        `Investor${plural} has been removed successfully`,
-        true,
-        null,
-        ui.etherscanTx(receipt.transactionHash)
-      )
-    )
-    dispatch(fetchWhitelist())
-  } catch (e) {
-    dispatch(ui.txFailed(e))
-  }
+
+  dispatch(ui.tx(
+    `Removing investor${plural}`,
+    async () => {
+      await transferManager.modifyWhitelistMulti(investors)
+    },
+    `Investor${plural} has been removed successfully`,
+    () => {
+      return dispatch(fetchWhitelist())
+    },
+    undefined,
+    undefined,
+    true
+  ))
 }

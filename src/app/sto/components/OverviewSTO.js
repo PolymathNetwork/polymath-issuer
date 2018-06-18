@@ -3,7 +3,7 @@
 import React, { Component, Fragment } from 'react'
 import DocumentTitle from 'react-document-title'
 import { connect } from 'react-redux'
-import { STOStatus, TxSuccess } from 'polymath-ui'
+import { STOStatus } from 'polymath-ui'
 import type { SecurityToken, STOPurchase, STODetails } from 'polymathjs'
 
 import NotFoundPage from '../../NotFoundPage'
@@ -15,7 +15,6 @@ type StateProps = {|
   token: ?SecurityToken,
   details: ?STODetails,
   purchases: Array<STOPurchase>,
-  isLaunchSuccess: boolean,
 |}
 
 type DispatchProps = {|
@@ -26,7 +25,6 @@ const mapStateToProps = (state: RootState): StateProps => ({
   token: state.token.token,
   details: state.sto.details,
   purchases: state.sto.purchases,
-  isLaunchSuccess: state.pui.tx.success !== null,
 })
 
 const mapDispatchToProps: DispatchProps = {
@@ -47,25 +45,19 @@ class OverviewSTO extends Component<Props> {
     if (!token || !details) {
       return <NotFoundPage />
     }
-    // $FlowFixMe
-    const txSuccess = <TxSuccess className='pui-single-box-internal' />
     return (
       <DocumentTitle title={`${token.ticker} STO Overview – Polymath`}>
         <div>
-          {this.props.isLaunchSuccess ? (
-            txSuccess
-          ) : (
-            <Fragment>
-              <h1 className='pui-h1'>Security Token Overview</h1>
-              <br />
-              <STOStatus details={details} token={token} />
-              <br />
-              <br />
-              <h2 className='pui-h2'>List of Investors</h2>
-              <InvestorTable rows={purchases} />
-              <p>&nbsp;</p>
-            </Fragment>
-          )}
+          <Fragment>
+            <h1 className='pui-h1'>Security Token Overview</h1>
+            <br />
+            <STOStatus details={details} token={token} />
+            <br />
+            <br />
+            <h2 className='pui-h2'>List of Investors</h2>
+            <InvestorTable rows={purchases} />
+            <p>&nbsp;</p>
+          </Fragment>
         </div>
       </DocumentTitle>
     )
