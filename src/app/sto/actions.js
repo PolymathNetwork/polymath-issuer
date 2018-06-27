@@ -72,16 +72,6 @@ export const fetchFactories = () => async (dispatch: Function) => {
 const dateTimeFromDateAndTime = (date: Date, time: TwelveHourTime) =>
   new Date(date.valueOf() + ui.twelveHourTimeToMinutes(time) * 60000)
 
-const getModuleAddressFromReceipt = (receipt: any) => {
-  const log = receipt.events.LogModuleAdded
-  if (!log) {
-    return null
-  }
-
-  // eslint-disable-next-line no-underscore-dangle
-  return log.returnValues._module
-}
-
 export const configure = () => async (dispatch: Function, getState: GetState) => {
   const { factory } = getState().sto
   const { token } = getState().token
@@ -96,7 +86,7 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
       const [startDate, endDate] = values['start-end']
       const startDateWithTime = dateTimeFromDateAndTime(startDate, values.startTime)
       const endDateWithTime = dateTimeFromDateAndTime(endDate, values.endTime)
-      const receipt = await contract.setSTO(
+      await contract.setSTO(
         factory.address,
         startDateWithTime,
         endDateWithTime,
@@ -105,45 +95,14 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
         values.currency === 'ETH',
         contract.account,
       )
-      const stoAddress = getModuleAddressFromReceipt(receipt)
-
-      const accountData = ui.getAccountDataForFetch(getState())
-      if (!accountData) {
-        throw new Error('Not signed in')
-      }
-
-      const emailResult = await ui.offchainFetch({
-        query: `
-        mutation ($account: WithAccountInput!, $input: EmailSTOLaunchedInput!) {
-          withAccount(input: $account) {
-            sendEmailSTOLaunched(input: $input)
-          }
-        }
-      `,
-        variables: {
-          account: {
-            accountData: accountData,
-          },
-          input: {
-            ticker: token.ticker,
-            startDate: startDateWithTime.getTime().toString(),
-            endDate: endDateWithTime.getTime().toString(),
-            stoAddress: stoAddress,
-            txHash: receipt.transactionHash,
-          },
-        },
-      })
-
-      if (emailResult.errors) {
-        // eslint-disable-next-line no-console
-        console.error('sendEmailSTOLaunched failed:', emailResult.errors)
-      }
     },
     'STO Configured Successfully',
     () => {
       return dispatch(fetch())
     },
-    `/dashboard/${token.ticker}/compliance`
+    `/dashboard/${token.ticker}/compliance`,
+    undefined,
+    true // TODO @bshevchenko
   ))
 }
 

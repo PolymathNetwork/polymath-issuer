@@ -1,16 +1,19 @@
 // @flow
 
 import { Button, Form } from 'carbon-components-react'
-import { bull, getAccountData, TextInput } from 'polymath-ui'
+import { bull, TextInput } from 'polymath-ui'
 import { required, email } from 'polymath-ui/dist/validate'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
-import { getFormValues, reduxForm, Field } from 'redux-form'
+import { reduxForm, Field } from 'redux-form'
 
-import { confirmEmail } from './actions'
+import { confirmEmail } from './ticker/actions'
+import type { RootState } from '../redux/reducer'
 
 export const formName = 'confirmEmail'
+
+// TODO @bshevchenko: prob we should extract this file into the polymath-ui with its styles and confirmEmail action
 
 // TODO @bshevchenko: extract into the separate file
 class ConfirmEmailFormUnwrapped extends Component<any> {
@@ -23,7 +26,7 @@ class ConfirmEmailFormUnwrapped extends Component<any> {
           placeholder='you@example.com'
           validate={[required, email]}
         />
-        <Button type='submit' disabled={this.props.disableSubmit}>
+        <Button type='submit'>
           Send Confirmation Email
         </Button>
       </Form>
@@ -37,30 +40,17 @@ const ConfirmEmailForm = reduxForm({
 
 type StateProps = {|
   initialEmail: string,
-  disableSubmit: boolean,
 |}
 
 type DispatchProps = {|
-  confirmEmail: () => mixed,
+  confirmEmail: () => any,
 |}
 
 type Props = StateProps & DispatchProps
 
-const mapStateToProps = (state) => {
-  const accountData = getAccountData(state)
-  let initialEmail = ''
-  if (accountData && accountData.account) {
-    initialEmail = accountData.account.email
-  }
-
-  const values = getFormValues(formName)(state)
-  const email = values && values.email
-
-  return {
-    initialEmail,
-    disableSubmit: email === state.ticker.lastConfirmationEmailAddress,
-  }
-}
+const mapStateToProps = (state: RootState) => ({
+  initialEmail: state.pui.account.email,
+})
 
 const mapDispatchToProps = {
   confirmEmail,
@@ -74,7 +64,7 @@ class ConfirmEmailPage extends Component<Props> {
 
   render () {
     return (
-      <DocumentTitle title='Sign Up – Polymath'>
+      <DocumentTitle title='Confirm Email – Polymath'>
         <div className='pui-single-box'>
           <div className='pui-single-box-header'>
             <div className='pui-single-box-bull'>
@@ -83,14 +73,12 @@ class ConfirmEmailPage extends Component<Props> {
             <h1 className='pui-h1'>Verify Your Email Address</h1>
             <h3 className='pui-h4'>
               Please check that we can contact you at the email address below.
-              Once you have confirmed your email address {'we\'ll'} send you a copy
-              of your transaction details.
+              Once you have confirmed your email address we&apos;ll<br />send you a copy of your transaction details.
             </h3>
             <div className='pui-clearfix' />
             <ConfirmEmailForm
               onSubmit={this.handleSubmit}
               initialValues={{ email: this.props.initialEmail }}
-              disableSubmit={this.props.disableSubmit}
             />
           </div>
         </div>
