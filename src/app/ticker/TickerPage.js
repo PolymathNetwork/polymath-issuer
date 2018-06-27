@@ -18,13 +18,11 @@ import {
 
 import TickerForm, { formName } from './components/TickerForm'
 import { reserve } from './actions'
-import type { TickerTransaction } from './reducer'
 import { data as tokenData } from '../token/actions'
 
 type StateProps = {|
   account: ?string,
   token: Object,
-  transaction: TickerTransaction,
 |}
 
 type DispatchProps = {|
@@ -36,7 +34,6 @@ type DispatchProps = {|
 const mapStateToProps = (state): StateProps => ({
   account: state.network.account,
   token: state.token.token,
-  transaction: state.ticker.transaction,
 })
 
 const mapDispatchToProps: DispatchProps = {

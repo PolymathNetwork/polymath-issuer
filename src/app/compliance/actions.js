@@ -113,7 +113,7 @@ export const importWhitelist = () => async (dispatch: Function, getState: GetSta
     },
     undefined,
     undefined,
-    true
+    true // TODO @bshevchenko
   ))
 }
 
@@ -138,7 +138,7 @@ export const addInvestor = () => async (dispatch: Function, getState: GetState) 
     },
     undefined,
     undefined,
-    true
+    true // TODO @bshevchenko
   ))
 }
 
@@ -167,7 +167,7 @@ export const editInvestors = (addresses: Array<Address>) => async (dispatch: Fun
     },
     undefined,
     undefined,
-    true
+    true // TODO @bshevchenko
   ))
 }
 
@@ -196,6 +196,6 @@ export const removeInvestors = (addresses: Array<Address>) => async (dispatch: F
     },
     undefined,
     undefined,
-    true
+    true // TODO @bshevchenko
   ))
 }

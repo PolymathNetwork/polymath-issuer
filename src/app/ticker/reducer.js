@@ -3,47 +3,20 @@
 import * as a from './actions'
 import type { Action } from './actions'
 
-export type TickerTransaction = {
-  name: string,
-  ticker: string,
-  txHash: string,
-}
-
 export type TickerState = {
-  isSuccessPageInitialized: boolean,
-  transaction: ?TickerTransaction,
-  isTickerEmailSent: boolean,
-  lastConfirmationEmailAddress: ?string,
+  isTickerReserved: boolean,
 }
 
 const defaultState: TickerState = {
-  isSuccessPageInitialized: false,
-  transaction: null,
-  isTickerEmailSent: false,
-  lastConfirmationEmailAddress: null,
+  isTickerReserved: false,
 }
 
 export default (state: TickerState = defaultState, action: Action) => {
   switch (action.type) {
-    case a.SUCCESS_PAGE_INIT:
+    case a.RESERVED:
       return {
         ...state,
-        isSuccessPageInitialized: action.initialized,
-      }
-    case a.TX:
-      return {
-        ...state,
-        transaction: action.transaction,
-      }
-    case a.EMAIL_SENT:
-      return {
-        ...state,
-        isTickerEmailSent: true,
-      }
-    case a.LAST_CONFIRMATION_EMAIL:
-      return {
-        ...state,
-        lastConfirmationEmailAddress: action.email,
+        isTickerReserved: true,
       }
     default:
       return state

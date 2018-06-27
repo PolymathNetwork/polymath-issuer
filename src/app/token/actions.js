@@ -42,49 +42,22 @@ export const complete = () => async (dispatch: Function, getState: GetState) => 
   const ticker = token.ticker
 
   dispatch(ui.tx(
-    `Issuing ${ticker} token...`,
+    `Issuing ${ticker} token`,
     async () => {
       const token: SecurityToken = {
         ...getState().token.token,
         ...getState().form[completeFormName].values,
       }
       token.isDivisible = token.isDivisible !== '1'
-      const receipt = await SecurityTokenRegistry.generateSecurityToken(token)
-
-      const accountData = ui.getAccountDataForFetch(getState())
-      if (!accountData) {
-        throw new Error('Not signed in')
-      }
-
-      const emailResult = await ui.offchainFetch({
-        query: `
-        mutation ($account: WithAccountInput!, $input: EmailTokenIssuedInput!) {
-          withAccount(input: $account) {
-            sendEmailTokenIssued(input: $input)
-          }
-        }
-      `,
-        variables: {
-          account: {
-            accountData: accountData,
-          },
-          input: {
-            ticker: token.ticker,
-            txHash: receipt.transactionHash,
-          },
-        },
-      })
-
-      if (emailResult.errors) {
-        // eslint-disable-next-line no-console
-        console.error('sendEmailTokenIssued failed:', emailResult.errors)
-      }
+      await SecurityTokenRegistry.generateSecurityToken(token)
     },
     'Token Was Issued Successfully',
     () => {
       return dispatch(fetch(ticker))
     },
-    `/dashboard/${ticker}/sto`
+    `/dashboard/${ticker}/sto`,
+    undefined,
+    true // TODO @bshevchenko
   ))
 }
 
@@ -139,6 +112,6 @@ export const mintTokens = (uploaded: Array<Investor>) => async (dispatch: Functi
     },
     undefined,
     undefined,
-    true
+    true // TODO @bshevchenko
   ))
 }
