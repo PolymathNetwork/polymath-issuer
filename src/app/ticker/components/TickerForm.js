@@ -31,7 +31,7 @@ class TickerForm extends Component<Props> {
             name='ticker'
             component={TextInput}
             label='Enter Token Symbol'
-            placeholder='4 characters (for example: TORO)'
+            placeholder='Up to 10 characters (example: TORO-A)'
           />
         </div>
         <Field
@@ -84,7 +84,7 @@ export default reduxForm({
   asyncValidate: async (values) => {
     // async validation doesn't work properly with field-level validation, so we need to specify sync rules here
     const v = values.ticker
-    const syncError = required(v) || maxLength(4)(v) || alphanumeric(v)
+    const syncError = required(v) || maxLength(10)(v) || alphanumeric(v)
     if (syncError) {
       // eslint-disable-next-line
       throw { ticker: syncError }
