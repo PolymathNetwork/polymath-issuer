@@ -52,8 +52,8 @@ class SelectSTOTemplate extends Component<Props> {
             <div className='bx--col-xs-12'>
               <Remark title='Note'>
                 All smart contracts listed below were independently audited.
-                Polymath does however recommend you select a Smart Contract Auditor to perform additional fication
-                on the smart contract you selected.
+                Polymath does however recommend you select a Smart Contract Auditor to perform additional 
+                verification on the smart contract you selected.
               </Remark>
               <h1 className='pui-h1'>Security Token Offering Templates</h1>
               <h3 className='pui-h3'>
