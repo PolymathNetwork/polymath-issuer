@@ -40,6 +40,7 @@ type State = {|
 |}
 
 class TokenPage extends Component<Props, State> {
+
   state = {
     isModalOpen: false,
   }
@@ -115,10 +116,10 @@ class TokenPage extends Component<Props, State> {
                     <CompleteTokenForm onSubmit={this.handleCompleteSubmit} />
                   </div>
                 </div>
-              ) : (
-                ''
-              )}
-              {token.address ? <MintTokens /> : ''}
+              ) : ''}
+              {token.address ? (
+                <MintTokens />
+              ) : ''}
               <div className='bx--col-xs-5'>
                 <div className='pui-page-box'>
                   <div className='ticker-field'>
@@ -149,7 +150,7 @@ class TokenPage extends Component<Props, State> {
                       </label>
                       <p>{etherscanAddress(token.address)}</p>
                     </div>
-                  ) : ('')}
+                  ) : ''}
                   <div className='bx--form-item'>
                     <label htmlFor='owner' className='bx--label'>
                       Symbol {!token.address ? 'Reservation' : 'Issuing'} Transaction
