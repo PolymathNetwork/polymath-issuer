@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { change } from 'redux-form'
 import { bull } from 'polymath-ui'
-import { Redirect } from 'react-router'
 import { TickerRegistry, types } from 'polymathjs'
 import type { RouterHistory } from 'react-router'
 import {
@@ -18,48 +17,43 @@ import {
 } from 'carbon-components-react'
 
 import TickerForm, { formName } from './components/TickerForm'
-import { register } from './actions'
-import type { TickerTransaction } from './reducer'
+import { reserve } from './actions'
 import { data as tokenData } from '../token/actions'
 
 type StateProps = {|
   account: ?string,
   token: Object,
-  isRegistered: boolean,
-  transaction: TickerTransaction,
   networkName: string,
   polyBalance: types._bignumber
 |}
 
 type DispatchProps = {|
-  change: (? string) => any,
-    register: () => any,
-      tokenData: (data: any) => any
-        |}
+  change: (?string) => any,
+  reserve: () => any,
+  tokenData: (data: any) => any
+|}
 
 const mapStateToProps = (state): StateProps => ({
   account: state.network.account,
   token: state.token.token,
-  isRegistered: state.ticker.isRegistered,
-  transaction: state.ticker.transaction,
-  networkName: state.network.name,
+  networkName: 'Ethereum Mainnet',
   polyBalance: state.pui.account.balance,
 })
 
 const mapDispatchToProps: DispatchProps = {
   change: (value) => change(formName, 'owner', value, false, false),
-  register,
+  reserve,
   tokenData,
 }
 
 type Props = {|
   history: RouterHistory
-    |} & StateProps & DispatchProps
+|} & StateProps & DispatchProps
 
 type State = {|
   isConfirmationModalOpen: boolean,
-    isNotEnoughPolyModalOpen: boolean,
-      expiryLimit: number,
+  isNotEnoughPolyModalOpen: boolean,
+  expiryLimit: number,
 |}
 
 class TickerPage extends Component<Props, State> {
@@ -88,7 +82,7 @@ class TickerPage extends Component<Props, State> {
     if (this.props.polyBalance < 250) {
       this.setState({ isNotEnoughPolyModalOpen: true })
     } else {
-      this.props.register()
+      this.props.reserve()
     }
   }
 
@@ -106,10 +100,6 @@ class TickerPage extends Component<Props, State> {
   }
 
   render () {
-    if (this.props.isRegistered) {
-      return <Redirect to='/ticker/success' />
-    }
-
     return (
       <DocumentTitle title='Token Symbol Reservation – Polymath'>
         <Fragment>
@@ -146,7 +136,6 @@ class TickerPage extends Component<Props, State> {
               <Button onClick={this.handleConfirm}>Reserve Ticker</Button>
             </ModalFooter>
           </ComposedModal>
-
           <ComposedModal
             open={this.state.isNotEnoughPolyModalOpen && this.props.networkName === 'Kovan Testnet'}
             className='pui-confirm-modal'
@@ -164,7 +153,7 @@ class TickerPage extends Component<Props, State> {
             <ModalBody>
               <div className='bx--modal-content__text'>
                 <p>
-                  The registration of a token symbol has a fixed cost of 250 POLY. 
+                  The registration of a token symbol has a fixed cost of 250 POLY.
                   Please make sure that your wallet has a sufficient balance in
                   POLY to complete this operation.
                 </p>
@@ -187,7 +176,7 @@ class TickerPage extends Component<Props, State> {
             </ModalFooter>
           </ComposedModal>
           <ComposedModal
-            open={this.state.isNotEnoughPolyModalOpen && this.props.networkName === 'Ethereum Mainnet'} 
+            open={this.state.isNotEnoughPolyModalOpen && this.props.networkName === 'Ethereum Mainnet'}
             className='pui-confirm-modal'
           >
             <ModalHeader
@@ -203,7 +192,7 @@ class TickerPage extends Component<Props, State> {
             <ModalBody>
               <div className='bx--modal-content__text'>
                 <p>
-                  The registration of a token symbol has a fixed cost of 250 POLY. 
+                  The registration of a token symbol has a fixed cost of 250 POLY.
                   Please make sure that your wallet has a sufficient balance in
                   POLY to complete this operation.
                 </p>
@@ -213,12 +202,11 @@ class TickerPage extends Component<Props, State> {
               </div>
             </ModalBody>
             <ModalFooter>
-              <Button kind='secondary' onClick={this.handleNotEnoughPolyCancel}>
+              <Button onClick={this.handleNotEnoughPolyCancel}>
                 Cancel
               </Button>
             </ModalFooter>
           </ComposedModal>
-
           <div className='pui-single-box'>
             <div className='pui-single-box-header'>
               <div className='pui-single-box-bull'>

@@ -85,9 +85,10 @@ class ImportWhitelistModal extends Component<Props> {
           — ETH Address (address to whitelist);<br />
           — Sell Restriction Date mm/dd/yyyy (date when the resale restrictions should be lifted for that address);
           <br />
+          Empty cell will be considered as permanent lockup.
+          <br />
           — Buy Restriction Date mm/dd/yyyy (date when the buy restrictions should be lifted for that address);<br />
           — KYC/AML Expiry Date mm/dd/yyyy.<br />
-          Empty cell will be considered as permanent lockup.<br />
           Maximum numbers of investors per transaction is <strong>75</strong>.
         </h4>
         <h5 className='pui-h5'>

@@ -32,7 +32,10 @@ export const fetch = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
   try {
     const { token } = getState().token
-    // $FlowFixMe
+    if (!token || !token.contract) {
+      dispatch(ui.fetched())
+      return
+    }
     const sto = await token.contract.getSTO()
     dispatch(data(sto, sto ? await sto.getDetails() : null))
     dispatch(ui.fetched())
@@ -48,9 +51,10 @@ export const fetchFactories = () => async (dispatch: Function) => {
     dispatch(factories([{
       title: 'Capped STO',
       name: 'Polymath Inc.',
-      desc: 'This smart contract creates a maximum number of tokens (i.e hard cap) which the total aggregate of tokens' +
-      ' acquired by all investors cannot exceed. Security tokens are sent to the investor upon reception of the funds ' +
-      '(ETH or POLY), and any security tokens left upon termination of the offering will not be minted.',
+      desc: 'This smart contract creates a maximum number of tokens (i.e hard cap) which the total ' +
+      'aggregate of tokens acquired by all investors cannot exceed. Security tokens are sent to the investor upon' +
+      ' reception of the funds (ETH or POLY), and any security tokens left upon termination of the offering ' +
+      'will not be minted.',
       isVerified: true,
       securityAuditLink: {
         title: 'Zeppelin Solutions',
@@ -68,86 +72,38 @@ export const fetchFactories = () => async (dispatch: Function) => {
 const dateTimeFromDateAndTime = (date: Date, time: TwelveHourTime) =>
   new Date(date.valueOf() + ui.twelveHourTimeToMinutes(time) * 60000)
 
-const getModuleAddressFromReceipt = (receipt: any) => {
-  const log = receipt.events.LogModuleAdded
-  if (!log) {
-    return null
-  }
-
-  // eslint-disable-next-line no-underscore-dangle
-  return log.returnValues._module
-}
-
 export const configure = () => async (dispatch: Function, getState: GetState) => {
-  try {
-    const factory = getState().sto.factory
-    if (!factory) {
-      return
-    }
-    const token = getState().token.token
-    if (!token || !token.contract) {
-      return
-    }
-    dispatch(ui.txStart('Configuring STO'))
-    const contract: SecurityToken = token.contract
-    const values = getState().form[configureFormName].values
-    const [startDate, endDate] = values['start-end']
-    const startDateWithTime = dateTimeFromDateAndTime(startDate, values.startTime)
-    const endDateWithTime = dateTimeFromDateAndTime(endDate, values.endTime)
-    const receipt = await contract.setSTO(
-      factory.address,
-      startDateWithTime,
-      endDateWithTime,
-      values.cap,
-      values.rate,
-      values.currency === 'ETH',
-      contract.account,
-    )
-    const stoAddress = getModuleAddressFromReceipt(receipt)
-    dispatch(fetch())
-
-    dispatch(
-      ui.txSuccess(
-        'STO Details Configured Successfully',
-        'Whitelist your investors',
-        `/dashboard/${token.ticker}/compliance`
-      )
-    )
-
-    const accountData = ui.getAccountDataForFetch(getState())
-    if (!accountData) {
-      throw new Error('Not signed in')
-    }
-
-    const emailResult = await ui.offchainFetch({
-      query: `
-        mutation ($account: WithAccountInput!, $input: EmailSTOLaunchedInput!) {
-          withAccount(input: $account) {
-            sendEmailSTOLaunched(input: $input)
-          }
-        }
-      `,
-      variables: {
-        account: {
-          accountData: accountData,
-        },
-        input: {
-          ticker: token.ticker,
-          startDate: startDateWithTime.getTime().toString(),
-          endDate: endDateWithTime.getTime().toString(),
-          stoAddress: stoAddress,
-          txHash: receipt.transactionHash,
-        },
-      },
-    })
-
-    if (emailResult.errors) {
-      // eslint-disable-next-line no-console
-      console.error('sendEmailSTOLaunched failed:', emailResult.errors)
-    }
-  } catch (e) {
-    dispatch(ui.txFailed(e))
+  const { factory } = getState().sto
+  const { token } = getState().token
+  if (!factory || !token || !token.contract) {
+    return
   }
+  dispatch(ui.tx(
+    'Configuring STO',
+    async () => {
+      const contract: SecurityToken = token.contract
+      const { values } = getState().form[configureFormName]
+      const [startDate, endDate] = values['start-end']
+      const startDateWithTime = dateTimeFromDateAndTime(startDate, values.startTime)
+      const endDateWithTime = dateTimeFromDateAndTime(endDate, values.endTime)
+      await contract.setSTO(
+        factory.address,
+        startDateWithTime,
+        endDateWithTime,
+        values.cap,
+        values.rate,
+        values.currency === 'ETH',
+        contract.account,
+      )
+    },
+    'STO Configured Successfully',
+    () => {
+      return dispatch(fetch())
+    },
+    `/dashboard/${token.ticker}/compliance`,
+    undefined,
+    true // TODO @bshevchenko
+  ))
 }
 
 export const fetchPurchases = () => async (dispatch: Function, getState: GetState) => {

@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 /* eslint-disable react/jsx-no-bind, jsx-a11y/interactive-supports-focus, jsx-a11y/click-events-have-key-events, react/jsx-handler-names */
 // @flow
 
@@ -227,8 +228,8 @@ class ProvidersPage extends Component<Props, State> {
             <div className='bx--col-xs-8'>
               <h3 className='pui-h3'>
                 Your Polymath dashboard is integrated with several providers to streamline your on-boarding process and
-                access to their services. The information you enter in each associated form will be sent automatically to
-                the firm(s) you apply for. Upon review of your information, the firm(s) will contact you directly to
+                access to their services. The information you enter in each associated form will be sent automatically
+                to the firm(s) you apply for. Upon review of your information, the firm(s) will contact you directly to
                 establish the applicable next steps.<br /><br />
                 To get started, please select an Advisory provider, a Legal provider or both. Note that you don’t need
                 to select all at the same time nor have any obligation to select any of the providers below.

@@ -66,16 +66,16 @@ const providers: Array<ServiceProvider> = [
   //   cat: 0,
   //   title: 'Above Board',
   //   logo: '/providers/advisory/aboveboard.png',
-  //   desc: 'Enhance the collaboration between issuers and investors with the value of security rights, the engagement ' +
-  //   'of token economics, control of code, and the scope of global blockchains.',
+  //   desc: 'Enhance the collaboration between issuers and investors with the value of security rights, the ' +
+  //   'engagement of token economics, control of code, and the scope of global blockchains.',
   // },
   {
     id: 1,
     cat: 0,
     title: 'GenesisBlock',
     logo: '/providers/advisory/genesisblock.png',
-    desc: 'Genesis Block is a venture production studio focused on developing decentralized protocols, infrastructure, ' +
-    'and applications leveraging blockchain technology.',
+    desc: 'Genesis Block is a venture production studio focused on developing decentralized protocols, ' +
+    'infrastructure, and applications leveraging blockchain technology.',
   },
   {
     id: 2,
@@ -147,8 +147,8 @@ const providers: Array<ServiceProvider> = [
     cat: 1,
     title: 'Paul Hastings',
     logo: '/providers/legal/paul-hastings.png',
-    desc: 'Founded in 1951, Paul Hastings has grown strategically to anticipate and respond to our clients\' needs in ' +
-    'markets across the globe. We have a strong presence throughout Asia, Europe, Latin America, and the U.S.',
+    desc: 'Founded in 1951, Paul Hastings has grown strategically to anticipate and respond to our clients\' needs ' +
+    'in markets across the globe. We have a strong presence throughout Asia, Europe, Latin America, and the U.S.',
     isToBeAnnounced: true,
   },
   {
@@ -156,8 +156,9 @@ const providers: Array<ServiceProvider> = [
     cat: 1,
     title: 'Aird & Berlis',
     logo: '/providers/legal/aird-berlis.png',
-    desc: 'As a leading Canadian law firm with a focus on all principal areas of business law, we advise on a diverse ' +
-    'range of transactional and litigation matters for clients ranging from startups to multinational corporations.',
+    desc: 'As a leading Canadian law firm with a focus on all principal areas of business law, we advise on a ' +
+    'diverse range of transactional and litigation matters for clients ranging from startups to multinational ' +
+    'corporations.',
     isToBeAnnounced: true,
   },
 
@@ -178,9 +179,9 @@ const providers: Array<ServiceProvider> = [
     cat: 3,
     title: 'CrowdfundX',
     logo: '/providers/marketing/crowdfundx.png',
-    desc: 'Built through insights gained from marketing the industry’s most successful equity crowdfunding campaigns, ' +
-    'Dara is a semi-autonomous machine that empowers public and private companies to streamline retail investor ' +
-    'acquisition. Dara works across marketing channels, optimizing paid...',
+    desc: 'Built through insights gained from marketing the industry’s most successful equity crowdfunding ' +
+    'campaigns, Dara is a semi-autonomous machine that empowers public and private companies to streamline retail ' +
+    'investor acquisition. Dara works across marketing channels, optimizing paid...',
   },
   {
     id: 13,

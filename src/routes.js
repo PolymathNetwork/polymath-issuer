@@ -2,11 +2,8 @@
 
 import App from './app/App'
 import NotFoundPage from './app/NotFoundPage'
-import ConfirmEmailPage from './app/ticker/ConfirmEmailPage'
-import EmailConfirmedPage from './app/EmailConfirmedPage'
 import WhitelistPage from './app/compliance/CompliancePage'
 import TickerPage from './app/ticker/TickerPage'
-import TickerSuccessPage from './app/ticker/TickerSuccessPage'
 import Dashboard from './app/Dashboard'
 import ProvidersPage from './app/providers/ProvidersPage'
 import TokenPage from './app/token/TokenPage'
@@ -19,21 +16,6 @@ export default [
       {
         path: '/ticker',
         component: TickerPage,
-        exact: true,
-      },
-      {
-        path: '/confirm-email',
-        component: ConfirmEmailPage,
-        exact: true,
-      },
-      {
-        path: '/email-confirmed',
-        component: EmailConfirmedPage,
-        exact: true,
-      },
-      {
-        path: '/ticker/success',
-        component: TickerSuccessPage,
         exact: true,
       },
       {
