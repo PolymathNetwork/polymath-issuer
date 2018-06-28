@@ -21,6 +21,33 @@
   margin-bottom: 55px;
 }
 
+/* Start dummy page */
+.dummy-page {
+  justify-content: center;
+  text-align: center;
+}
+
+.dummy-page h3 {
+  color: #152935;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.dummy-page h3 span {
+  color: #f79221;
+}
+
+.dummy-page img {
+  width: 100%;
+  height: auto;
+}
+
+.dummy-page .logo-dark {
+  height: 29px;
+  width: 188px;
+}
+/* End dummy page */
+
 .dashboard {
   padding-left: 46px;
   padding-bottom: 46px;
