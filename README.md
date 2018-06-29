@@ -28,7 +28,17 @@ By default application works with Ropsten testnet.
 
 ## Working with contracts locally
 
-To deploy contracts run Ganache CLI >= v6.1.0-beta.0 (lower versions does not support WebSockets) and in a separate terminal:
+First make sure [Ganache CLI](https://github.com/trufflesuite/ganache-cli) >= v6.1.0-beta.0 (lower versions does not support WebSockets) is installed:
+```
+npm install -g ganache-cli
+```
+
+then run:
+```
+ganache-cli
+```
+
+To deploy contracts, in a separate terminal run:
 ```
 npm run contracts
 ```
