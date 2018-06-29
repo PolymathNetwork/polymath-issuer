@@ -9,7 +9,7 @@ import { TextInput } from 'polymath-ui'
 import {
   required,
   maxLength,
-  alphanumeric,
+  regex,
   ethereumAddress,
 } from 'polymath-ui/dist/validate'
 import { TickerRegistry } from 'polymathjs'
@@ -84,7 +84,9 @@ export default reduxForm({
   asyncValidate: async (values) => {
     // async validation doesn't work properly with field-level validation, so we need to specify sync rules here
     const v = values.ticker
-    const syncError = required(v) || maxLength(10)(v) || alphanumeric(v)
+    const syncError = required(v) ||
+      maxLength(10)(v) ||
+      regex(/^[a-z0-9./-]+$/i, v, 'Only alphanumeric characters, hyphens and periods are allowed.')
     if (syncError) {
       // eslint-disable-next-line
       throw { ticker: syncError }

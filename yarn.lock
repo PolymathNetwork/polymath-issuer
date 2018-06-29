@@ -8225,9 +8225,9 @@ polymath-core@1.1.1:
     truffle-hdwallet-provider-privkey "^0.1.0"
     web3 "^1.0.0-beta.33"
 
-polymath-ui@5.0.2:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-5.0.2.tgz#01b318b962650690526750134eb3dfc8b48c5d94"
+polymath-ui@5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-5.1.0.tgz#affc90d40b10e72b407c4571d1c60ed9aaa975c4"
   dependencies:
     axios "^0.18.0"
     babel-runtime "6.26.0"
@@ -11078,7 +11078,7 @@ web3-core-helpers@1.0.0-beta.34:
     web3-eth-iban "1.0.0-beta.34"
     web3-utils "1.0.0-beta.34"
 
-web3-core-method@1.0.0-beta.30, "web3-core-method@github:bshevchenko/web3-core-method#master":
+web3-core-method@1.0.0-beta.30, web3-core-method@bshevchenko/web3-core-method#master, "web3-core-method@github:bshevchenko/web3-core-method#master":
   version "1.0.0-beta.30"
   resolved "https://codeload.github.com/bshevchenko/web3-core-method/tar.gz/9199df8b1ea8658503ee48ba7ad391fec8e61838"
   dependencies:
