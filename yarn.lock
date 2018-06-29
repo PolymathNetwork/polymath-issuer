@@ -8225,9 +8225,9 @@ polymath-core@1.1.1:
     truffle-hdwallet-provider-privkey "^0.1.0"
     web3 "^1.0.0-beta.33"
 
-polymath-ui@5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-5.0.0.tgz#d82304a341036766e38d5bffa1c5db55321083c6"
+polymath-ui@5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-5.2.0.tgz#0c773fe8a2f25821087843c1d979446e1467a5c0"
   dependencies:
     axios "^0.18.0"
     babel-runtime "6.26.0"
@@ -8247,9 +8247,9 @@ polymath-ui@5.0.0:
     redux "3.7.2"
     redux-form "7.0.4"
 
-polymathjs@1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-1.3.2.tgz#68fbb9dde8f8939646f3e2d39061b9a5d8fe03e4"
+polymathjs@1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-1.3.4.tgz#c1db8c047f9ade27ace7944810d60b27657de956"
   dependencies:
     bignumber.js "5.0.0"
     bs58 "^4.0.1"
