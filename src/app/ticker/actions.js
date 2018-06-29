@@ -61,7 +61,7 @@ export const confirmEmail = () => async (dispatch: Function, getState: GetState)
 export const tickerReservationEmail = () => async () => {
   try {
     const tokens = await TickerRegistry.getMyTokens()
-    const token: SymbolDetails = tokens[0]
+    const token: SymbolDetails = tokens.pop()
     const expiryLimit = await TickerRegistry.expiryLimit()
 
     await ui.email(
