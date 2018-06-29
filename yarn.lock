@@ -8225,9 +8225,9 @@ polymath-core@1.1.1:
     truffle-hdwallet-provider-privkey "^0.1.0"
     web3 "^1.0.0-beta.33"
 
-polymath-ui@5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-5.0.0.tgz#d82304a341036766e38d5bffa1c5db55321083c6"
+polymath-ui@5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-5.0.2.tgz#01b318b962650690526750134eb3dfc8b48c5d94"
   dependencies:
     axios "^0.18.0"
     babel-runtime "6.26.0"

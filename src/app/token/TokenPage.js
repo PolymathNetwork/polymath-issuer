@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { Icon, ComposedModal, ModalHeader, ModalBody, ModalFooter, Button } from 'carbon-components-react'
-import { etherscanTx, Countdown } from 'polymath-ui'
+import { etherscanTx, etherscanAddress, Countdown } from 'polymath-ui'
 import moment from 'moment'
 import type { SecurityToken } from 'polymathjs/types'
 
@@ -145,15 +145,21 @@ class TokenPage extends Component<Props, State> {
                     <label htmlFor='name' className='bx--label'>Token Name</label>
                     <p>{token.name}</p>
                   </div>
+                  {token.address ? (
+                    <div className='bx--form-item'>
+                      <label htmlFor='name' className='bx--label'>Token Address</label>
+                      <p>{etherscanAddress(token.address)}</p>
+                    </div>
+                  ) : ''}
                   <div className='bx--form-item'>
                     <label htmlFor='owner' className='bx--label'>
-                      Symbol {!token.address ? 'Reservation' : 'Issuing'} Transaction
+                      {!token.address ? 'Symbol' : 'Token '} Issuance Transaction
                     </label>
                     <p>{etherscanTx(token.txHash)}</p>
                   </div>
                   <div className='bx--form-item'>
                     <label htmlFor='name' className='bx--label'>
-                      Symbol {!token.address ? 'Reservation' : 'Issuing'} Date
+                      {!token.address ? 'Symbol' : 'Token '} Issuance Date
                     </label>
                     <p>{moment(token.timestamp).format('D MMMM, YYYY')}</p>
                   </div>
