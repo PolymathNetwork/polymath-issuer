@@ -27,6 +27,32 @@ export const reserve = () => async (dispatch: Function, getState: GetState) => {
   ))
 }
 
+export const faucet = () => async (dispatch: Function, getState: GetState) => {
+
+  getState()
+
+  // IN PROGRESS
+
+  /*
+    console.log(PolyToken)
+    console.log('requesting 25k POLY from contract: 0x455Da7D06862Fa7d7639473F287f88bc7b35FF7F')
+    console.log('to address:' + this.props.account)
+    PolyToken._methods.getTokens(PolyToken.addDecimals(25100), this.props.account).send(
+      { from: this.props.account, value: 0 }).then((resp) => {
+      console.log(resp)
+    }).catch((err) => {
+      console.log(err)
+    })
+
+  */
+
+  // nicer way that boris showed me
+  /*
+    let r=PolyToken.getTokens(25100, this.props.account)
+    console.log(typeof r)
+*/
+}
+
 export const confirmEmail = () => async (dispatch: Function, getState: GetState) => {
   const { email } = getState().form[confirmEmailFormName].values
   dispatch(ui.requestConfirmEmail(email))

@@ -5,6 +5,8 @@ import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { change } from 'redux-form'
 import { bull } from 'polymath-ui'
+// import { TickerRegistry, types, PolyToken } from 'polymathjs'
+// will need PolyToken when faucet is completely implemented
 import { TickerRegistry, types } from 'polymathjs'
 import type { RouterHistory } from 'react-router'
 import {
@@ -17,26 +19,27 @@ import {
 } from 'carbon-components-react'
 
 import TickerForm, { formName } from './components/TickerForm'
-import { reserve } from './actions'
+import { reserve, faucet } from './actions'
 import { data as tokenData } from '../token/actions'
 
 type StateProps = {|
   account: ?string,
-  token: Object,
-  networkName: string,
-  polyBalance: types._bignumber
-|}
+    token: Object,
+      networkName: string,
+        polyBalance: types._bignumber
+          |}
 
 type DispatchProps = {|
-  change: (?string) => any,
-  reserve: () => any,
-  tokenData: (data: any) => any
-|}
+  change: (? string) => any,
+    reserve: () => any,
+      tokenData: (data: any) => any,
+        faucet: () => any
+          |}
 
 const mapStateToProps = (state): StateProps => ({
   account: state.network.account,
   token: state.token.token,
-  networkName: 'Ethereum Mainnet',
+  networkName: state.network.name,
   polyBalance: state.pui.account.balance,
 })
 
@@ -44,16 +47,17 @@ const mapDispatchToProps: DispatchProps = {
   change: (value) => change(formName, 'owner', value, false, false),
   reserve,
   tokenData,
+  faucet,
 }
 
 type Props = {|
   history: RouterHistory
-|} & StateProps & DispatchProps
+    |} & StateProps & DispatchProps
 
 type State = {|
   isConfirmationModalOpen: boolean,
-  isNotEnoughPolyModalOpen: boolean,
-  expiryLimit: number,
+    isNotEnoughPolyModalOpen: boolean,
+      expiryLimit: number,
 |}
 
 class TickerPage extends Component<Props, State> {
@@ -95,8 +99,7 @@ class TickerPage extends Component<Props, State> {
   }
 
   handleFaucetRequest = () => {
-    // console.log('requesting 25k POLY from contract: 0x455Da7D06862Fa7d7639473F287f88bc7b35FF7F')
-    // console.log('to address:' + this.props.account)
+    this.props.faucet()
   }
 
   render () {
@@ -159,12 +162,22 @@ class TickerPage extends Component<Props, State> {
                 </p>
 
                 <p>
-                  You are currently connected to the Kovan Test Network.
+                  You are currently connected to the <span style={{ fontWeight: 'bold' }}>Kovan Test Network</span>.
                 </p>
+
                 <p>
                   As such, you can click on the &laquo;REQUEST 25K POLY&raquo; button below to
                    receive 25,000 test POLY in your wallet.
                 </p>
+                <br />
+                <div className='pui-remark'>
+                  <div className='pui-remark-title'>Note</div>
+                  <div className='pui-remark-text'>This option is not available on 
+                    <span style={{ fontWeight: 'bold' }}>
+                  Main Network.
+                    </span>
+                  </div>
+                </div>
 
               </div>
             </ModalBody>
@@ -197,13 +210,26 @@ class TickerPage extends Component<Props, State> {
                   POLY to complete this operation.
                 </p>
                 <p>
-                  You can purchase POLY at your favourite exchange.
+                  If you need to obtain POLY tokens, you can visit 
+                  <a
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    href='https://shapeshift.io'
+                  >here
+                  </a> or
+                  obtain more information
+                  <a
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    href='https://etherscan.io/token/0x9992ec3cf6a55b00978cddf2b27bc6882d88d1ec#tokenExchange'
+                  >here
+                  </a>
                 </p>
               </div>
             </ModalBody>
             <ModalFooter>
               <Button onClick={this.handleNotEnoughPolyCancel}>
-                Cancel
+                Close
               </Button>
             </ModalFooter>
           </ComposedModal>
