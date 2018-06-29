@@ -38,7 +38,7 @@ then run:
 ganache-cli
 ```
 
-To deploy contracts, inn a separate terminal run:
+To deploy contracts, in a separate terminal run:
 ```
 npm run contracts
 ```
