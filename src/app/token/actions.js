@@ -23,18 +23,21 @@ export type Action =
 
 export type InvestorCSVRow = [number, string, string, string, string, string]
 
-export const fetch = (ticker: string) => async (dispatch: Function) => {
+export const fetch = (ticker: string) => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
   try {
     const expires = new Date()
     expires.setDate(expires.getDate() + 1)
-    const token = await SecurityTokenRegistry.getTokenByTicker(ticker)
+    const token: SecurityToken = await SecurityTokenRegistry.getTokenByTicker(ticker)
+    if (token && token.owner !== getState().network.account) {
+      throw new Error('permission denied')
+    }
     dispatch(data(token))
+    dispatch(fetchSTO())
     dispatch(ui.fetched())
   } catch (e) {
     dispatch(ui.fetchingFailed(e))
   }
-  dispatch(fetchSTO())
 }
 
 export const complete = () => async (dispatch: Function, getState: GetState) => {
