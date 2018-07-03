@@ -1,6 +1,6 @@
 // @flow
 
-import { STO, CappedSTOFactory, SecurityToken } from 'polymathjs'
+import { STO, CappedSTOFactory, SecurityToken, PolyToken } from 'polymathjs'
 import * as ui from 'polymath-ui'
 import type { TwelveHourTime } from 'polymath-ui'
 import type { STOFactory, STODetails, STOPurchase } from 'polymathjs/types'
@@ -69,6 +69,20 @@ export const fetchFactories = () => async (dispatch: Function) => {
   }
 }
 
+export const faucet = (address: ?string, POLYamount: number) => async (dispatch: Function) => {
+  dispatch(ui.tx(
+    ['Receiving POLY From Faucet'],
+    async () => {
+      await PolyToken.getTokens(POLYamount, address)
+    },
+    'You have successfully received '+POLYamount+ ' POLY',
+    undefined,
+    undefined,
+    'ok',
+    true // TODO @bshevchenko: !isEmailConfirmed
+  ))
+}
+
 const dateTimeFromDateAndTime = (date: Date, time: TwelveHourTime) =>
   new Date(date.valueOf() + ui.twelveHourTimeToMinutes(time) * 60000)
 
@@ -79,15 +93,14 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
     return
   }
   dispatch(ui.tx(
-    'Configuring STO',
+    ['Transferring POLY', 'Configuring STO'],
     async () => {
       const contract: SecurityToken = token.contract
       const { values } = getState().form[configureFormName]
       const [startDate, endDate] = values['start-end']
       const startDateWithTime = dateTimeFromDateAndTime(startDate, values.startTime)
       const endDateWithTime = dateTimeFromDateAndTime(endDate, values.endTime)
-      await contract.setSTO(
-        factory.address,
+      await contract.setCappedSTO(
         startDateWithTime,
         endDateWithTime,
         values.cap,

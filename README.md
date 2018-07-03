@@ -12,7 +12,7 @@ After cloning, to install all dependencies run:
 ```
 yarn
 ```
-We only use Yarn as our official Node package manager, and so we will only commit yarn.lock files, and ignore package-lock.json files.
+We only use Yarn as our official Node package manager, so we will only commit yarn.lock files and ignore package-lock.json files.
 
 To start development run:
 ```
@@ -28,17 +28,11 @@ By default application works with Kovan testnet.
 
 ## Working with contracts locally
 
-First make sure [Ganache CLI](https://github.com/trufflesuite/ganache-cli) >= v6.1.0-beta.0 (lower versions does not support WebSockets) is installed:
 ```
-npm install -g ganache-cli
-```
-
-then run:
-```
-ganache-cli
+npm run ganache-cli
 ```
 
-To deploy contracts, in a separate terminal run:
+In a separate terminal:
 ```
 npm run contracts
 ```

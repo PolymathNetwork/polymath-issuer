@@ -5,9 +5,7 @@ import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { change } from 'redux-form'
 import { bull } from 'polymath-ui'
-// import { TickerRegistry, types, PolyToken } from 'polymathjs'
-// will need PolyToken when faucet is completely implemented
-import { TickerRegistry, types } from 'polymathjs'
+import BigNumber from 'bignumber.js'
 import type { RouterHistory } from 'react-router'
 import {
   Button,
@@ -19,28 +17,31 @@ import {
 } from 'carbon-components-react'
 
 import TickerForm, { formName } from './components/TickerForm'
-import { reserve, faucet } from './actions'
+import { reserve, expiryLimit, faucet } from './actions'
 import { data as tokenData } from '../token/actions'
 
 type StateProps = {|
   account: ?string,
     token: Object,
       networkName: string,
-        polyBalance: types._bignumber
-          |}
+        polyBalance: BigNumber,
+          expiryLimit: number
+            |}
 
 type DispatchProps = {|
   change: (? string) => any,
     reserve: () => any,
       tokenData: (data: any) => any,
-        faucet: () => any
-          |}
+        faucet: (? string, number) => any,
+          getExpiryLimit: () => any
+            |}
 
 const mapStateToProps = (state): StateProps => ({
   account: state.network.account,
   token: state.token.token,
   networkName: state.network.name,
   polyBalance: state.pui.account.balance,
+  expiryLimit: state.ticker.expiryLimit,
 })
 
 const mapDispatchToProps: DispatchProps = {
@@ -48,6 +49,7 @@ const mapDispatchToProps: DispatchProps = {
   reserve,
   tokenData,
   faucet,
+  getExpiryLimit: expiryLimit,
 }
 
 type Props = {|
@@ -57,24 +59,21 @@ type Props = {|
 type State = {|
   isConfirmationModalOpen: boolean,
     isNotEnoughPolyModalOpen: boolean,
-      expiryLimit: number,
-|}
+      polyCost: number
+        |}
 
 class TickerPage extends Component<Props, State> {
 
   state = {
     isConfirmationModalOpen: false,
     isNotEnoughPolyModalOpen: false,
-    expiryLimit: 7,
+    polyCost: 250,
   }
 
   componentWillMount () {
-    // TODO @bshevchenko: probably we shouldn't call polymath.js directly from the components
-    TickerRegistry.expiryLimit().then((expiryLimit) => {
-      this.setState({ expiryLimit: expiryLimit / 24 / 60 / 60 })
-    })
     this.props.change(this.props.account)
     this.props.tokenData(null)
+    this.props.getExpiryLimit()
   }
 
   handleSubmit = () => {
@@ -83,7 +82,7 @@ class TickerPage extends Component<Props, State> {
 
   handleConfirm = () => {
     this.setState({ isConfirmationModalOpen: false })
-    if (this.props.polyBalance < 250) {
+    if (this.props.polyBalance < this.state.polyCost) {
       this.setState({ isNotEnoughPolyModalOpen: true })
     } else {
       this.props.reserve()
@@ -98,8 +97,9 @@ class TickerPage extends Component<Props, State> {
     this.setState({ isNotEnoughPolyModalOpen: false })
   }
 
-  handleFaucetRequest = () => {
-    this.props.faucet()
+  handleFaucetRequest =  () => {
+    this.setState({ isNotEnoughPolyModalOpen: false })
+    this.props.faucet(this.props.account, 25000)
   }
 
   render () {
@@ -144,11 +144,11 @@ class TickerPage extends Component<Props, State> {
             className='pui-confirm-modal'
           >
             <ModalHeader
-              label='Confirmation required'
+              label='Transaction Impossible'
               title={(
                 <span>
                   <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
-                    Transaction Impossible
+                  Insufficient POLY Balance
                 </span>
               )}
             />
@@ -156,7 +156,7 @@ class TickerPage extends Component<Props, State> {
             <ModalBody>
               <div className='bx--modal-content__text'>
                 <p>
-                  The registration of a token symbol has a fixed cost of 250 POLY.
+                  The registration of a token symbol has a fixed cost of {this.state.polyCost} POLY.
                   Please make sure that your wallet has a sufficient balance in
                   POLY to complete this operation.
                 </p>
@@ -172,9 +172,9 @@ class TickerPage extends Component<Props, State> {
                 <br />
                 <div className='pui-remark'>
                   <div className='pui-remark-title'>Note</div>
-                  <div className='pui-remark-text'>This option is not available on 
+                  <div className='pui-remark-text'>This option is not available on
                     <span style={{ fontWeight: 'bold' }}>
-                  Main Network.
+                      Main Network.
                     </span>
                   </div>
                 </div>
@@ -193,11 +193,11 @@ class TickerPage extends Component<Props, State> {
             className='pui-confirm-modal'
           >
             <ModalHeader
-              label='Confirmation required'
+              label='Transaction Impossible'
               title={(
                 <span>
                   <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
-                  Transaction Impossible
+                  Insufficient POLY Balance
                 </span>
               )}
             />
@@ -205,19 +205,19 @@ class TickerPage extends Component<Props, State> {
             <ModalBody>
               <div className='bx--modal-content__text'>
                 <p>
-                  The registration of a token symbol has a fixed cost of 250 POLY.
+                  The registration of a token symbol has a fixed cost of {this.state.polyCost} POLY.
                   Please make sure that your wallet has a sufficient balance in
                   POLY to complete this operation.
                 </p>
                 <p>
-                  If you need to obtain POLY tokens, you can visit 
+                  If you need to obtain POLY tokens, you can visit &nbsp; 
                   <a
                     target='_blank'
                     rel='noopener noreferrer'
                     href='https://shapeshift.io'
                   >here
                   </a> or
-                  obtain more information
+                  obtain more information &nbsp;
                   <a
                     target='_blank'
                     rel='noopener noreferrer'
@@ -240,7 +240,7 @@ class TickerPage extends Component<Props, State> {
               </div>
               <h1 className='pui-h1'>Reserve Your Token Symbol</h1>
               <h4 className='pui-h4'>
-                Your token symbol will be reserved for {this.state.expiryLimit} days, and
+                Your token symbol will be reserved for {this.props.expiryLimit} days, and
                 permanently yours once you create your Token.<br />
                 This reservation ensures that no other organization can use
                 your brand or create an identical token symbol using the
