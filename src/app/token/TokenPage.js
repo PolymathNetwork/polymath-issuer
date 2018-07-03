@@ -82,7 +82,7 @@ class TokenPage extends Component<Props, State> {
 
   handleFaucetRequest = () => {
     this.setState({ isNotEnoughPolyModalOpen: false })
-    this.props.faucet(this.props.account, 1)
+    this.props.faucet(this.props.account, 25000)
   }
 
   render () {
