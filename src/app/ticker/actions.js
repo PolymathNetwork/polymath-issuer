@@ -45,7 +45,7 @@ export const tickerReservationEmail = () => async (dispatch: Function, getState:
     const tokens = await TickerRegistry.getMyTokens()
     const token: SymbolDetails = tokens.pop()
 
-    await ui.email(
+    dispatch(ui.email(
       token.txHash,
       token.ticker + ' Symbol Registered on Polymath',
       (
@@ -68,7 +68,7 @@ export const tickerReservationEmail = () => async (dispatch: Function, getState:
           </p>
         </div>
       )
-    )
+    ))
   } catch (e) { // eslint-disable-next-line
     console.error('tickerReservationEmail', e)
   }
