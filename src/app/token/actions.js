@@ -1,6 +1,6 @@
 // @flow
 
-import { SecurityTokenRegistry } from 'polymathjs'
+import { PolyToken, SecurityTokenRegistry } from 'polymathjs'
 import * as ui from 'polymath-ui'
 import { ethereumAddress } from 'polymath-ui/dist/validate'
 import type { SecurityToken, Investor, Address } from 'polymathjs/types'
@@ -61,6 +61,20 @@ export const issue = () => async (dispatch: Function, getState: GetState) => {
     `/dashboard/${ticker}/sto`,
     undefined,
     true // TODO @bshevchenko
+  ))
+}
+
+export const faucet = (address: ?string, POLYamount: number) => async (dispatch: Function) => {
+  dispatch(ui.tx(
+    ['Receiving POLY From Faucet'],
+    async () => {
+      await PolyToken.getTokens(POLYamount, address)
+    },
+    'You have successfully received '+POLYamount+ ' POLY',
+    undefined,
+    undefined,
+    'ok',
+    true // TODO @bshevchenko: !isEmailConfirmed
   ))
 }
 

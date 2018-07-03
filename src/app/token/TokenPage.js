@@ -9,7 +9,7 @@ import moment from 'moment'
 import type { SecurityToken } from 'polymathjs/types'
 import BigNumber from 'bignumber.js'
 
-import { issue } from './actions'
+import { issue, faucet } from './actions'
 import NotFoundPage from '../NotFoundPage'
 import Progress from './components/Progress'
 import CompleteTokenForm from './components/CompleteTokenForm'
@@ -19,6 +19,7 @@ import type { RootState } from '../../redux/reducer'
 import './style.css'
 
 type StateProps = {|
+  account: ?string,
   token: ?SecurityToken,
   networkName: string,
   polyBalance: BigNumber
@@ -26,9 +27,11 @@ type StateProps = {|
 
 type DispatchProps = {|
   complete: () => any,
+  faucet: (? string, number) => any
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
+  account: state.network.account,
   token: state.token.token,
   networkName: state.network.name,
   polyBalance: state.pui.account.balance,
@@ -36,6 +39,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
 
 const mapDispatchToProps: DispatchProps = {
   complete: issue,
+  faucet,
 }
 
 type Props = {|
@@ -52,7 +56,7 @@ class TokenPage extends Component<Props, State> {
   state = {
     isConfirmationModalOpen: false,
     isNotEnoughPolyModalOpen: false,
-    polyCost: 250000,
+    polyCost: 250,
   }
 
   handleCompleteSubmit = () => {
@@ -77,8 +81,8 @@ class TokenPage extends Component<Props, State> {
   }
 
   handleFaucetRequest = () => {
-    // this.props.faucet()
-    // console.log('faucet action')
+    this.setState({ isNotEnoughPolyModalOpen: false })
+    this.props.faucet(this.props.account, 1)
   }
 
   render () {
@@ -190,14 +194,14 @@ class TokenPage extends Component<Props, State> {
                   POLY to complete this operation.
                 </p>
                 <p>
-                  If you need to obtain POLY tokens, you can visit 
+                  If you need to obtain POLY tokens, you can visit&nbsp; 
                   <a
                     target='_blank'
                     rel='noopener noreferrer'
                     href='https://shapeshift.io'
                   >here
                   </a> or
-                  obtain more information
+                  obtain more information&nbsp; 
                   <a
                     target='_blank'
                     rel='noopener noreferrer'

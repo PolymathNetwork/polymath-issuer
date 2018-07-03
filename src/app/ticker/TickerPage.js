@@ -67,7 +67,7 @@ class TickerPage extends Component<Props, State> {
   state = {
     isConfirmationModalOpen: false,
     isNotEnoughPolyModalOpen: false,
-    polyCost: 2500,
+    polyCost: 250,
   }
 
   componentWillMount () {
@@ -99,7 +99,7 @@ class TickerPage extends Component<Props, State> {
 
   handleFaucetRequest =  () => {
     this.setState({ isNotEnoughPolyModalOpen: false })
-    this.props.faucet(this.props.account, 1)
+    this.props.faucet(this.props.account, 25000)
   }
 
   render () {

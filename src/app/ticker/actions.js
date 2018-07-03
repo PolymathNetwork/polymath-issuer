@@ -35,7 +35,7 @@ export const reserve = () => async (dispatch: Function, getState: GetState) => {
   ))
 }
 
-export const faucet = (address, POLYamount) => async (dispatch: Function) => {
+export const faucet = (address: ?string, POLYamount: number) => async (dispatch: Function) => {
   dispatch(ui.tx(
     ['Receiving POLY From Faucet'],
     async () => {
