@@ -18,14 +18,14 @@ export const reserve = () => async (dispatch: Function, getState: GetState) => {
   const details: SymbolDetails = getState().form[formName].values
   const isInsufficientBalance = getState().pui.account.balance.lt(await TickerRegistry.registrationFee())
   dispatch(ui.tx(
-    [...(isInsufficientBalance ? ['Requesting POLY'] : []), 'Approving POLY spend', 'Token symbol reservation'],
+    [...(isInsufficientBalance ? ['Requesting POLY'] : []), 'Requesting POLY', 'Token Symbol Reservation'],
     async () => {
       if (isInsufficientBalance) {
         await PolyToken.getTokens(2500000)
       }
       await TickerRegistry.registerTicker(details)
     },
-    'Your Token Symbol Was Reserved Successfully',
+    'Your Token Symbol: '+details.ticker+', Was Reserved Successfully',
     () => {
       dispatch({ type: RESERVED })
     },
@@ -35,8 +35,18 @@ export const reserve = () => async (dispatch: Function, getState: GetState) => {
   ))
 }
 
-export const faucet = (address) => async () => {
-  return PolyToken.getTokens(255, address)
+export const faucet = (address, POLYamount) => async (dispatch: Function) => {
+  dispatch(ui.tx(
+    ['Receiving POLY From Faucet'],
+    async () => {
+      await PolyToken.getTokens(POLYamount, address)
+    },
+    'You have successfully received '+POLYamount+ ' POLY',
+    undefined,
+    undefined,
+    'ok',
+    true // TODO @bshevchenko: !isEmailConfirmed
+  ))
 }
 
 export const confirmEmail = () => async (dispatch: Function, getState: GetState) => {

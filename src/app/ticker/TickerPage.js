@@ -32,7 +32,7 @@ type DispatchProps = {|
   change: (? string) => any,
     reserve: () => any,
       tokenData: (data: any) => any,
-        faucet: (? string) => any,
+        faucet: (? string, number) => any,
           getExpiryLimit: () => any
             |}
 
@@ -67,7 +67,7 @@ class TickerPage extends Component<Props, State> {
   state = {
     isConfirmationModalOpen: false,
     isNotEnoughPolyModalOpen: false,
-    polyCost: 250,
+    polyCost: 2500,
   }
 
   componentWillMount () {
@@ -97,8 +97,9 @@ class TickerPage extends Component<Props, State> {
     this.setState({ isNotEnoughPolyModalOpen: false })
   }
 
-  handleFaucetRequest = async () => {
-    await this.props.faucet(this.props.account)
+  handleFaucetRequest =  () => {
+    this.setState({ isNotEnoughPolyModalOpen: false })
+    this.props.faucet(this.props.account, 1)
   }
 
   render () {
@@ -209,14 +210,14 @@ class TickerPage extends Component<Props, State> {
                   POLY to complete this operation.
                 </p>
                 <p>
-                  If you need to obtain POLY tokens, you can visit
+                  If you need to obtain POLY tokens, you can visit &nbsp; 
                   <a
                     target='_blank'
                     rel='noopener noreferrer'
                     href='https://shapeshift.io'
                   >here
                   </a> or
-                  obtain more information
+                  obtain more information &nbsp;
                   <a
                     target='_blank'
                     rel='noopener noreferrer'
