@@ -5,9 +5,8 @@ import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { change } from 'redux-form'
 import { bull } from 'polymath-ui'
-// import { TickerRegistry, types, PolyToken } from 'polymathjs'
-// will need PolyToken when faucet is completely implemented
-import { TickerRegistry, types } from 'polymathjs'
+import { TickerRegistry } from 'polymathjs'
+import BigNumber from 'bignumber.js'
 import type { RouterHistory } from 'react-router'
 import {
   Button,
@@ -26,14 +25,14 @@ type StateProps = {|
   account: ?string,
     token: Object,
       networkName: string,
-        polyBalance: types._bignumber
+        polyBalance: BigNumber
           |}
 
 type DispatchProps = {|
   change: (? string) => any,
     reserve: () => any,
       tokenData: (data: any) => any,
-        faucet: () => any
+        faucet: (? string) => any
           |}
 
 const mapStateToProps = (state): StateProps => ({
@@ -58,7 +57,8 @@ type State = {|
   isConfirmationModalOpen: boolean,
     isNotEnoughPolyModalOpen: boolean,
       expiryLimit: number,
-|}
+        polyCost: number
+          |}
 
 class TickerPage extends Component<Props, State> {
 
@@ -66,6 +66,7 @@ class TickerPage extends Component<Props, State> {
     isConfirmationModalOpen: false,
     isNotEnoughPolyModalOpen: false,
     expiryLimit: 7,
+    polyCost: 250,
   }
 
   componentWillMount () {
@@ -83,7 +84,7 @@ class TickerPage extends Component<Props, State> {
 
   handleConfirm = () => {
     this.setState({ isConfirmationModalOpen: false })
-    if (this.props.polyBalance < 250) {
+    if (this.props.polyBalance < this.state.polyCost) {
       this.setState({ isNotEnoughPolyModalOpen: true })
     } else {
       this.props.reserve()
@@ -98,8 +99,8 @@ class TickerPage extends Component<Props, State> {
     this.setState({ isNotEnoughPolyModalOpen: false })
   }
 
-  handleFaucetRequest = () => {
-    this.props.faucet()
+  handleFaucetRequest = async () => {
+    await this.props.faucet(this.props.account)
   }
 
   render () {
@@ -144,11 +145,11 @@ class TickerPage extends Component<Props, State> {
             className='pui-confirm-modal'
           >
             <ModalHeader
-              label='Confirmation required'
+              label='Transaction Impossible'
               title={(
                 <span>
                   <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
-                    Transaction Impossible
+                  Insufficient POLY Balance
                 </span>
               )}
             />
@@ -156,7 +157,7 @@ class TickerPage extends Component<Props, State> {
             <ModalBody>
               <div className='bx--modal-content__text'>
                 <p>
-                  The registration of a token symbol has a fixed cost of 250 POLY.
+                  The registration of a token symbol has a fixed cost of {this.state.polyCost} POLY.
                   Please make sure that your wallet has a sufficient balance in
                   POLY to complete this operation.
                 </p>
@@ -172,9 +173,9 @@ class TickerPage extends Component<Props, State> {
                 <br />
                 <div className='pui-remark'>
                   <div className='pui-remark-title'>Note</div>
-                  <div className='pui-remark-text'>This option is not available on 
+                  <div className='pui-remark-text'>This option is not available on
                     <span style={{ fontWeight: 'bold' }}>
-                  Main Network.
+                      Main Network.
                     </span>
                   </div>
                 </div>
@@ -193,11 +194,11 @@ class TickerPage extends Component<Props, State> {
             className='pui-confirm-modal'
           >
             <ModalHeader
-              label='Confirmation required'
+              label='Transaction Impossible'
               title={(
                 <span>
                   <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
-                  Transaction Impossible
+                  Insufficient POLY Balance
                 </span>
               )}
             />
@@ -205,12 +206,12 @@ class TickerPage extends Component<Props, State> {
             <ModalBody>
               <div className='bx--modal-content__text'>
                 <p>
-                  The registration of a token symbol has a fixed cost of 250 POLY.
+                  The registration of a token symbol has a fixed cost of {this.state.polyCost} POLY.
                   Please make sure that your wallet has a sufficient balance in
                   POLY to complete this operation.
                 </p>
                 <p>
-                  If you need to obtain POLY tokens, you can visit 
+                  If you need to obtain POLY tokens, you can visit
                   <a
                     target='_blank'
                     rel='noopener noreferrer'
