@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { change } from 'redux-form'
 import { bull } from 'polymath-ui'
-import { TickerRegistry } from 'polymathjs'
 import type { RouterHistory } from 'react-router'
 import {
   Button,
@@ -17,29 +16,33 @@ import {
 } from 'carbon-components-react'
 
 import TickerForm, { formName } from './components/TickerForm'
-import { reserve } from './actions'
+import { reserve, expiryLimit } from './actions'
 import { data as tokenData } from '../token/actions'
 
 type StateProps = {|
   account: ?string,
   token: Object,
+  expiryLimit: number,
 |}
 
 type DispatchProps = {|
   change: (?string) => any,
   reserve: () => any,
-  tokenData: (data: any) => any
+  tokenData: (data: any) => any,
+  getExpiryLimit: () => any
 |}
 
 const mapStateToProps = (state): StateProps => ({
   account: state.network.account,
   token: state.token.token,
+  expiryLimit: state.ticker.expiryLimit,
 })
 
 const mapDispatchToProps: DispatchProps = {
   change: (value) => change(formName, 'owner', value, false, false),
   reserve,
   tokenData,
+  getExpiryLimit: expiryLimit,
 }
 
 type Props = {|
@@ -48,23 +51,18 @@ type Props = {|
 
 type State = {|
   isModalOpen: boolean,
-  expiryLimit: number,
 |}
 
 class TickerPage extends Component<Props, State> {
 
   state = {
     isModalOpen: false,
-    expiryLimit: 7,
   }
 
   componentWillMount () {
-    // TODO @bshevchenko: probably we shouldn't call polymath.js directly from the components
-    TickerRegistry.expiryLimit().then((expiryLimit) => {
-      this.setState({ expiryLimit: expiryLimit / 24 / 60 / 60 })
-    })
     this.props.change(this.props.account)
     this.props.tokenData(null)
+    this.props.getExpiryLimit()
   }
 
   handleSubmit = () => {
@@ -124,7 +122,7 @@ class TickerPage extends Component<Props, State> {
               </div>
               <h1 className='pui-h1'>Reserve Your Token Symbol</h1>
               <h4 className='pui-h4'>
-                Your token symbol will be reserved for {this.state.expiryLimit} days, and
+                Your token symbol will be reserved for {this.props.expiryLimit} days, and
                 permanently yours once you create your Token.<br />
                 This reservation ensures that no other organization can use
                 your brand or create an identical token symbol using the
