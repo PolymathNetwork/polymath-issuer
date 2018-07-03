@@ -79,15 +79,14 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
     return
   }
   dispatch(ui.tx(
-    'Configuring STO',
+    ['Transferring POLY', 'Configuring STO'],
     async () => {
       const contract: SecurityToken = token.contract
       const { values } = getState().form[configureFormName]
       const [startDate, endDate] = values['start-end']
       const startDateWithTime = dateTimeFromDateAndTime(startDate, values.startTime)
       const endDateWithTime = dateTimeFromDateAndTime(endDate, values.endTime)
-      await contract.setSTO(
-        factory.address,
+      await contract.setCappedSTO(
         startDateWithTime,
         endDateWithTime,
         values.cap,

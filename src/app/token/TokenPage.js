@@ -9,7 +9,7 @@ import moment from 'moment'
 import type { SecurityToken } from 'polymathjs/types'
 import BigNumber from 'bignumber.js'
 
-import { complete } from './actions'
+import { issue } from './actions'
 import NotFoundPage from '../NotFoundPage'
 import Progress from './components/Progress'
 import CompleteTokenForm from './components/CompleteTokenForm'
@@ -35,7 +35,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
 })
 
 const mapDispatchToProps: DispatchProps = {
-  complete,
+  complete: issue,
 }
 
 type Props = {|
