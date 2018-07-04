@@ -27,7 +27,7 @@ export const reserve = (polyCost: number) => async (dispatch: Function, getState
       }
       TickerRegistry.registerTicker(details).then(() => {
         dispatch(ui.notify(
-          'Spent ' + polyCost + ' POLY',
+          'Spent '+ polyCost + ' POLY',
           true
         ))
       })
