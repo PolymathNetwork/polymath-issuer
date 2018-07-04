@@ -13,35 +13,47 @@ export const expiryLimit = () => async (dispatch: Function) =>
 
 export const RESERVED = 'ticker/RESERVED'
 
-export const reserve = () => async (dispatch: Function, getState: GetState) => {
+export const reserve = (polyCost: number) => async (dispatch: Function, getState: GetState) => {
+
   // TODO @bshevchenko: see below... const { isEmailConfirmed } = getState().pui.account
   const details: SymbolDetails = getState().form[formName].values
   const isInsufficientBalance = getState().pui.account.balance.lt(await TickerRegistry.registrationFee())
   dispatch(ui.tx(
-    [...(isInsufficientBalance ? ['Requesting POLY'] : []), 'Requesting POLY', 'Token Symbol Reservation'],
+    [...(isInsufficientBalance ? ['Requesting POLY'] : []),
+      'Requesting ' + polyCost + ' POLY', 'Reserving Token Symbol'],
     async () => {
       if (isInsufficientBalance) {
         await PolyToken.getTokens(2500000)
       }
-      await TickerRegistry.registerTicker(details)
+      TickerRegistry.registerTicker(details).then(() => {
+        dispatch(ui.notify(
+          'Spent ' + polyCost + ' POLY',
+          true
+        ))
+      })
     },
-    'Your Token Symbol: '+details.ticker+', Was Reserved Successfully',
+    'Your Token Symbol: ' + details.ticker + ', Was Reserved Successfully',
     () => {
-      dispatch({ type: RESERVED })
     },
     `/dashboard/${details.ticker}/providers`,
     undefined,
     true // TODO @bshevchenko: !isEmailConfirmed
   ))
+
 }
 
 export const faucet = (address: ?string, POLYamount: number) => async (dispatch: Function) => {
   dispatch(ui.tx(
     ['Receiving POLY From Faucet'],
     async () => {
-      await PolyToken.getTokens(POLYamount, address)
+      PolyToken.getTokens(POLYamount, address).then(() => {
+        dispatch(ui.notify(
+          'Received ' + POLYamount + ' POLY',
+          true
+        ))
+      })
     },
-    'You have successfully received '+POLYamount+ ' POLY',
+    'You have successfully received ' + POLYamount + ' POLY',
     undefined,
     undefined,
     'ok',

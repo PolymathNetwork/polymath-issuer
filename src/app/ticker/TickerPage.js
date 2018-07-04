@@ -30,7 +30,7 @@ type StateProps = {|
 
 type DispatchProps = {|
   change: (? string) => any,
-    reserve: () => any,
+    reserve: (number) => any,
       tokenData: (data: any) => any,
         faucet: (? string, number) => any,
           getExpiryLimit: () => any
@@ -85,7 +85,7 @@ class TickerPage extends Component<Props, State> {
     if (this.props.polyBalance < this.state.polyCost) {
       this.setState({ isNotEnoughPolyModalOpen: true })
     } else {
-      this.props.reserve()
+      this.props.reserve(this.state.polyCost)
     }
   }
 

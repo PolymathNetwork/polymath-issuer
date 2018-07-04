@@ -40,19 +40,24 @@ export const fetch = (ticker: string) => async (dispatch: Function, getState: Ge
   }
 }
 
-export const issue = () => async (dispatch: Function, getState: GetState) => {
+export const issue = (polyCost: number) => async (dispatch: Function, getState: GetState) => {
   const { token } = getState().token // $FlowFixMe
   const ticker = token.ticker
 
   dispatch(ui.tx(
-    ['Approving POLY spend', `Issuing ${ticker} token`],
+    ['Requesting ' + polyCost + ' POLY', `Issuing ${ticker} token`],
     async () => {
       const token: SecurityToken = {
         ...getState().token.token,
         ...getState().form[completeFormName].values,
       }
       token.isDivisible = token.isDivisible !== '1'
-      await SecurityTokenRegistry.generateSecurityToken(token)
+      SecurityTokenRegistry.generateSecurityToken(token).then(() => {
+        dispatch(ui.notify(
+          'Spent ' + polyCost + ' POLY',
+          true
+        ))
+      })
     },
     'Token Was Issued Successfully',
     () => {
@@ -68,9 +73,14 @@ export const faucet = (address: ?string, POLYamount: number) => async (dispatch:
   dispatch(ui.tx(
     ['Receiving POLY From Faucet'],
     async () => {
-      await PolyToken.getTokens(POLYamount, address)
+      PolyToken.getTokens(POLYamount, address).then(()=>{
+        dispatch(ui.notify(
+          'Received ' + POLYamount + ' POLY',
+          true
+        ))
+      })
     },
-    'You have successfully received '+POLYamount+ ' POLY',
+    'You have successfully received ' + POLYamount + ' POLY',
     undefined,
     undefined,
     'ok',

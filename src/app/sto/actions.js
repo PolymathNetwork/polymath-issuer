@@ -73,9 +73,14 @@ export const faucet = (address: ?string, POLYamount: number) => async (dispatch:
   dispatch(ui.tx(
     ['Receiving POLY From Faucet'],
     async () => {
-      await PolyToken.getTokens(POLYamount, address)
+      PolyToken.getTokens(POLYamount, address).then(()=>{
+        dispatch(ui.notify(
+          'Received ' + POLYamount + ' POLY',
+          true
+        ))
+      })
     },
-    'You have successfully received '+POLYamount+ ' POLY',
+    'You have successfully received ' + POLYamount + ' POLY',
     undefined,
     undefined,
     'ok',
@@ -86,28 +91,35 @@ export const faucet = (address: ?string, POLYamount: number) => async (dispatch:
 const dateTimeFromDateAndTime = (date: Date, time: TwelveHourTime) =>
   new Date(date.valueOf() + ui.twelveHourTimeToMinutes(time) * 60000)
 
-export const configure = () => async (dispatch: Function, getState: GetState) => {
+export const configure = (polyCost: number) => async (dispatch: Function, getState: GetState) => {
   const { factory } = getState().sto
   const { token } = getState().token
   if (!factory || !token || !token.contract) {
     return
   }
   dispatch(ui.tx(
-    ['Transferring POLY', 'Configuring STO'],
+    ['Requesting ' + polyCost + ' POLY', 'Configuring STO'],
     async () => {
       const contract: SecurityToken = token.contract
       const { values } = getState().form[configureFormName]
       const [startDate, endDate] = values['start-end']
       const startDateWithTime = dateTimeFromDateAndTime(startDate, values.startTime)
       const endDateWithTime = dateTimeFromDateAndTime(endDate, values.endTime)
-      await contract.setCappedSTO(
+
+      contract.setCappedSTO(
         startDateWithTime,
         endDateWithTime,
         values.cap,
         values.rate,
         values.currency === 'ETH',
         contract.account,
-      )
+      ).then(() => {
+        dispatch(ui.notify(
+          'Spent ' + polyCost + ' POLY',
+          true
+        ))
+      })
+
     },
     'STO Configured Successfully',
     () => {

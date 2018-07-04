@@ -26,7 +26,7 @@ type StateProps = {|
 |}
 
 type DispatchProps = {|
-  complete: () => any,
+  complete: (number) => any,
   faucet: (? string, number) => any
 |}
 
@@ -68,7 +68,7 @@ class TokenPage extends Component<Props, State> {
     if (this.props.polyBalance < this.state.polyCost) {
       this.setState({ isNotEnoughPolyModalOpen: true })
     } else {
-      this.props.complete()
+      this.props.complete(this.state.polyCost)
     }
   }
 

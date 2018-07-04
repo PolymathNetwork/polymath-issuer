@@ -29,7 +29,7 @@ type StateProps = {|
 |}
 
 type DispatchProps = {|
-  configure: () => any,
+  configure: (number) => any,
   goBack: () => any,
   faucet: (?string, number) => any
 |}
@@ -77,7 +77,7 @@ class ConfigureSTO extends Component<Props, State> {
     if (this.props.polyBalance < this.state.polyCost) {
       this.setState({ isNotEnoughPolyModalOpen: true })
     } else {
-      this.props.configure()
+      this.props.configure(this.state.polyCost)
     }
   }
 
