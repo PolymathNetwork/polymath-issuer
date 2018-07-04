@@ -7,8 +7,9 @@ import { Icon, ComposedModal, ModalHeader, ModalBody, ModalFooter, Button } from
 import { etherscanTx, etherscanAddress, Countdown } from 'polymath-ui'
 import moment from 'moment'
 import type { SecurityToken } from 'polymathjs/types'
+import BigNumber from 'bignumber.js'
 
-import { complete } from './actions'
+import { issue, faucet } from './actions'
 import NotFoundPage from '../NotFoundPage'
 import Progress from './components/Progress'
 import CompleteTokenForm from './components/CompleteTokenForm'
@@ -18,45 +19,70 @@ import type { RootState } from '../../redux/reducer'
 import './style.css'
 
 type StateProps = {|
+  account: ?string,
   token: ?SecurityToken,
+  networkName: string,
+  polyBalance: BigNumber
 |}
 
 type DispatchProps = {|
   complete: () => any,
+  faucet: (? string, number) => any
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
+  account: state.network.account,
   token: state.token.token,
+  networkName: state.network.name,
+  polyBalance: state.pui.account.balance,
 })
 
 const mapDispatchToProps: DispatchProps = {
-  complete,
+  complete: issue,
+  faucet,
 }
 
 type Props = {|
 |} & StateProps & DispatchProps
 
 type State = {|
-  isModalOpen: boolean,
+  isConfirmationModalOpen: boolean,
+  isNotEnoughPolyModalOpen: boolean,
+  polyCost: number
 |}
 
 class TokenPage extends Component<Props, State> {
 
   state = {
-    isModalOpen: false,
+    isConfirmationModalOpen: false,
+    isNotEnoughPolyModalOpen: false,
+    polyCost: 250,
   }
 
   handleCompleteSubmit = () => {
-    this.setState({ isModalOpen: true })
+    this.setState({ isConfirmationModalOpen: true })
   }
 
   handleConfirm = () => {
-    this.setState({ isModalOpen: false })
-    this.props.complete()
+    this.setState({ isConfirmationModalOpen: false })
+    if (this.props.polyBalance < this.state.polyCost) {
+      this.setState({ isNotEnoughPolyModalOpen: true })
+    } else {
+      this.props.complete()
+    }
   }
 
-  handleCancel = () => {
-    this.setState({ isModalOpen: false })
+  handleConfirmationCancel = () => {
+    this.setState({ isConfirmationModalOpen: false })
+  }
+
+  handleNotEnoughPolyCancel = () => {
+    this.setState({ isNotEnoughPolyModalOpen: false })
+  }
+
+  handleFaucetRequest = () => {
+    this.setState({ isNotEnoughPolyModalOpen: false })
+    this.props.faucet(this.props.account, 25000)
   }
 
   render () {
@@ -68,7 +94,7 @@ class TokenPage extends Component<Props, State> {
       <DocumentTitle title={`${token.ticker} Token – Polymath`}>
         <div>
           <Progress />
-          <ComposedModal open={this.state.isModalOpen} className='pui-confirm-modal'>
+          <ComposedModal open={this.state.isConfirmationModalOpen} className='pui-confirm-modal'>
             <ModalHeader
               label='Confirmation required'
               title={(
@@ -91,10 +117,104 @@ class TokenPage extends Component<Props, State> {
             </ModalBody>
 
             <ModalFooter>
-              <Button kind='secondary' onClick={this.handleCancel}>
+              <Button kind='secondary' onClick={this.handleConfirmationCancel}>
                 Cancel
               </Button>
               <Button onClick={this.handleConfirm}>Confirm</Button>
+            </ModalFooter>
+          </ComposedModal>
+          <ComposedModal
+            open={this.state.isNotEnoughPolyModalOpen && this.props.networkName === 'Kovan Testnet'}
+            className='pui-confirm-modal'
+          >
+            <ModalHeader
+              label='Transaction Impossible'
+              title={(
+                <span>
+                  <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
+                  Insufficient POLY Balance
+                </span>
+              )}
+            />
+
+            <ModalBody>
+              <div className='bx--modal-content__text'>
+                <p>
+                  The creation of a security token has a fixed cost of {this.state.polyCost} POLY.
+                  Please make sure that your wallet has a sufficient balance in
+                  POLY to complete this operation.
+                </p>
+
+                <p>
+                  You are currently connected to the <span style={{ fontWeight: 'bold' }}>Kovan Test Network</span>.
+                </p>
+
+                <p>
+                  As such, you can click on the &laquo;REQUEST 25K POLY&raquo; button below to
+                   receive 25,000 test POLY in your wallet.
+                </p>
+                <br />
+                <div className='pui-remark'>
+                  <div className='pui-remark-title'>Note</div>
+                  <div className='pui-remark-text'>This option is not available on 
+                    <span style={{ fontWeight: 'bold' }}>
+                  Main Network.
+                    </span>
+                  </div>
+                </div>
+
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <Button kind='secondary' onClick={this.handleNotEnoughPolyCancel}>
+                Cancel
+              </Button>
+              <Button onClick={this.handleFaucetRequest}>REQUEST 25k POLY</Button>
+            </ModalFooter>
+          </ComposedModal>
+          <ComposedModal
+            open={this.state.isNotEnoughPolyModalOpen && this.props.networkName === 'Ethereum Mainnet'}
+            className='pui-confirm-modal'
+          >
+            <ModalHeader
+              label='Transaction Impossible'
+              title={(
+                <span>
+                  <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
+                  Insufficient POLY Balance
+                </span>
+              )}
+            />
+
+            <ModalBody>
+              <div className='bx--modal-content__text'>
+                <p>
+                  The registration of a token symbol has a fixed cost of {this.state.polyCost} POLY.
+                  Please make sure that your wallet has a sufficient balance in
+                  POLY to complete this operation.
+                </p>
+                <p>
+                  If you need to obtain POLY tokens, you can visit&nbsp; 
+                  <a
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    href='https://shapeshift.io'
+                  >here
+                  </a> or
+                  obtain more information&nbsp; 
+                  <a
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    href='https://etherscan.io/token/0x9992ec3cf6a55b00978cddf2b27bc6882d88d1ec#tokenExchange'
+                  >here
+                  </a>
+                </p>
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <Button onClick={this.handleNotEnoughPolyCancel}>
+                Close
+              </Button>
             </ModalFooter>
           </ComposedModal>
           <div>

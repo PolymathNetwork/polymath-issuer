@@ -13,7 +13,6 @@ import {
   ModalBody,
   ModalFooter,
 } from 'carbon-components-react'
-import type { Investor } from 'polymathjs'
 
 import { uploadCSV, mintTokens, mintResetUploaded } from '../actions'
 import type { RootState } from '../../../redux/reducer'
@@ -24,12 +23,11 @@ type StateProps = {|
   isReady: boolean,
   isInvalid: boolean,
   criticals: Array<InvestorCSVRow>,
-  uploaded: Array<Investor>,
 |}
 
 type DispatchProps = {|
   uploadCSV: (file: Object) => any,
-  mintTokens: (uploaded: Array<Investor>) => any,
+  mintTokens: () => any,
   mintResetUploaded: () => any,
 |}
 
@@ -42,7 +40,6 @@ const mapStateToProps = (state: RootState): StateProps => ({
   isReady: state.token.mint.uploaded.length > 0,
   isInvalid: state.token.mint.criticals.length > 0,
   criticals: state.token.mint.criticals,
-  uploaded: state.token.mint.uploaded,
 })
 
 const mapDispatchToProps = {
@@ -102,7 +99,7 @@ class MintTokens extends Component<Props, State> {
 
   handleSubmit = () => {
     this.setState({ isConfirmModalOpen: false })
-    this.props.mintTokens(this.props.uploaded)
+    this.props.mintTokens()
     this.handleReset(false)
   }
 

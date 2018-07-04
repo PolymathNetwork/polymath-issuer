@@ -56,6 +56,14 @@ export const categories: Array<SPCategory> = [
     desc: 'Apply for Marketing/PR Agency to help drive engagement and promote your STO. ' +
     'Alternatively, you can elect to use your own Marketing/PR firm or staff.',
   },
+  {
+    id: 4,
+    title: 'Custody Service',
+    desc: 'Apply for Custody services for the funds you raised and/or your investors\' ' +
+    'security tokens to be held for safekeeping and minimize the risk of theft or loss. Alternatively, ' +
+    'you and/or your Investors can elect to self custody funds and security tokens.'
+    ,
+  },
 ]
 
 const providers: Array<ServiceProvider> = [
@@ -202,6 +210,18 @@ const providers: Array<ServiceProvider> = [
     'assist you in formulating and executing a full go-to market strategy.',
     isToBeAnnounced: true,
   },
+  // Custody Service
+  {
+    id: 15,
+    cat: 4,
+    title: 'BitGo',
+    logo: '/providers/custody/bitgo.png',
+    desc: 'BitGo is a blockchain software company that secures digital currency for institutional investors. Its ' +
+    'technology solves the most difficult security, compliance and custodial problems '+ 
+    'associated with blockchain-based currencies, enabling the integration of digital currency into the global…',
+    isToBeAnnounced: false,
+  },
+
 ]
 
 export const getProviders = () => {
