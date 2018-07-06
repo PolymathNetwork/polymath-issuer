@@ -11,7 +11,7 @@ import {
   ModalHeader,
   Icon,
 } from 'carbon-components-react'
-import type { SecurityToken, STOFactory } from 'polymathjs/types'
+import type { SecurityToken, STOFactory, Address } from 'polymathjs/types'
 import BigNumber from 'bignumber.js'
 
 import NotFoundPage from '../../NotFoundPage'
@@ -29,7 +29,7 @@ type StateProps = {|
 |}
 
 type DispatchProps = {|
-  configure: (number) => any,
+  configure: (number, Address) => any,
   goBack: () => any,
   faucet: (?string, number) => any
 |}
@@ -53,7 +53,8 @@ type Props = {||} & StateProps & DispatchProps
 type State = {|
   isConfirmationModalOpen: boolean,
   isNotEnoughPolyModalOpen: boolean,
-  polyCost: number
+  polyCost: number,
+  fundsReceiver: Address
 |}
 
 class ConfigureSTO extends Component<Props, State> {
@@ -62,6 +63,7 @@ class ConfigureSTO extends Component<Props, State> {
     isConfirmationModalOpen: false,
     isNotEnoughPolyModalOpen: false,
     polyCost: 20000,
+    fundsReceiver: '',
   }
 
   handleCompleteSubmit = () => {
@@ -77,7 +79,7 @@ class ConfigureSTO extends Component<Props, State> {
     if (this.props.polyBalance < this.state.polyCost) {
       this.setState({ isNotEnoughPolyModalOpen: true })
     } else {
-      this.props.configure(this.state.polyCost)
+      this.props.configure(this.state.polyCost, this.state.fundsReceiver)
     }
   }
 
@@ -92,6 +94,10 @@ class ConfigureSTO extends Component<Props, State> {
   handleFaucetRequest = () => {
     this.setState({ isNotEnoughPolyModalOpen: false })
     this.props.faucet(this.props.account, 25000)
+  }
+
+  handleAddressChange = (event: Object, newValue: string) => {
+    this.setState({ fundsReceiver: newValue })
   }
 
   render () {
@@ -257,7 +263,10 @@ class ConfigureSTO extends Component<Props, State> {
                     <h4 className='pui-h4' style={{ marginBottom: '15px' }}>
                       Provide the financial details and timing for your offering below.
                     </h4>
-                    <ConfigureSTOForm onSubmit={this.handleCompleteSubmit} />
+                    <ConfigureSTOForm
+                      onSubmit={this.handleCompleteSubmit} 
+                      onAddressChange={this.handleAddressChange}
+                    />
                   </div>
                 </div>
                 <div className='bx--col-xs-7'>

@@ -3,7 +3,7 @@
 import { STO, CappedSTOFactory, SecurityToken, PolyToken } from 'polymathjs'
 import * as ui from 'polymath-ui'
 import type { TwelveHourTime } from 'polymath-ui'
-import type { STOFactory, STODetails, STOPurchase } from 'polymathjs/types'
+import type { STOFactory, STODetails, STOPurchase, Address } from 'polymathjs/types'
 
 import { formName as configureFormName } from './components/ConfigureSTOForm'
 import type { ExtractReturn } from '../../redux/helpers'
@@ -91,45 +91,48 @@ export const faucet = (address: ?string, POLYamount: number) => async (dispatch:
 const dateTimeFromDateAndTime = (date: Date, time: TwelveHourTime) =>
   new Date(date.valueOf() + ui.twelveHourTimeToMinutes(time) * 60000)
 
-export const configure = (polyCost: number) => async (dispatch: Function, getState: GetState) => {
-  const { factory } = getState().sto
-  const { token } = getState().token
-  if (!factory || !token || !token.contract) {
-    return
+export const configure = (polyCost: number, fundsReceiver: Address) => 
+  async (dispatch: Function, getState: GetState) => {
+
+    const { factory } = getState().sto
+    const { token } = getState().token
+
+    if (!factory || !token || !token.contract) {
+      return
+    }
+    dispatch(ui.tx(
+      ['Requesting ' + polyCost + ' POLY', 'Configuring STO'],
+      async () => {
+        const contract: SecurityToken = token.contract
+        const { values } = getState().form[configureFormName]
+        const [startDate, endDate] = values['start-end']
+        const startDateWithTime = dateTimeFromDateAndTime(startDate, values.startTime)
+        const endDateWithTime = dateTimeFromDateAndTime(endDate, values.endTime)
+
+        contract.setCappedSTO(
+          startDateWithTime,
+          endDateWithTime,
+          values.cap,
+          values.rate,
+          values.currency === 'ETH',
+          fundsReceiver,
+        ).then(() => {
+          dispatch(ui.notify(
+            'Spent ' + polyCost + ' POLY',
+            true
+          ))
+        })
+
+      },
+      'STO Configured Successfully',
+      () => {
+        return dispatch(fetch())
+      },
+      `/dashboard/${token.ticker}/compliance`,
+      undefined,
+      true // TODO @bshevchenko
+    ))
   }
-  dispatch(ui.tx(
-    ['Requesting ' + polyCost + ' POLY', 'Configuring STO'],
-    async () => {
-      const contract: SecurityToken = token.contract
-      const { values } = getState().form[configureFormName]
-      const [startDate, endDate] = values['start-end']
-      const startDateWithTime = dateTimeFromDateAndTime(startDate, values.startTime)
-      const endDateWithTime = dateTimeFromDateAndTime(endDate, values.endTime)
-
-      contract.setCappedSTO(
-        startDateWithTime,
-        endDateWithTime,
-        values.cap,
-        values.rate,
-        values.currency === 'ETH',
-        contract.account,
-      ).then(() => {
-        dispatch(ui.notify(
-          'Spent ' + polyCost + ' POLY',
-          true
-        ))
-      })
-
-    },
-    'STO Configured Successfully',
-    () => {
-      return dispatch(fetch())
-    },
-    `/dashboard/${token.ticker}/compliance`,
-    undefined,
-    true // TODO @bshevchenko
-  ))
-}
 
 export const fetchPurchases = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
