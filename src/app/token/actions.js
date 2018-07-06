@@ -52,12 +52,15 @@ export const issue = (polyCost: number) => async (dispatch: Function, getState: 
         ...getState().form[completeFormName].values,
       }
       token.isDivisible = token.isDivisible !== '1'
-      SecurityTokenRegistry.generateSecurityToken(token).then(() => {
+      try {
+        await SecurityTokenRegistry.generateSecurityToken(token)
         dispatch(ui.notify(
-          'Spent ' + polyCost + ' POLY',
+          'Spent '+ polyCost + ' POLY',
           true
-        ))
-      })
+        ))     
+      }catch (e){
+        throw e
+      }      
     },
     'Token Was Issued Successfully',
     () => {

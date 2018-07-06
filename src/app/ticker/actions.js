@@ -25,12 +25,15 @@ export const reserve = (polyCost: number) => async (dispatch: Function, getState
       if (isInsufficientBalance) {
         await PolyToken.getTokens(2500000)
       }
-      TickerRegistry.registerTicker(details).then(() => {
+      try {
+        await TickerRegistry.registerTicker(details)
         dispatch(ui.notify(
           'Spent '+ polyCost + ' POLY',
           true
-        ))
-      })
+        ))     
+      }catch (e){
+        throw e
+      }
     },
     'Your Token Symbol: ' + details.ticker + ', Was Reserved Successfully',
     () => {

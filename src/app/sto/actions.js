@@ -109,20 +109,22 @@ export const configure = (polyCost: number, fundsReceiver: Address) =>
         const startDateWithTime = dateTimeFromDateAndTime(startDate, values.startTime)
         const endDateWithTime = dateTimeFromDateAndTime(endDate, values.endTime)
 
-        contract.setCappedSTO(
-          startDateWithTime,
-          endDateWithTime,
-          values.cap,
-          values.rate,
-          values.currency === 'ETH',
-          fundsReceiver,
-        ).then(() => {
+        try {
+          await contract.setCappedSTO(
+            startDateWithTime,
+            endDateWithTime,
+            values.cap,
+            values.rate,
+            values.currency === 'ETH',
+            fundsReceiver,
+          )
           dispatch(ui.notify(
-            'Spent ' + polyCost + ' POLY',
+            'Spent '+ polyCost + ' POLY',
             true
-          ))
-        })
-
+          )) 
+        } catch (e) {
+          throw e
+        }
       },
       'STO Configured Successfully',
       () => {
