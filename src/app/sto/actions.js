@@ -73,12 +73,16 @@ export const faucet = (address: ?string, POLYamount: number) => async (dispatch:
   dispatch(ui.tx(
     ['Receiving POLY From Faucet'],
     async () => {
-      PolyToken.getTokens(POLYamount, address).then(()=>{
+      try {
+        await PolyToken.getTokens(POLYamount, address)
         dispatch(ui.notify(
           'Received ' + POLYamount + ' POLY',
           true
         ))
-      })
+        dispatch(ui.setBalance(await PolyToken.myBalance()))
+      } catch (e) {
+        throw e
+      }
     },
     'You have successfully received ' + POLYamount + ' POLY',
     undefined,
@@ -121,7 +125,8 @@ export const configure = (polyCost: number, fundsReceiver: Address) =>
           dispatch(ui.notify(
             'Spent '+ polyCost + ' POLY',
             true
-          )) 
+          ))
+          dispatch(ui.setBalance(await PolyToken.myBalance())) 
         } catch (e) {
           throw e
         }

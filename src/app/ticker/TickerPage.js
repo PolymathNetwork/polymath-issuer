@@ -97,7 +97,7 @@ class TickerPage extends Component<Props, State> {
     this.setState({ isNotEnoughPolyModalOpen: false })
   }
 
-  handleFaucetRequest =  () => {
+  handleFaucetRequest = () => {
     this.setState({ isNotEnoughPolyModalOpen: false })
     this.props.faucet(this.props.account, 25000)
   }
@@ -119,24 +119,25 @@ class TickerPage extends Component<Props, State> {
             <ModalBody>
               <div className='bx--modal-content__text'>
                 <p>
-                  Please confirm that all previous information is correct and that you are not
-                  violating any trademarks.
+                  Please confirm that you accept the token symbol reservation fee. Additionally, please confirm that all
+                   previous information is correct and that you are not violating any trademarks.
+  
                 </p>
                 <p>
-                  Once you hit &laquo;RESERVE TICKER&raquo;, your Token Symbol
-                  reservation will be sent to the blockchain and will be
-                  immutable. Any change will require that you start the process
-                  over. If you wish to review your information, please select
-                  &laquo;CANCEL&raquo;.
+                  Once you hit &laquo;CONFIRM&raquo;, your Token Symbol reservation will
+                   be sent to the blockchain and will be immutable until it expires.
+                    Any change prior to your reservation expiry will require that you
+                     start the process over using another token symbol. If you do not wish to pay the token
+                      symbol reservation fee or wish to review your information, simply select &laquo;CANCEL&raquo;.
                 </p>
               </div>
             </ModalBody>
 
             <ModalFooter>
               <Button kind='secondary' onClick={this.handleConfirmationCancel}>
-                Cancel
+                CANCEL
               </Button>
-              <Button onClick={this.handleConfirm}>Reserve Ticker</Button>
+              <Button onClick={this.handleConfirm}>CONFIRM</Button>
             </ModalFooter>
           </ComposedModal>
           <ComposedModal
@@ -210,7 +211,7 @@ class TickerPage extends Component<Props, State> {
                   POLY to complete this operation.
                 </p>
                 <p>
-                  If you need to obtain POLY tokens, you can visit &nbsp; 
+                  If you need to obtain POLY tokens, you can visit &nbsp;
                   <a
                     target='_blank'
                     rel='noopener noreferrer'

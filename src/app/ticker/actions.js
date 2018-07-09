@@ -14,13 +14,12 @@ export const expiryLimit = () => async (dispatch: Function) =>
 export const RESERVED = 'ticker/RESERVED'
 
 export const reserve = (polyCost: number) => async (dispatch: Function, getState: GetState) => {
-
   // TODO @bshevchenko: see below... const { isEmailConfirmed } = getState().pui.account
   const details: SymbolDetails = getState().form[formName].values
   const isInsufficientBalance = getState().pui.account.balance.lt(await TickerRegistry.registrationFee())
   dispatch(ui.tx(
     [...(isInsufficientBalance ? ['Requesting POLY'] : []),
-      'Requesting ' + polyCost + ' POLY', 'Reserving Token Symbol'],
+      'Token Symbol Reservation Fee', 'Token Symbol Reservation'],
     async () => {
       if (isInsufficientBalance) {
         await PolyToken.getTokens(2500000)
@@ -28,10 +27,10 @@ export const reserve = (polyCost: number) => async (dispatch: Function, getState
       try {
         await TickerRegistry.registerTicker(details)
         dispatch(ui.notify(
-          'Spent '+ polyCost + ' POLY',
+          'Spent ' + polyCost + ' POLY',
           true
-        ))     
-      }catch (e){
+        ))
+      } catch (e) {
         throw e
       }
     },
@@ -40,7 +39,8 @@ export const reserve = (polyCost: number) => async (dispatch: Function, getState
     },
     `/dashboard/${details.ticker}/providers`,
     undefined,
-    true // TODO @bshevchenko: !isEmailConfirmed
+    true, // TODO @bshevchenko: !isEmailConfirmed,
+    details.ticker + ' Token Symbol Reservation'
   ))
 
 }
@@ -49,12 +49,16 @@ export const faucet = (address: ?string, POLYamount: number) => async (dispatch:
   dispatch(ui.tx(
     ['Receiving POLY From Faucet'],
     async () => {
-      PolyToken.getTokens(POLYamount, address).then(() => {
+      try {
+        await PolyToken.getTokens(25000, address)
         dispatch(ui.notify(
           'Received ' + POLYamount + ' POLY',
           true
         ))
-      })
+        dispatch(ui.setBalance(await PolyToken.myBalance()))
+      } catch (e) {
+        throw e
+      }
     },
     'You have successfully received ' + POLYamount + ' POLY',
     undefined,
