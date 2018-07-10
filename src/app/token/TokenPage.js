@@ -22,7 +22,8 @@ type StateProps = {|
   account: ?string,
     token: ?SecurityToken,
       networkName: string,
-        polyBalance: BigNumber
+        polyBalance: BigNumber,
+        stage: number,
           |}
 
 type DispatchProps = {|
@@ -35,6 +36,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
   token: state.token.token,
   networkName: state.network.name,
   polyBalance: state.pui.account.balance,
+  stage: state.sto.stage,
 })
 
 const mapDispatchToProps: DispatchProps = {
@@ -290,7 +292,7 @@ class TokenPage extends Component<Props, State> {
                   </div>
                 </div>
               ) : ''}
-              {token.address ? (
+              {token.address && this.props.stage <3 ? (
                 <MintTokens />
               ) : ''}
               <div className='bx--col-xs-5'>
