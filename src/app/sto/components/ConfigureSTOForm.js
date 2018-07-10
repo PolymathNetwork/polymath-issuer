@@ -149,7 +149,7 @@ class ConfigureSTOForm extends Component<Props, State> {
           name='fundsReceiver'
           component={TextInput}
           label={
-            <Tooltip triggerText='Funds Receiver'>
+            <Tooltip triggerText='ETH Address to receive the funds raised during the STO'>
               <p className='bx--tooltip__label'>
                 Fund Receiver Address
               </p>

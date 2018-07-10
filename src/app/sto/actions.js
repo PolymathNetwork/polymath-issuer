@@ -105,7 +105,7 @@ export const configure = (polyCost: number, fundsReceiver: Address) =>
       return
     }
     dispatch(ui.tx(
-      ['Requesting ' + polyCost + ' POLY', 'Configuring STO'],
+      ['STO Smart Contract Fee', 'STO Smart Contract Deployment and Scheduling'],
       async () => {
         const contract: SecurityToken = token.contract
         const { values } = getState().form[configureFormName]
@@ -137,7 +137,8 @@ export const configure = (polyCost: number, fundsReceiver: Address) =>
       },
       `/dashboard/${token.ticker}/compliance`,
       undefined,
-      true // TODO @bshevchenko
+      true, // TODO @bshevchenko
+      token.ticker.toUpperCase()+' STO Creation' 
     ))
   }
 

@@ -20,15 +20,15 @@ import './style.css'
 
 type StateProps = {|
   account: ?string,
-  token: ?SecurityToken,
-  networkName: string,
-  polyBalance: BigNumber
-|}
+    token: ?SecurityToken,
+      networkName: string,
+        polyBalance: BigNumber
+          |}
 
 type DispatchProps = {|
   complete: (number) => any,
-  faucet: (? string, number) => any
-|}
+    faucet: (? string, number) => any
+      |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
   account: state.network.account,
@@ -47,8 +47,9 @@ type Props = {|
 
 type State = {|
   isConfirmationModalOpen: boolean,
-  isNotEnoughPolyModalOpen: boolean,
-  polyCost: number
+    isNotEnoughPolyModalOpen: boolean,
+      polyCost: number,
+        isConfirmationModal2Open: boolean,
 |}
 
 class TokenPage extends Component<Props, State> {
@@ -57,6 +58,7 @@ class TokenPage extends Component<Props, State> {
     isConfirmationModalOpen: false,
     isNotEnoughPolyModalOpen: false,
     polyCost: 250,
+    isConfirmationModal2Open: false,
   }
 
   handleCompleteSubmit = () => {
@@ -68,12 +70,18 @@ class TokenPage extends Component<Props, State> {
     if (this.props.polyBalance < this.state.polyCost) {
       this.setState({ isNotEnoughPolyModalOpen: true })
     } else {
-      this.props.complete(this.state.polyCost)
+      this.setState({ isConfirmationModal2Open: true })
     }
+  }
+
+  handleConfirm2 = () => {
+    this.setState({ isConfirmationModal2Open: false })
+    this.props.complete(this.state.polyCost)
   }
 
   handleConfirmationCancel = () => {
     this.setState({ isConfirmationModalOpen: false })
+    this.setState({ isConfirmationModal2Open: false })
   }
 
   handleNotEnoughPolyCancel = () => {
@@ -107,22 +115,61 @@ class TokenPage extends Component<Props, State> {
             <ModalBody>
               <div className='bx--modal-content__text'>
                 <p>
-                  Please confirm that all previous information is correct and that you are not violating any trademarks.
-                  Once you hit &laquo;CONFIRM&raquo;, your Token will be created on the
-                  blockchain and will be immutable.
-                  Any change will require that you start the process over. If you wish to review your information,
-                  please select &laquo;CANCEL&raquo;.
+                  Please confirm that you accept the token creation fee. Additionally, please confirm that all previous
+                   information is correct and that you are not violating any trademarks.
+                  Once you hit &laquo;CONFIRM&raquo;, your newly created token will be sent to the blockchain and will
+                   be immutable. If you do not wish to pay the token creation fee or wish to review your information,
+                    simply select &laquo;CANCEL&raquo;.
                 </p>
               </div>
             </ModalBody>
 
             <ModalFooter>
               <Button kind='secondary' onClick={this.handleConfirmationCancel}>
-                Cancel
+                CANCEL
               </Button>
-              <Button onClick={this.handleConfirm}>Confirm</Button>
+              <Button onClick={this.handleConfirm}>CONFIRM</Button>
             </ModalFooter>
           </ComposedModal>
+
+          <ComposedModal open={this.state.isConfirmationModal2Open} className='pui-confirm-modal'>
+            <ModalHeader
+              label='Confirmation required'
+              title={(
+                <span>
+                  <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
+                  Proceeding with your {token.ticker.toUpperCase()} Token Creation
+                </span>
+              )}
+            />
+            <ModalBody>
+              <div className='bx--modal-content__text' >
+                <p>
+                Completion of your token creation will require two wallet transactions. 
+                </p>
+
+                <p>
+                The first transaction will be used to pay for the token creation cost of:
+                </p>
+                <div className='bx--details '>
+                  {this.state.polyCost} POLY
+                </div>
+                <p>
+                  The second transaction will be used to pay the mining fee (aka gas fee) to complete the creation of
+                   your token. Please hit &laquo;CONFIRM&raquo; when you are ready to proceed.
+                </p>
+
+              </div>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button kind='secondary' onClick={this.handleConfirmationCancel}>
+                CANCEL
+              </Button>
+              <Button onClick={this.handleConfirm2}>CONFIRM</Button>
+            </ModalFooter>
+          </ComposedModal>
+
           <ComposedModal
             open={this.state.isNotEnoughPolyModalOpen && this.props.networkName === 'Kovan Testnet'}
             className='pui-confirm-modal'
@@ -156,9 +203,9 @@ class TokenPage extends Component<Props, State> {
                 <br />
                 <div className='pui-remark'>
                   <div className='pui-remark-title'>Note</div>
-                  <div className='pui-remark-text'>This option is not available on 
+                  <div className='pui-remark-text'>This option is not available on
                     <span style={{ fontWeight: 'bold' }}>
-                  Main Network.
+                      Main Network.
                     </span>
                   </div>
                 </div>
@@ -194,14 +241,14 @@ class TokenPage extends Component<Props, State> {
                   POLY to complete this operation.
                 </p>
                 <p>
-                  If you need to obtain POLY tokens, you can visit&nbsp; 
+                  If you need to obtain POLY tokens, you can visit&nbsp;
                   <a
                     target='_blank'
                     rel='noopener noreferrer'
                     href='https://shapeshift.io'
                   >here
                   </a> or
-                  obtain more information&nbsp; 
+                  obtain more information&nbsp;
                   <a
                     target='_blank'
                     rel='noopener noreferrer'

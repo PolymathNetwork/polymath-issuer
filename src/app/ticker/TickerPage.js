@@ -59,7 +59,9 @@ type Props = {|
 type State = {|
   isConfirmationModalOpen: boolean,
     isNotEnoughPolyModalOpen: boolean,
-      polyCost: number
+      polyCost: number,
+        isConfirmationModal2Open: boolean,
+        chosenTicker: string
         |}
 
 class TickerPage extends Component<Props, State> {
@@ -68,6 +70,8 @@ class TickerPage extends Component<Props, State> {
     isConfirmationModalOpen: false,
     isNotEnoughPolyModalOpen: false,
     polyCost: 250,
+    isConfirmationModal2Open: false,
+    chosenTicker: '',
   }
 
   componentWillMount () {
@@ -80,17 +84,27 @@ class TickerPage extends Component<Props, State> {
     this.setState({ isConfirmationModalOpen: true })
   }
 
+  handleChangeTicker  = (event: Object, newValue: string) =>{
+    this.setState({ chosenTicker: newValue })
+  }
+
   handleConfirm = () => {
     this.setState({ isConfirmationModalOpen: false })
     if (this.props.polyBalance < this.state.polyCost) {
       this.setState({ isNotEnoughPolyModalOpen: true })
     } else {
-      this.props.reserve(this.state.polyCost)
+      this.setState({ isConfirmationModal2Open: true })
     }
   }
 
   handleConfirmationCancel = () => {
     this.setState({ isConfirmationModalOpen: false })
+    this.setState({ isConfirmationModal2Open: false })
+  }
+
+  handleConfirm2 = () => {
+    this.setState({ isConfirmationModal2Open: false })
+    this.props.reserve(this.state.polyCost)
   }
 
   handleNotEnoughPolyCancel = () => {
@@ -121,7 +135,7 @@ class TickerPage extends Component<Props, State> {
                 <p>
                   Please confirm that you accept the token symbol reservation fee. Additionally, please confirm that all
                    previous information is correct and that you are not violating any trademarks.
-  
+
                 </p>
                 <p>
                   Once you hit &laquo;CONFIRM&raquo;, your Token Symbol reservation will
@@ -140,6 +154,45 @@ class TickerPage extends Component<Props, State> {
               <Button onClick={this.handleConfirm}>CONFIRM</Button>
             </ModalFooter>
           </ComposedModal>
+
+          <ComposedModal open={this.state.isConfirmationModal2Open} className='pui-confirm-modal'>
+            <ModalHeader
+              label='Confirmation required'
+              title={(
+                <span>
+                  <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
+                  Proceeding with your {this.state.chosenTicker.toUpperCase()} Token Symbol Reservation
+                </span>
+              )}
+            />
+            <ModalBody>
+              <div className='bx--modal-content__text' >
+                <p>
+                  Completion of your token symbol reservation will require two wallet transactions.
+                </p>
+
+                <p>
+                  The first transaction will be used to pay for the token symbol reservation cost of:
+                </p>
+                <div className='bx--details '>
+                  {this.state.polyCost} POLY
+                </div>
+                <p>
+                  The second transaction will be used to pay the mining fee (aka gas fee) to complete the reservation of
+                   your token symbol. Please hit &laquo;CONFIRM&raquo; when you are ready to proceed.
+                </p>
+
+              </div>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button kind='secondary' onClick={this.handleConfirmationCancel}>
+                CANCEL
+              </Button>
+              <Button onClick={this.handleConfirm2}>CONFIRM</Button>
+            </ModalFooter>
+          </ComposedModal>
+
           <ComposedModal
             open={this.state.isNotEnoughPolyModalOpen && this.props.networkName === 'Kovan Testnet'}
             className='pui-confirm-modal'
@@ -249,7 +302,7 @@ class TickerPage extends Component<Props, State> {
               </h4>
               <div className='pui-clearfix' />
             </div>
-            <TickerForm onSubmit={this.handleSubmit} />
+            <TickerForm onSubmit={this.handleSubmit} onHandleChangeTicker={this.handleChangeTicker} />
           </div>
         </Fragment>
       </DocumentTitle>

@@ -22,17 +22,17 @@ import type { RootState } from '../../../redux/reducer'
 
 type StateProps = {|
   account: ?string,
-  token: ?SecurityToken,
-  factory: ?STOFactory,
-  networkName: string,
-  polyBalance: BigNumber
-|}
+    token: ?SecurityToken,
+      factory: ?STOFactory,
+        networkName: string,
+          polyBalance: BigNumber
+            |}
 
 type DispatchProps = {|
   configure: (number, Address) => any,
-  goBack: () => any,
-  faucet: (?string, number) => any
-|}
+    goBack: () => any,
+      faucet: (? string, number) => any
+        |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
   account: state.network.account,
@@ -52,9 +52,10 @@ type Props = {||} & StateProps & DispatchProps
 
 type State = {|
   isConfirmationModalOpen: boolean,
-  isNotEnoughPolyModalOpen: boolean,
-  polyCost: number,
-  fundsReceiver: Address
+    isNotEnoughPolyModalOpen: boolean,
+      polyCost: number,
+        fundsReceiver: Address,
+          isConfirmationModal2Open: boolean,
 |}
 
 class ConfigureSTO extends Component<Props, State> {
@@ -64,6 +65,7 @@ class ConfigureSTO extends Component<Props, State> {
     isNotEnoughPolyModalOpen: false,
     polyCost: 20000,
     fundsReceiver: '',
+    isConfirmationModal2Open: false,
   }
 
   handleCompleteSubmit = () => {
@@ -79,12 +81,18 @@ class ConfigureSTO extends Component<Props, State> {
     if (this.props.polyBalance < this.state.polyCost) {
       this.setState({ isNotEnoughPolyModalOpen: true })
     } else {
-      this.props.configure(this.state.polyCost, this.state.fundsReceiver)
+      this.setState({ isConfirmationModal2Open: true })
     }
+  }
+
+  handleConfirm2 = () => {
+    this.setState({ isConfirmationModal2Open: false })
+    this.props.configure(this.state.polyCost, this.state.fundsReceiver)
   }
 
   handleConfirmationCancel = () => {
     this.setState({ isConfirmationModalOpen: false })
+    this.setState({ isConfirmationModal2Open: false })
   }
 
   handleNotEnoughPolyCancel = () => {
@@ -128,7 +136,7 @@ class ConfigureSTO extends Component<Props, State> {
                     </p>
                     <p>
                       Please confirm dates with your Advisor and Legal
-                      providers before you click on &laquo;LAUNCH&raquo;.
+                      providers before you click on &laquo;CONTINUE&raquo;.
                     </p>
                     <p>
                       Investors must be added to the whitelist before or while
@@ -144,11 +152,50 @@ class ConfigureSTO extends Component<Props, State> {
 
                 <ModalFooter>
                   <Button kind='secondary' onClick={this.handleConfirmationCancel}>
-                    Cancel
+                    CANCEL
                   </Button>
-                  <Button onClick={this.handleConfirm}>LAUNCH</Button>
+                  <Button onClick={this.handleConfirm}>CONTINUE</Button>
                 </ModalFooter>
               </ComposedModal>
+              <ComposedModal open={this.state.isConfirmationModal2Open} className='pui-confirm-modal'>
+                <ModalHeader
+                  label='Confirmation required'
+                  title={(
+                    <span>
+                      <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
+                      Proceeding with Smart Contract Deployment and Scheduling
+                    </span>
+                  )}
+                />
+                <ModalBody>
+                  <div className='bx--modal-content__text' >
+                    <p>
+                    Completion of your STO smart contract deployment and scheduling will
+                     require two wallet transactions. 
+                    </p>
+
+                    <p>
+                    The first transaction will be used to pay for the smart contract fee of:
+                    </p>
+                    <div className='bx--details '>
+                      {this.state.polyCost} POLY
+                    </div>
+                    <p>
+                      The second transaction will be used to pay the mining fee (aka gas fee) to complete the
+                       scheduling of your STO. Please hit &laquo;CONFIRM&raquo; when you are ready to proceed.
+                    </p>
+
+                  </div>
+                </ModalBody>
+
+                <ModalFooter>
+                  <Button kind='secondary' onClick={this.handleConfirmationCancel}>
+                    CANCEL
+                  </Button>
+                  <Button onClick={this.handleConfirm2}>CONFIRM</Button>
+                </ModalFooter>
+              </ComposedModal>
+
               <ComposedModal
                 open={this.state.isNotEnoughPolyModalOpen && this.props.networkName === 'Kovan Testnet'}
                 className='pui-confirm-modal'
@@ -166,25 +213,25 @@ class ConfigureSTO extends Component<Props, State> {
                 <ModalBody>
                   <div className='bx--modal-content__text'>
                     <p>
-                  The registration of a token symbol has a fixed cost of {this.state.polyCost} POLY.
-                  Please make sure that your wallet has a sufficient balance in
-                  POLY to complete this operation.
+                      The registration of a token symbol has a fixed cost of {this.state.polyCost} POLY.
+                      Please make sure that your wallet has a sufficient balance in
+                      POLY to complete this operation.
                     </p>
 
                     <p>
-                  You are currently connected to the <span style={{ fontWeight: 'bold' }}>Kovan Test Network</span>.
+                      You are currently connected to the <span style={{ fontWeight: 'bold' }}>Kovan Test Network</span>.
                     </p>
 
                     <p>
-                  As such, you can click on the &laquo;REQUEST 25K POLY&raquo; button below to
-                   receive 25,000 test POLY in your wallet.
+                      As such, you can click on the &laquo;REQUEST 25K POLY&raquo; button below to
+                       receive 25,000 test POLY in your wallet.
                     </p>
                     <br />
                     <div className='pui-remark'>
                       <div className='pui-remark-title'>Note</div>
                       <div className='pui-remark-text'>This option is not available on
                         <span style={{ fontWeight: 'bold' }}>
-                      Main Network.
+                          Main Network.
                         </span>
                       </div>
                     </div>
@@ -193,7 +240,7 @@ class ConfigureSTO extends Component<Props, State> {
                 </ModalBody>
                 <ModalFooter>
                   <Button kind='secondary' onClick={this.handleNotEnoughPolyCancel}>
-                Cancel
+                    Cancel
                   </Button>
                   <Button onClick={this.handleFaucetRequest}>REQUEST 25k POLY</Button>
                 </ModalFooter>
@@ -215,12 +262,12 @@ class ConfigureSTO extends Component<Props, State> {
                 <ModalBody>
                   <div className='bx--modal-content__text'>
                     <p>
-                  The registration of a token symbol has a fixed cost of {this.state.polyCost} POLY.
-                  Please make sure that your wallet has a sufficient balance in
-                  POLY to complete this operation.
+                      The registration of a token symbol has a fixed cost of {this.state.polyCost} POLY.
+                      Please make sure that your wallet has a sufficient balance in
+                      POLY to complete this operation.
                     </p>
                     <p>
-                  If you need to obtain POLY tokens, you can visit &nbsp; 
+                      If you need to obtain POLY tokens, you can visit &nbsp;
                       <a
                         target='_blank'
                         rel='noopener noreferrer'
@@ -239,7 +286,7 @@ class ConfigureSTO extends Component<Props, State> {
                 </ModalBody>
                 <ModalFooter>
                   <Button onClick={this.handleNotEnoughPolyCancel}>
-                Close
+                    Close
                   </Button>
                 </ModalFooter>
               </ComposedModal>
@@ -264,7 +311,7 @@ class ConfigureSTO extends Component<Props, State> {
                       Provide the financial details and timing for your offering below.
                     </h4>
                     <ConfigureSTOForm
-                      onSubmit={this.handleCompleteSubmit} 
+                      onSubmit={this.handleCompleteSubmit}
                       onAddressChange={this.handleAddressChange}
                     />
                   </div>

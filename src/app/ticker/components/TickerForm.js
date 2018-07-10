@@ -19,7 +19,8 @@ export const formName = 'ticker'
 const maxLength100 = maxLength(100)
 
 type Props = {
-  handleSubmit: () => void,
+  handleSubmit: () => any,
+  onHandleChangeTicker: ()=>any
 }
 
 class TickerForm extends Component<Props> {
@@ -30,6 +31,7 @@ class TickerForm extends Component<Props> {
           <Field
             name='ticker'
             component={TextInput}
+            onChange={this.props.onHandleChangeTicker}
             label='Enter Token Symbol'
             placeholder='Up to 10 characters (example: TORO-A)'
           />

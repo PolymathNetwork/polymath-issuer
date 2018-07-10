@@ -40,7 +40,7 @@ export const reserve = (polyCost: number) => async (dispatch: Function, getState
     `/dashboard/${details.ticker}/providers`,
     undefined,
     true, // TODO @bshevchenko: !isEmailConfirmed,
-    details.ticker + ' Token Symbol Reservation'
+    details.ticker.toUpperCase() + ' Token Symbol Reservation'
   ))
 
 }

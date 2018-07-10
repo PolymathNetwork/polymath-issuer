@@ -45,7 +45,7 @@ export const issue = (polyCost: number) => async (dispatch: Function, getState: 
   const ticker = token.ticker
 
   dispatch(ui.tx(
-    ['Requesting ' + polyCost + ' POLY', `Issuing ${ticker} token`],
+    ['Token Creation Fee ', 'Token Creation'],
     async () => {
       const token: SecurityToken = {
         ...getState().token.token,
@@ -69,7 +69,8 @@ export const issue = (polyCost: number) => async (dispatch: Function, getState: 
     },
     `/dashboard/${ticker}/sto`,
     undefined,
-    true // TODO @bshevchenko
+    true, // TODO @bshevchenko,
+    ticker.toUpperCase()+' Token Creation'
   ))
 }
 
