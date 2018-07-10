@@ -67,7 +67,7 @@ export const issue = (polyCost: number) => async (dispatch: Function, getState: 
     () => {
       return dispatch(fetch(ticker))
     },
-    `/dashboard/${ticker}/sto`,
+    `/dashboard/${ticker}`,
     undefined,
     true, // TODO @bshevchenko,
     ticker.toUpperCase()+' Token Creation'
