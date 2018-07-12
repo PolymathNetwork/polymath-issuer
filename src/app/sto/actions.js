@@ -126,7 +126,6 @@ export const configure = (polyCost: number, fundsReceiver: Address) =>
             'Spent '+ polyCost + ' POLY',
             true
           ))
-          dispatch(ui.setBalance(await PolyToken.myBalance())) 
         } catch (e) {
           throw e
         }

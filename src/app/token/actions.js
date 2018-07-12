@@ -58,7 +58,6 @@ export const issue = (polyCost: number) => async (dispatch: Function, getState: 
           'Spent '+ polyCost + ' POLY',
           true
         ))
-        dispatch(ui.setBalance(await PolyToken.myBalance()))     
       }catch (e){
         throw e
       }      
