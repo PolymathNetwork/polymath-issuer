@@ -6,12 +6,7 @@ import { Field, reduxForm } from 'redux-form'
 
 import { Form, Button, Tooltip } from 'carbon-components-react'
 import { TextInput } from 'polymath-ui'
-import {
-  required,
-  maxLength,
-  regex,
-  ethereumAddress,
-} from 'polymath-ui/dist/validate'
+import { required, maxLength, regex, ethereumAddress } from 'polymath-ui/dist/validate'
 import { TickerRegistry } from 'polymathjs'
 
 export const formName = 'ticker'
@@ -20,7 +15,7 @@ const maxLength100 = maxLength(100)
 
 type Props = {
   handleSubmit: () => any,
-  onHandleChangeTicker: ()=>any
+  onHandleChangeTicker: () => any,
 }
 
 class TickerForm extends Component<Props> {
@@ -41,9 +36,7 @@ class TickerForm extends Component<Props> {
           component={TextInput}
           label={
             <Tooltip triggerText='Token Name'>
-              <p className='bx--tooltip__label'>
-                Token Name
-              </p>
+              <p className='bx--tooltip__label'>Token Name</p>
               <p>
                 This is the name of your token for display purposes.<br />
                 For example: Toro Token
@@ -57,10 +50,8 @@ class TickerForm extends Component<Props> {
           name='owner'
           component={TextInput}
           label={
-            <Tooltip triggerText='Issuer&apos;s ETH Address'>
-              <p className='bx--tooltip__label'>
-                Issuer&apos;s ETH Address
-              </p>
+            <Tooltip triggerText="Issuer&apos;s ETH Address">
+              <p className='bx--tooltip__label'>Issuer&apos;s ETH Address</p>
               <p>
                 This ETH address was read from your MetaMask. Only this account will be able to access dashboard and
                 complete token issuance and STO.
@@ -70,9 +61,7 @@ class TickerForm extends Component<Props> {
           disabled
           validate={[required, ethereumAddress]}
         />
-        <Button type='submit'>
-          Reserve token symbol
-        </Button>
+        <Button type='submit'>Reserve token symbol</Button>
         <p className='pui-input-hint'>
           By registering your token symbol with Polymath you agree to our <a href='#'>Terms and Conditions</a>.
         </p>
@@ -86,7 +75,8 @@ export default reduxForm({
   asyncValidate: async (values) => {
     // async validation doesn't work properly with field-level validation, so we need to specify sync rules here
     const v = values.ticker
-    const syncError = required(v) ||
+    const syncError =
+      required(v) ||
       maxLength(10)(v) ||
       regex(/^[a-z0-9./-]+$/i, v, 'Only alphanumeric characters, hyphens and periods are allowed.')
     if (syncError) {
