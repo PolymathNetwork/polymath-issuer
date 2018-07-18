@@ -20,7 +20,7 @@ const maxLength100 = maxLength(100)
 
 type Props = {
   handleSubmit: () => any,
-  onHandleChangeTicker: ()=>any
+  onHandleChangeTicker: () => any
 }
 
 class TickerForm extends Component<Props> {
