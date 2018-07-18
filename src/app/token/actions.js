@@ -1,6 +1,6 @@
 // @flow
 
-import { PolyToken, SecurityTokenRegistry } from 'polymathjs'
+import { SecurityTokenRegistry } from 'polymathjs'
 import * as ui from 'polymath-ui'
 import { ethereumAddress } from 'polymath-ui/dist/validate'
 import type { SecurityToken, Investor, Address } from 'polymathjs/types'
@@ -18,7 +18,8 @@ export const mintResetUploaded = () => ({ type: MINT_RESET_UPLOADED })
 export const DATA = 'token/DATA'
 export const data = (token: ?SecurityToken) => ({ type: DATA, token })
 
-export type Action = ExtractReturn<typeof data>
+export type Action =
+  | ExtractReturn<typeof data>
 
 export type InvestorCSVRow = [number, string, string, string, string, string]
 
@@ -39,58 +40,33 @@ export const fetch = (ticker: string) => async (dispatch: Function, getState: Ge
   }
 }
 
-export const issue = (polyCost: number) => async (dispatch: Function, getState: GetState) => {
+export const issue = () => async (dispatch: Function, getState: GetState) => {
   const { token } = getState().token // $FlowFixMe
   const ticker = token.ticker
 
-  dispatch(
-    ui.tx(
-      ['Token Creation Fee ', 'Token Creation'],
-      async () => {
-        const token: SecurityToken = {
-          ...getState().token.token,
-          ...getState().form[completeFormName].values,
-        }
-        token.isDivisible = token.isDivisible !== '1'
-        try {
-          await SecurityTokenRegistry.generateSecurityToken(token)
-          dispatch(ui.notify('Spent ' + polyCost + ' POLY', true))
-        } catch (e) {
-          throw e
-        }
-      },
-      'Token Was Issued Successfully',
-      () => {
-        return dispatch(fetch(ticker))
-      },
-      `/dashboard/${ticker}`,
-      undefined,
-      true, // TODO @bshevchenko,
-      ticker.toUpperCase() + '  Token Creation'
-    )
-  )
+  dispatch(ui.tx(
+    ['Token Creation Fee ', 'Token Creation'],
+    async () => {
+      const token: SecurityToken = {
+        ...getState().token.token,
+        ...getState().form[completeFormName].values,
+      }
+      token.isDivisible = token.isDivisible !== '1'
+      await SecurityTokenRegistry.generateSecurityToken(token)     
+    },
+    'Token Was Issued Successfully',
+    () => {
+      return dispatch(fetch(ticker))
+    },
+    `/dashboard/${ticker}`,
+    undefined,
+    true, // TODO @bshevchenko,
+    ticker.toUpperCase() + ' Token Creation'
+  ))
 }
 
 export const faucet = (address: ?string, polyAmount: number) => async (dispatch: Function) => {
-  dispatch(
-    ui.tx(
-      ['Receiving POLY From Faucet'],
-      async () => {
-        try {
-          await PolyToken.getTokens(polyAmount, address)
-          dispatch(ui.notify('Received ' + polyAmount + ' POLY', true))
-          dispatch(ui.setBalance(await PolyToken.myBalance()))
-        } catch (e) {
-          throw e
-        }
-      },
-      'You have successfully received ' + polyAmount + ' POLY',
-      undefined,
-      undefined,
-      'ok',
-      true // TODO @bshevchenko: !isEmailConfirmed
-    )
-  )
+  dispatch(ui.faucet(address, polyAmount))
 }
 
 // TODO @bshevchenko: almost duplicates uploadCSV from compliance/actions, subject to refactor
@@ -107,19 +83,13 @@ export const uploadCSV = (file: Object) => async (dispatch: Function) => {
     for (let entry of reader.result.split(/\r\n|\n/)) {
       string++
       const [address, sale, purchase, expiryIn, tokensIn] = entry.split(',')
-      const handleDate = (d: string) => (d === '' ? new Date(PERMANENT_LOCKUP_TS) : new Date(Date.parse(d)))
+      const handleDate = (d: string) => d === '' ? new Date(PERMANENT_LOCKUP_TS) : new Date(Date.parse(d))
       const from = handleDate(sale)
       const to = handleDate(purchase)
       const expiry = new Date(Date.parse(expiryIn))
       const tokensVal = Number(tokensIn)
-      if (
-        ethereumAddress(address) === null &&
-        !isNaN(from) &&
-        !isNaN(to) &&
-        !isNaN(expiry) &&
-        Number.isInteger(tokensVal) &&
-        tokensVal > 0
-      ) {
+      if (ethereumAddress(address) === null && !isNaN(from) && !isNaN(to) && !isNaN(expiry)
+        && Number.isInteger(tokensVal) && tokensVal > 0) {
         if (investors.length === 75) {
           isTooMany = true
           continue
@@ -135,34 +105,30 @@ export const uploadCSV = (file: Object) => async (dispatch: Function) => {
 }
 
 export const mintTokens = () => async (dispatch: Function, getState: GetState) => {
-  const {
-    token,
-    mint: { uploaded, uploadedTokens },
-  } = getState().token // $FlowFixMe
+  const { token, mint: { uploaded, uploadedTokens } } = getState().token // $FlowFixMe
   const transferManager = await token.contract.getTransferManager()
 
-  dispatch(
-    ui.tx(
-      ['Whitelisting Addresses', 'Minting Tokens'],
-      async () => {
-        await transferManager.modifyWhitelistMulti(uploaded, false)
-        const addresses: Array<Address> = []
-        for (let investor: Investor of uploaded) {
-          addresses.push(investor.address)
-        } // $FlowFixMe
-        await token.contract.mintMulti(addresses, uploadedTokens)
-      },
-      'Tokens were successfully minted',
-      () => {
-        return dispatch(mintResetUploaded())
-      },
-      undefined,
-      undefined,
-      true // TODO @bshevchenko
-    )
-  )
+  dispatch(ui.tx(
+    ['Whitelisting Addresses', 'Minting Tokens'],
+    async () => {
+      await transferManager.modifyWhitelistMulti(uploaded, false)
+      const addresses: Array<Address> = []
+      for (let investor: Investor of uploaded) {
+        addresses.push(investor.address)
+      } // $FlowFixMe
+      await token.contract.mintMulti(addresses, uploadedTokens)
+    },
+    'Tokens were successfully minted',
+    () => {
+      return dispatch(mintResetUploaded())
+    },
+    undefined,
+    undefined,
+    true // TODO @bshevchenko
+  ))
 }
 
 export const getPolyFee = () => async () => {
   return SecurityTokenRegistry.registrationFee()
 }
+

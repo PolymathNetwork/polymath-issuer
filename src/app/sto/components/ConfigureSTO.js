@@ -3,7 +3,14 @@
 import React, { Component } from 'react'
 import DocumentTitle from 'react-document-title'
 import { connect } from 'react-redux'
-import { Button, ComposedModal, ModalBody, ModalFooter, ModalHeader, Icon } from 'carbon-components-react'
+import {
+  Button,
+  ComposedModal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Icon,
+} from 'carbon-components-react'
 import BigNumber from 'bignumber.js'
 import { Remark } from 'polymath-ui'
 import type { SecurityToken, STOFactory, Address } from 'polymathjs/types'
@@ -19,14 +26,14 @@ type StateProps = {|
   token: ?SecurityToken,
   factory: ?STOFactory,
   networkName: string,
-  polyBalance: BigNumber,
+  polyBalance: BigNumber
 |}
 
 type DispatchProps = {|
   configure: (number, Address) => any,
   goBack: () => any,
-  faucet: (?string, number) => any,
-  getPolyFee: () => any,
+  faucet: (? string, number) => any,
+  getPolyFee: () => any
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -55,6 +62,7 @@ type State = {|
 |}
 
 class ConfigureSTO extends Component<Props, State> {
+
   state = {
     isConfirmationModalOpen: false,
     isNotEnoughPolyModalOpen: false,
@@ -122,25 +130,32 @@ class ConfigureSTO extends Component<Props, State> {
               <ComposedModal open={this.state.isConfirmationModalOpen} className='pui-confirm-modal'>
                 <ModalHeader
                   label='Confirmation required'
-                  title={
+                  title={(
                     <span>
-                      <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp; Before You Launch Your
-                      Security Token Offering
+                      <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
+                      Before You Launch Your Security Token Offering
                     </span>
-                  }
+                  )}
                 />
                 <ModalBody>
                   <div className='bx--modal-content__text'>
-                    <p>Once submitted to the blockchain, the dates for your offering cannot be changed.</p>
                     <p>
-                      Please confirm dates with your Advisor and Legal providers before you click on
-                      &laquo;CONTINUE&raquo;.
+                      Once submitted to the blockchain, the dates for your
+                      offering cannot be changed.
                     </p>
                     <p>
-                      Investors must be added to the whitelist before or while the STO is live, so they can participate
-                      to your fundraise.
+                      Please confirm dates with your Advisor and Legal
+                      providers before you click on &laquo;CONTINUE&raquo;.
                     </p>
-                    <p>All necessary documentation must be posted on your Securities Offering Site.</p>
+                    <p>
+                      Investors must be added to the whitelist before or while
+                      the STO is live, so they can participate to your
+                      fundraise.
+                    </p>
+                    <p>
+                      All necessary documentation must be posted on your
+                      Securities Offering Site.
+                    </p>
                   </div>
                 </ModalBody>
 
@@ -154,26 +169,31 @@ class ConfigureSTO extends Component<Props, State> {
               <ComposedModal open={this.state.isConfirmationModal2Open} className='pui-confirm-modal'>
                 <ModalHeader
                   label='Confirmation required'
-                  title={
+                  title={(
                     <span>
-                      <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp; Proceeding with Smart
-                      Contract Deployment and Scheduling
+                      <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
+                      Proceeding with Smart Contract Deployment and Scheduling
                     </span>
-                  }
+                  )}
                 />
                 <ModalBody>
-                  <div className='bx--modal-content__text'>
+                  <div className='bx--modal-content__text' >
                     <p>
-                      Completion of your STO smart contract deployment and scheduling will require two wallet
-                      transactions.
+                    Completion of your STO smart contract deployment and scheduling will
+                     require two wallet transactions. 
                     </p>
 
-                    <p>The first transaction will be used to pay for the smart contract fee of:</p>
-                    <div className='bx--details '>{this.state.polyCost} POLY</div>
                     <p>
-                      The second transaction will be used to pay the mining fee (aka gas fee) to complete the scheduling
-                      of your STO. Please hit &laquo;CONFIRM&raquo; when you are ready to proceed.
+                    The first transaction will be used to pay for the smart contract fee of:
                     </p>
+                    <div className='bx--details '>
+                      {this.state.polyCost} POLY
+                    </div>
+                    <p>
+                      The second transaction will be used to pay the mining fee (aka gas fee) to complete the
+                       scheduling of your STO. Please hit &laquo;CONFIRM&raquo; when you are ready to proceed.
+                    </p>
+
                   </div>
                 </ModalBody>
 
@@ -191,19 +211,20 @@ class ConfigureSTO extends Component<Props, State> {
               >
                 <ModalHeader
                   label='Transaction Impossible'
-                  title={
+                  title={(
                     <span>
-                      <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp; Insufficient POLY
-                      Balance
+                      <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
+                  Insufficient POLY Balance
                     </span>
-                  }
+                  )}
                 />
 
                 <ModalBody>
                   <div className='bx--modal-content__text'>
                     <p>
-                      The registration of a token symbol has a fixed cost of {this.state.polyCost} POLY. Please make
-                      sure that your wallet has a sufficient balance in POLY to complete this operation.
+                      The registration of a token symbol has a fixed cost of {this.state.polyCost} POLY.
+                      Please make sure that your wallet has a sufficient balance in
+                      POLY to complete this operation.
                     </p>
 
                     <p>
@@ -211,8 +232,8 @@ class ConfigureSTO extends Component<Props, State> {
                     </p>
 
                     <p>
-                      As such, you can click on the &laquo;REQUEST 25K POLY&raquo; button below to receive 25,000 test
-                      POLY in your wallet.
+                      As such, you can click on the &laquo;REQUEST 25K POLY&raquo; button below to
+                       receive 25,000 test POLY in your wallet.
                     </p>
                     <br />
                     <Remark title='Note'>
@@ -234,42 +255,52 @@ class ConfigureSTO extends Component<Props, State> {
               >
                 <ModalHeader
                   label='Transaction Impossible'
-                  title={
+                  title={(
                     <span>
-                      <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp; Insufficient POLY
-                      Balance
+                      <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
+                  Insufficient POLY Balance
                     </span>
-                  }
+                  )}
                 />
 
                 <ModalBody>
                   <div className='bx--modal-content__text'>
                     <p>
-                      The registration of a token symbol has a fixed cost of {this.state.polyCost} POLY. Please make
-                      sure that your wallet has a sufficient balance in POLY to complete this operation.
+                      The registration of a token symbol has a fixed cost of {this.state.polyCost} POLY.
+                      Please make sure that your wallet has a sufficient balance in
+                      POLY to complete this operation.
                     </p>
                     <p>
                       If you need to obtain POLY tokens, you can visit &nbsp;
-                      <a target='_blank' rel='noopener noreferrer' href='https://shapeshift.io'>
-                        here
-                      </a>{' '}
-                      or obtain more information &nbsp;
+                      <a
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        href='https://shapeshift.io'
+                      >here
+                      </a> or
+                  obtain more information &nbsp;
                       <a
                         target='_blank'
                         rel='noopener noreferrer'
                         href='https://etherscan.io/token/0x9992ec3cf6a55b00978cddf2b27bc6882d88d1ec#tokenExchange'
-                      >
-                        here
+                      >here
                       </a>
                     </p>
                   </div>
                 </ModalBody>
                 <ModalFooter>
-                  <Button onClick={this.handleNotEnoughPolyCancel}>Close</Button>
+                  <Button onClick={this.handleNotEnoughPolyCancel}>
+                    Close
+                  </Button>
                 </ModalFooter>
               </ComposedModal>
 
-              <Button kind='ghost' onClick={this.handleGoBack} className='pui-go-back' icon='arrow--left'>
+              <Button
+                kind='ghost'
+                onClick={this.handleGoBack}
+                className='pui-go-back'
+                icon='arrow--left'
+              >
                 Go back
               </Button>
               <h1 className='pui-h1'>Security Token Offering Configuration</h1>
@@ -277,11 +308,16 @@ class ConfigureSTO extends Component<Props, State> {
               <div className='bx--row'>
                 <div className='bx--col-xs-5'>
                   <div className='pui-page-box'>
-                    <h2 className='pui-h2'>Simple Capped Offering</h2>
+                    <h2 className='pui-h2'>
+                      Simple Capped Offering
+                    </h2>
                     <h4 className='pui-h4' style={{ marginBottom: '15px' }}>
                       Provide the financial details and timing for your offering below.
                     </h4>
-                    <ConfigureSTOForm onSubmit={this.handleCompleteSubmit} onAddressChange={this.handleAddressChange} />
+                    <ConfigureSTOForm
+                      onSubmit={this.handleCompleteSubmit}
+                      onAddressChange={this.handleAddressChange}
+                    />
                   </div>
                 </div>
                 <div className='bx--col-xs-7'>
@@ -296,7 +332,4 @@ class ConfigureSTO extends Component<Props, State> {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ConfigureSTO)
+export default connect(mapStateToProps, mapDispatchToProps)(ConfigureSTO)

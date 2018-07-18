@@ -23,9 +23,9 @@ type StateProps = {|
   isTooMany: boolean,
   isReady: boolean,
   isInvalid: boolean,
-  criticals: Array<InvestorCSVRow>,
+  criticals: Array < InvestorCSVRow >,
   token: Object,
-  pui: Object,
+  pui: Object
 |}
 
 type DispatchProps = {|
@@ -36,7 +36,7 @@ type DispatchProps = {|
 
 type State = {|
   isConfirmModalOpen: boolean,
-  isSkipModalOpen: boolean,
+  isSkipModalOpen: boolean
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -54,9 +54,11 @@ const mapDispatchToProps = {
   mintResetUploaded,
 }
 
-type Props = {||} & StateProps & DispatchProps
+type Props = {|
+|} & StateProps & DispatchProps
 
 class MintTokens extends Component<Props, State> {
+
   state = {
     isConfirmModalOpen: false,
     isSkipModalOpen: false,
@@ -78,11 +80,9 @@ class MintTokens extends Component<Props, State> {
 
   handleClick = (event: Object) => {
     const el = event.target
-    if (
-      el.getAttribute('class') === 'bx--file-close' ||
+    if (el.getAttribute('class') === 'bx--file-close' ||
       // TODO @bshevchenko: maybe there is a better way to handle cancel event
-      (el.getAttribute('d') && el.getAttribute('d').substring(0, 6) === 'M8 0C3')
-    ) {
+      (el.getAttribute('d') && el.getAttribute('d').substring(0, 6) === 'M8 0C3')) {
       this.props.mintResetUploaded()
     }
   }
@@ -122,8 +122,7 @@ class MintTokens extends Component<Props, State> {
     this.props.pui.common.history.push(`/dashboard/${this.props.token.token.ticker}/sto`)
   }
 
-  fileUploaderRef = (el: ?Object) => {
-    // $FlowFixMe
+  fileUploaderRef = (el: ?Object) => { // $FlowFixMe
     this.fileUploader = el
   }
 
@@ -134,36 +133,42 @@ class MintTokens extends Component<Props, State> {
       <div className='bx--col-xs-7'>
         <div className='pui-page-box'>
           <Remark title='Note'>
+
             <span>
-              <Icon name='warning--glyph' fill='#5A6872' width='15' height='15' />&nbsp; Minting cannot be done after
-              the STO is attatched.
-              <br />
-              <br />
+              <Icon name='warning--glyph' fill='#5A6872' width='15' height='15' />&nbsp;
+              Minting cannot be done after the STO is attatched.
+              <br /><br />
               This action will trigger multiple signing operations with your MetaMask wallet:<br />
               — One for the initial whitelist upload;<br />
               — One for the minting of tokens.
             </span>
+
           </Remark>
-          <h2 className='pui-h2'>Mint Your Tokens</h2>
+          <h2 className='pui-h2'>
+            Mint Your Tokens
+          </h2>
           <h3 className='pui-h3'>
             Your Security Token is now deployed to the blockchain.<br />
             Let’s mint token for your reserve and your current shareholders.
           </h3>
           <br />
           <h4 className='pui-h4'>
-            Before you proceed, please check with your Advisor how your tokens should be distributed. Also, note that
-            the ETH Addresses to which tokens are minted will be automatically added to the whitelist to allow for the
-            tokens to be transferred.
+            Before you proceed, please check with your Advisor how your tokens should be distributed.
+            Also, note that the ETH Addresses to which tokens are minted will be automatically added
+            to the whitelist to allow for the tokens to be transferred.
           </h4>
           <h4 className='pui-h4'>
-            Enter the addresses and token quantities that need to be minted by uploading a comma separated .CSV file.
+            Enter the addresses and token quantities that need to be
+            minted by uploading a comma separated .CSV file.
           </h4>
           <h4 className='pui-h4'>
             The format of the file should be as follow:<br />
             — ETH Address (address to whitelist);<br />
-            — Sell Restriction Date mm/dd/yyyy (date when the resale restrictions should be lifted for that address);
+            — Sell Restriction Date mm/dd/yyyy (date when the resale restrictions
+            should be lifted for that address);
             <br />
-            — Buy Restriction Date mm/dd/yyyy (date when the buy restrictions should be lifted for that address);<br />
+            — Buy Restriction Date mm/dd/yyyy (date when the buy restrictions should be
+            lifted for that address);<br />
             Empty cell will be considered as permanent lockup.<br />
             — KYC/AML Expiry Date mm/dd/yyyy;<br />
             – Number of tokens to mint for the ETH address (integer).<br />
@@ -172,9 +177,7 @@ class MintTokens extends Component<Props, State> {
           <h5 className='pui-h5'>
             You can&nbsp;&nbsp;&nbsp;
             <Icon name='download' fill='#252D6B' width='16' height='16' />&nbsp;
-            <a href='/mint-sample.csv' className='pui-bold' download>
-              Download Sample.csv
-            </a>
+            <a href='/mint-sample.csv' className='pui-bold' download>Download Sample.csv</a>
             &nbsp;&nbsp;file and edit it.
           </h5>
           <FileUploader
@@ -202,9 +205,7 @@ class MintTokens extends Component<Props, State> {
               subtitle='You can still continue, but only 75 first addresses will be submitted.'
               kind='error'
             />
-          ) : (
-            ''
-          )}
+          ) : ''}
           <Button type='submit' disabled={!isReady} onClick={this.handleConfirmModalOpen} style={{ marginTop: '10px' }}>
             Mint Tokens
           </Button>
@@ -218,33 +219,36 @@ class MintTokens extends Component<Props, State> {
             SKIP MINTING
           </Button>
 
-          <ComposedModal open={this.state.isConfirmModalOpen} className='pui-confirm-modal mint-confirm-modal'>
+          <ComposedModal
+            open={this.state.isConfirmModalOpen}
+            className='pui-confirm-modal mint-confirm-modal'
+          >
             <ModalHeader
               label='Confirmation required'
-              title={
+              title={(
                 <span>
-                  <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp; Before You Proceed
+                  <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
+                  Before You Proceed
                 </span>
-              }
+              )}
             />
             <ModalBody>
               <div className='bx--modal-content__text'>
                 <p>
-                  Please confirm that all previous information is correct. Once you hit &laquo;CONFIRM&raquo;, data will
-                  be submitted to the blockchain. Any change will require that you start the process over. If you wish
-                  to review your information, please select &laquo;CANCEL&raquo;.
+                  Please confirm that all previous information is correct.
+                  Once you hit &laquo;CONFIRM&raquo;, data will be submitted to the blockchain.
+                  Any change will require that you start the process over. If you wish to review your information,
+                  please select &laquo;CANCEL&raquo;.
                 </p>
                 {criticals.length ? (
                   <div>
                     <InlineNotification
                       hideCloseButton
                       title={criticals.length + ' Error' + (criticals.length > 1 ? 's' : '') + ' in Your .csv File'}
-                      subtitle={
-                        'Please note that the entries below contains error that prevent their content to be ' +
-                        'committed to the blockchain.' +
-                        'Entries were automatically deselected so they are not submitted ' +
-                        'to the blockchain. You can also elect to cancel the operation to review the csv file offline.'
-                      }
+                      subtitle={'Please note that the entries below contains error that prevent their content to be ' +
+                        'committed to the blockchain.'+
+                         'Entries were automatically deselected so they are not submitted ' +
+                        'to the blockchain. You can also elect to cancel the operation to review the csv file offline.'}
                       kind='error'
                     />
                     <table className='import-criticals'>
@@ -272,9 +276,7 @@ class MintTokens extends Component<Props, State> {
                       </tbody>
                     </table>
                   </div>
-                ) : (
-                  ''
-                )}
+                ) : ''}
               </div>
             </ModalBody>
 
@@ -286,29 +288,32 @@ class MintTokens extends Component<Props, State> {
             </ModalFooter>
           </ComposedModal>
 
-          <ComposedModal open={this.state.isSkipModalOpen} className='pui-confirm-modal mint-confirm-modal'>
+          <ComposedModal
+            open={this.state.isSkipModalOpen}
+            className='pui-confirm-modal mint-confirm-modal'
+          >
             <ModalHeader
               label='Confirmation required'
-              title={
+              title={(
                 <span>
-                  <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp; Before You Proceed
+                  <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
+                  Before You Proceed
                 </span>
-              }
+              )}
             />
             <ModalBody>
               <div className='bx--modal-content__text'>
                 <p>
                   Note that manual minting will no longer be available once you schedule an offering (STO) for this
-                  token. All tokens sold during the offering will be minted as soon as the funds are received by the
-                  smart contract and according to the rate you will define when scheduling your STO. Your Token&apos;s
-                  total supply will therefore be: total number of tokens minted manually + total number of tokens sold
-                  during the STO. If you achieve 100% of your fundraise objective, the total number of tokens sold
-                  during the STO will be equal to your hard cap. If not, this number will be equal to the total number
-                  of tokens sold.
+                   token. All tokens sold during the offering will be minted as soon as the funds are received by the
+                    smart contract and according to the rate you will define when scheduling your STO. Your Token&apos;s
+                     total supply will therefore be: total number of tokens minted manually + total number of tokens
+                      sold during the STO. If you achieve 100% of your fundraise objective, the total number of tokens
+                       sold during the STO will be equal to your hard cap. If not, this number will be equal to the
+                        total number of tokens sold.
                 </p>
-                <p>
-                  Hit &laquo;CANCEL&raquo; if you would like to mint additional tokens. Please proceed if you have
-                  minted all the tokens you need to mint outside of the STO.
+                <p>Hit &laquo;CANCEL&raquo; if you would like to mint additional tokens.
+                         Please proceed if you have minted all the tokens you need to mint outside of the STO.
                 </p>
               </div>
             </ModalBody>
@@ -320,13 +325,11 @@ class MintTokens extends Component<Props, State> {
               <Button onClick={this.handleSkip}>CONFIRM</Button>
             </ModalFooter>
           </ComposedModal>
+
         </div>
       </div>
     )
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MintTokens)
+export default connect(mapStateToProps, mapDispatchToProps)(MintTokens)
