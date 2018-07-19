@@ -29,11 +29,11 @@ export const reserve = () => async (dispatch: Function, getState: GetState) => {
     true, // TODO @bshevchenko: !isEmailConfirmed,
     details.ticker.toUpperCase() + ' Token Symbol Reservation'
   ))
-
 }
 
-export const faucet = (address: ?string, polyAmount: number) => async (dispatch: Function) => {
-  dispatch(ui.faucet(address, polyAmount))
+export const faucet = () => async (dispatch: Function, getState: GetState) => {
+  const { address } = getState().network
+  dispatch(ui.faucet(address))
 }
 
 export const confirmEmail = () => async (dispatch: Function, getState: GetState) => {

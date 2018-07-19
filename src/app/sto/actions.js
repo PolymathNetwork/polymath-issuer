@@ -69,8 +69,9 @@ export const fetchFactories = () => async (dispatch: Function) => {
   }
 }
 
-export const faucet = (address: ?string, polyAmount: number) => async (dispatch: Function) => {
-  dispatch(ui.faucet(address, polyAmount))
+export const faucet = () => async (dispatch: Function, getState: GetState) => {
+  const { address } = getState().network
+  dispatch(ui.faucet(address))
 }
 
 const dateTimeFromDateAndTime = (date: Date, time: TwelveHourTime) =>

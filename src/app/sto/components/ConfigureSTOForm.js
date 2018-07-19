@@ -35,10 +35,10 @@ const gt0 = gt(0)
 
 type State = {|
   currency: string,
-    cap: number,
-      rate: number,
-        amountOfFunds: string,
-            |}
+  cap: number,
+  rate: number,
+  amountOfFunds: string,
+|}
 
 class ConfigureSTOForm extends Component<Props, State> {
 

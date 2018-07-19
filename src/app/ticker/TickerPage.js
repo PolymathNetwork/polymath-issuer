@@ -29,10 +29,10 @@ type StateProps = {|
 |}
 
 type DispatchProps = {|
-  change: (? string) => any,
+  change: (?string) => any,
   reserve: (number) => any,
   tokenData: (data: any) => any,
-  faucet: (? string, number) => any,
+  faucet: () => any,
   getExpiryLimit: () => any,
   getPolyFee: () => any
 |}
@@ -90,7 +90,7 @@ class TickerPage extends Component<Props, State> {
     this.setState({ isConfirmationModalOpen: true })
   }
 
-  handleChangeTicker  = (event: Object, newValue: string) => {
+  handleChangeTicker = (event: Object, newValue: string) => {
     this.setState({ chosenTicker: newValue })
   }
 
@@ -117,9 +117,9 @@ class TickerPage extends Component<Props, State> {
     this.setState({ isNotEnoughPolyModalOpen: false })
   }
 
-  handleFaucetRequest = () => {
+  handleFaucetRequest = async () => {
     this.setState({ isNotEnoughPolyModalOpen: false })
-    this.props.faucet(this.props.account, 25000)
+    this.props.faucet()
   }
 
   render () {
@@ -141,7 +141,6 @@ class TickerPage extends Component<Props, State> {
                 <p>
                   Please confirm that you accept the token symbol reservation fee. Additionally, please confirm that all
                    previous information is correct and that you are not violating any trademarks.
-
                 </p>
                 <p>
                   Once you hit &laquo;CONFIRM&raquo;, your Token Symbol reservation will

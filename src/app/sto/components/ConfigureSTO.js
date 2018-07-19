@@ -32,7 +32,7 @@ type StateProps = {|
 type DispatchProps = {|
   configure: (number, Address) => any,
   goBack: () => any,
-  faucet: (? string, number) => any,
+  faucet: () => any,
   getPolyFee: () => any
 |}
 
@@ -110,7 +110,7 @@ class ConfigureSTO extends Component<Props, State> {
 
   handleFaucetRequest = () => {
     this.setState({ isNotEnoughPolyModalOpen: false })
-    this.props.faucet(this.props.account, 25000)
+    this.props.faucet()
   }
 
   handleAddressChange = (event: Object, newValue: string) => {
