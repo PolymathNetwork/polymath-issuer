@@ -6,7 +6,7 @@ import { Loading } from 'carbon-components-react'
 import type { SecurityToken } from 'polymathjs/types'
 
 import NotFoundPage from '../NotFoundPage'
-import { fetch } from './actions'
+import { fetch, getPauseStatus } from './actions'
 import { STAGE_SELECT, STAGE_CONFIGURE, STAGE_OVERVIEW } from './reducer'
 import SelectSTOTemplate from './components/SelectSTOTemplate'
 import OverviewSTO from './components/OverviewSTO'
@@ -22,6 +22,7 @@ type StateProps = {|
 
 type DispatchProps = {|
   fetch: () => any,
+  getPauseStatus: () => any
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -31,6 +32,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
 
 const mapDispatchToProps: DispatchProps = {
   fetch,
+  getPauseStatus,
 }
 
 type Props = StateProps & DispatchProps
@@ -38,7 +40,9 @@ type Props = StateProps & DispatchProps
 class STOPage extends Component<Props> {
 
   componentDidMount () {
-    this.props.fetch()
+    this.props.fetch().then(() => {
+      this.props.getPauseStatus()
+    })
   }
 
   render () {

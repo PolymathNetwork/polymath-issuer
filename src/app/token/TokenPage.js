@@ -275,7 +275,7 @@ class TokenPage extends Component<Props, State> {
                 <div className='bx--col-xs-7'>
                   <div className='pui-page-box'>
                     <div className='token-countdown-container'>
-                      <Countdown small title='Time Left' deadline={token.expires} />
+                      <Countdown small title='Time Left' deadline={token.expires} isPaused={false} />
                     </div>
                     <h2 className='pui-h2'>
                       Create Your Security Token

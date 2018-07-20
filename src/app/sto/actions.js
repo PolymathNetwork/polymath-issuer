@@ -24,6 +24,8 @@ export const purchases = (purchases: Array<STOPurchase>) => ({ type: PURCHASES, 
 export const GO_BACK = 'sto/GO_BACK'
 export const goBack = () => ({ type: GO_BACK })
 
+export const PAUSE_STATUS = 'sto/PAUSE_STATUS'
+export const pauseStatus = (status: boolean) => ({ type: PAUSE_STATUS, status })
 export type Action =
   | ExtractReturn<typeof data>
   | ExtractReturn<typeof factories>
@@ -133,3 +135,34 @@ export const getPolyFee = () => async () => {
   return CappedSTOFactory.setupCost()
 }
 
+export const togglePauseSto = (isCurrPaused: boolean, endDate: Date ) =>
+  async (dispatch: Function, getState: GetState) =>{  
+    dispatch(ui.tx(
+      [isCurrPaused ? 'Resuming STO': 'Pausing STO'],
+      async () => {
+        if(isCurrPaused){
+          // $FlowFixMe
+          await getState().sto.contract.unpause(endDate)
+        }else{
+          // $FlowFixMe
+          await getState().sto.contract.pause()
+        }
+        // $FlowFixMe
+        dispatch(pauseStatus(await getState().sto.contract.paused()))
+      },
+      isCurrPaused ? 'Successfully Resumed STO': 'Successfully Paused STO',
+      async ()=>{
+        // $FlowFixMe
+        // dispatch(pauseStatus(await getState().sto.contract.paused()))
+      }
+      ,
+      undefined,
+      undefined,
+      true, // TODO @bshevchenko,
+    ))
+  }
+
+export const getPauseStatus = () => async (dispatch: Function, getState: GetState) =>{
+  // $FlowFixMe
+  dispatch(pauseStatus(await getState().sto.contract.paused()))
+}
