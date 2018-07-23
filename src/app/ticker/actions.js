@@ -31,11 +31,6 @@ export const reserve = () => async (dispatch: Function, getState: GetState) => {
   ))
 }
 
-export const faucet = () => async (dispatch: Function, getState: GetState) => {
-  const { address } = getState().network
-  dispatch(ui.faucet(address))
-}
-
 export const confirmEmail = () => async (dispatch: Function, getState: GetState) => {
   const { email } = getState().form[confirmEmailFormName].values
   dispatch(ui.requestConfirmEmail(email))
@@ -74,8 +69,3 @@ export const tickerReservationEmail = () => async (dispatch: Function, getState:
     console.error('tickerReservationEmail', e)
   }
 }
-
-export const getPolyFee = () => async () => {
-  return TickerRegistry.registrationFee()
-}
-

@@ -25,7 +25,6 @@ export const GO_BACK = 'sto/GO_BACK'
 export const goBack = () => ({ type: GO_BACK })
 
 export const PAUSE_STATUS = 'sto/PAUSE_STATUS'
-export const pauseStatus = (status: boolean) => ({ type: PAUSE_STATUS, status })
 export type Action =
   | ExtractReturn<typeof data>
   | ExtractReturn<typeof factories>
@@ -69,11 +68,6 @@ export const fetchFactories = () => async (dispatch: Function) => {
   } catch (e) {
     dispatch(ui.fetchingFailed(e))
   }
-}
-
-export const faucet = () => async (dispatch: Function, getState: GetState) => {
-  const { address } = getState().network
-  dispatch(ui.faucet(address))
 }
 
 const dateTimeFromDateAndTime = (date: Date, time: TwelveHourTime) =>
@@ -131,16 +125,13 @@ export const fetchPurchases = () => async (dispatch: Function, getState: GetStat
   }
 }
 
-export const getPolyFee = () => async () => {
-  return CappedSTOFactory.setupCost()
-}
-
-export const togglePauseSto = (isCurrPaused: boolean, endDate: Date ) =>
-  async (dispatch: Function, getState: GetState) =>{  
+export const togglePauseSto = (endDate: Date ) =>
+  async (dispatch: Function, getState: GetState) =>{
+    const { pauseStatus } = getState().sto
     dispatch(ui.tx(
-      [isCurrPaused ? 'Resuming STO': 'Pausing STO'],
+      [pauseStatus ? 'Resuming STO': 'Pausing STO'],
       async () => {
-        if(isCurrPaused){
+        if(pauseStatus){
           // $FlowFixMe
           await getState().sto.contract.unpause(endDate)
         }else{
@@ -148,21 +139,19 @@ export const togglePauseSto = (isCurrPaused: boolean, endDate: Date ) =>
           await getState().sto.contract.pause()
         }
         // $FlowFixMe
-        dispatch(pauseStatus(await getState().sto.contract.paused()))
+        dispatch({ type: PAUSE_STATUS, status: await getState().sto.contract.paused() })
       },
-      isCurrPaused ? 'Successfully Resumed STO': 'Successfully Paused STO',
-      async ()=>{
-        // $FlowFixMe
-        // dispatch(pauseStatus(await getState().sto.contract.paused()))
-      }
-      ,
+      pauseStatus ? 'Successfully Resumed STO': 'Successfully Paused STO',
       undefined,
       undefined,
-      true, // TODO @bshevchenko,
+      undefined,
+      true,
     ))
   }
 
 export const getPauseStatus = () => async (dispatch: Function, getState: GetState) =>{
-  // $FlowFixMe
-  dispatch(pauseStatus(await getState().sto.contract.paused()))
+  if(getState().sto.contract){
+    // $FlowFixMe
+    dispatch({ type: PAUSE_STATUS, status: await getState().sto.contract.paused() })
+  }
 }

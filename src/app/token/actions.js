@@ -65,11 +65,6 @@ export const issue = () => async (dispatch: Function, getState: GetState) => {
   ))
 }
 
-export const faucet = () => async (dispatch: Function, getState: GetState) => {
-  const { address } = getState().network
-  dispatch(ui.faucet(address))
-}
-
 // TODO @bshevchenko: almost duplicates uploadCSV from compliance/actions, subject to refactor
 export const uploadCSV = (file: Object) => async (dispatch: Function) => {
   const reader = new FileReader()
@@ -127,9 +122,5 @@ export const mintTokens = () => async (dispatch: Function, getState: GetState) =
     undefined,
     true // TODO @bshevchenko
   ))
-}
-
-export const getPolyFee = () => async () => {
-  return SecurityTokenRegistry.registrationFee()
 }
 

@@ -4,12 +4,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { Icon, ComposedModal, ModalHeader, ModalBody, ModalFooter, Button } from 'carbon-components-react'
-import { etherscanTx, etherscanAddress, Countdown, Remark } from 'polymath-ui'
+import { etherscanTx, etherscanAddress, Countdown, Remark, faucet } from 'polymath-ui'
 import moment from 'moment'
 import type { SecurityToken } from 'polymathjs/types'
 import BigNumber from 'bignumber.js'
+import { SecurityTokenRegistry } from 'polymathjs'
 
-import { issue, faucet, getPolyFee } from './actions'
+import { issue } from './actions'
 import NotFoundPage from '../NotFoundPage'
 import Progress from './components/Progress'
 import CompleteTokenForm from './components/CompleteTokenForm'
@@ -29,7 +30,6 @@ type StateProps = {|
 type DispatchProps = {|
   complete: (number) => any,
   faucet: () => any,
-  getPolyFee: () => any
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -43,7 +43,6 @@ const mapStateToProps = (state: RootState): StateProps => ({
 const mapDispatchToProps: DispatchProps = {
   complete: issue,
   faucet,
-  getPolyFee,
 }
 
 type Props = {|
@@ -66,7 +65,7 @@ class TokenPage extends Component<Props, State> {
   }
 
   componentWillMount () {
-    this.props.getPolyFee().then((fee) => {
+    SecurityTokenRegistry.registrationFee().then((fee) => {
       this.setState({ polyCost: Number(fee) })
     })
   }

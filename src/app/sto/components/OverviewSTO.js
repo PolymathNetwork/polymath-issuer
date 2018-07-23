@@ -22,7 +22,7 @@ type StateProps = {|
 
 type DispatchProps = {|
   fetchPurchases: () => any,
-  togglePauseSto: (currPauseStatus: boolean, endDate: Date) => any,
+  togglePauseSto: (endDate: Date) => any,
   getPauseStatus: () => any
 |};
 
@@ -72,7 +72,7 @@ class OverviewSTO extends Component<Props, State> {
 
   toggleStoPause = () => {
     // $FlowFixMe
-    this.props.togglePauseSto(this.props.isStoPaused, this.props.details.end)
+    this.props.togglePauseSto(this.props.details.end)
   };
 
   render () {
@@ -140,7 +140,7 @@ class OverviewSTO extends Component<Props, State> {
             <br />
             <br />
             <h2 className='pui-h2'>List of Investors</h2>
-            <div className={this.props.isStoPaused ? 'paused' : ''}>
+            <div className={this.props.isStoPaused ? ' pui-paused' : ''}>
               <InvestorTable isStoPaused={this.props.isStoPaused} rows={purchases} />
             </div>
             <p>&nbsp;</p>

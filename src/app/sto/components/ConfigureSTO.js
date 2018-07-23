@@ -12,13 +12,14 @@ import {
   Icon,
 } from 'carbon-components-react'
 import BigNumber from 'bignumber.js'
-import { Remark } from 'polymath-ui'
+import { Remark, faucet } from 'polymath-ui'
+import { CappedSTOFactory } from 'polymathjs'
 import type { SecurityToken, STOFactory, Address } from 'polymathjs/types'
 
 import NotFoundPage from '../../NotFoundPage'
 import STODetails from './STODetails'
 import ConfigureSTOForm from './ConfigureSTOForm'
-import { configure, goBack, faucet, getPolyFee } from '../actions'
+import { configure, goBack } from '../actions'
 import type { RootState } from '../../../redux/reducer'
 
 type StateProps = {|
@@ -33,7 +34,6 @@ type DispatchProps = {|
   configure: (number, Address) => any,
   goBack: () => any,
   faucet: () => any,
-  getPolyFee: () => any
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -48,7 +48,6 @@ const mapDispatchToProps: DispatchProps = {
   configure,
   goBack,
   faucet,
-  getPolyFee,
 }
 
 type Props = {||} & StateProps & DispatchProps
@@ -72,7 +71,7 @@ class ConfigureSTO extends Component<Props, State> {
   }
 
   componentWillMount () {
-    this.props.getPolyFee().then((fee) => {
+    CappedSTOFactory.setupCost().then((fee) => {
       this.setState({ polyCost: Number(fee) })
     })
   }

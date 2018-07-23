@@ -4,7 +4,7 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { change } from 'redux-form'
-import { bull, Remark } from 'polymath-ui'
+import { bull, Remark, faucet } from 'polymath-ui'
 import BigNumber from 'bignumber.js'
 import type { RouterHistory } from 'react-router'
 import {
@@ -15,9 +15,10 @@ import {
   ModalHeader,
   Icon,
 } from 'carbon-components-react'
+import { TickerRegistry } from 'polymathjs'
 
 import TickerForm, { formName } from './components/TickerForm'
-import { reserve, expiryLimit, faucet, getPolyFee } from './actions'
+import { reserve, expiryLimit } from './actions'
 import { data as tokenData } from '../token/actions'
 
 type StateProps = {|
@@ -34,7 +35,6 @@ type DispatchProps = {|
   tokenData: (data: any) => any,
   faucet: () => any,
   getExpiryLimit: () => any,
-  getPolyFee: () => any
 |}
 
 const mapStateToProps = (state): StateProps => ({
@@ -51,7 +51,6 @@ const mapDispatchToProps: DispatchProps = {
   tokenData,
   faucet,
   getExpiryLimit: expiryLimit,
-  getPolyFee: getPolyFee,
 }
 
 type Props = {|
@@ -81,7 +80,7 @@ class TickerPage extends Component<Props, State> {
     this.props.change(this.props.account)
     this.props.tokenData(null)
     this.props.getExpiryLimit()
-    this.props.getPolyFee().then((fee) => {
+    TickerRegistry.registrationFee().then((fee) => {
       this.setState({ polyCost: Number(fee) })
     })
   }
