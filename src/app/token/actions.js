@@ -3,7 +3,7 @@
 import { SecurityTokenRegistry } from 'polymathjs'
 import * as ui from 'polymath-ui'
 import { ethereumAddress } from 'polymath-ui/dist/validate'
-import type { SecurityToken, Investor } from 'polymathjs/types'
+import type { SecurityToken, Investor, Address } from 'polymathjs/types'
 
 import { formName as completeFormName } from './components/CompleteTokenForm'
 import { fetch as fetchSTO } from '../sto/actions'
@@ -40,27 +40,28 @@ export const fetch = (ticker: string) => async (dispatch: Function, getState: Ge
   }
 }
 
-export const complete = () => async (dispatch: Function, getState: GetState) => {
+export const issue = () => async (dispatch: Function, getState: GetState) => {
   const { token } = getState().token // $FlowFixMe
   const ticker = token.ticker
 
   dispatch(ui.tx(
-    `Issuing ${ticker} token`,
+    ['Token Creation Fee ', 'Token Creation'],
     async () => {
       const token: SecurityToken = {
         ...getState().token.token,
         ...getState().form[completeFormName].values,
       }
       token.isDivisible = token.isDivisible !== '1'
-      await SecurityTokenRegistry.generateSecurityToken(token)
+      await SecurityTokenRegistry.generateSecurityToken(token)     
     },
     'Token Was Issued Successfully',
     () => {
       return dispatch(fetch(ticker))
     },
-    `/dashboard/${ticker}/sto`,
+    `/dashboard/${ticker}`,
     undefined,
-    true // TODO @bshevchenko
+    true, // TODO @bshevchenko,
+    ticker.toUpperCase() + ' Token Creation'
   ))
 }
 
@@ -99,15 +100,19 @@ export const uploadCSV = (file: Object) => async (dispatch: Function) => {
   }
 }
 
-export const mintTokens = (uploaded: Array<Investor>) => async (dispatch: Function, getState: GetState) => {
-  const { token } = getState().token // $FlowFixMe
+export const mintTokens = () => async (dispatch: Function, getState: GetState) => {
+  const { token, mint: { uploaded, uploadedTokens } } = getState().token // $FlowFixMe
   const transferManager = await token.contract.getTransferManager()
 
   dispatch(ui.tx(
     ['Whitelisting Addresses', 'Minting Tokens'],
     async () => {
-      await transferManager.modifyWhitelistMulti(uploaded)
-      await transferManager.modifyWhitelistMulti(uploaded) // TODO @bshevchenko: unmock
+      await transferManager.modifyWhitelistMulti(uploaded, false)
+      const addresses: Array<Address> = []
+      for (let investor: Investor of uploaded) {
+        addresses.push(investor.address)
+      } // $FlowFixMe
+      await token.contract.mintMulti(addresses, uploadedTokens)
     },
     'Tokens were successfully minted',
     () => {
@@ -118,3 +123,4 @@ export const mintTokens = (uploaded: Array<Investor>) => async (dispatch: Functi
     true // TODO @bshevchenko
   ))
 }
+

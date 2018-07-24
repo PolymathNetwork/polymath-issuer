@@ -3,7 +3,7 @@
 import { STO, CappedSTOFactory, SecurityToken } from 'polymathjs'
 import * as ui from 'polymath-ui'
 import type { TwelveHourTime } from 'polymath-ui'
-import type { STOFactory, STODetails, STOPurchase } from 'polymathjs/types'
+import type { STOFactory, STODetails, STOPurchase, Address } from 'polymathjs/types'
 
 import { formName as configureFormName } from './components/ConfigureSTOForm'
 import type { ExtractReturn } from '../../redux/helpers'
@@ -24,6 +24,7 @@ export const purchases = (purchases: Array<STOPurchase>) => ({ type: PURCHASES, 
 export const GO_BACK = 'sto/GO_BACK'
 export const goBack = () => ({ type: GO_BACK })
 
+export const PAUSE_STATUS = 'sto/PAUSE_STATUS'
 export type Action =
   | ExtractReturn<typeof data>
   | ExtractReturn<typeof factories>
@@ -72,39 +73,43 @@ export const fetchFactories = () => async (dispatch: Function) => {
 const dateTimeFromDateAndTime = (date: Date, time: TwelveHourTime) =>
   new Date(date.valueOf() + ui.twelveHourTimeToMinutes(time) * 60000)
 
-export const configure = () => async (dispatch: Function, getState: GetState) => {
-  const { factory } = getState().sto
-  const { token } = getState().token
-  if (!factory || !token || !token.contract) {
-    return
+export const configure = (polyCost: number, fundsReceiver: Address) => 
+  async (dispatch: Function, getState: GetState) => {
+
+    const { factory } = getState().sto
+    const { token } = getState().token
+
+    if (!factory || !token || !token.contract) {
+      return
+    }
+    dispatch(ui.tx(
+      ['STO Smart Contract Fee', 'STO Smart Contract Deployment and Scheduling'],
+      async () => {
+        const contract: SecurityToken = token.contract
+        const { values } = getState().form[configureFormName]
+        const [startDate, endDate] = values['start-end']
+        const startDateWithTime = dateTimeFromDateAndTime(startDate, values.startTime)
+        const endDateWithTime = dateTimeFromDateAndTime(endDate, values.endTime)
+
+        await contract.setCappedSTO(
+          startDateWithTime,
+          endDateWithTime,
+          values.cap,
+          values.rate,
+          values.currency === 'ETH',
+          fundsReceiver,
+        )
+      },
+      'STO Configured Successfully',
+      () => {
+        return dispatch(fetch())
+      },
+      `/dashboard/${token.ticker}/compliance`,
+      undefined,
+      true, // TODO @bshevchenko
+      token.ticker.toUpperCase() + ' STO Creation' 
+    ))
   }
-  dispatch(ui.tx(
-    'Configuring STO',
-    async () => {
-      const contract: SecurityToken = token.contract
-      const { values } = getState().form[configureFormName]
-      const [startDate, endDate] = values['start-end']
-      const startDateWithTime = dateTimeFromDateAndTime(startDate, values.startTime)
-      const endDateWithTime = dateTimeFromDateAndTime(endDate, values.endTime)
-      await contract.setSTO(
-        factory.address,
-        startDateWithTime,
-        endDateWithTime,
-        values.cap,
-        values.rate,
-        values.currency === 'ETH',
-        contract.account,
-      )
-    },
-    'STO Configured Successfully',
-    () => {
-      return dispatch(fetch())
-    },
-    `/dashboard/${token.ticker}/compliance`,
-    undefined,
-    true // TODO @bshevchenko
-  ))
-}
 
 export const fetchPurchases = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
@@ -117,5 +122,36 @@ export const fetchPurchases = () => async (dispatch: Function, getState: GetStat
     dispatch(ui.fetched())
   } catch (e) {
     dispatch(ui.fetchingFailed(e))
+  }
+}
+
+export const togglePauseSto = (endDate: Date ) =>
+  async (dispatch: Function, getState: GetState) =>{
+    const { pauseStatus } = getState().sto
+    dispatch(ui.tx(
+      [pauseStatus ? 'Resuming STO': 'Pausing STO'],
+      async () => {
+        if(pauseStatus){
+          // $FlowFixMe
+          await getState().sto.contract.unpause(endDate)
+        }else{
+          // $FlowFixMe
+          await getState().sto.contract.pause()
+        }
+        // $FlowFixMe
+        dispatch({ type: PAUSE_STATUS, status: await getState().sto.contract.paused() })
+      },
+      pauseStatus ? 'Successfully Resumed STO': 'Successfully Paused STO',
+      undefined,
+      undefined,
+      undefined,
+      true,
+    ))
+  }
+
+export const getPauseStatus = () => async (dispatch: Function, getState: GetState) =>{
+  if(getState().sto.contract){
+    // $FlowFixMe
+    dispatch({ type: PAUSE_STATUS, status: await getState().sto.contract.paused() })
   }
 }

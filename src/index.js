@@ -9,9 +9,9 @@ import 'normalize.css/normalize.css'
 
 import RouteLoader from './RouteLoader'
 import configureStore from './redux/store'
-import serviceWorkerRegister from './registerServiceWorker'
+import { unregister } from './registerServiceWorker'
 
-serviceWorkerRegister()
+unregister()
 
 const store = configureStore()
 

@@ -18,6 +18,7 @@ import {
   twelveHourTime,
   dateRange,
   dateRangeTodayOrLater,
+  ethereumAddress,
   gt,
 } from 'polymath-ui/dist/validate'
 
@@ -25,6 +26,7 @@ export const formName = 'configure_sto'
 
 type Props = {
   handleSubmit: () => void,
+  onAddressChange: () => void
 }
 
 const defaultCurrency = 'POLY'
@@ -142,6 +144,23 @@ class ConfigureSTOForm extends Component<Props, State> {
           placeholder='Enter amount'
           onChange={this.handleRateChange}
           validate={[required, integer, gt0]}
+        />
+        <Field
+          name='fundsReceiver'
+          component={TextInput}
+          label={
+            <Tooltip triggerText='ETH Address to receive the funds raised during the STO'>
+              <p className='bx--tooltip__label'>
+                Fund Receiver Address
+              </p>
+              <p>
+                The ethereum address that will receive the funds raised through the STO.
+              </p>
+            </Tooltip>
+          }
+          placeholder='Enter address'
+          onChange={this.props.onAddressChange}
+          validate={[required, ethereumAddress]}
         />
         <FormGroup
           legendText='Amount Of Funds The STO Will Raise'
