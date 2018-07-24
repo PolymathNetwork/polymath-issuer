@@ -24,7 +24,7 @@ To build application run:
 npm run build
 ```
 
-By default application works with Ropsten testnet.
+By default application works with Kovan testnet.
 
 ## Working with contracts locally
 

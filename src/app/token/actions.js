@@ -45,22 +45,23 @@ export const issue = () => async (dispatch: Function, getState: GetState) => {
   const ticker = token.ticker
 
   dispatch(ui.tx(
-    ['Approving POLY spend', `Issuing ${ticker} token`],
+    ['Token Creation Fee ', 'Token Creation'],
     async () => {
       const token: SecurityToken = {
         ...getState().token.token,
         ...getState().form[completeFormName].values,
       }
       token.isDivisible = token.isDivisible !== '1'
-      await SecurityTokenRegistry.generateSecurityToken(token)
+      await SecurityTokenRegistry.generateSecurityToken(token)     
     },
     'Token Was Issued Successfully',
     () => {
       return dispatch(fetch(ticker))
     },
-    `/dashboard/${ticker}/sto`,
+    `/dashboard/${ticker}`,
     undefined,
-    true // TODO @bshevchenko
+    true, // TODO @bshevchenko,
+    ticker.toUpperCase() + ' Token Creation'
   ))
 }
 
@@ -122,3 +123,4 @@ export const mintTokens = () => async (dispatch: Function, getState: GetState) =
     true // TODO @bshevchenko
   ))
 }
+

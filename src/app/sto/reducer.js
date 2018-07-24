@@ -18,6 +18,7 @@ export type STOState = {
   factories: Array<STOFactory>,
   factory: ?STOFactory,
   purchases: Array<STOPurchase>,
+  pauseStatus: boolean
 }
 
 const defaultState: STOState = {
@@ -27,6 +28,7 @@ const defaultState: STOState = {
   factories: [],
   factory: null,
   purchases: [],
+  pauseStatus: true,
 }
 
 export default (state: STOState = defaultState, action: Action) => {
@@ -58,6 +60,11 @@ export default (state: STOState = defaultState, action: Action) => {
       return {
         ...state,
         stage: STAGE_SELECT,
+      }
+    case a.PAUSE_STATUS:
+      return{
+        ...state,
+        pauseStatus: action.status, 
       }
     default:
       return state

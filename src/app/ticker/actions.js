@@ -1,5 +1,5 @@
 import React from 'react'
-import { PolyToken, TickerRegistry } from 'polymathjs'
+import { TickerRegistry } from 'polymathjs'
 import * as ui from 'polymath-ui'
 import type { SymbolDetails } from 'polymathjs/types'
 
@@ -16,22 +16,18 @@ export const RESERVED = 'ticker/RESERVED'
 export const reserve = () => async (dispatch: Function, getState: GetState) => {
   // TODO @bshevchenko: see below... const { isEmailConfirmed } = getState().pui.account
   const details: SymbolDetails = getState().form[formName].values
-  const isInsufficientBalance = getState().pui.account.balance.lt(await TickerRegistry.registrationFee())
   dispatch(ui.tx(
-    [...(isInsufficientBalance ? ['Requesting POLY'] : []), 'Approving POLY spend', 'Token symbol reservation'],
+    ['Token Symbol Reservation Fee', 'Token Symbol Reservation'],
     async () => {
-      if (isInsufficientBalance) {
-        await PolyToken.getTokens(2500000)
-      }
       await TickerRegistry.registerTicker(details)
     },
-    'Your Token Symbol Was Reserved Successfully',
+    'Your Token Symbol: ' + details.ticker + ', Was Reserved Successfully',
     () => {
-      dispatch({ type: RESERVED })
     },
     `/dashboard/${details.ticker}/providers`,
     undefined,
-    true // TODO @bshevchenko: !isEmailConfirmed
+    true, // TODO @bshevchenko: !isEmailConfirmed,
+    details.ticker.toUpperCase() + ' Token Symbol Reservation'
   ))
 }
 
