@@ -19,6 +19,8 @@ import {
   ModalHeader,
   ModalFooter,
   InlineNotification,
+  OverflowMenu,
+  OverflowMenuItem,
 } from 'carbon-components-react'
 import type { Investor, Address, SecurityToken } from 'polymathjs/types'
 
@@ -33,6 +35,8 @@ import {
   editInvestors,
   resetUploaded,
   PERMANENT_LOCKUP_TS,
+  getFreezeStatus,
+  toggleFreeze,
 } from './actions'
 import AddInvestorForm, { formName as addInvestorFormName } from './components/AddInvestorForm'
 import EditInvestorsForm, { formName as editInvestorsFormName } from './components/EditInvestorsForm'
@@ -64,6 +68,7 @@ type StateProps = {|
   criticals: Array<InvestorCSVRow>,
   stateListLength: number,
   token: SecurityToken,
+  isTokenFrozen: boolean,
 |}
 
 type DispatchProps = {|
@@ -75,6 +80,8 @@ type DispatchProps = {|
   removeInvestors: (investors: Array<Address>) => any,
   reset: (formName: string) => any,
   resetUploaded: () => any,
+  getFreezeStatus: () => any,
+  toggleFreeze: (postToggle: ?Function) => any
 |}
 
 const mapStateToProps = (state: RootState) => ({
@@ -82,6 +89,7 @@ const mapStateToProps = (state: RootState) => ({
   criticals: state.whitelist.criticals,
   stateListLength: state.whitelist.listLength,
   token: state.token.token,
+  isTokenFrozen: state.whitelist.freezeStatus,
 })
 
 const mapDispatchToProps = {
@@ -93,6 +101,8 @@ const mapDispatchToProps = {
   removeInvestors,
   resetUploaded,
   reset,
+  getFreezeStatus,
+  toggleFreeze,
 }
 
 type Props = StateProps & DispatchProps
@@ -106,6 +116,8 @@ type State = {|
   isImportConfirmModalOpen: boolean,
   startDateAdded: ?Date,
   endDateAdded: ?Date,
+  isFreezeModalOpen: boolean,
+  isFrozenModalOpen: boolean,
 |}
 
 const dateFormat = (date: Date): string => {
@@ -126,10 +138,37 @@ class CompliancePage extends Component<Props, State> {
     isImportConfirmModalOpen: false,
     startDateAdded: null,
     endDateAdded: null,
+    isFreezeModalOpen: false,
+    isFrozenModalOpen: false,
   }
 
   componentWillMount () {
     this.props.fetchWhitelist()
+    this.props.getFreezeStatus().then(()=>{
+      if(this.props.isTokenFrozen){
+        this.setState({ isFrozenModalOpen: true })
+      }
+    })
+  }
+
+  handleFreezeSubmit = () => {
+    this.setState({ isFreezeModalOpen: true })
+  }
+
+  handleFreezeConfirm = () => {
+    this.setState({ isFreezeModalOpen: false })
+    this.props.toggleFreeze((()=>{
+      this.setState({ isFrozenModalOpen: true })
+    }))  
+  }
+
+  handleUnfreezeConfirm = () =>{
+    this.setState({ isFrozenModalOpen: false })
+    this.props.toggleFreeze() 
+  }
+
+  handleFreezeCancel = () => {
+    this.setState({ isFreezeModalOpen: false })
   }
 
   handleChangePages = (pc) => {
@@ -282,6 +321,9 @@ class CompliancePage extends Component<Props, State> {
           >
             Add New
           </Button>
+          <OverflowMenu floatingMenu flipped>
+            <OverflowMenuItem itemText='Pause All Transfers' onClick={this.handleFreezeSubmit} />
+          </OverflowMenu>
           <Modal
             className='whitelist-investor-modal'
             open={this.state.isAddModalOpen}
@@ -296,6 +338,7 @@ class CompliancePage extends Component<Props, State> {
             <AddInvestorForm onSubmit={this.handleAddInvestorSubmit} onClose={this.handleAddModalClose} />
           </Modal>
         </TableToolbarContent>
+
       </TableToolbar>
       <Table>
         <TableHead>
@@ -363,6 +406,55 @@ class CompliancePage extends Component<Props, State> {
       <DocumentTitle title='Compliance – Polymath'>
         <div>
           <Progress />
+          <ComposedModal open={this.props.isTokenFrozen && this.state.isFrozenModalOpen} className='pui-confirm-modal'>
+            <ModalHeader
+              title={(
+                <span>
+                  <Icon name='icon--pause--outline' fill='#E71D32' width='24' height='24' />&nbsp;
+                  All Transfers Paused
+                </span>
+              )}
+            />
+            <ModalBody>
+              <div className='bx--modal-content__text'>
+                <p>
+                All transfers have been paused, including on-chain secondary markets.
+                </p>
+              </div>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button onClick={this.handleUnfreezeConfirm} icon='icon--play'>RESUME TRANSFERS&nbsp;
+              </Button>
+            </ModalFooter>
+          </ComposedModal>
+          <ComposedModal open={this.state.isFreezeModalOpen} className='pui-confirm-modal'>
+            <ModalHeader
+              label='Confirmation required'
+              title={(
+                <span>
+                  <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
+                  Pause All Transfers?
+                </span>
+              )}
+            />
+            <ModalBody>
+              <div className='bx--modal-content__text'>
+                <p>
+                  Once you hit &laquo;CONFIRM&raquo;, the freeze on all transfers will PREVENT ANY INVESTOR FROM BUYING
+                   OR SELLING YOUR TOKENS UNTIL YOU RESUME TRANSFERS. Consider notifying all your investors. If you wish
+                    to review with your Advisors, please select &laquo;CANCEL&raquo;.
+                </p>
+              </div>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button kind='secondary' onClick={this.handleFreezeCancel}>
+                CANCEL
+              </Button>
+              <Button onClick={this.handleFreezeConfirm}>CONFIRM</Button>
+            </ModalFooter>
+          </ComposedModal>
 
           <Button
             icon='upload'
