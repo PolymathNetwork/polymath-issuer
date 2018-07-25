@@ -20,6 +20,7 @@ export const listLength = (listLength: number) => ({ type: LIST_LENGTH, listLeng
 export const RESET_UPLOADED = 'compliance/RESET_UPLOADED'
 export const resetUploaded = () => ({ type: RESET_UPLOADED })
 
+export const FREEZE_STATUS = 'compliance/FREEZE_STATUS'
 export type InvestorCSVRow = [number, string, string, string, string]
 
 export const fetchWhitelist = () => async (dispatch: Function, getState: GetState) => {
@@ -199,3 +200,43 @@ export const removeInvestors = (addresses: Array<Address>) => async (dispatch: F
     true // TODO @bshevchenko
   ))
 }
+
+export const getFreezeStatus = () => async (dispatch: Function, getState: GetState) =>{
+  // $FlowFixMe
+  getState().token.token.contract.subscribe('LogFreezeTransfers', {}, (e)=>{
+    if(e.returnValues['0']){
+      dispatch({ type: FREEZE_STATUS, freezeStatus: true })
+    }else{
+      dispatch({ type: FREEZE_STATUS, freezeStatus: false })
+    }
+  })
+  // $FlowFixMe
+  dispatch({ type: FREEZE_STATUS, freezeStatus: await getState().token.token.contract.freeze() })
+}
+
+export const toggleFreeze = (postToggle: ?Function) =>
+  async (dispatch: Function, getState: GetState) =>{
+    const { freezeStatus } = getState().whitelist
+    // $FlowFixMe
+    const transferManager = await getState().token.token.contract.getTransferManager()
+    dispatch(ui.tx(
+      [freezeStatus ? 'Resuming Token Transfers': 'Pausing Token Transfers'],
+      async () => {
+        if(freezeStatus){
+          // $FlowFixMe
+          await getState().token.token.contract.unfreezeTransfers()
+        }else{
+          // $FlowFixMe
+          await getState().token.token.contract.freezeTransfers()
+        }
+      },
+      freezeStatus ? 'Successfully Resumed Token Transfers': 'Successfully Paused Token Transfers',
+      postToggle ? ()=>{
+        // $FlowFixMe
+        postToggle()
+      } : ()=>{},
+      undefined,
+      undefined,
+      true,
+    ))
+  }
