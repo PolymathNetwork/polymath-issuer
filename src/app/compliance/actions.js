@@ -203,16 +203,15 @@ export const removeInvestors = (addresses: Array<Address>) => async (dispatch: F
 
 export const getFreezeStatus = () => async (dispatch: Function, getState: GetState) =>{
   // $FlowFixMe
-  const transferManager = await getState().token.token.contract.getTransferManager()
-  transferManager.subscribePauseEvents((e)=>{
-    if(e.event==='pause'){
+  getState().token.token.contract.subscribe('LogFreezeTransfers', {}, (e)=>{
+    if(e.returnValues['0']){
       dispatch({ type: FREEZE_STATUS, freezeStatus: true })
-    }else if(e.event==='unpause'){
+    }else{
       dispatch({ type: FREEZE_STATUS, freezeStatus: false })
     }
   })
-
-  dispatch({ type: FREEZE_STATUS, freezeStatus: await transferManager.paused() })
+  // $FlowFixMe
+  dispatch({ type: FREEZE_STATUS, freezeStatus: await getState().token.token.contract.freeze() })
 }
 
 export const toggleFreeze = (postToggle: ?Function) =>
@@ -224,9 +223,11 @@ export const toggleFreeze = (postToggle: ?Function) =>
       [freezeStatus ? 'Resuming Token Transfers': 'Pausing Token Transfers'],
       async () => {
         if(freezeStatus){
-          await transferManager.unpause()
+          // $FlowFixMe
+          await getState().token.token.contract.unfreezeTransfers()
         }else{
-          await transferManager.pause()
+          // $FlowFixMe
+          await getState().token.token.contract.freezeTransfers()
         }
       },
       freezeStatus ? 'Successfully Resumed Token Transfers': 'Successfully Paused Token Transfers',
