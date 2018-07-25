@@ -13,7 +13,7 @@ export type WhitelistState = {|
   criticals: Array<InvestorCSVRow>,
   isTooMany: boolean,
   listLength: number,
-  freezeStatus: boolean
+  freezeStatus: ?boolean
 |}
 
 const defaultState: WhitelistState = {
@@ -23,7 +23,7 @@ const defaultState: WhitelistState = {
   criticals: [],
   isTooMany: false,
   listLength: 10,
-  freezeStatus: false,
+  freezeStatus: null,
 }
 
 export default (state: WhitelistState = defaultState, action: Object) => {

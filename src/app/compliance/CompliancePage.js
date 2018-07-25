@@ -156,6 +156,7 @@ class CompliancePage extends Component<Props, State> {
   }
 
   handleFreezeConfirm = () => {
+    // TODO: we shoudn't extend ac code inside of components and instead manage modal windows in the ac
     this.setState({ isFreezeModalOpen: false })
     this.props.toggleFreeze((()=>{
       this.setState({ isFrozenModalOpen: true })
