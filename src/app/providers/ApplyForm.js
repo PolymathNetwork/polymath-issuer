@@ -20,10 +20,10 @@ type Props = {|
   onClose: () => void,
 |}
 
-const linkTooltip = (title: string) => (
-  <Tooltip triggerText={title}>
+const linkTooltip = (title: string, required: boolean) => (
+  <Tooltip triggerText={<p>{title} { required ? <span className='polyRequiredRed'>*</span> : '' } </p>}>
     <p className='bx--tooltip__label'>
-      Links
+      Linkso
     </p>
     <p>
       Paste links to the file/folder from your preferred file sharing service.<br />
@@ -40,49 +40,49 @@ class ApplyForm extends Component<Props> {
         <Field
           name='companyName'
           component={TextInput}
-          label='Company Name'
+          label={<p>Company Name <span className='polyRequiredRed'>*</span> </p>}
           placeholder='Enter company name'
           validate={[required, maxLength100]}
         />
         <Field
           name='companyDesc'
           component={TextAreaInput}
-          label='Company Description'
+          label={<p>Company Description <span className='polyRequiredRed'>*</span> </p>}
           placeholder='Enter company description'
           validate={[required, maxLength300]}
         />
         <Field
           name='operatedIn'
           component={TextInput}
-          label='Jurisdiction of Operation'
+          label={<p>Jurisdiction of Operation <span className='polyRequiredRed'>*</span> </p>}
           placeholder='Enter jurisdiction of operation'
           validate={[required, maxLength100]}
         />
         <Field
           name='incorporatedIn'
           component={TextInput}
-          label='Jurisdiction of Incorporation'
+          label={<p>Jurisdiction of Incorporation<span className='polyRequiredRed'>*</span> </p>}
           placeholder='Enter jurisdiction of incorporation'
           validate={[required, maxLength100]}
         />
         <Field
           name='projectURL'
           component={TextInput}
-          label={linkTooltip('Corporate/Project Presentation')}
+          label={linkTooltip('Corporate/Project Presentation', true)}
           placeholder='Paste link here'
           validate={[required, url]}
         />
         <Field
           name='profilesURL'
           component={TextInput}
-          label={linkTooltip('Management and Board Member Profiles')}
+          label={linkTooltip('Management and Board Member Profiles', true)}
           placeholder='Paste link here'
           validate={[required, url]}
         />
         <Field
           name='structureURL'
           component={TextInput}
-          label={linkTooltip('Corporate or Project Structure/Organization')}
+          label={linkTooltip('Corporate or Project Structure/Organization', true)}
           placeholder='Paste link here'
           validate={[required, url]}
         />
