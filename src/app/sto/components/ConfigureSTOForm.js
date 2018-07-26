@@ -26,7 +26,6 @@ export const formName = 'configure_sto'
 
 type Props = {
   handleSubmit: () => void,
-  onAddressChange: () => void
 }
 
 const defaultCurrency = 'POLY'
@@ -159,7 +158,6 @@ class ConfigureSTOForm extends Component<Props, State> {
             </Tooltip>
           }
           placeholder='Enter address'
-          onChange={this.props.onAddressChange}
           validate={[required, ethereumAddress]}
         />
         <FormGroup

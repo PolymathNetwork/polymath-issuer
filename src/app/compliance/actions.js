@@ -32,36 +32,7 @@ export const fetchWhitelist = () => async (dispatch: Function, getState: GetStat
     }
 
     const { transferManager } = getState().whitelist
-    const tableData = []
-    const investors = await transferManager.getWhitelist()
-
-    for (let i = 0; i < investors.length; i++) {
-      const found = tableData.some((el, index, array) => {
-        // if true, User already recorded in eventList, so we don't want to make a new entry
-        if (el.address === investors[i].address) {
-          // if true, this event is newer than the previous event, so we update the space in the array
-          if (investors[i].added > el.added) {
-            array[index] = investors[i]
-            return true
-          }
-          return true
-        }
-        // found returns false because it doesn't exist. so we add it below as backendData
-        return false
-      })
-      if (!found) {
-        tableData.push(investors[i])
-      }
-    }
-    // removeZeroTimestampArray removes investors that have a zero timestamp,
-    // because they are effectively removed from trading and shouldn't be shown on the list to the user
-    const removeZeroTimestampArray = []
-    for (let j = 0; j < tableData.length; j++) {
-      if (tableData[j].from.getTime() !== 0 && tableData[j].to.getTime() !== 0) {
-        removeZeroTimestampArray.push(tableData[j])
-      }
-    }
-    dispatch({ type: WHITELIST, investors: removeZeroTimestampArray })
+    dispatch({ type: WHITELIST, investors: await transferManager.getWhitelist() })
 
     dispatch(ui.fetched())
   } catch (e) {

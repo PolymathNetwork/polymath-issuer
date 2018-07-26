@@ -7840,7 +7840,7 @@ onetime@^2.0.0:
   dependencies:
     mimic-fn "^1.0.0"
 
-openzeppelin-solidity@^1.9.0:
+openzeppelin-solidity@1.10.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/openzeppelin-solidity/-/openzeppelin-solidity-1.10.0.tgz#d77eee6653f5958d051318a61ba0b436f92216c0"
 
@@ -8206,9 +8206,9 @@ polymath-auth@1.1.3:
     web3-core-method "github:bshevchenko/web3-core-method#master"
     web3-eth-contract "1.0.0-beta.30"
 
-polymath-core@1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/polymath-core/-/polymath-core-1.2.1.tgz#2508412e0d41e9b6d46cc69c837b2fb66f3938ae"
+polymath-core@1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/polymath-core/-/polymath-core-1.3.0.tgz#aa994281d36702e29c9bb37cba0911f6b86632eb"
   dependencies:
     babel-polyfill "6.26.0"
     babel-preset-es2015 "6.24.1"
@@ -8220,16 +8220,17 @@ polymath-core@1.2.1:
     coveralls "^3.0.1"
     ethereumjs-testrpc "^6.0.3"
     ethers "^3.0.15"
-    openzeppelin-solidity "^1.9.0"
+    openzeppelin-solidity "1.10.0"
     readline-sync "^1.4.9"
     shelljs "^0.8.2"
+    solc "^0.4.24"
     truffle-contract "^3.0.4"
     truffle-hdwallet-provider-privkey "^0.1.0"
     web3 "^1.0.0-beta.33"
 
-polymath-ui@5.4.0:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-5.4.0.tgz#f1a15141c7f2498bb954774612f17d9ee6628ac9"
+polymath-ui@5.5.0:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-5.5.0.tgz#f63ffe35541bda2a121c35103d648a86c7f6b980"
   dependencies:
     axios "^0.18.0"
     babel-runtime "6.26.0"
@@ -8249,13 +8250,13 @@ polymath-ui@5.4.0:
     redux "3.7.2"
     redux-form "7.0.4"
 
-polymathjs@1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-1.4.0.tgz#8b889ad4986c9178859a71194e05ae1a0d187fc0"
+polymathjs@1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-1.5.0.tgz#d05073a59352915e3d385b62eae52d8eba2ca793"
   dependencies:
     bignumber.js "5.0.0"
     bs58 "^4.0.1"
-    polymath-core "1.2.1"
+    polymath-core "1.3.0"
     redux "3.7.2"
     redux-thunk "2.2.0"
     web3 "1.0.0-beta.30"
@@ -9934,7 +9935,7 @@ sockjs@0.3.18:
     faye-websocket "^0.10.0"
     uuid "^2.0.2"
 
-solc@0.4.24, solc@^0.4.2:
+solc@0.4.24, solc@^0.4.2, solc@^0.4.24:
   version "0.4.24"
   resolved "https://registry.yarnpkg.com/solc/-/solc-0.4.24.tgz#354f14b269b38cbaa82a47d1ff151723502b954e"
   dependencies:
@@ -11100,7 +11101,7 @@ web3-core-helpers@1.0.0-beta.34:
     web3-eth-iban "1.0.0-beta.34"
     web3-utils "1.0.0-beta.34"
 
-web3-core-method@1.0.0-beta.30, web3-core-method@bshevchenko/web3-core-method#master, "web3-core-method@github:bshevchenko/web3-core-method#master":
+web3-core-method@1.0.0-beta.30, "web3-core-method@github:bshevchenko/web3-core-method#master":
   version "1.0.0-beta.30"
   resolved "https://codeload.github.com/bshevchenko/web3-core-method/tar.gz/9199df8b1ea8658503ee48ba7ad391fec8e61838"
   dependencies:

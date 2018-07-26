@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { reset } from 'redux-form'
 import DocumentTitle from 'react-document-title'
-import { etherscanAddress, addressShortifier } from 'polymath-ui'
+import { etherscanAddress, addressShortifier, confirm } from 'polymath-ui'
 import {
   Button,
   DataTable,
@@ -14,10 +14,6 @@ import {
   DatePicker,
   DatePickerInput,
   Icon,
-  ComposedModal,
-  ModalBody,
-  ModalHeader,
-  ModalFooter,
   InlineNotification,
 } from 'carbon-components-react'
 import type { Investor, Address, SecurityToken } from 'polymathjs/types'
@@ -75,6 +71,7 @@ type DispatchProps = {|
   removeInvestors: (investors: Array<Address>) => any,
   reset: (formName: string) => any,
   resetUploaded: () => any,
+  confirm: () => any,
 |}
 
 const mapStateToProps = (state: RootState) => ({
@@ -93,6 +90,7 @@ const mapDispatchToProps = {
   removeInvestors,
   resetUploaded,
   reset,
+  confirm,
 }
 
 type Props = StateProps & DispatchProps
@@ -103,12 +101,14 @@ type State = {|
   isAddModalOpen: boolean,
   isEditModalOpen: boolean,
   isImportModalOpen: boolean,
-  isImportConfirmModalOpen: boolean,
   startDateAdded: ?Date,
   endDateAdded: ?Date,
 |}
 
-const dateFormat = (date: Date): string => {
+const dateFormat = (date: ?Date): string => {
+  if (!date) {
+    return ''
+  }
   if (date.getTime() === PERMANENT_LOCKUP_TS) {
     return 'Permanent'
   }
@@ -123,7 +123,6 @@ class CompliancePage extends Component<Props, State> {
     isAddModalOpen: false,
     isEditModalOpen: false,
     isImportModalOpen: false,
-    isImportConfirmModalOpen: false,
     startDateAdded: null,
     endDateAdded: null,
   }
@@ -170,17 +169,58 @@ class CompliancePage extends Component<Props, State> {
     this.setState({ isImportModalOpen: false })
   }
 
-  handleImportConfirmModalClose = () => {
-    this.setState({ isImportConfirmModalOpen: false })
-  }
-
-  handleImportConfirm = () => {
-    this.setState({ isImportConfirmModalOpen: true })
-  }
-
   handleImport = () => {
-    this.setState({ isImportConfirmModalOpen: false })
-    this.props.importWhitelist()
+    const { criticals } = this.props // $FlowFixMe
+    this.props.confirm(
+      <div>
+        <p>
+          Please confirm that all previous information is correct and all investors are approved.
+          Once you hit &laquo;CONFIRM&raquo;, investors will be submitted to the blockchain.
+          Any change will require that you start the process over. If you wish to review your information,
+          please select &laquo;CANCEL&raquo;.
+        </p>
+        {criticals.length ? (
+          <div>
+            <InlineNotification
+              hideCloseButton
+              title={criticals.length + ' Error' + (criticals.length > 1 ? 's' : '') + ' in Your .csv File'}
+              subtitle={'Please note that the entries below contains error that prevent their content to be ' +
+              'committed to the blockchain. Entries were automatically deselected so they are not submitted ' +
+              'to the blockchain. You can also elect to cancel the operation to review the csv file offline.'}
+              kind='error'
+            />
+            <table className='import-criticals'>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Address</th>
+                  <th>Sale Lockup</th>
+                  <th>Purchase Lockup</th>
+                  <th>KYC/AML Expiry</th>
+                </tr>
+              </thead>
+              <tbody>
+                {criticals.map(([id, address, sale, purchase, expiry]: InvestorCSVRow) => (
+                  <tr key={id}>
+                    <td>{id}</td>
+                    <td>{addressShortifier(address)}</td>
+                    <td>{sale}</td>
+                    <td>{purchase}</td>
+                    <td>{expiry}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : ''}
+      </div>,
+      () => {
+        this.props.importWhitelist()
+      },
+      undefined,
+      undefined,
+      criticals.length > 0 ? 'whitelist-import-confirm-modal' : '',
+    )
   }
 
   handleBatchEdit = (selectedRows: Array<Object>) => {
@@ -354,7 +394,7 @@ class CompliancePage extends Component<Props, State> {
   )
 
   render () {
-    const { token, investors, criticals } = this.props
+    const { token, investors } = this.props
     if (!token || !token.address) {
       return <NotFoundPage />
     }
@@ -373,74 +413,9 @@ class CompliancePage extends Component<Props, State> {
           </Button>
           <ImportWhitelistModal
             isOpen={this.state.isImportModalOpen}
-            onSubmit={this.handleImportConfirm}
+            onSubmit={this.handleImport}
             onClose={this.handleImportModalClose}
           />
-          <ComposedModal
-            open={this.state.isImportConfirmModalOpen}
-            className='pui-confirm-modal whitelist-import-confirm-modal'
-          >
-            <ModalHeader
-              label='Confirmation required'
-              title={(
-                <span>
-                  <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
-                  Before You Proceed
-                </span>
-              )}
-            />
-            <ModalBody>
-              <div className='bx--modal-content__text'>
-                <p>
-                  Please confirm that all previous information is correct and all investors are approved.
-                  Once you hit &laquo;CONFIRM&raquo;, investors will be submitted to the blockchain.
-                  Any change will require that you start the process over. If you wish to review your information,
-                  please select &laquo;CANCEL&raquo;.
-                </p>
-                {criticals.length ? (
-                  <div>
-                    <InlineNotification
-                      hideCloseButton
-                      title={criticals.length + ' Error' + (criticals.length > 1 ? 's' : '') + ' in Your .csv File'}
-                      subtitle={'Please note that the entries below contains error that prevent their content to be ' +
-                      'committed to the blockchain. Entries were automatically deselected so they are not submitted ' +
-                      'to the blockchain. You can also elect to cancel the operation to review the csv file offline.'}
-                      kind='error'
-                    />
-                    <table className='import-criticals'>
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Address</th>
-                          <th>Sale Lockup</th>
-                          <th>Purchase Lockup</th>
-                          <th>KYC/AML Expiry</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {criticals.map(([id, address, sale, purchase, expiry]: InvestorCSVRow) => (
-                          <tr key={id}>
-                            <td>{id}</td>
-                            <td>{addressShortifier(address)}</td>
-                            <td>{sale}</td>
-                            <td>{purchase}</td>
-                            <td>{expiry}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : ''}
-              </div>
-            </ModalBody>
-
-            <ModalFooter>
-              <Button kind='secondary' onClick={this.handleImportConfirmModalClose}>
-                Cancel
-              </Button>
-              <Button onClick={this.handleImport}>Confirm</Button>
-            </ModalFooter>
-          </ComposedModal>
 
           <DatePicker
             onChange={this.handleDateAddedChange}

@@ -1,9 +1,10 @@
 // @flow
 
+import React from 'react'
 import { STO, CappedSTOFactory, SecurityToken } from 'polymathjs'
 import * as ui from 'polymath-ui'
 import type { TwelveHourTime } from 'polymath-ui'
-import type { STOFactory, STODetails, STOPurchase, Address } from 'polymathjs/types'
+import type { STOFactory, STODetails, STOPurchase } from 'polymathjs/types'
 
 import { formName as configureFormName } from './components/ConfigureSTOForm'
 import type { ExtractReturn } from '../../redux/helpers'
@@ -25,8 +26,11 @@ export const GO_BACK = 'sto/GO_BACK'
 export const goBack = () => ({ type: GO_BACK })
 
 export const PAUSE_STATUS = 'sto/PAUSE_STATUS'
+export const pauseStatus = (status: boolean) => ({ type: PAUSE_STATUS, status })
+
 export type Action =
   | ExtractReturn<typeof data>
+  | ExtractReturn<typeof pauseStatus>
   | ExtractReturn<typeof factories>
 
 export const fetch = () => async (dispatch: Function, getState: GetState) => {
@@ -39,6 +43,9 @@ export const fetch = () => async (dispatch: Function, getState: GetState) => {
     }
     const sto = await token.contract.getSTO()
     dispatch(data(sto, sto ? await sto.getDetails() : null))
+    if (sto) {
+      dispatch(pauseStatus(await sto.paused()))
+    }
     dispatch(ui.fetched())
   } catch (e) {
     dispatch(ui.fetchingFailed(e))
@@ -73,43 +80,84 @@ export const fetchFactories = () => async (dispatch: Function) => {
 const dateTimeFromDateAndTime = (date: Date, time: TwelveHourTime) =>
   new Date(date.valueOf() + ui.twelveHourTimeToMinutes(time) * 60000)
 
-export const configure = (polyCost: number, fundsReceiver: Address) => 
-  async (dispatch: Function, getState: GetState) => {
+export const configure = () => async (dispatch: Function, getState: GetState) => {
+  dispatch(ui.confirm(
+    <div>
+      <p>
+        Once submitted to the blockchain, the dates for your
+        offering cannot be changed.
+      </p>
+      <p>
+        Please confirm dates with your Advisor and Legal
+        providers before you click on &laquo;CONTINUE&raquo;.
+      </p>
+      <p>
+        Investors must be added to the whitelist before or while
+        the STO is live, so they can participate to your
+        fundraise.
+      </p>
+      <p>
+        All necessary documentation must be posted on your
+        Securities Offering Site.
+      </p>
+    </div>,
+    async () => {
+      const fee = await CappedSTOFactory.setupCost()
+      const feeView = ui.thousandsDelimiter(fee) // $FlowFixMe
+      if (getState().pui.account.balance.lt(fee)) {
+        dispatch(ui.faucet(`The launching of a STO has a fixed cost of ${feeView} POLY.`))
+        return
+      }
+      dispatch(ui.confirm(
+        <div>
+          <p>Completion of your STO smart contract deployment and scheduling will require two wallet transactions.</p>
+          <p>The first transaction will be used to pay for the smart contract fee of:</p>
+          <div className='bx--details'>{feeView} POLY</div>
+          <p>
+            The second transaction will be used to pay the mining fee (aka gas fee) to complete the
+            scheduling of your STO. Please hit &laquo;CONFIRM&raquo; when you are ready to proceed.
+          </p>
+        </div>,
+        async () => {
+          const { factory } = getState().sto
+          const { token } = getState().token
+          if (!factory || !token || !token.contract) {
+            return
+          }
+          dispatch(ui.tx(
+            ['STO Smart Contract Fee', 'STO Smart Contract Deployment and Scheduling'],
+            async () => {
+              const contract: SecurityToken = token.contract
+              const { values } = getState().form[configureFormName]
+              const [startDate, endDate] = values['start-end']
+              const startDateWithTime = dateTimeFromDateAndTime(startDate, values.startTime)
+              const endDateWithTime = dateTimeFromDateAndTime(endDate, values.endTime)
 
-    const { factory } = getState().sto
-    const { token } = getState().token
-
-    if (!factory || !token || !token.contract) {
-      return
-    }
-    dispatch(ui.tx(
-      ['STO Smart Contract Fee', 'STO Smart Contract Deployment and Scheduling'],
-      async () => {
-        const contract: SecurityToken = token.contract
-        const { values } = getState().form[configureFormName]
-        const [startDate, endDate] = values['start-end']
-        const startDateWithTime = dateTimeFromDateAndTime(startDate, values.startTime)
-        const endDateWithTime = dateTimeFromDateAndTime(endDate, values.endTime)
-
-        await contract.setCappedSTO(
-          startDateWithTime,
-          endDateWithTime,
-          values.cap,
-          values.rate,
-          values.currency === 'ETH',
-          fundsReceiver,
-        )
-      },
-      'STO Configured Successfully',
-      () => {
-        return dispatch(fetch())
-      },
-      `/dashboard/${token.ticker}/compliance`,
-      undefined,
-      true, // TODO @bshevchenko
-      token.ticker.toUpperCase() + ' STO Creation' 
-    ))
-  }
+              await contract.setCappedSTO(
+                startDateWithTime,
+                endDateWithTime,
+                values.cap,
+                values.rate,
+                values.currency === 'ETH',
+                values.fundsReceiver,
+              )
+            },
+            'STO Configured Successfully',
+            () => {
+              return dispatch(fetch())
+            },
+            `/dashboard/${token.ticker}/compliance`,
+            undefined,
+            true, // TODO @bshevchenko
+            token.ticker.toUpperCase() + ' STO Creation'
+          ))
+        },
+        'Proceeding with Smart Contract Deployment and Scheduling'
+      ))
+    },
+    'Before You Launch Your Security Token Offering',
+  ))
+}
 
 export const fetchPurchases = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
@@ -125,33 +173,51 @@ export const fetchPurchases = () => async (dispatch: Function, getState: GetStat
   }
 }
 
-export const togglePauseSto = (endDate: Date ) =>
-  async (dispatch: Function, getState: GetState) =>{
-    const { pauseStatus } = getState().sto
-    dispatch(ui.tx(
-      [pauseStatus ? 'Resuming STO': 'Pausing STO'],
-      async () => {
-        if(pauseStatus){
-          // $FlowFixMe
-          await getState().sto.contract.unpause(endDate)
-        }else{
-          // $FlowFixMe
-          await getState().sto.contract.pause()
-        }
-        // $FlowFixMe
-        dispatch({ type: PAUSE_STATUS, status: await getState().sto.contract.paused() })
-      },
-      pauseStatus ? 'Successfully Resumed STO': 'Successfully Paused STO',
-      undefined,
-      undefined,
-      undefined,
-      true,
-    ))
-  }
-
-export const getPauseStatus = () => async (dispatch: Function, getState: GetState) =>{
-  if(getState().sto.contract){
-    // $FlowFixMe
-    dispatch({ type: PAUSE_STATUS, status: await getState().sto.contract.paused() })
-  }
+export const togglePauseSto = (endDate: Date ) => async (dispatch: Function, getState: GetState) => {
+  const isStoPaused = getState().sto.pauseStatus
+  dispatch(ui.confirm(
+    isStoPaused ? (
+      <div>
+        <p>
+          Once you hit &laquo;CONFIRM&raquo;, the STO will resume, allowing Investors to contribute funds
+          again. Please consult with your Advisor and provide your Investors with sufficient disclosure prior
+          to confirming the action.<br />
+          If you are not sure or would like to consult your Advisor,
+          simply select &laquo;CANCEL&raquo;.
+        </p>
+        <br />
+        <ui.Remark title='Note'>
+          Your offering end-date will not be changed as a result of this operation.
+        </ui.Remark>
+      </div>
+    ) : (
+      <p>
+        Once you hit &laquo;CONFIRM&raquo;, the STO will pause and Investors will no longer be able to
+        contribute funds. Please consult with your Advisor and provide your Investors with sufficient
+        disclosure prior to confirming the action.
+        <br />
+        If you are not sure or would like to consult your Advisor, simply select &laquo;CANCEL&raquo;.
+      </p>
+    ),
+    async () => {
+      dispatch(ui.tx(
+        [isStoPaused ? 'Resuming STO': 'Pausing STO'],
+        async () => {
+          const contract: STO = getState().sto.contract
+          if (isStoPaused) {
+            await contract.unpause(endDate)
+          } else {
+            await contract.pause()
+          }
+          dispatch(pauseStatus(await contract.paused()))
+        },
+        isStoPaused ? 'Successfully Resumed STO': 'Successfully Paused STO',
+        undefined,
+        undefined,
+        undefined,
+        true,
+      ))
+    },
+    `Before You Proceed with ${isStoPaused ? 'Resuming' : 'Pausing'} the STO`
+  ))
 }

@@ -5,28 +5,19 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
-import {
-  Tabs,
-  Tab,
-  Icon,
-  Checkbox,
-  Button,
-  ComposedModal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from 'carbon-components-react'
-import { Countdown, Remark } from 'polymath-ui'
+import { Tabs, Tab, Icon, Checkbox, Button } from 'carbon-components-react'
+import { Countdown, Remark, confirm } from 'polymath-ui'
+import type { Node } from 'react'
 import type { SecurityToken } from 'polymathjs/types'
 import type { RouterHistory } from 'react-router-dom'
 
 import { applyProviders, iHaveMyOwnProviders, setProviderStatus } from './actions'
+import ApplyModal from './ApplyModal'
 import NotFoundPage from '../NotFoundPage'
 import Progress from '../token/components/Progress'
 import { categories } from './data'
 import type { RootState } from '../../redux/reducer'
 import type { SPStatus, SPCategory, ServiceProvider } from './data'
-import ApplyModal from './ApplyModal'
 
 import './style.css'
 
@@ -39,6 +30,7 @@ type DispatchProps = {|
   applyProviders: (ids: Array<number>) => any,
   iHaveMyOwnProviders: (cat: number) => any,
   setProviderStatus: (id: number, status: SPStatus) => any,
+  confirm: (content: Node, onConfirm: () => void, title: string, buttonLabel: string) => any,
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -47,6 +39,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
 })
 
 const mapDispatchToProps: DispatchProps = {
+  confirm,
   applyProviders,
   iHaveMyOwnProviders,
   setProviderStatus,
@@ -58,7 +51,6 @@ type State = {|
   selectAll: boolean,
   isApply: boolean,
   catName: string,
-  isModalOpen: boolean,
 |}
 
 type Props = {|
@@ -73,7 +65,6 @@ class ProvidersPage extends Component<Props, State> {
     selectAll: false,
     isApply: false,
     catName: '',
-    isModalOpen: false,
   }
 
   componentWillMount = () => {
@@ -139,18 +130,18 @@ class ProvidersPage extends Component<Props, State> {
   }
 
   handleCreateToken = () => {
-    this.setState({ isModalOpen: true })
-  }
-
-  handleConfirmCreate = () => {
-    this.setState({ isModalOpen: false })
-    this.handleIHaveMyOwn(0)
-    // $FlowFixMe
-    this.props.history.push('/dashboard/' + this.props.token.ticker)
-  }
-
-  handleCancelCreate = () => {
-    this.setState({ isModalOpen: false })
+    this.props.confirm(
+      <p>
+        Please make sure you have received sufficient information from one of the Advisors or the Legal
+        firms listed below or your own advisor before you proceed with the token creation.
+      </p>,
+      () => {
+        this.handleIHaveMyOwn(0) // $FlowFixMe
+        this.props.history.push('/dashboard/' + this.props.token.ticker)
+      },
+      'Before You Proceed',
+      'Create Token'
+    )
   }
 
   applied = (cat: number): number => {
@@ -193,31 +184,6 @@ class ProvidersPage extends Component<Props, State> {
       <DocumentTitle title={`${token.ticker} Providers – Polymath`}>
         <div>
           <Progress />
-          <ComposedModal open={this.state.isModalOpen} className='pui-confirm-modal'>
-            <ModalHeader
-              title={(
-                <span>
-                  <Icon name='warning--glyph' fill='#EFC100' width='24' height='24' />&nbsp;
-                  Before You Proceed
-                </span>
-              )}
-            />
-            <ModalBody>
-              <div className='bx--modal-content__text'>
-                <p>
-                  Please make sure you have received sufficient information from one of the Advisors or the Legal
-                  firms listed below or your own advisor before you proceed with the token creation.
-                </p>
-              </div>
-            </ModalBody>
-
-            <ModalFooter>
-              <Button kind='secondary' onClick={this.handleCancelCreate}>
-                Cancel
-              </Button>
-              <Button onClick={this.handleConfirmCreate}>Create Token</Button>
-            </ModalFooter>
-          </ComposedModal>
           <Remark title='Data Privacy'>
             None of your data entered in the application form(s) is stored on
             Polymath servers or shared with any third party other than the
