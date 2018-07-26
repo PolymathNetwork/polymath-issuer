@@ -15,6 +15,8 @@ import {
   DatePickerInput,
   Icon,
   InlineNotification,
+  Toggle,
+  TextInput,
 } from 'carbon-components-react'
 import type { Investor, Address, SecurityToken } from 'polymathjs/types'
 
@@ -28,6 +30,9 @@ import {
   removeInvestors,
   editInvestors,
   resetUploaded,
+  disableOwnershipRestrictions,
+  enableOwnershipRestrictions,
+  updateOwnershipPercentage,
   PERMANENT_LOCKUP_TS,
 } from './actions'
 import AddInvestorForm, { formName as addInvestorFormName } from './components/AddInvestorForm'
@@ -60,6 +65,9 @@ type StateProps = {|
   criticals: Array<InvestorCSVRow>,
   stateListLength: number,
   token: SecurityToken,
+  isPercentageEnabled: boolean,
+  isPercentagePaused: boolean,
+  percentage: number,
 |}
 
 type DispatchProps = {|
@@ -72,6 +80,9 @@ type DispatchProps = {|
   reset: (formName: string) => any,
   resetUploaded: () => any,
   confirm: () => any,
+  disableOwnershipRestrictions: () => any,
+  enableOwnershipRestrictions: (percentage?: number) => any,
+  updateOwnershipPercentage: (percentage: number) => any,
 |}
 
 const mapStateToProps = (state: RootState) => ({
@@ -79,6 +90,9 @@ const mapStateToProps = (state: RootState) => ({
   criticals: state.whitelist.criticals,
   stateListLength: state.whitelist.listLength,
   token: state.token.token,
+  isPercentageEnabled: !!state.whitelist.percentageTM.contract,
+  isPercentagePaused: state.whitelist.percentageTM.isPaused,
+  percentage: Number(state.whitelist.percentageTM.percentage),
 })
 
 const mapDispatchToProps = {
@@ -91,6 +105,9 @@ const mapDispatchToProps = {
   resetUploaded,
   reset,
   confirm,
+  disableOwnershipRestrictions,
+  enableOwnershipRestrictions,
+  updateOwnershipPercentage,
 }
 
 type Props = StateProps & DispatchProps
@@ -103,6 +120,7 @@ type State = {|
   isImportModalOpen: boolean,
   startDateAdded: ?Date,
   endDateAdded: ?Date,
+  isPercentageToggled: boolean,
 |}
 
 const dateFormat = (date: ?Date): string => {
@@ -125,6 +143,7 @@ class CompliancePage extends Component<Props, State> {
     isImportModalOpen: false,
     startDateAdded: null,
     endDateAdded: null,
+    isPercentageToggled: false,
   }
 
   componentWillMount () {
@@ -170,7 +189,7 @@ class CompliancePage extends Component<Props, State> {
   }
 
   handleImport = () => {
-    const { criticals } = this.props // $FlowFixMe
+    const { criticals, isPercentagePaused } = this.props // $FlowFixMe
     this.props.confirm(
       <div>
         <p>
@@ -194,19 +213,21 @@ class CompliancePage extends Component<Props, State> {
                 <tr>
                   <th>#</th>
                   <th>Address</th>
-                  <th>Sale Lockup</th>
-                  <th>Purchase Lockup</th>
-                  <th>KYC/AML Expiry</th>
+                  <th>Sale</th>
+                  <th>Purchase</th>
+                  <th>KYC/AML</th>
+                  {!isPercentagePaused ? <th>Exempt From % Ownership</th> : ''}
                 </tr>
               </thead>
               <tbody>
-                {criticals.map(([id, address, sale, purchase, expiry]: InvestorCSVRow) => (
+                {criticals.map(([id, address, sale, purchase, expiry, isPercentage]: InvestorCSVRow) => (
                   <tr key={id}>
                     <td>{id}</td>
                     <td>{addressShortifier(address)}</td>
                     <td>{sale}</td>
                     <td>{purchase}</td>
                     <td>{expiry}</td>
+                    {!isPercentagePaused ? <td>{isPercentage}</td> : ''}
                   </tr>
                 ))}
               </tbody>
@@ -256,8 +277,30 @@ class CompliancePage extends Component<Props, State> {
     this.props.removeInvestors(addresses)
   }
 
+  handleTogglePercentage = (isToggled: boolean) => {
+    const { isPercentageEnabled, isPercentagePaused } = this.props
+    if (!isPercentageEnabled) {
+      this.setState({ isPercentageToggled: isToggled })
+    } else {
+      if (isPercentagePaused) {
+        this.props.enableOwnershipRestrictions()
+      } else {
+        this.props.disableOwnershipRestrictions()
+      }
+    }
+  }
+
+  handleApplyPercentage = () => {
+    const { isPercentageEnabled } = this.props
+    if (isPercentageEnabled) {
+      this.props.updateOwnershipPercentage(55) // TODO @bshevchenko
+    } else {
+      this.props.enableOwnershipRestrictions(44)
+    }
+  }
+
   paginationRendering () {
-    const { investors, stateListLength } = this.props
+    const { investors, stateListLength, isPercentagePaused, percentage } = this.props
     const pageNum = this.state.page
     const startSlice = pageNum * stateListLength
     const endSlice = (pageNum + 1) * stateListLength
@@ -281,6 +324,7 @@ class CompliancePage extends Component<Props, State> {
         from: dateFormat(investor.from),
         to: dateFormat(investor.to),
         expiry: dateFormat(investor.expiry),
+        ...(!isPercentagePaused ? { percentage: investor.isPercentage ? percentage + '%' : 'No Limit' } : {}),
       })
     }
     return stringified
@@ -310,7 +354,7 @@ class CompliancePage extends Component<Props, State> {
             iconDescription='Edit Dates'
             onClick={() => this.handleBatchEdit(selectedRows)}
           >
-            Edit Dates
+            Edit
           </Button>
         </TableBatchActions>
         <TableToolbarSearch onChange={onInputChange} />
@@ -355,10 +399,15 @@ class CompliancePage extends Component<Props, State> {
               {row.cells.map((cell, i) => (
                 <TableCell key={cell.id}>
                   {i === 0 ? (
-                    <div>{etherscanAddress(cell.value, cell.value)}</div>
+                    <div>
+                      {etherscanAddress(
+                        cell.value,
+                        this.props.isPercentagePaused ? cell.value : addressShortifier(cell.value)
+                      )}
+                    </div>
                   ) : i === 2 ? (
                     <div>{etherscanAddress(cell.value, addressShortifier(cell.value))}</div>
-                  ) : i === 6 ? (
+                  ) : i === (this.props.isPercentagePaused ? 6 : 7) ? (
                     <div>
                       <Icon
                         name='edit--glyph'
@@ -394,7 +443,7 @@ class CompliancePage extends Component<Props, State> {
   )
 
   render () {
-    const { token, investors } = this.props
+    const { token, investors, isPercentageEnabled, isPercentagePaused } = this.props
     if (!token || !token.address) {
       return <NotFoundPage />
     }
@@ -416,6 +465,20 @@ class CompliancePage extends Component<Props, State> {
             onSubmit={this.handleImport}
             onClose={this.handleImportModalClose}
           />
+
+          <p>Enable Ownership Restrictions</p>
+          <Toggle
+            onToggle={this.handleTogglePercentage}
+            toggled={isPercentageEnabled ? !isPercentagePaused : this.state.isPercentageToggled}
+            id='percentageToggle'
+          />
+          {!isPercentagePaused || (!isPercentageEnabled && this.state.isPercentageToggled) ? (
+            <div>
+              <TextInput disabled id='percentage' value={this.props.percentage} placeholder='%' />
+              <Button onClick={this.handleApplyPercentage}>Apply</Button>
+            </div>
+          ) : ''}
+          <p>&nbsp;</p><br />
 
           <DatePicker
             onChange={this.handleDateAddedChange}
@@ -446,6 +509,7 @@ class CompliancePage extends Component<Props, State> {
               { key: 'from', header: 'Sale lockup' },
               { key: 'to', header: 'Purchase lockup' },
               { key: 'expiry', header: 'KYC/AML Expiry' },
+              ...(!isPercentagePaused ? [{ key: 'percentage', header: 'Max % Ownership' }] : []),
               { key: 'actions', header: '' },
             ]}
             render={this.dataTableRender}
@@ -459,7 +523,7 @@ class CompliancePage extends Component<Props, State> {
             className='whitelist-investor-modal'
             open={this.state.isEditModalOpen}
             onRequestClose={this.handleEditModalClose}
-            modalHeading='Edit Dates'
+            modalHeading='Edit'
             passiveModal
           >
             <p className='bx--modal-content__text'>

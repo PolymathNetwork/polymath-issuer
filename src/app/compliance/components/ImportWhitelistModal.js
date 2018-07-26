@@ -12,6 +12,7 @@ type StateProps = {|
   isTooMany: boolean,
   isReady: boolean,
   isInvalid: boolean,
+  isPercentageDisabled: boolean,
 |}
 
 type DispatchProps = {|
@@ -28,6 +29,7 @@ const mapStateToProps = (state: RootState) => ({
   isTooMany: state.whitelist.isTooMany,
   isReady: state.whitelist.uploaded.length > 0,
   isInvalid: state.whitelist.criticals.length > 0,
+  isPercentageDisabled: state.whitelist.percentageTM.isPaused,
 })
 
 const mapDispatchToProps = {
@@ -70,7 +72,7 @@ class ImportWhitelistModal extends Component<Props> {
   }
 
   render () {
-    const { isOpen, isTooMany, isReady, isInvalid } = this.props
+    const { isOpen, isTooMany, isReady, isInvalid, isPercentageDisabled } = this.props
     return (
       <Modal
         open={isOpen}
@@ -88,7 +90,9 @@ class ImportWhitelistModal extends Component<Props> {
           Empty cell will be considered as permanent lockup.
           <br />
           — Buy Restriction Date mm/dd/yyyy (date when the buy restrictions should be lifted for that address);<br />
-          — KYC/AML Expiry Date mm/dd/yyyy.<br />
+          — KYC/AML Expiry Date mm/dd/yyyy;<br />
+          {!isPercentageDisabled ?
+            <span>— Exempt From % Ownership: true to enable OR empty cell to disable;<br /></span> : ''}
           Maximum numbers of investors per transaction is <strong>75</strong>.
         </h4>
         <h5 className='pui-h5'>
