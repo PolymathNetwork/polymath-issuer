@@ -23,7 +23,7 @@ type Props = {|
 const linkTooltip = (title: string, required: boolean) => (
   <Tooltip triggerText={<p>{title} { required ? <span className='polyRequiredRed'>*</span> : '' } </p>}>
     <p className='bx--tooltip__label'>
-      Linkso
+      Links
     </p>
     <p>
       Paste links to the file/folder from your preferred file sharing service.<br />
