@@ -18,6 +18,7 @@ export type WhitelistState = {|
   criticals: Array<InvestorCSVRow>,
   isTooMany: boolean,
   listLength: number,
+  freezeStatus: ?boolean
 |}
 
 const defaultState: WhitelistState = {
@@ -32,6 +33,7 @@ const defaultState: WhitelistState = {
   criticals: [],
   isTooMany: false,
   listLength: 10,
+  freezeStatus: null,
 }
 
 export default (state: WhitelistState = defaultState, action: Object) => {
@@ -73,6 +75,11 @@ export default (state: WhitelistState = defaultState, action: Object) => {
         uploaded: [],
         criticals: [],
         isTooMany: false,
+      }
+    case a.FREEZE_STATUS:
+      return{
+        ...state,
+        freezeStatus: action.freezeStatus, 
       }
     default:
       return state
