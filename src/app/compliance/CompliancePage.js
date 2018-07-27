@@ -17,6 +17,8 @@ import {
   InlineNotification,
   Toggle,
   TextInput,
+  OverflowMenu,
+  OverflowMenuItem,
 } from 'carbon-components-react'
 import type { Investor, Address, SecurityToken } from 'polymathjs/types'
 
@@ -34,6 +36,8 @@ import {
   enableOwnershipRestrictions,
   updateOwnershipPercentage,
   PERMANENT_LOCKUP_TS,
+  getFreezeStatus,
+  toggleFreeze,
 } from './actions'
 import AddInvestorForm, { formName as addInvestorFormName } from './components/AddInvestorForm'
 import EditInvestorsForm, { formName as editInvestorsFormName } from './components/EditInvestorsForm'
@@ -68,6 +72,7 @@ type StateProps = {|
   isPercentageEnabled: boolean,
   isPercentagePaused: boolean,
   percentage: number,
+  isTokenFrozen: boolean,
 |}
 
 type DispatchProps = {|
@@ -83,6 +88,8 @@ type DispatchProps = {|
   disableOwnershipRestrictions: () => any,
   enableOwnershipRestrictions: (percentage?: number) => any,
   updateOwnershipPercentage: (percentage: number) => any,
+  getFreezeStatus: () => any,
+  toggleFreeze: (postToggle: ?Function) => any
 |}
 
 const mapStateToProps = (state: RootState) => ({
@@ -93,6 +100,7 @@ const mapStateToProps = (state: RootState) => ({
   isPercentageEnabled: !!state.whitelist.percentageTM.contract,
   isPercentagePaused: state.whitelist.percentageTM.isPaused,
   percentage: Number(state.whitelist.percentageTM.percentage),
+  isTokenFrozen: state.whitelist.freezeStatus,
 })
 
 const mapDispatchToProps = {
@@ -108,6 +116,8 @@ const mapDispatchToProps = {
   disableOwnershipRestrictions,
   enableOwnershipRestrictions,
   updateOwnershipPercentage,
+  getFreezeStatus,
+  toggleFreeze,
 }
 
 type Props = StateProps & DispatchProps
@@ -121,6 +131,7 @@ type State = {|
   startDateAdded: ?Date,
   endDateAdded: ?Date,
   isPercentageToggled: boolean,
+  isFrozenModalOpen: boolean,
 |}
 
 const dateFormat = (date: ?Date): string => {
@@ -144,10 +155,16 @@ class CompliancePage extends Component<Props, State> {
     startDateAdded: null,
     endDateAdded: null,
     isPercentageToggled: false,
+    isFrozenModalOpen: false,
   }
 
   componentWillMount () {
     this.props.fetchWhitelist()
+    this.props.getFreezeStatus().then(()=>{
+      if(this.props.isTokenFrozen){
+        this.setState({ isFrozenModalOpen: true })
+      }
+    })
   }
 
   handleChangePages = (pc) => {
@@ -177,6 +194,32 @@ class CompliancePage extends Component<Props, State> {
   handleAddInvestorSubmit = () => {
     this.handleAddModalClose()
     this.props.addInvestor()
+  }
+
+  handleFreezeModalOpen = () => {
+    // $FlowFixMe
+    this.props.confirm(
+      <div>
+        <p>
+        Once you hit &laquo;CONFIRM&raquo;, the freeze on all transfers will PREVENT ANY INVESTOR FROM BUYING
+        OR SELLING YOUR TOKENS UNTIL YOU RESUME TRANSFERS. Consider notifying all your investors. If you wish
+        to review with your Advisors, please select &laquo;CANCEL&raquo;.
+        </p>
+      </div>,
+      () => {
+        this.props.toggleFreeze((()=>{
+          this.setState({ isFrozenModalOpen: true })
+        }))  
+      },
+      "Pause All Transfers?"
+    )
+  }
+
+  handleUnfreezeConfirm = () =>{
+    this.setState({ isFrozenModalOpen: false })
+    this.props.toggleFreeze()
+    //todo @JoseMiguelHerrera, isFrozenModalOpen should be set to true if the toggleFreeze()
+    //fails, but this would require ui.tx to handle errors, with a "after fail" function
   }
 
   handleImportModalOpen = () => {
@@ -366,6 +409,9 @@ class CompliancePage extends Component<Props, State> {
           >
             Add New
           </Button>
+          <OverflowMenu floatingMenu flipped>
+            <OverflowMenuItem itemText='Pause All Transfers' onClick={this.handleFreezeModalOpen} />
+          </OverflowMenu>
           <Modal
             className='whitelist-investor-modal'
             open={this.state.isAddModalOpen}
@@ -531,6 +577,24 @@ class CompliancePage extends Component<Props, State> {
             </p>
             <br />
             <EditInvestorsForm onSubmit={this.handleEditSubmit} onClose={this.handleEditModalClose} />
+          </Modal>
+          <Modal
+            className='freeze-transfer-modal'
+            open={(this.props.isTokenFrozen && this.state.isFrozenModalOpen)}
+            modalHeading=
+            {
+            <span>
+              <Icon name='icon--pause--outline' fill='#E71D32' width='24' height='24' />&nbsp;
+              All Transfers Paused
+            </span>
+            }
+            passiveModal
+          >
+            <p className='bx--modal-content__text'>
+            All transfers have been paused, including on-chain secondary markets.
+            </p>
+            <br />
+            <Button onClick={this.handleUnfreezeConfirm} icon='icon--play'>RESUME TRANSFERS&nbsp;</Button>
           </Modal>
         </div>
       </DocumentTitle>

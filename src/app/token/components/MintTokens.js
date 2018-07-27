@@ -182,7 +182,7 @@ class MintTokens extends Component<Props> {
           </h2>
           <h3 className='pui-h3'>
             Your Security Token is now deployed to the blockchain.<br />
-            Let’s mint token for your reserve and your current shareholders.
+            As a next step, you may now elect to mint tokens for existing shareholders, affiliates or for your reserve.
           </h3>
           <br />
           <h4 className='pui-h4'>
