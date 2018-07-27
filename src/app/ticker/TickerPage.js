@@ -64,7 +64,10 @@ class TickerPage extends Component<Props> {
               </div>
               <h1 className='pui-h1'>Reserve Your Token Symbol</h1>
               <h4 className='pui-h4'>
-                Your token symbol will be reserved for {this.props.expiryLimit} days, and
+                If your organization has a CUSIP number, please enter the 5-letter symbol assigned to you by FINRA.
+                Otherwise, please enter your desired token symbol provided that
+                 it does not infringe on registered trademarks.
+                Your token symbol will be reserved for {this.props.expiryLimit} days, and is
                 permanently yours once you create your Token.<br />
                 This reservation ensures that no other organization can use
                 your brand or create an identical token symbol using the
