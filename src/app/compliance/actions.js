@@ -330,8 +330,8 @@ export const updateOwnershipPercentage = (percentage: number) => async (dispatch
 export const getFreezeStatus = () => async (dispatch: Function, getState: GetState) => {  // $FlowFixMe
   getState().token.token.contract.subscribe('LogFreezeTransfers', {}, (event) => {
     dispatch({ type: FREEZE_STATUS, freezeStatus: !!event.returnValues._freeze })
-  })  // $FlowFixMe
-  const frozenInit=await getState().token.token.contract.freeze()
+  }) // $FlowFixMe
+  const frozenInit = await getState().token.token.contract.freeze()
   dispatch({ type: FREEZE_STATUS, freezeStatus: frozenInit })
   dispatch({ type: FROZEN_MODAL_STATUS, isFrozenModalOpen: frozenInit })
 }
@@ -349,10 +349,8 @@ export const toggleFreeze = () =>
         }
       },
       freezeStatus ? 'Successfully Resumed Token Transfers': 'Successfully Paused Token Transfers',
-      ()=>{
-        if(freezeStatus){
-          dispatch(showFrozenModal(true))
-        }
+      () => {
+        dispatch(showFrozenModal(!freezeStatus))
       },
       undefined,
       undefined,
