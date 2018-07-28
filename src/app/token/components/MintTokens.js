@@ -170,7 +170,7 @@ class MintTokens extends Component<Props> {
           <Remark title='Note'>
             <span>
               <Icon name='warning--glyph' fill='#5A6872' width='15' height='15' />&nbsp;
-              Minting cannot be done after the STO is attached.
+              Manual minting operations are disabled once an STO is configured and scheduled for your token.
               <br /><br />
               This action will trigger multiple signing operations with your MetaMask wallet:<br />
               — One for the initial whitelist upload;<br />
@@ -182,7 +182,7 @@ class MintTokens extends Component<Props> {
           </h2>
           <h3 className='pui-h3'>
             Your Security Token is now deployed to the blockchain.<br />
-            Let’s mint token for your reserve and your current shareholders.
+            As a next step, you may now elect to mint tokens for existing shareholders, affiliates or for your reserve.
           </h3>
           <br />
           <h4 className='pui-h4'>
