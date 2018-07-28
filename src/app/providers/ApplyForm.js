@@ -21,13 +21,16 @@ type Props = {|
 |}
 
 const linkTooltip = (title: string) => (
-  <Tooltip triggerText={title}>
+  <Tooltip triggerText={<p>{title}<span className='pui-requiredStar' /></p>}>
     <p className='bx--tooltip__label'>
       Links
     </p>
     <p>
       Paste links to the file/folder from your preferred file sharing service.<br />
-      For example: Dropbox, Google Drive, etc.
+      For example: Dropbox, Google Drive, etc. For added security,
+       you may password protect
+       the files located in the shared folder. Alternatively, you may enter
+        a link to your Investor Relations page.
     </p>
   </Tooltip>
 )
@@ -40,28 +43,28 @@ class ApplyForm extends Component<Props> {
         <Field
           name='companyName'
           component={TextInput}
-          label='Company Name'
+          label={<p>Company Name <span className='pui-requiredStar' /></p>}
           placeholder='Enter company name'
           validate={[required, maxLength100]}
         />
         <Field
           name='companyDesc'
           component={TextAreaInput}
-          label='Company Description'
+          label={<p>Company Description <span className='pui-requiredStar' /></p>}
           placeholder='Enter company description'
           validate={[required, maxLength300]}
         />
         <Field
           name='operatedIn'
           component={TextInput}
-          label='Jurisdiction of Operation'
+          label={<p>Jurisdiction of Operation <span className='pui-requiredStar' /></p>}
           placeholder='Enter jurisdiction of operation'
           validate={[required, maxLength100]}
         />
         <Field
           name='incorporatedIn'
           component={TextInput}
-          label='Jurisdiction of Incorporation'
+          label={<p>Jurisdiction of Incorporation<span className='pui-requiredStar' /></p>}
           placeholder='Enter jurisdiction of incorporation'
           validate={[required, maxLength100]}
         />

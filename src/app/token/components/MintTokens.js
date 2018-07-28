@@ -170,7 +170,7 @@ class MintTokens extends Component<Props> {
           <Remark title='Note'>
             <span>
               <Icon name='warning--glyph' fill='#5A6872' width='15' height='15' />&nbsp;
-              Minting cannot be done after the STO is attached.
+              Manual minting operations are disabled once an STO is configured and scheduled for your token.
               <br /><br />
               This action will trigger multiple signing operations with your MetaMask wallet:<br />
               — One for the initial whitelist upload;<br />

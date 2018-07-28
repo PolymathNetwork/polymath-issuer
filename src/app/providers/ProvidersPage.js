@@ -209,7 +209,6 @@ class ProvidersPage extends Component<Props, State> {
                   deadline={token.expires}
                   buttonTitle='Create Your Token Now'
                   handleButtonClick={this.handleCreateToken}
-                  isPaused={false}
                 />
               ) : ''}
             </div>

@@ -30,7 +30,8 @@ export const fetch = (ticker: string) => async (dispatch: Function, getState: Ge
     const expires = new Date()
     expires.setDate(expires.getDate() + 1)
     const token: SecurityToken = await SecurityTokenRegistry.getTokenByTicker(ticker)
-    if (token && token.owner !== getState().network.account) {
+    if (token && token.owner !== getState().network.account) {// $FlowFixMe
+      getState().pui.common.history.push('/')
       throw new Error('permission denied')
     }
     dispatch(data(token))

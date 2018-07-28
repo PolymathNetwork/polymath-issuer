@@ -38,6 +38,7 @@ import {
   PERMANENT_LOCKUP_TS,
   getFreezeStatus,
   toggleFreeze,
+  showFrozenModal,
 } from './actions'
 import AddInvestorForm, { formName as addInvestorFormName } from './components/AddInvestorForm'
 import EditInvestorsForm, { formName as editInvestorsFormName } from './components/EditInvestorsForm'
@@ -73,6 +74,7 @@ type StateProps = {|
   isPercentagePaused: boolean,
   percentage: number,
   isTokenFrozen: boolean,
+  isFrozenModalOpen: boolean
 |}
 
 type DispatchProps = {|
@@ -89,7 +91,8 @@ type DispatchProps = {|
   enableOwnershipRestrictions: (percentage?: number) => any,
   updateOwnershipPercentage: (percentage: number) => any,
   getFreezeStatus: () => any,
-  toggleFreeze: (postToggle: ?Function) => any
+  toggleFreeze: (postToggle: ?Function) => any,
+  showFrozenModal: (show: boolean) => any
 |}
 
 const mapStateToProps = (state: RootState) => ({
@@ -101,6 +104,7 @@ const mapStateToProps = (state: RootState) => ({
   isPercentagePaused: state.whitelist.percentageTM.isPaused,
   percentage: Number(state.whitelist.percentageTM.percentage),
   isTokenFrozen: state.whitelist.freezeStatus,
+  isFrozenModalOpen:state.whitelist.isFrozenModalOpen,
 })
 
 const mapDispatchToProps = {
@@ -118,6 +122,7 @@ const mapDispatchToProps = {
   updateOwnershipPercentage,
   getFreezeStatus,
   toggleFreeze,
+  showFrozenModal,
 }
 
 type Props = StateProps & DispatchProps
@@ -131,7 +136,6 @@ type State = {|
   startDateAdded: ?Date,
   endDateAdded: ?Date,
   isPercentageToggled: boolean,
-  isFrozenModalOpen: boolean,
 |}
 
 const dateFormat = (date: ?Date): string => {
@@ -155,16 +159,11 @@ class CompliancePage extends Component<Props, State> {
     startDateAdded: null,
     endDateAdded: null,
     isPercentageToggled: false,
-    isFrozenModalOpen: false,
   }
 
   componentWillMount () {
     this.props.fetchWhitelist()
-    this.props.getFreezeStatus().then(()=>{
-      if(this.props.isTokenFrozen){
-        this.setState({ isFrozenModalOpen: true })
-      }
-    })
+    this.props.getFreezeStatus()
   }
 
   handleChangePages = (pc) => {
@@ -208,18 +207,16 @@ class CompliancePage extends Component<Props, State> {
       </div>,
       () => {
         this.props.toggleFreeze((()=>{
-          this.setState({ isFrozenModalOpen: true })
+          this.props.showFrozenModal(true)
         }))  
       },
-      "Pause All Transfers?"
+      'Pause All Transfers?'
     )
   }
 
   handleUnfreezeConfirm = () =>{
-    this.setState({ isFrozenModalOpen: false })
+    this.props.showFrozenModal(false)
     this.props.toggleFreeze()
-    //todo @JoseMiguelHerrera, isFrozenModalOpen should be set to true if the toggleFreeze()
-    //fails, but this would require ui.tx to handle errors, with a "after fail" function
   }
 
   handleImportModalOpen = () => {
@@ -580,13 +577,12 @@ class CompliancePage extends Component<Props, State> {
           </Modal>
           <Modal
             className='freeze-transfer-modal'
-            open={(this.props.isTokenFrozen && this.state.isFrozenModalOpen)}
-            modalHeading=
-            {
-            <span>
-              <Icon name='icon--pause--outline' fill='#E71D32' width='24' height='24' />&nbsp;
+            open={(this.props.isTokenFrozen && this.props.isFrozenModalOpen)}
+            modalHeading={
+              <span>
+                <Icon name='icon--pause--outline' fill='#E71D32' width='24' height='24' />&nbsp;
               All Transfers Paused
-            </span>
+              </span>
             }
             passiveModal
           >

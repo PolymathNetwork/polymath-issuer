@@ -27,6 +27,8 @@ export const RESET_UPLOADED = 'compliance/RESET_UPLOADED'
 export const resetUploaded = () => ({ type: RESET_UPLOADED })
 
 export const FREEZE_STATUS = 'compliance/FREEZE_STATUS'
+export const FROZEN_MODAL_STATUS='compliance/FROZEN_MODAL_STATUS'
+
 export type InvestorCSVRow = [number, string, string, string, string, string]
 
 export const fetchWhitelist = () => async (dispatch: Function, getState: GetState) => {
@@ -324,13 +326,13 @@ export const updateOwnershipPercentage = (percentage: number) => async (dispatch
   ))
 }
 
-export const getFreezeStatus = () => async (dispatch: Function, getState: GetState) =>{
-  // $FlowFixMe
+export const getFreezeStatus = () => async (dispatch: Function, getState: GetState) =>{  // $FlowFixMe
   getState().token.token.contract.subscribe('LogFreezeTransfers', {}, (event)=>{
     dispatch({ type: FREEZE_STATUS, freezeStatus: !!event.returnValues._freeze })
-  })
-  // $FlowFixMe
-  dispatch({ type: FREEZE_STATUS, freezeStatus: await getState().token.token.contract.freeze() })
+  })  // $FlowFixMe
+  const frozenInit=await getState().token.token.contract.freeze()
+  dispatch({ type: FREEZE_STATUS, freezeStatus: frozenInit })
+  dispatch({ type: FROZEN_MODAL_STATUS, isFrozenModalOpen: frozenInit })
 }
 
 export const toggleFreeze = (postToggle: ?Function) =>
@@ -339,21 +341,23 @@ export const toggleFreeze = (postToggle: ?Function) =>
     dispatch(ui.tx(
       [freezeStatus ? 'Resuming Token Transfers': 'Pausing Token Transfers'],
       async () => {
-        if(freezeStatus){
-          // $FlowFixMe
+        if(freezeStatus){ // $FlowFixMe
           await getState().token.token.contract.unfreezeTransfers()
-        }else{
-          // $FlowFixMe
+        }else{ // $FlowFixMe
           await getState().token.token.contract.freezeTransfers()
         }
       },
       freezeStatus ? 'Successfully Resumed Token Transfers': 'Successfully Paused Token Transfers',
-      postToggle ? ()=>{
-        // $FlowFixMe
+      postToggle ? ()=>{// $FlowFixMe
         postToggle()
       } : ()=>{},
       undefined,
       undefined,
       true
     ))
+  }
+
+export const showFrozenModal = (show: boolean) =>
+  async (dispatch: Function) => { 
+    dispatch({ type: FROZEN_MODAL_STATUS, isFrozenModalOpen: show })
   }
