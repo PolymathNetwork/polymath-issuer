@@ -337,7 +337,7 @@ export const getFreezeStatus = () => async (dispatch: Function, getState: GetSta
   dispatch({ type: FROZEN_MODAL_STATUS, isFrozenModalOpen: frozenInit })
 }
 
-export const toggleFreeze = (postToggle: ?Function) =>
+export const toggleFreeze = () =>
   async (dispatch: Function, getState: GetState) =>{
     const { freezeStatus } = getState().whitelist
     dispatch(ui.tx(
@@ -351,7 +351,7 @@ export const toggleFreeze = (postToggle: ?Function) =>
       },
       freezeStatus ? 'Successfully Resumed Token Transfers': 'Successfully Paused Token Transfers',
       ()=>{
-        if(getState().whitelist.freezeStatus){
+        if(freezeStatus){
           dispatch({ type: FROZEN_MODAL_STATUS, isFrozenModalOpen: true })
         }
       },

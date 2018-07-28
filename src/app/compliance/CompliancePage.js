@@ -91,7 +91,7 @@ type DispatchProps = {|
   enableOwnershipRestrictions: (percentage?: number) => any,
   updateOwnershipPercentage: (percentage: number) => any,
   getFreezeStatus: () => any,
-  toggleFreeze: (postToggle: ?Function) => any,
+  toggleFreeze: () => any,
   showFrozenModal: (show: boolean) => any
 |}
 
