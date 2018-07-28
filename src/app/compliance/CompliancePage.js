@@ -206,9 +206,7 @@ class CompliancePage extends Component<Props, State> {
         </p>
       </div>,
       () => {
-        this.props.toggleFreeze((()=>{
-          this.props.showFrozenModal(true)
-        }))  
+        this.props.toggleFreeze()
       },
       'Pause All Transfers?'
     )

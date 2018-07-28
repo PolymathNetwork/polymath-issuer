@@ -27,6 +27,8 @@ export const RESET_UPLOADED = 'compliance/RESET_UPLOADED'
 export const resetUploaded = () => ({ type: RESET_UPLOADED })
 
 export const FREEZE_STATUS = 'compliance/FREEZE_STATUS'
+
+export const showFrozenModal = (show: boolean) => ({ type: FROZEN_MODAL_STATUS, show })
 export const FROZEN_MODAL_STATUS='compliance/FROZEN_MODAL_STATUS'
 
 export type InvestorCSVRow = [number, string, string, string, string, string]
@@ -348,16 +350,13 @@ export const toggleFreeze = (postToggle: ?Function) =>
         }
       },
       freezeStatus ? 'Successfully Resumed Token Transfers': 'Successfully Paused Token Transfers',
-      postToggle ? ()=>{// $FlowFixMe
-        postToggle()
-      } : ()=>{},
+      ()=>{
+        if(getState().whitelist.freezeStatus){
+          dispatch({ type: FROZEN_MODAL_STATUS, isFrozenModalOpen: true })
+        }
+      },
       undefined,
       undefined,
       true
     ))
-  }
-
-export const showFrozenModal = (show: boolean) =>
-  async (dispatch: Function) => { 
-    dispatch({ type: FROZEN_MODAL_STATUS, isFrozenModalOpen: show })
   }

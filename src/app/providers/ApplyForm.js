@@ -21,7 +21,7 @@ type Props = {|
 |}
 
 const linkTooltip = (title: string) => (
-  <Tooltip triggerText={<p>{title}<span className='pui-requiredStar' /></p>}>
+  <Tooltip triggerText={<p className='pui-required-star'>{title}</p>}>
     <p className='bx--tooltip__label'>
       Links
     </p>
@@ -43,28 +43,28 @@ class ApplyForm extends Component<Props> {
         <Field
           name='companyName'
           component={TextInput}
-          label={<p>Company Name <span className='pui-requiredStar' /></p>}
+          label={<p className='pui-required-star'>Company Name</p>}
           placeholder='Enter company name'
           validate={[required, maxLength100]}
         />
         <Field
           name='companyDesc'
           component={TextAreaInput}
-          label={<p>Company Description <span className='pui-requiredStar' /></p>}
+          label={<p className='pui-required-star'>Company Description</p>}
           placeholder='Enter company description'
           validate={[required, maxLength300]}
         />
         <Field
           name='operatedIn'
           component={TextInput}
-          label={<p>Jurisdiction of Operation <span className='pui-requiredStar' /></p>}
+          label={<p className='pui-required-star'>Jurisdiction of Operation</p>}
           placeholder='Enter jurisdiction of operation'
           validate={[required, maxLength100]}
         />
         <Field
           name='incorporatedIn'
           component={TextInput}
-          label={<p>Jurisdiction of Incorporation<span className='pui-requiredStar' /></p>}
+          label={<p className='pui-required-star'>Jurisdiction of Incorporation</p>}
           placeholder='Enter jurisdiction of incorporation'
           validate={[required, maxLength100]}
         />

@@ -96,7 +96,7 @@ export default (state: WhitelistState = defaultState, action: Object) => {
           isFrozenModalOpen: true, 
         }
       }else
-      {return state}
+      return state
     default:
       return state
   }
