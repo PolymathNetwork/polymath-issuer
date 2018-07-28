@@ -27,9 +27,8 @@ export const RESET_UPLOADED = 'compliance/RESET_UPLOADED'
 export const resetUploaded = () => ({ type: RESET_UPLOADED })
 
 export const FREEZE_STATUS = 'compliance/FREEZE_STATUS'
-
-export const showFrozenModal = (show: boolean) => ({ type: FROZEN_MODAL_STATUS, show })
 export const FROZEN_MODAL_STATUS='compliance/FROZEN_MODAL_STATUS'
+export const showFrozenModal = (show: boolean) => ({ type: FROZEN_MODAL_STATUS, show })
 
 export type InvestorCSVRow = [number, string, string, string, string, string]
 
@@ -328,8 +327,8 @@ export const updateOwnershipPercentage = (percentage: number) => async (dispatch
   ))
 }
 
-export const getFreezeStatus = () => async (dispatch: Function, getState: GetState) =>{  // $FlowFixMe
-  getState().token.token.contract.subscribe('LogFreezeTransfers', {}, (event)=>{
+export const getFreezeStatus = () => async (dispatch: Function, getState: GetState) => {  // $FlowFixMe
+  getState().token.token.contract.subscribe('LogFreezeTransfers', {}, (event) => {
     dispatch({ type: FREEZE_STATUS, freezeStatus: !!event.returnValues._freeze })
   })  // $FlowFixMe
   const frozenInit=await getState().token.token.contract.freeze()
@@ -338,21 +337,21 @@ export const getFreezeStatus = () => async (dispatch: Function, getState: GetSta
 }
 
 export const toggleFreeze = () =>
-  async (dispatch: Function, getState: GetState) =>{
+  async (dispatch: Function, getState: GetState) => {
     const { freezeStatus } = getState().whitelist
     dispatch(ui.tx(
       [freezeStatus ? 'Resuming Token Transfers': 'Pausing Token Transfers'],
       async () => {
-        if(freezeStatus){ // $FlowFixMe
+        if (freezeStatus) { // $FlowFixMe
           await getState().token.token.contract.unfreezeTransfers()
-        }else{ // $FlowFixMe
+        } else { // $FlowFixMe
           await getState().token.token.contract.freezeTransfers()
         }
       },
       freezeStatus ? 'Successfully Resumed Token Transfers': 'Successfully Paused Token Transfers',
       ()=>{
         if(freezeStatus){
-          dispatch({ type: FROZEN_MODAL_STATUS, isFrozenModalOpen: true })
+          dispatch(showFrozenModal(true))
         }
       },
       undefined,
