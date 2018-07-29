@@ -26,6 +26,10 @@ export const listLength = (listLength: number) => ({ type: LIST_LENGTH, listLeng
 export const RESET_UPLOADED = 'compliance/RESET_UPLOADED'
 export const resetUploaded = () => ({ type: RESET_UPLOADED })
 
+export const FREEZE_STATUS = 'compliance/FREEZE_STATUS'
+export const FROZEN_MODAL_STATUS='compliance/FROZEN_MODAL_STATUS'
+export const showFrozenModal = (show: boolean) => ({ type: FROZEN_MODAL_STATUS, show })
+
 export type InvestorCSVRow = [number, string, string, string, string, string]
 
 export const fetchWhitelist = () => async (dispatch: Function, getState: GetState) => {
@@ -322,3 +326,36 @@ export const updateOwnershipPercentage = (percentage: number) => async (dispatch
     true // TODO @bshevchenko
   ))
 }
+
+export const getFreezeStatus = () => async (dispatch: Function, getState: GetState) => {
+  // noinspection JSIgnoredPromiseFromCall $FlowFixMe
+  getState().token.token.contract.subscribe('LogFreezeTransfers', {}, (event) => { // eslint-disable-next-line
+    dispatch({ type: FREEZE_STATUS, freezeStatus: !!event.returnValues._freeze })
+  }) // $FlowFixMe
+  const frozenInit = await getState().token.token.contract.freeze()
+  dispatch({ type: FREEZE_STATUS, freezeStatus: frozenInit })
+  dispatch({ type: FROZEN_MODAL_STATUS, isFrozenModalOpen: frozenInit })
+}
+
+export const toggleFreeze = () =>
+  async (dispatch: Function, getState: GetState) => {
+    const { freezeStatus } = getState().whitelist
+    dispatch(ui.tx(
+      [freezeStatus ? 'Resuming Token Transfers': 'Pausing Token Transfers'],
+      async () => {
+        if (freezeStatus) { // $FlowFixMe
+          await getState().token.token.contract.unfreezeTransfers()
+        } else { // $FlowFixMe
+          await getState().token.token.contract.freezeTransfers()
+        }
+      },
+      freezeStatus ? 'Successfully Resumed Token Transfers': 'Successfully Paused Token Transfers',
+      () => {
+        dispatch(showFrozenModal(!freezeStatus))
+        dispatch(getFreezeStatus())
+      },
+      undefined,
+      undefined,
+      true
+    ))
+  }

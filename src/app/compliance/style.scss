@@ -127,3 +127,9 @@
     }
   }
 }
+
+.freeze-transfer-modal {
+  .bx--modal-close {
+    display: none;
+  }
+}

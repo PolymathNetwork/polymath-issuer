@@ -76,3 +76,6 @@
     border-bottom: 1px solid white; }
     .import-criticals tbody tr td:first-child {
       padding-left: 16px; }
+
+.freeze-transfer-modal .bx--modal-close {
+  display: none; }
