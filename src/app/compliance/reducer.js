@@ -11,7 +11,7 @@ export type WhitelistState = {|
   percentageTM: {
     contract: ?PercentageTransferManager,
     isPaused: boolean,
-    percentage: number,
+    percentage: ?number,
   },
   investors: Array<Investor>,
   uploaded: Array<Investor>,
@@ -25,7 +25,7 @@ const defaultState: WhitelistState = {
   percentageTM: {
     contract: null,
     isPaused: true,
-    percentage: 44, // TODO @bshevchenko: set to 0
+    percentage: null,
   },
   investors: [],
   uploaded: [],

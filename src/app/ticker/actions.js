@@ -49,7 +49,7 @@ export const reserve = () => async (dispatch: Function, getState: GetState) => {
         </div>,
         async () => {
           dispatch(ui.tx(
-            ['Token Symbol Reservation Fee', 'Token Symbol Reservation'],
+            ['Approving POLY Spend', 'Reserving'],
             async () => {
               await TickerRegistry.registerTicker(details)
             },

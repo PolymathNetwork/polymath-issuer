@@ -3,6 +3,7 @@
 
 [ignore]
 .*incomplete\.js
+.*CountTransferManagerFactory\.json
 
 [include]
 

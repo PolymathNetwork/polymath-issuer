@@ -125,7 +125,7 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
             return
           }
           dispatch(ui.tx(
-            ['STO Smart Contract Fee', 'STO Smart Contract Deployment and Scheduling'],
+            ['Approving POLY Spend', 'Deploying And Scheduling'],
             async () => {
               const contract: SecurityToken = token.contract
               const { values } = getState().form[configureFormName]

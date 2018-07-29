@@ -67,7 +67,7 @@ type StateProps = {|
   token: SecurityToken,
   isPercentageEnabled: boolean,
   isPercentagePaused: boolean,
-  percentage: number,
+  percentage: ?number,
 |}
 
 type DispatchProps = {|
@@ -92,7 +92,7 @@ const mapStateToProps = (state: RootState) => ({
   token: state.token.token,
   isPercentageEnabled: !!state.whitelist.percentageTM.contract,
   isPercentagePaused: state.whitelist.percentageTM.isPaused,
-  percentage: Number(state.whitelist.percentageTM.percentage),
+  percentage: state.whitelist.percentageTM.percentage,
 })
 
 const mapDispatchToProps = {
@@ -121,6 +121,7 @@ type State = {|
   startDateAdded: ?Date,
   endDateAdded: ?Date,
   isPercentageToggled: boolean,
+  percentage: ?number,
 |}
 
 const dateFormat = (date: ?Date): string => {
@@ -144,10 +145,17 @@ class CompliancePage extends Component<Props, State> {
     startDateAdded: null,
     endDateAdded: null,
     isPercentageToggled: false,
+    percentage: undefined,
   }
 
   componentWillMount () {
     this.props.fetchWhitelist()
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.percentage !== this.props.percentage && nextProps.percentage !== null) {
+      this.setState({ percentage: nextProps.percentage })
+    }
   }
 
   handleChangePages = (pc) => {
@@ -290,12 +298,24 @@ class CompliancePage extends Component<Props, State> {
     }
   }
 
+  handlePercentageChange = (event) => {
+    let value = parseInt(Number(event.target.value), 10)
+    if (!Number.isInteger(value) || value < 0 || value > 100) {
+      event.preventDefault()
+      return
+    }
+    if (event.target.value === '') {
+      value = undefined
+    }
+    this.setState({ percentage: value })
+  }
+
   handleApplyPercentage = () => {
     const { isPercentageEnabled } = this.props
-    if (isPercentageEnabled) {
-      this.props.updateOwnershipPercentage(55) // TODO @bshevchenko
-    } else {
-      this.props.enableOwnershipRestrictions(44)
+    if (isPercentageEnabled) { // $FlowFixMe
+      this.props.updateOwnershipPercentage(this.state.percentage)
+    } else { // $FlowFixMe
+      this.props.enableOwnershipRestrictions(this.state.percentage)
     }
   }
 
@@ -323,7 +343,7 @@ class CompliancePage extends Component<Props, State> {
         addedBy: investor.addedBy,
         from: dateFormat(investor.from),
         to: dateFormat(investor.to),
-        expiry: dateFormat(investor.expiry),
+        expiry: dateFormat(investor.expiry), // $FlowFixMe
         ...(!isPercentagePaused ? { percentage: investor.isPercentage ? percentage + '%' : 'No Limit' } : {}),
       })
     }
@@ -466,39 +486,62 @@ class CompliancePage extends Component<Props, State> {
             onClose={this.handleImportModalClose}
           />
 
-          <p>Enable Ownership Restrictions</p>
-          <Toggle
-            onToggle={this.handleTogglePercentage}
-            toggled={isPercentageEnabled ? !isPercentagePaused : this.state.isPercentageToggled}
-            id='percentageToggle'
-          />
-          {!isPercentagePaused || (!isPercentageEnabled && this.state.isPercentageToggled) ? (
-            <div>
-              <TextInput disabled id='percentage' value={this.props.percentage} placeholder='%' />
-              <Button onClick={this.handleApplyPercentage}>Apply</Button>
-            </div>
-          ) : ''}
-          <p>&nbsp;</p><br />
+          <div className='compliance-settings'>
+            <DatePicker
+              onChange={this.handleDateAddedChange}
+              datePickerType='range'
+            >
+              <DatePickerInput
+                id='start-date-added'
+                labelText='Start Date Added'
+                placeholder='mm / dd / yyyy'
+                onClick={() => {}}
+                onChange={() => {}}
+              />
+              <DatePickerInput
+                id='end-date-added'
+                labelText='End Date Added'
+                placeholder='mm / dd / yyyy'
+                onClick={() => {}}
+                onChange={() => {}}
+              />
+            </DatePicker>
 
-          <DatePicker
-            onChange={this.handleDateAddedChange}
-            datePickerType='range'
-          >
-            <DatePickerInput
-              id='start-date-added'
-              labelText='Start Date Added'
-              placeholder='mm / dd / yyyy'
-              onClick={() => {}}
-              onChange={() => {}}
-            />
-            <DatePickerInput
-              id='end-date-added'
-              labelText='End Date Added'
-              placeholder='mm / dd / yyyy'
-              onClick={() => {}}
-              onChange={() => {}}
-            />
-          </DatePicker>
+            <div className='bx--form-item'>
+              <label htmlFor='percentageToggle' className='bx--label'>Enable Ownership Restrictions</label>
+              <Toggle
+                onToggle={this.handleTogglePercentage}
+                toggled={isPercentageEnabled ? !isPercentagePaused : this.state.isPercentageToggled}
+                id='percentageToggle'
+              />
+            </div>
+
+            <div
+              className='bx--form-item'
+              style={!isPercentagePaused || (!isPercentageEnabled && this.state.isPercentageToggled) ? {} : {
+                display: 'none',
+              }}
+            >
+              <label htmlFor='percentage' className='bx--label'>
+                Each Individual Investor Can<br />Own Up To of Outstanding Tokens
+              </label>
+              <TextInput
+                id='percentage'
+                value={this.state.percentage}
+                placeholder='–'
+                onChange={this.handlePercentageChange}
+              />
+              <Button
+                onClick={this.handleApplyPercentage}
+                disabled={
+                  this.state.percentage === this.props.percentage ||
+                  typeof this.state.percentage === 'undefined'
+                }
+              >
+                Apply
+              </Button>
+            </div>
+          </div>
 
           <DataTable
             rows={paginatedRows}
