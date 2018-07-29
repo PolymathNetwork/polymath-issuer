@@ -64,7 +64,7 @@ export const issue = () => async (dispatch: Function, getState: GetState) => {
         <div>
           <p>Completion of your token creation will require two wallet transactions.</p>
           <p>The first transaction will be used to pay for the token creation cost of:</p>
-          <div className='bx--details'>{feeView} POLY</div>
+          <div className='bx--details poly-cost'>{feeView} POLY</div>
           <p>
             The second transaction will be used to pay the mining fee (aka gas fee) to complete the creation of
             your token. Please hit &laquo;CONFIRM&raquo; when you are ready to proceed.

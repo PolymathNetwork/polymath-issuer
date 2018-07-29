@@ -112,7 +112,7 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
         <div>
           <p>Completion of your STO smart contract deployment and scheduling will require two wallet transactions.</p>
           <p>The first transaction will be used to pay for the smart contract fee of:</p>
-          <div className='bx--details'>{feeView} POLY</div>
+          <div className='bx--details poly-cost'>{feeView} POLY</div>
           <p>
             The second transaction will be used to pay the mining fee (aka gas fee) to complete the
             scheduling of your STO. Please hit &laquo;CONFIRM&raquo; when you are ready to proceed.

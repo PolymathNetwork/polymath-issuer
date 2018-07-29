@@ -8206,9 +8206,9 @@ polymath-auth@1.1.3:
     web3-core-method "github:bshevchenko/web3-core-method#master"
     web3-eth-contract "1.0.0-beta.30"
 
-polymath-core@1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/polymath-core/-/polymath-core-1.3.1.tgz#b19354f71c0a37719b7bcc19ce4b870823057cfd"
+polymath-core@1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/polymath-core/-/polymath-core-1.3.2.tgz#b30b355f94afe1b40d9eceefbda154ef7766608b"
   dependencies:
     babel-polyfill "6.26.0"
     babel-preset-es2015 "6.24.1"
@@ -8228,9 +8228,9 @@ polymath-core@1.3.1:
     truffle-hdwallet-provider-privkey "^0.1.0"
     web3 "^1.0.0-beta.33"
 
-polymath-ui@5.5.3:
-  version "5.5.3"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-5.5.3.tgz#aa98a5ea34fdc4215538ed8fceaaf4d1b4f69bf7"
+polymath-ui@5.5.4:
+  version "5.5.4"
+  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-5.5.4.tgz#72d62730fd98bbe977bbbfbbea1bd0280997b3fa"
   dependencies:
     axios "^0.18.0"
     babel-runtime "6.26.0"
@@ -8250,13 +8250,13 @@ polymath-ui@5.5.3:
     redux "3.7.2"
     redux-form "7.0.4"
 
-polymathjs@1.5.2:
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-1.5.2.tgz#eadc3c31011178d459d2f69e6699bae3e3cac8f5"
+polymathjs@1.5.3:
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-1.5.3.tgz#5652235d6a4fe527dd27403af5b03391718b2747"
   dependencies:
     bignumber.js "5.0.0"
     bs58 "^4.0.1"
-    polymath-core "1.3.1"
+    polymath-core "1.3.2"
     redux "3.7.2"
     redux-thunk "2.2.0"
     web3 "1.0.0-beta.30"
@@ -11101,7 +11101,7 @@ web3-core-helpers@1.0.0-beta.34:
     web3-eth-iban "1.0.0-beta.34"
     web3-utils "1.0.0-beta.34"
 
-web3-core-method@1.0.0-beta.30, "web3-core-method@github:bshevchenko/web3-core-method#master":
+web3-core-method@1.0.0-beta.30, web3-core-method@bshevchenko/web3-core-method#master, "web3-core-method@github:bshevchenko/web3-core-method#master":
   version "1.0.0-beta.30"
   resolved "https://codeload.github.com/bshevchenko/web3-core-method/tar.gz/9199df8b1ea8658503ee48ba7ad391fec8e61838"
   dependencies:
