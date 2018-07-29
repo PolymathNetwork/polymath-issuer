@@ -29,6 +29,8 @@
         color: #252E6A; }
         .compliance-settings > .bx--form-item:last-child button:hover:not(:disabled) {
           color: #58468E; }
+        .compliance-settings > .bx--form-item:last-child button:hover {
+          background: transparent !important; }
 
 .whitelist-investor-modal .bx--modal-container {
   width: 500px;

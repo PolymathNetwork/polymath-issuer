@@ -166,6 +166,10 @@ class CompliancePage extends Component<Props, State> {
   componentWillMount () {
     this.props.fetchWhitelist()
     this.props.getFreezeStatus()
+
+    if (this.props.percentage) {
+      this.setState({ percentage: this.props.percentage })
+    }
   }
 
   componentWillReceiveProps (nextProps) {

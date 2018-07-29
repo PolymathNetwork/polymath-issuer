@@ -226,20 +226,27 @@ export const enableOwnershipRestrictions = (percentage?: number) => async (dispa
   dispatch(ui.confirm(
     <div>
       <p>
-        Lorem Ipsum… Please confirm that all information below is correct and that you agree to have the ETH
-        addresses included in the CSV file automatically added to the whitelist.
+        Please confirm that you want to enable Percentage Ownership Restrictions.
+        This operation requires a wallet transaction to pay for the mining fee.
       </p>
-      <p>Minting of the tokens will require two wallet transactions.</p>
+      <p>
+        Once you hit &laquo;CONFIRM&raquo;, Percentage Ownership Restrictions will be enabled.
+        If you would like to disable Percentage Ownership Restrictions, you can toggle it off.
+        This operation will also require a wallet transaction to pay for the mining fee.
+        If you do not wish to enable Percentage Ownership Restrictions or wish to review your information,
+        simply hit &laquo;CANCEL&raquo;.
+      </p>
       <br />
-      <ui.Remark title='Reminder'>
-        Investors must be approved before they are added to the whitelist.
-        Please make sure all addresses included in the CSV are approved.
+      <ui.Remark title='Note'>
+        Please make sure to enable this functionality after some amount of tokens has been minted for your
+        reserve or your affiliates. Percentage Ownership is calculated based on the token total supply.
+        As such, if zero tokens have been minted, no transaction will be allowed as it would result in
+        the Investor owning 100% of the total supply.
       </ui.Remark>
     </div>,
     async () => { // $FlowFixMe
       const tm = getState().whitelist.percentageTM.contract
       if (tm) {
-        // TODO unpause
         dispatch(ui.tx(
           'Resuming ownership restrictions',
           async () => {
@@ -279,15 +286,15 @@ export const disableOwnershipRestrictions = () => async (dispatch: Function, get
   dispatch(ui.confirm(
     <div>
       <p>
-        Lorem Ipsum… Please confirm that all information below is correct and that you agree to have the ETH
-        addresses included in the CSV file automatically added to the whitelist.
+        Please confirm that you want to disable the restrictions on Percentage Ownership.
+        This operation requires a wallet transaction to pay for the mining fee (aka gas fee).
       </p>
-      <p>Minting of the tokens will require two wallet transactions.</p>
-      <br />
-      <ui.Remark title='Reminder'>
-        Investors must be approved before they are added to the whitelist.
-        Please make sure all addresses included in the CSV are approved.
-      </ui.Remark>
+      <p>
+        Once you hit &laquo;CONFIRM&raquo;, restrictions on Percentage Ownership will be disabled.
+        Re-enabling restrictions on Percentage Ownership will require a new wallet transaction to pay for the mining
+        fee. If you wish to maintain existing Percentage Ownership restrictions or review your information,
+        simply select &laquo;CANCEL&raquo;.
+      </p>
     </div>,
     async () => {
       const tm = getState().whitelist.percentageTM.contract

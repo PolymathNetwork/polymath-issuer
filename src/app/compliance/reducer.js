@@ -45,6 +45,7 @@ export default (state: WhitelistState = defaultState, action: Object) => {
       return {
         ...state,
         transferManager: action.transferManager,
+        percentageTM: defaultState.percentageTM,
       }
     case a.PERCENTAGE_TM:
       return {

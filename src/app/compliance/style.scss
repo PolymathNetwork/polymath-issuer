@@ -45,6 +45,10 @@
         &:hover:not(:disabled) {
           color: #58468E;
         }
+
+        &:hover {
+          background: transparent !important;
+        }
       }
     }
   }

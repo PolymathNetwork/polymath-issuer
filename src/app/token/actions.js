@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { SecurityTokenRegistry } from 'polymathjs'
+import { SecurityTokenRegistry, CountTransferManager } from 'polymathjs'
 import * as ui from 'polymath-ui'
 import { ethereumAddress } from 'polymath-ui/dist/validate'
 import type { SecurityToken, Investor, Address } from 'polymathjs/types'
@@ -19,18 +19,37 @@ export const mintResetUploaded = () => ({ type: MINT_RESET_UPLOADED })
 export const DATA = 'token/DATA'
 export const data = (token: ?SecurityToken) => ({ type: DATA, token })
 
+export const COUNT_TM = 'token/COUNT_TM'
+export const countTransferManager = (tm: CountTransferManager, isPaused: boolean, count?: ?number) =>
+  ({ type: COUNT_TM, tm, isPaused, count })
+
 export type Action =
   | ExtractReturn<typeof data>
 
 export type InvestorCSVRow = [number, string, string, string, string, string]
 
-export const fetch = (ticker: string) => async (dispatch: Function) => {
+export const fetch = (ticker: string, _token?: SecurityToken) => async (dispatch: Function) => {
   dispatch(ui.fetching())
   try {
-    const expires = new Date()
-    expires.setDate(expires.getDate() + 1)
-    const token: SecurityToken = await SecurityTokenRegistry.getTokenByTicker(ticker)
+    const token: SecurityToken = _token || (await SecurityTokenRegistry.getTokenByTicker(ticker))
     dispatch(data(token))
+
+    let countTM
+    if (token.contract) { // $FlowFixMe
+      countTM = await token.contract.getCountTM()
+      if (countTM) {
+        dispatch(countTransferManager(
+          countTM,
+          await countTM.paused(),
+          await countTM.maxHolderCount()
+        ))
+      }
+    }
+
+    if (!token.contract || !countTM) {
+      dispatch(countTransferManager(null, true, null))
+    }
+
     dispatch(fetchSTO())
     dispatch(ui.fetched())
   } catch (e) {
@@ -38,7 +57,7 @@ export const fetch = (ticker: string) => async (dispatch: Function) => {
   }
 }
 
-export const issue = () => async (dispatch: Function, getState: GetState) => {
+export const issue = (isLimitNI: boolean) => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.confirm(
     <div>
       <p>
@@ -71,19 +90,26 @@ export const issue = () => async (dispatch: Function, getState: GetState) => {
           </p>
         </div>,
         async () => {
+          let token: SecurityToken
           dispatch(ui.tx(
-            ['Approving POLY Spend', 'Creating'],
+            ['Approving POLY Spend', 'Creating', ...(isLimitNI ? ['Limiting Number Of Investors'] : [])],
             async () => {
-              const token: SecurityToken = {
+              const { values } = getState().form[completeFormName]
+              token = {
                 ...getState().token.token,
-                ...getState().form[completeFormName].values,
+                ...values,
               }
               token.isDivisible = token.isDivisible !== '1'
               await SecurityTokenRegistry.generateSecurityToken(token)
+
+              if (isLimitNI) {
+                token = await SecurityTokenRegistry.getTokenByTicker(ticker)
+                await token.contract.setCountTM(values.investorsNumber)
+              }
             },
             'Token Was Issued Successfully',
             () => {
-              return dispatch(fetch(ticker))
+              return dispatch(fetch(ticker, isLimitNI ? token : undefined))
             },
             `/dashboard/${ticker}`,
             undefined,
@@ -154,6 +180,129 @@ export const mintTokens = () => async (dispatch: Function, getState: GetState) =
     undefined,
     undefined,
     true // TODO @bshevchenko
+  ))
+}
+
+export const limitNumberOfInvestors = (count?: number) => async (dispatch: Function, getState: GetState) => {
+  const oldCount = getState().token.countTM.count
+  const tm = getState().token.countTM.contract
+  dispatch(ui.confirm(
+    tm && oldCount ? (
+      <div>
+        <p>
+          Please confirm that you want to change the limit on the
+          number of token holders to <strong>{ui.thousandsDelimiter(oldCount)}</strong>.
+        </p>
+        <p>
+          Note that all transactions that would result in a number of token holders greater than the
+          limit will fail. Please make sure your Investors are informed accordingly.
+        </p>
+      </div>
+    ) : (
+      <div>
+        <p>Please confirm that you want to set a limit to the number of token holders.</p>
+        <p>
+          Note that all transactions that would result in a number of token holders greater than the
+          limit will fail. Please make sure your Investors are informed accordingly.
+        </p>
+      </div>
+    ),
+    async () => { // $FlowFixMe
+      if (tm) {
+        dispatch(ui.tx(
+          'Resuming Token Holders Number Limit',
+          async () => {
+            await tm.unpause()
+          },
+          'Token holders number limit has been resumed successfully',
+          () => {
+            dispatch(countTransferManager(tm, false))
+          },
+          undefined,
+          undefined,
+          true // TODO @bshevchenko
+        ))
+      } else { // $FlowFixMe
+        const st: SecurityToken = getState().token.token.contract
+        dispatch(ui.tx(
+          'Enabling Token Holders Number Limit',
+          async () => {
+            await st.setCountTM(count)
+          },
+          'Token holders number limit has been enabled successfully',
+          async () => {
+            dispatch(countTransferManager(await st.getCountTM(), false, count))
+          },
+          undefined,
+          undefined,
+          true // TODO @bshevchenko
+        ))
+      }
+    },
+    'Enabling Limit on the Number of Token Holders'
+  ))
+}
+
+export const unlimitNumberOfInvestors = () => async (dispatch: Function, getState: GetState) => {
+  dispatch(ui.confirm(
+    <div>
+      <p>
+        Please confirm that you want to disable limit on the number of token holders.
+      </p>
+    </div>,
+    async () => {
+      const tm = getState().token.countTM.contract
+      dispatch(ui.tx(
+        'Pausing Token Holders Number Limit',
+        async () => { // $FlowFixMe
+          await tm.pause()
+        },
+        'Token holders number limit has been paused successfully',
+        async () => {
+          dispatch(countTransferManager(tm, true))
+        },
+        undefined,
+        undefined,
+        true // TODO @bshevchenko
+      ))
+    }
+  ))
+}
+
+export const updateMaxHoldersCount = (count: number) => async (dispatch: Function, getState: GetState) => {
+  const oldCount = Number(getState().token.countTM.count)
+  const oldCountText = ui.thousandsDelimiter(oldCount)
+  const tm = getState().token.countTM.contract
+  dispatch(ui.confirm(
+    <div>
+      <p>
+        Please confirm that you want to change the limit on the
+        number of token holders from <strong>{oldCountText}</strong> to <strong>{ui.thousandsDelimiter(count)}</strong>.
+      </p>
+      {count < oldCount ? (
+        <p>
+          Note that this operation will reduce the limit on the number of token holders.
+          As such, only transactions that would result in a reduction of the number of
+          token holders will be allowed. All other transactions, whether they would maintain or increase the number
+          of token holders will fail. Please make sure your Investors are informed accordingly.
+        </p>
+      ) : ''}
+    </div>,
+    async () => {
+      dispatch(ui.tx(
+        'Updating max holders count',
+        async () => { // $FlowFixMe
+          await tm.changeHolderCount(count)
+        },
+        'Max holders count has been successfully updated',
+        async () => {
+          dispatch(countTransferManager(tm, false, count))
+        },
+        undefined,
+        undefined,
+        true // TODO @bshevchenko
+      ))
+    }
   ))
 }
 
