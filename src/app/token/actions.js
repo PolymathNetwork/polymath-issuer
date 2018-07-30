@@ -58,69 +58,52 @@ export const fetch = (ticker: string, _token?: SecurityToken) => async (dispatch
 }
 
 export const issue = (isLimitNI: boolean) => async (dispatch: Function, getState: GetState) => {
+  const fee = await SecurityTokenRegistry.registrationFee()
+  const feeView = ui.thousandsDelimiter(fee) // $FlowFixMe
+  let { token } = getState().token // $FlowFixMe
+  const ticker = token.ticker
   dispatch(ui.confirm(
     <div>
+      <p>Completion of your token creation will require two wallet transactions.</p>
+      <p>The first transaction will be used to pay for the token creation cost of:</p>
+      <div className='bx--details poly-cost'>{feeView} POLY</div>
       <p>
-        Please confirm that you accept the token creation fee. Additionally, please confirm that all previous
-        information is correct and that you are not violating any trademarks.
-      </p>
-      <p>
-        Once you hit &laquo;CONFIRM&raquo;, your newly created token will be sent to the blockchain and will
-        be immutable. If you do not wish to pay the token creation fee or wish to review your information,
-        simply select &laquo;CANCEL&raquo;.
+        The second transaction will be used to pay the mining fee (aka gas fee) to complete the creation of
+        your token. Please hit &laquo;CONFIRM&raquo; when you are ready to proceed.
       </p>
     </div>,
-    async () => {
-      const fee = await SecurityTokenRegistry.registrationFee()
-      const feeView = ui.thousandsDelimiter(fee) // $FlowFixMe
+    async () => {// $FlowFixMe
       if (getState().pui.account.balance.lt(fee)) {
         dispatch(ui.faucet(`The creation of a security token has a fixed cost of ${feeView} POLY.`))
         return
       }
-      const { token } = getState().token // $FlowFixMe
-      const ticker = token.ticker
-      dispatch(ui.confirm(
-        <div>
-          <p>Completion of your token creation will require two wallet transactions.</p>
-          <p>The first transaction will be used to pay for the token creation cost of:</p>
-          <div className='bx--details poly-cost'>{feeView} POLY</div>
-          <p>
-            The second transaction will be used to pay the mining fee (aka gas fee) to complete the creation of
-            your token. Please hit &laquo;CONFIRM&raquo; when you are ready to proceed.
-          </p>
-        </div>,
+      dispatch(ui.tx(
+        ['Approving POLY Spend', 'Creating', ...(isLimitNI ? ['Limiting Number Of Investors'] : [])],
         async () => {
-          let token: SecurityToken
-          dispatch(ui.tx(
-            ['Approving POLY Spend', 'Creating', ...(isLimitNI ? ['Limiting Number Of Investors'] : [])],
-            async () => {
-              const { values } = getState().form[completeFormName]
-              token = {
-                ...getState().token.token,
-                ...values,
-              }
-              token.isDivisible = token.isDivisible !== '1'
-              await SecurityTokenRegistry.generateSecurityToken(token)
+          const { values } = getState().form[completeFormName]
+          token = {
+            ...getState().token.token,
+            ...values,
+          }
+          token.isDivisible = token.isDivisible !== '1'
+          await SecurityTokenRegistry.generateSecurityToken(token)
 
-              if (isLimitNI) {
-                token = await SecurityTokenRegistry.getTokenByTicker(ticker)
-                await token.contract.setCountTM(values.investorsNumber)
-              }
-            },
-            'Token Was Issued Successfully',
-            () => {
-              return dispatch(fetch(ticker, isLimitNI ? token : undefined))
-            },
-            `/dashboard/${ticker}`,
-            undefined,
-            true, // TODO @bshevchenko,
-            ticker.toUpperCase() + ' Token Creation'
-          ))
+          if (isLimitNI) {
+            token = await SecurityTokenRegistry.getTokenByTicker(ticker)
+            await token.contract.setCountTM(values.investorsNumber)
+          }
         },
-        `Proceeding with Your ${ticker.toUpperCase()} Token Creation`
+        'Token Was Issued Successfully',
+        () => {// $FlowFixMe
+          return dispatch(fetch(ticker, isLimitNI ? token : undefined))
+        },
+        `/dashboard/${ticker}`,
+        undefined,
+        true, // TODO @bshevchenko,
+        ticker.toUpperCase() + ' Token Creation'
       ))
     },
-    'Before You Proceed with the Token Creation',
+    `Proceeding with Your ${ticker.toUpperCase()} Token Creation`,
   ))
 }
 

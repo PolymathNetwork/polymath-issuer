@@ -4,7 +4,8 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { change } from 'redux-form'
-import { bull } from 'polymath-ui'
+import { bull, thousandsDelimiter } from 'polymath-ui'
+import { TickerRegistry } from 'polymathjs'
 import type { RouterHistory } from 'react-router'
 
 import TickerForm, { formName } from './components/TickerForm'
@@ -14,7 +15,7 @@ import { data as tokenData } from '../token/actions'
 type StateProps = {|
   account: ?string,
   token: Object,
-  expiryLimit: number
+  expiryLimit: number,
 |}
 
 type DispatchProps = {|
@@ -41,12 +42,23 @@ type Props = {|
   history: RouterHistory
 |} & StateProps & DispatchProps
 
-class TickerPage extends Component<Props> {
+type State = {|
+  tickerRegistrationFee: string,
+|}
+
+class TickerPage extends Component<Props, State> {
+
+  state = {
+    tickerRegistrationFee: '-',
+  }
 
   componentWillMount () {
     this.props.change(this.props.account)
     this.props.tokenData(null)
     this.props.getExpiryLimit()
+    TickerRegistry.registrationFee().then((fee)=>{// $FlowFixMe
+      this.setState({ tickerRegistrationFee: thousandsDelimiter(fee) })
+    })
   }
 
   handleSubmit = () => {
@@ -75,7 +87,7 @@ class TickerPage extends Component<Props> {
             <h4 className='pui-h4' style={{ marginTop: '-20px' }}>
               This reservation ensures that no other organization can use
               your brand or create an identical token symbol using the
-              Polymath platform.
+              Polymath platform. This operation carries a cost of: {this.state.tickerRegistrationFee} POLY.
             </h4>
             <TickerForm onSubmit={this.handleSubmit} />
           </div>
