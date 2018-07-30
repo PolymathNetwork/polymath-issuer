@@ -5,6 +5,7 @@ import type { SymbolDetails } from 'polymathjs/types'
 
 import { formName } from './components/TickerForm'
 import { formName as confirmEmailFormName } from '../ConfirmEmailPage'
+import ReservedEmail from '../token/components/ReservedEmail'
 import type { GetState } from '../../redux/reducer'
 
 export const EXPIRY_LIMIT = 'ticker/EXPIRY_LIMIT'
@@ -23,7 +24,7 @@ export const getMyTokens = () => async (dispatch: Function) => {
 }
 
 export const reserve = () => async (dispatch: Function, getState: GetState) => {
-  // TODO @bshevchenko: see below... const { isEmailConfirmed } = getState().pui.account
+  const { isEmailConfirmed } = getState().pui.account
   dispatch(ui.confirm(
     <div>
       <p>
@@ -61,6 +62,9 @@ export const reserve = () => async (dispatch: Function, getState: GetState) => {
             ['Approving POLY Spend', 'Reserving'],
             async () => {
               await TickerRegistry.registerTicker(details)
+              if (isEmailConfirmed) {
+                dispatch(tickerReservationEmail())
+              }
             },
             `Your Token Symbol ${details.ticker} Was Reserved Successfully`,
             () => {
@@ -68,7 +72,7 @@ export const reserve = () => async (dispatch: Function, getState: GetState) => {
             },
             `/dashboard/${details.ticker}/providers`,
             undefined,
-            true, // TODO @bshevchenko: !isEmailConfirmed,
+            !isEmailConfirmed,
             details.ticker.toUpperCase() + ' Token Symbol Reservation',
           ))
         },
@@ -91,27 +95,8 @@ export const tickerReservationEmail = () => async (dispatch: Function, getState:
 
     dispatch(ui.email(
       token.txHash,
-      token.ticker + ' Symbol Registered on Polymath',
-      (
-        <div>
-          <p>
-            {token.ticker.toUpperCase()} symbol has been registered on Polymath. You can see the
-            transaction details <a href={ui.etherscanTx(token.txHash)}>here</a>.
-          </p>
-          <p>
-            You have {getState().ticker.expiryLimit} days to&nbsp;
-            <a href={window.location.origin + `/dashboard/${token.ticker}/providers`}>
-              proceed with the token issuance
-            </a> before the token symbol you registered expires and becomes available for others to use.
-          </p>
-          <p>
-            If you have any questions please contact{' '}
-            <a href='mailto:support@polymath.zendesk.com'>
-              support@polymath.zendesk.com
-            </a>.
-          </p>
-        </div>
-      )
+      token.ticker + ' Symbol Reserved on Polymath',
+      <ReservedEmail token={token} expiryLimit={getState().ticker.expiryLimit} />
     ))
   } catch (e) { // eslint-disable-next-line
     console.error('tickerReservationEmail', e)
