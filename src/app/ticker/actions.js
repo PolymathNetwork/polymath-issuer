@@ -14,6 +14,16 @@ export const expiryLimit = () => async (dispatch: Function) =>
 
 export const RESERVED = 'ticker/RESERVED'
 
+export const TOKENS = 'ticker/TOKENS'
+
+export const getMyTokens = () => async (dispatch: Function) => {
+  const tokens = await TickerRegistry.getMyTokens()
+  dispatch({ type: TOKENS, tokens })
+  if (tokens.length) {
+    dispatch({ type: RESERVED })
+  }
+}
+
 export const reserve = () => async (dispatch: Function, getState: GetState) => {
   const { isEmailConfirmed } = getState().pui.account
   const fee = await TickerRegistry.registrationFee()
