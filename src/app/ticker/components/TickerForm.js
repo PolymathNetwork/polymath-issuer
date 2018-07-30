@@ -72,7 +72,14 @@ class TickerForm extends Component<Props> {
           Reserve token symbol
         </Button>
         <p className='pui-input-hint'>
-          By registering your token symbol with Polymath you agree to our <a href='#'>Terms and Conditions</a>.
+          By registering your token symbol with Polymath you agree to our&nbsp;
+          <a 
+            target='_blank'
+            rel='noopener noreferrer'
+            href='https://polymath.network/termsofservice.html'
+          >
+            Terms and Conditions.
+          </a>
         </p>
       </Form>
     )

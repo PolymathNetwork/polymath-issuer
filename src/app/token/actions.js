@@ -65,12 +65,21 @@ export const issue = (isLimitNI: boolean) => async (dispatch: Function, getState
   dispatch(ui.confirm(
     <div>
       <p>Completion of your token creation will require two wallet transactions.</p>
-      <p>The first transaction will be used to pay for the token creation cost of:</p>
+      <p>- The first transaction will be used to pay for the token creation cost of:</p>
       <div className='bx--details poly-cost'>{feeView} POLY</div>
       <p>
-        The second transaction will be used to pay the mining fee (aka gas fee) to complete the creation of
-        your token. Please hit &laquo;CONFIRM&raquo; when you are ready to proceed.
+        - The second transaction will be used to pay the mining fee (aka gas fee) to complete the creation of
+        your token.
+        <br />
       </p>
+      <p>
+        Please hit &laquo;CONFIRM&raquo; when you are ready to proceed. Once you hit &laquo;CONFIRM&raquo;, your
+         security token will be created on the blockchain and will be immutable. Any change to the token structure
+          (divisibility or information link) will require that you start the process over using another token symbol.
+        <br />If you do not wish to pay the token creation fee or wish to review your information,
+            simply select &laquo;CANCEL&raquo;.
+      </p>
+
     </div>,
     async () => {// $FlowFixMe
       if (getState().pui.account.balance.lt(fee)) {
@@ -103,7 +112,9 @@ export const issue = (isLimitNI: boolean) => async (dispatch: Function, getState
         ticker.toUpperCase() + ' Token Creation'
       ))
     },
-    `Proceeding with Your ${ticker.toUpperCase()} Token Creation`,
+    `Before you Proceed with Your ${ticker.toUpperCase()} Token Creation`,
+    undefined,
+    'pui-large-confirm-modal'
   ))
 }
 

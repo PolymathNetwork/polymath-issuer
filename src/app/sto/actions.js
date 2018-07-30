@@ -85,12 +85,22 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
   const feeView = ui.thousandsDelimiter(fee)
   dispatch(ui.confirm(
     <div>
+      <p>Once submitted to the blockchain, the dates for your offering cannot be changed.
+        Please confirm dates with your Advisor and Legal providers before you click on &laquo;CONFIRM&raquo;.
+        Also, note that Investors must be added to the whitelist before or while the STO is live,
+         so they can participate to your fundraise and that all necessary documentation must be posted on your
+          Securities Offering Site.
+      </p>
       <p>Completion of your STO smart contract deployment and scheduling will require two wallet transactions.</p>
-      <p>The first transaction will be used to pay for the smart contract fee of:</p>
+      <p>- The first transaction will be used to pay for the smart contract fee of:</p>
       <div className='bx--details poly-cost'>{feeView} POLY</div>
       <p>
-        The second transaction will be used to pay the mining fee (aka gas fee) to complete the
-        scheduling of your STO. Please hit &laquo;CONFIRM&raquo; when you are ready to proceed.
+        - The second transaction will be used to pay the mining fee (aka gas fee) to complete the
+        scheduling of your STO.
+      </p>
+      <p>
+        Hit &laquo;CANCEL&raquo; if you would like to edit the information provided or &laquo;CONFIRM&raquo; 
+        if you have confirmed the details of your STO with your Advisor and are ready to proceed.
       </p>
     </div>,
     async () => { // $FlowFixMe
@@ -130,7 +140,9 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
         token.ticker.toUpperCase() + ' STO Creation'
       ))
     },
-    'Proceeding with Smart Contract Deployment and Scheduling',
+    'Before You Proceed with your Security Token Offering Deployment and Scheduling',
+    undefined,
+    'pui-large-confirm-modal'
   ))
 }
 

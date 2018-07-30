@@ -21,11 +21,19 @@ export const reserve = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.confirm(
     <div>
       <p>Completion of your token symbol reservation will require two wallet transactions.</p>
-      <p>The first transaction will be used to pay for the token symbol reservation cost of:</p>
+      <p>- The first transaction will be used to pay for the token symbol reservation cost of:</p>
       <div className='bx--details poly-cost'>{feeView} POLY</div>
       <p>
-      The second transaction will be used to pay the mining fee (aka gas fee) to complete the reservation of
-      your token symbol. Please hit &laquo;CONFIRM&raquo; when you are ready to proceed.
+      - The second transaction will be used to pay the mining fee (aka gas fee) to complete the reservation of
+      your token symbol.
+        <br />
+      </p>
+      <p>
+      Please hit &laquo;CONFIRM&raquo; when you are ready to proceed. Once you hit &laquo;CONFIRM&raquo;,
+       your Token Symbol reservation will be sent to the blockchain and will be immutable until it expires.
+        Any change prior to your reservation expiry will require that you start the process over using another token
+         symbol.<br /> If you do not wish to pay the token symbol reservation fee or wish to review your information,
+          simply select &laquo;CANCEL&raquo;.
       </p>
     </div>,
     async () => {
@@ -48,7 +56,9 @@ export const reserve = () => async (dispatch: Function, getState: GetState) => {
         details.ticker.toUpperCase() + ' Token Symbol Reservation',
       ))
     },
-    `Proceeding with Your ${details.ticker.toUpperCase()} Token Symbol Reservation`,
+    `Before you Proceed with Your ${details.ticker.toUpperCase()} Token Symbol Reservation`,
+    undefined,
+    'pui-large-confirm-modal'
   ))
 }
 

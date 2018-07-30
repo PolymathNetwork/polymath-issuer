@@ -87,7 +87,8 @@ class TickerPage extends Component<Props, State> {
             <h4 className='pui-h4' style={{ marginTop: '-20px' }}>
               This reservation ensures that no other organization can use
               your brand or create an identical token symbol using the
-              Polymath platform. This operation carries a cost of: {this.state.tickerRegistrationFee} POLY.
+              Polymath platform. 
+              <br />This operation carries a cost of: {this.state.tickerRegistrationFee} POLY.
             </h4>
             <TickerForm onSubmit={this.handleSubmit} />
           </div>
