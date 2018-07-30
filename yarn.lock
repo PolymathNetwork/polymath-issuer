@@ -8206,9 +8206,9 @@ polymath-auth@1.1.3:
     web3-core-method "github:bshevchenko/web3-core-method#master"
     web3-eth-contract "1.0.0-beta.30"
 
-polymath-core@1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/polymath-core/-/polymath-core-1.3.2.tgz#b30b355f94afe1b40d9eceefbda154ef7766608b"
+polymath-core@1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/polymath-core/-/polymath-core-1.3.3.tgz#7a6f45f661dfc49dd930ece1aa5eea65c0760fcd"
   dependencies:
     babel-polyfill "6.26.0"
     babel-preset-es2015 "6.24.1"
@@ -8250,13 +8250,13 @@ polymath-ui@5.5.5:
     redux "3.7.2"
     redux-form "7.0.4"
 
-polymathjs@1.5.4:
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-1.5.4.tgz#deb477eda10e7813e6f3ecb212bf617de59b1c02"
+polymathjs@1.5.5:
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-1.5.5.tgz#58bae434890c0a76762b62b2bad44569c3742bee"
   dependencies:
     bignumber.js "5.0.0"
     bs58 "^4.0.1"
-    polymath-core "1.3.2"
+    polymath-core "1.3.3"
     redux "3.7.2"
     redux-thunk "2.2.0"
     web3 "1.0.0-beta.30"
@@ -11101,7 +11101,7 @@ web3-core-helpers@1.0.0-beta.34:
     web3-eth-iban "1.0.0-beta.34"
     web3-utils "1.0.0-beta.34"
 
-web3-core-method@1.0.0-beta.30, web3-core-method@bshevchenko/web3-core-method#master, "web3-core-method@github:bshevchenko/web3-core-method#master":
+web3-core-method@1.0.0-beta.30, "web3-core-method@github:bshevchenko/web3-core-method#master":
   version "1.0.0-beta.30"
   resolved "https://codeload.github.com/bshevchenko/web3-core-method/tar.gz/9199df8b1ea8658503ee48ba7ad391fec8e61838"
   dependencies:
