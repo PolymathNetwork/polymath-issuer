@@ -1,12 +1,14 @@
 .compliance-settings {
   display: flex;
+  margin-top: 20px;
+  margin-bottom: 20px;
 
   > .bx--form-item {
     max-width: 220px;
 
-    &:first-child {
-      max-width: 325px;
-    }
+    //&:first-child {
+    //  max-width: 325px;
+    //}
 
     &:last-child {
       margin-top: -22px;
@@ -73,13 +75,15 @@
 
 .whitelist-import-confirm-modal {
   .bx--modal-container {
-    width: 712px;
+    width: 850px;
+    min-width: 850px;
   }
 }
 
 .import-whitelist-btn {
+  float: left;
   margin-top: 6px;
-  margin-bottom: 40px;
+  margin-right: 26px;
 }
 
 .permanent-checkbox-container {
