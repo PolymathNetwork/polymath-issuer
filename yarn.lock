@@ -8250,9 +8250,9 @@ polymath-ui@5.5.5:
     redux "3.7.2"
     redux-form "7.0.4"
 
-polymathjs@1.5.6:
-  version "1.5.6"
-  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-1.5.6.tgz#89d93dc932fc20bfd295931f7f9447cafc2444fc"
+polymathjs@1.5.7:
+  version "1.5.7"
+  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-1.5.7.tgz#ad0d6f7ab6f6649857dfa33ed81670ecc9851991"
   dependencies:
     bignumber.js "5.0.0"
     bs58 "^4.0.1"
