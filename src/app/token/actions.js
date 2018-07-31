@@ -9,6 +9,7 @@ import type { SecurityToken, Investor, Address } from 'polymathjs/types'
 import { formName as completeFormName } from './components/CompleteTokenForm'
 import { fetch as fetchSTO } from '../sto/actions'
 import { PERMANENT_LOCKUP_TS } from '../compliance/actions'
+import CreatedEmail from './components/CreatedEmail'
 import type { GetState } from '../../redux/reducer'
 import type { ExtractReturn } from '../../redux/helpers'
 
@@ -101,12 +102,18 @@ export const issue = (isLimitNI: boolean) => async (dispatch: Function, getState
             ...values,
           }
           token.isDivisible = token.isDivisible !== '1'
-          await SecurityTokenRegistry.generateSecurityToken(token)
+          const receipt = await SecurityTokenRegistry.generateSecurityToken(token)
 
           if (isLimitNI) {
             token = await SecurityTokenRegistry.getTokenByTicker(ticker)
             await token.contract.setCountTM(values.investorsNumber)
           }
+
+          dispatch(ui.email(
+            receipt.transactionHash,
+            token.ticker + ' Token Created on Polymath',
+            <CreatedEmail ticker={token.ticker} txHash={receipt.transactionHash} />
+          ))
         },
         'Token Was Issued Successfully',
         () => {// $FlowFixMe
@@ -114,7 +121,7 @@ export const issue = (isLimitNI: boolean) => async (dispatch: Function, getState
         },
         `/dashboard/${ticker}`,
         undefined,
-        true, // TODO @bshevchenko,
+        false,
         ticker.toUpperCase() + ' Token Creation'
       ))
     },
@@ -143,7 +150,15 @@ export const uploadCSV = (file: Object) => async (dispatch: Function) => {
       const to = handleDate(purchase)
       const expiry = new Date(Date.parse(expiryIn))
       const tokensVal = Number(tokensIn)
-      if (ethereumAddress(address) === null && !isNaN(from) && !isNaN(to) && !isNaN(expiry)
+
+      let isDuplicatedAddress = false
+      investors.forEach((investor) => {
+        if (investor.address === address) {
+          isDuplicatedAddress = true
+        }
+      })
+
+      if (!isDuplicatedAddress && ethereumAddress(address) === null && !isNaN(from) && !isNaN(to) && !isNaN(expiry)
         && Number.isInteger(tokensVal) && tokensVal > 0) {
         if (investors.length === 75) {
           isTooMany = true

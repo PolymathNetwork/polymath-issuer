@@ -273,9 +273,10 @@ class CompliancePage extends Component<Props, State> {
             <InlineNotification
               hideCloseButton
               title={criticals.length + ' Error' + (criticals.length > 1 ? 's' : '') + ' in Your .csv File'}
-              subtitle={'Please note that the entries below contains error that prevent their content to be ' +
-              'committed to the blockchain. Entries were automatically deselected so they are not submitted ' +
-              'to the blockchain. You can also elect to cancel the operation to review the csv file offline.'}
+              subtitle={'Please note that the entries below contains error or duplicates another entry that prevent ' +
+              'their content to be committed to the blockchain. Entries were automatically deselected so they are ' +
+              'not submitted to the blockchain. You can also elect to cancel the operation to review the csv ' +
+              'file offline.'}
               kind='error'
             />
             <table className='import-criticals'>
@@ -549,7 +550,7 @@ class CompliancePage extends Component<Props, State> {
 
           <h1 className='pui-h1'>Token Whitelist</h1>
           <h3 className='pui-h3'>
-            Whitelist addresses may hold, buy, or sell the security token and may participate into the STO.
+            Whitelisted addresses may hold, buy, or sell the security token and may participate into the STO.
             Security token buy/sell operations may be subject to restrictions.
           </h3>
           <br />

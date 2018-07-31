@@ -1,9 +1,9 @@
 .compliance-settings {
-  display: flex; }
+  display: flex;
+  margin-top: 20px;
+  margin-bottom: 20px; }
   .compliance-settings > .bx--form-item {
     max-width: 220px; }
-    .compliance-settings > .bx--form-item:first-child {
-      max-width: 325px; }
     .compliance-settings > .bx--form-item:last-child {
       margin-top: -22px;
       margin-bottom: 0 !important;
@@ -42,11 +42,13 @@
   max-height: 700px; }
 
 .whitelist-import-confirm-modal .bx--modal-container {
-  width: 712px; }
+  width: 850px;
+  min-width: 850px; }
 
 .import-whitelist-btn {
+  float: left;
   margin-top: 6px;
-  margin-bottom: 40px; }
+  margin-right: 26px; }
 
 .permanent-checkbox-container {
   padding-top: 35px;

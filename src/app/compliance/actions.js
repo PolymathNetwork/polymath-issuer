@@ -74,8 +74,17 @@ export const uploadCSV = (file: Object) => async (dispatch: Function) => {
       const expiry = new Date(Date.parse(expiryIn))
       const canBuyFromSTO = typeof canBuyFromSTOIn === 'string' && canBuyFromSTOIn.toLowerCase() === 'true'
       const isPercentage = typeof isPercentageIn === 'string' && isPercentageIn.toLowerCase() === 'true'
+
+      let isDuplicatedAddress = false
+      investors.forEach((investor) => {
+        if (investor.address === address) {
+          isDuplicatedAddress = true
+        }
+      })
+
       if (
-        ethereumAddress(address) === null && !isNaN(from) && !isNaN(to) && !isNaN(expiry)
+        !isDuplicatedAddress
+        && ethereumAddress(address) === null && !isNaN(from) && !isNaN(to) && !isNaN(expiry)
         && (isPercentage || isPercentageIn === '' || isPercentageIn === undefined)
         && (canBuyFromSTO || canBuyFromSTOIn === '' || canBuyFromSTOIn === undefined)
       ) {
@@ -133,15 +142,17 @@ export const exportWhitelist = () => async (dispatch: Function, getState: GetSta
     }
 
     let csvContent = 'data:text/csv;charset=utf-8,'
+    let isFirstLine = true
     investors.forEach((investor: Investor) => {
-      csvContent += [
+      csvContent += (!isFirstLine ? '\r\n' : '') + [
         investor.address, // $FlowFixMe
         investor.from.getTime() === PERMANENT_LOCKUP_TS ? '' : moment(investor.from).format('MM/DD/YYYY'), // $FlowFixMe
         investor.to.getTime() === PERMANENT_LOCKUP_TS ? '' : moment(investor.to).format('MM/DD/YYYY'),
         moment(investor.expiry).format('MM/DD/YYYY'),
         investor.canBuyFromSTO ? 'true' : '',
         investor.isPercentage ? 'true' : '',
-      ].join(',') + '\r\n'
+      ].join(',')
+      isFirstLine = false
     })
 
     window.open(encodeURI(csvContent))

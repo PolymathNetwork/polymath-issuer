@@ -7,6 +7,7 @@ import type { TwelveHourTime } from 'polymath-ui'
 import type { STOFactory, STODetails, STOPurchase } from 'polymathjs/types'
 
 import { formName as configureFormName } from './components/ConfigureSTOForm'
+import ConfiguredEmail from './components/ConfiguredEmail'
 import type { ExtractReturn } from '../../redux/helpers'
 import type { GetState } from '../../redux/reducer'
 
@@ -121,14 +122,30 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
           const [startDate, endDate] = values['start-end']
           const startDateWithTime = dateTimeFromDateAndTime(startDate, values.startTime)
           const endDateWithTime = dateTimeFromDateAndTime(endDate, values.endTime)
-          await contract.setCappedSTO(
+          const isEthFundraise = values.currency === 'ETH'
+
+          const receipt = await contract.setCappedSTO(
             startDateWithTime,
             endDateWithTime,
             values.cap,
             values.rate,
-            values.currency === 'ETH',
+            isEthFundraise,
             values.fundsReceiver,
           )
+
+          dispatch(ui.email(
+            receipt.transactionHash,
+            token.ticker + ' STO Created on Polymath',
+            <ConfiguredEmail
+              ticker={token.ticker}
+              start={startDateWithTime}
+              cap={values.cap}
+              rate={values.rate}
+              isPolyFundraise={!isEthFundraise}
+              fundsReceiver={values.fundsReceiver}
+              txHash={receipt.transactionHash}
+            />
+          ))
         },
         'STO Configured Successfully',
         () => {
@@ -136,7 +153,7 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
         },
         `/dashboard/${token.ticker}/compliance`,
         undefined,
-        true, // TODO @bshevchenko
+        false,
         token.ticker.toUpperCase() + ' STO Creation'
       ))
     },
