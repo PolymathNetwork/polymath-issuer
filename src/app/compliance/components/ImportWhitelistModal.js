@@ -91,8 +91,12 @@ class ImportWhitelistModal extends Component<Props> {
           <br />
           — Buy Restriction Date mm/dd/yyyy (date when the buy restrictions should be lifted for that address);<br />
           — KYC/AML Expiry Date mm/dd/yyyy;<br />
+          — Can buy from STO: <strong>true</strong> to enable OR empty cell to disable;<br />
           {!isPercentageDisabled ?
-            <span>— Exempt From % Ownership: true to enable OR empty cell to disable;<br /></span> : ''}
+            <span>
+              — Exempt From % Ownership: <strong>true</strong> to enable OR empty cell to disable;<br />
+            </span>
+            : ''}
           Maximum numbers of investors per transaction is <strong>75</strong>.
         </h4>
         <h5 className='pui-h5'>

@@ -2,6 +2,7 @@
 
 import React from 'react'
 import * as ui from 'polymath-ui'
+import moment from 'moment'
 import { ethereumAddress } from 'polymath-ui/dist/validate'
 import { SecurityToken, PercentageTransferManager } from 'polymathjs'
 import type { Investor, Address } from 'polymathjs/types'
@@ -30,7 +31,7 @@ export const FREEZE_STATUS = 'compliance/FREEZE_STATUS'
 export const FROZEN_MODAL_STATUS='compliance/FROZEN_MODAL_STATUS'
 export const showFrozenModal = (show: boolean) => ({ type: FROZEN_MODAL_STATUS, show })
 
-export type InvestorCSVRow = [number, string, string, string, string, string]
+export type InvestorCSVRow = [number, string, string, string, string, string, string]
 
 export const fetchWhitelist = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
@@ -49,20 +50,6 @@ export const fetchWhitelist = () => async (dispatch: Function, getState: GetStat
       }
     }
 
-    const { transferManager, percentageTM: { contract: percentageTM } } = getState().whitelist
-    const investors = await transferManager.getWhitelist()
-    if (percentageTM) {
-      const percentages = await percentageTM.getWhitelist()
-      for (let i = 0; i < investors.length; i++) {
-        for (let percentage: Investor of percentages) {
-          if (investors[i].address === percentage.address) {
-            investors[i].isPercentage = percentage.isPercentage
-          }
-        }
-      }
-    }
-    dispatch({ type: WHITELIST, investors })
-
     dispatch(ui.fetched())
   } catch (e) {
     dispatch(ui.fetchingFailed(e))
@@ -80,23 +67,25 @@ export const uploadCSV = (file: Object) => async (dispatch: Function) => {
     // $FlowFixMe
     for (let entry of reader.result.split(/\r\n|\n/)) {
       string++
-      const [address, sale, purchase, expiryIn, isPercentageIn] = entry.split(',')
+      const [address, sale, purchase, expiryIn, canBuyFromSTOIn, isPercentageIn] = entry.split(',')
       const handleDate = (d: string) => d === '' ? new Date(PERMANENT_LOCKUP_TS) : new Date(Date.parse(d))
       const from = handleDate(sale)
       const to = handleDate(purchase)
       const expiry = new Date(Date.parse(expiryIn))
+      const canBuyFromSTO = typeof canBuyFromSTOIn === 'string' && canBuyFromSTOIn.toLowerCase() === 'true'
       const isPercentage = typeof isPercentageIn === 'string' && isPercentageIn.toLowerCase() === 'true'
       if (
         ethereumAddress(address) === null && !isNaN(from) && !isNaN(to) && !isNaN(expiry)
         && (isPercentage || isPercentageIn === '' || isPercentageIn === undefined)
+        && (canBuyFromSTO || canBuyFromSTOIn === '' || canBuyFromSTOIn === undefined)
       ) {
         if (investors.length === 75) {
           isTooMany = true
           continue
         }
-        investors.push({ address, from, to, expiry, isPercentage })
+        investors.push({ address, from, to, expiry, canBuyFromSTO, isPercentage })
       } else {
-        criticals.push([string, address, sale, purchase, expiryIn, isPercentageIn])
+        criticals.push([string, address, sale, purchase, expiryIn, canBuyFromSTOIn, isPercentageIn])
       }
     }
     dispatch({ type: UPLOADED, investors, criticals, isTooMany })
@@ -120,12 +109,47 @@ export const importWhitelist = () => async (dispatch: Function, getState: GetSta
     'Investors has been added successfully',
     () => {
       dispatch(resetUploaded())
-      return dispatch(fetchWhitelist())
     },
     undefined,
     undefined,
     true // TODO @bshevchenko
   ))
+}
+
+export const exportWhitelist = () => async (dispatch: Function, getState: GetState) => {
+  dispatch(ui.fetching())
+  try {
+    const { transferManager, percentageTM: { contract: percentageTM } } = getState().whitelist
+    const investors = await transferManager.getWhitelist()
+    if (percentageTM) {
+      const percentages = await percentageTM.getWhitelist()
+      for (let i = 0; i < investors.length; i++) {
+        for (let percentage: Investor of percentages) {
+          if (investors[i].address === percentage.address) {
+            investors[i].isPercentage = percentage.isPercentage
+          }
+        }
+      }
+    }
+
+    let csvContent = 'data:text/csv;charset=utf-8,'
+    investors.forEach((investor: Investor) => {
+      csvContent += [
+        investor.address, // $FlowFixMe
+        investor.from.getTime() === PERMANENT_LOCKUP_TS ? '' : moment(investor.from).format('MM/DD/YYYY'), // $FlowFixMe
+        investor.to.getTime() === PERMANENT_LOCKUP_TS ? '' : moment(investor.to).format('MM/DD/YYYY'),
+        moment(investor.expiry).format('MM/DD/YYYY'),
+        investor.canBuyFromSTO ? 'true' : '',
+        investor.isPercentage ? 'true' : '',
+      ].join(',') + '\r\n'
+    })
+
+    window.open(encodeURI(csvContent))
+
+    dispatch(ui.fetched())
+  } catch (e) {
+    dispatch(ui.fetchingFailed(e))
+  }
 }
 
 export const addInvestor = () => async (dispatch: Function, getState: GetState) => {
@@ -271,7 +295,6 @@ export const enableOwnershipRestrictions = (percentage?: number) => async (dispa
           'Ownership restrictions has been enabled successfully',
           async () => {
             dispatch(percentageTransferManager(await st.getPercentageTM(), false, percentage))
-            return dispatch(fetchWhitelist())
           },
           undefined,
           undefined,
@@ -306,7 +329,6 @@ export const disableOwnershipRestrictions = () => async (dispatch: Function, get
         'Ownership restrictions has been paused successfully',
         async () => {
           dispatch(percentageTransferManager(tm, true))
-          return dispatch(fetchWhitelist())
         },
         undefined,
         undefined,
@@ -326,7 +348,6 @@ export const updateOwnershipPercentage = (percentage: number) => async (dispatch
     'Ownership percentage has been successfully updated',
     async () => {
       dispatch(percentageTransferManager(tm, false, percentage))
-      return dispatch(fetchWhitelist())
     },
     undefined,
     undefined,
