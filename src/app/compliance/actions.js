@@ -74,8 +74,17 @@ export const uploadCSV = (file: Object) => async (dispatch: Function) => {
       const expiry = new Date(Date.parse(expiryIn))
       const canBuyFromSTO = typeof canBuyFromSTOIn === 'string' && canBuyFromSTOIn.toLowerCase() === 'true'
       const isPercentage = typeof isPercentageIn === 'string' && isPercentageIn.toLowerCase() === 'true'
+
+      let isDuplicatedAddress = false
+      investors.forEach((investor) => {
+        if (investor.address === address) {
+          isDuplicatedAddress = true
+        }
+      })
+
       if (
-        ethereumAddress(address) === null && !isNaN(from) && !isNaN(to) && !isNaN(expiry)
+        !isDuplicatedAddress
+        && ethereumAddress(address) === null && !isNaN(from) && !isNaN(to) && !isNaN(expiry)
         && (isPercentage || isPercentageIn === '' || isPercentageIn === undefined)
         && (canBuyFromSTO || canBuyFromSTOIn === '' || canBuyFromSTOIn === undefined)
       ) {

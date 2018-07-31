@@ -150,7 +150,15 @@ export const uploadCSV = (file: Object) => async (dispatch: Function) => {
       const to = handleDate(purchase)
       const expiry = new Date(Date.parse(expiryIn))
       const tokensVal = Number(tokensIn)
-      if (ethereumAddress(address) === null && !isNaN(from) && !isNaN(to) && !isNaN(expiry)
+
+      let isDuplicatedAddress = false
+      investors.forEach((investor) => {
+        if (investor.address === address) {
+          isDuplicatedAddress = true
+        }
+      })
+
+      if (!isDuplicatedAddress && ethereumAddress(address) === null && !isNaN(from) && !isNaN(to) && !isNaN(expiry)
         && Number.isInteger(tokensVal) && tokensVal > 0) {
         if (investors.length === 75) {
           isTooMany = true
