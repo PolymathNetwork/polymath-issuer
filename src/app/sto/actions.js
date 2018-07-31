@@ -104,7 +104,7 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
       </p>
     </div>,
     async () => { // $FlowFixMe
-      if (getState().pui.account.balance.lt(2000000000)) {
+      if (getState().pui.account.balance.lt(fee)) {
         dispatch(ui.faucet(`The launching of a STO has a fixed cost of ${feeView} POLY.`))
         return
       }
