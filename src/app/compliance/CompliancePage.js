@@ -681,7 +681,7 @@ class CompliancePage extends Component<Props, State> {
           */}
           <Modal
             className='freeze-transfer-modal'
-            open={false}// (this.props.isTokenFrozen && this.props.isFrozenModalOpen)
+            open={this.props.isTokenFrozen && this.props.isFrozenModalOpen}
             modalHeading={
               <span>
                 <Icon name='icon--pause--outline' fill='#E71D32' width='24' height='24' />&nbsp;
