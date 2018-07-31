@@ -1,4 +1,3 @@
-/* eslint-disable react/style-prop-object */
 // @flow
 
 import React, { Component } from 'react'
@@ -18,14 +17,18 @@ export default class Email extends Component<Props> {
         <div className='content'>
           {this.props.children}
           <div className='icon-text' style={{ height: '52px' }}>
-            <div className='icon' style={{ marginTop: '8px' }}>
+            <div className='icon question'>
               <img alt='Icon' src='https://polymath-offchain.herokuapp.com/img/question.png' />
             </div>
             <h2>
-              If you have any questions please contact<br />
+              If you have any questions, please reach out to<br />
               <a href='mailto:tokenstudio@polymath.zendesk.com'>tokenstudio@polymath.zendesk.com</a>
             </h2>
           </div>
+          <h2 className='sincere'>
+            Best,<br />
+            Polymath Support
+          </h2>
         </div>
         <div className='footer'>
           <div className='left'>

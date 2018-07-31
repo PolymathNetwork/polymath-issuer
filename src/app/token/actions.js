@@ -9,6 +9,7 @@ import type { SecurityToken, Investor, Address } from 'polymathjs/types'
 import { formName as completeFormName } from './components/CompleteTokenForm'
 import { fetch as fetchSTO } from '../sto/actions'
 import { PERMANENT_LOCKUP_TS } from '../compliance/actions'
+import CreatedEmail from './components/CreatedEmail'
 import type { GetState } from '../../redux/reducer'
 import type { ExtractReturn } from '../../redux/helpers'
 
@@ -100,12 +101,18 @@ export const issue = (isLimitNI: boolean) => async (dispatch: Function, getState
                 ...values,
               }
               token.isDivisible = token.isDivisible !== '1'
-              await SecurityTokenRegistry.generateSecurityToken(token)
+              const receipt = await SecurityTokenRegistry.generateSecurityToken(token)
 
               if (isLimitNI) {
                 token = await SecurityTokenRegistry.getTokenByTicker(ticker)
                 await token.contract.setCountTM(values.investorsNumber)
               }
+
+              dispatch(ui.email(
+                receipt.transactionHash,
+                token.ticker + ' Token Created on Polymath',
+                <CreatedEmail ticker={token.ticker} txHash={receipt.transactionHash} />
+              ))
             },
             'Token Was Issued Successfully',
             () => {
@@ -113,7 +120,7 @@ export const issue = (isLimitNI: boolean) => async (dispatch: Function, getState
             },
             `/dashboard/${ticker}`,
             undefined,
-            true, // TODO @bshevchenko,
+            false,
             ticker.toUpperCase() + ' Token Creation'
           ))
         },

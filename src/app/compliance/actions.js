@@ -133,15 +133,17 @@ export const exportWhitelist = () => async (dispatch: Function, getState: GetSta
     }
 
     let csvContent = 'data:text/csv;charset=utf-8,'
+    let isFirstLine = true
     investors.forEach((investor: Investor) => {
-      csvContent += [
+      csvContent += (!isFirstLine ? '\r\n' : '') + [
         investor.address, // $FlowFixMe
         investor.from.getTime() === PERMANENT_LOCKUP_TS ? '' : moment(investor.from).format('MM/DD/YYYY'), // $FlowFixMe
         investor.to.getTime() === PERMANENT_LOCKUP_TS ? '' : moment(investor.to).format('MM/DD/YYYY'),
         moment(investor.expiry).format('MM/DD/YYYY'),
         investor.canBuyFromSTO ? 'true' : '',
         investor.isPercentage ? 'true' : '',
-      ].join(',') + '\r\n'
+      ].join(',')
+      isFirstLine = false
     })
 
     window.open(encodeURI(csvContent))

@@ -123,51 +123,12 @@ const providers: Array<ServiceProvider> = [
     'commodo consequat.',
   },
   {
-    id: 6,
-    cat: 1,
-    title: 'Cassels',
-    logo: '/providers/legal/cassels-blackwell.png',
-    desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et ' +
-    'dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea ' +
-    'commodo consequat.',
-    isToBeAnnounced: true,
-  },
-  {
-    id: 7,
-    cat: 1,
-    title: 'Fisher Broyles',
-    logo: '/providers/legal/fisherbroyles.png',
-    desc: 'FisherBroyles, LLP is a full-service law firm for the twenty-first century. Our Law Firm 2.0® business ' +
-    'model prioritizes the highest quality of legal services by partners who have the most relevant expertise, while ' +
-    'our structure maximizes efficiency, responsiveness, and value.',
-    isToBeAnnounced: true,
-  },
-  {
     id: 8,
     cat: 1,
     title: 'Radix',
     logo: '/providers/legal/radix.png',
     desc: 'Radix Law offers legal services in the fields of business law, commercial litigation, bankruptcy, real ' +
     'estate law and estate planning.',
-  },
-  {
-    id: 9,
-    cat: 1,
-    title: 'Paul Hastings',
-    logo: '/providers/legal/paul-hastings.png',
-    desc: 'Founded in 1951, Paul Hastings has grown strategically to anticipate and respond to our clients\' needs ' +
-    'in markets across the globe. We have a strong presence throughout Asia, Europe, Latin America, and the U.S.',
-    isToBeAnnounced: true,
-  },
-  {
-    id: 10,
-    cat: 1,
-    title: 'Aird & Berlis',
-    logo: '/providers/legal/aird-berlis.png',
-    desc: 'As a leading Canadian law firm with a focus on all principal areas of business law, we advise on a ' +
-    'diverse range of transactional and litigation matters for clients ranging from startups to multinational ' +
-    'corporations.',
-    isToBeAnnounced: true,
   },
 
   // KYC/AML
@@ -208,9 +169,9 @@ const providers: Array<ServiceProvider> = [
     desc: 'Taurus Visiwon specializes in identifying your unique selling points and builds a full-service marketing ' +
     '& PR strategy around them. CONTENT & MARKETING. Working as an organic part of your team, Taurus Vision will ' +
     'assist you in formulating and executing a full go-to market strategy.',
-    isToBeAnnounced: true,
   },
-  // Custody Service
+
+  // CUSTODY SERVICE
   {
     id: 15,
     cat: 4,
@@ -219,9 +180,7 @@ const providers: Array<ServiceProvider> = [
     desc: 'BitGo is a blockchain software company that secures digital currency for institutional investors. Its ' +
     'technology solves the most difficult security, compliance and custodial problems '+ 
     'associated with blockchain-based currencies, enabling the integration of digital currency into the global…',
-    isToBeAnnounced: false,
   },
-
 ]
 
 export const getProviders = () => {

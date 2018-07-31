@@ -1,4 +1,3 @@
-/* eslint-disable react/style-prop-object */
 // @flow
 
 import React, { Component } from 'react'
@@ -20,27 +19,38 @@ export default class ReservedEmail extends Component<Props> {
     const ticker = token.ticker.toUpperCase()
     return (
       <Email>
-        <h4>Step 1 of 5</h4>
-        <h1>Symbol Reserved</h1>
-        <div className='main-value'>
-          <h2>Token Symbol Has Been Reserved</h2>
-          <p className='value' style={{ fontSize: '36px' }}>{ticker}</p>
-        </div>
-        <div className='icon-text' style={{ height: '57px' }}>
-          <div className='icon' style={{ marginTop: '11px' }}>
+        <h4>Congratulations!</h4>
+        <h1>You Have Successfully Reserved the Token Symbol {ticker}</h1>
+        <div className='icon-text tx-hash'>
+          <div className='icon'>
             <img alt='Icon' src='https://polymath-offchain.herokuapp.com/img/checkmark.png' />
           </div>
-          <h2><strong>{ticker}</strong> symbol has been registered on Polymath</h2>
+          <h2>You can view the transaction details here:</h2>
           <div className='tx'>Transaction details on Etherscan: {etherscan}</div>
         </div>
         <div className='icon-text' style={{ height: '78px' }}>
-          <div className='icon' style={{ marginTop: '21px' }}>
+          <div className='icon'>
             <img alt='Icon' src='https://polymath-offchain.herokuapp.com/img/warning.png' />
           </div>
           <h2>
-            You have <strong>{this.props.expiryLimit} days</strong> to proceed with the token issuance<br />
-            before the token symbol you registered expires and<br /> becomes available for others to use.
+            Your reservation is valid for <strong>{this.props.expiryLimit}</strong> days.<br />
+            If the reservation period lapses before your security token is created,
+            the ticker will become available for others.
           </h2>
+        </div>
+        <div className='text'>
+          <h3>Before you create your token, you will need to decide whether:</h3>
+          <ul>
+            <li>your token will be divisible or indivisible;</li>
+            <li>
+              additional information should be embedded into your token,
+              such as a legend or link to your investor relations site.
+            </li>
+          </ul>
+          <p>
+            If you are unsure of the above, please consult with your advisors or engage an advisory firm through
+            the Polymath Token Studio marketplace before your reservation period expires.
+          </p>
         </div>
       </Email>
     )
