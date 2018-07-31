@@ -64,14 +64,20 @@ export const issue = (isLimitNI: boolean) => async (dispatch: Function, getState
   const ticker = token.ticker
   dispatch(ui.confirm(
     <div>
-      <p>Completion of your token creation will require two wallet transactions.</p>
+      <p>Completion of your token creation will require {isLimitNI?'three':'two'} wallet transactions.</p>
       <p>- The first transaction will be used to pay for the token creation cost of:</p>
       <div className='bx--details poly-cost'>{feeView} POLY</div>
       <p>
         - The second transaction will be used to pay the mining fee (aka gas fee) to complete the creation of
         your token.
+      </p>
+      {isLimitNI &&
+      <p>
+        - The third transaction will be used to pay the mining fee (aka gas fee) to limit the number of investors who
+        can hold your token.
         <br />
       </p>
+      }
       <p>
         Please hit &laquo;CONFIRM&raquo; when you are ready to proceed. Once you hit &laquo;CONFIRM&raquo;, your
          security token will be created on the blockchain and will be immutable. Any change to the token structure
@@ -87,7 +93,7 @@ export const issue = (isLimitNI: boolean) => async (dispatch: Function, getState
         return
       }
       dispatch(ui.tx(
-        ['Approving POLY Spend', 'Creating', ...(isLimitNI ? ['Limiting Number Of Investors'] : [])],
+        ['Approving POLY Spend', 'Creating Security Token', ...(isLimitNI ? ['Limiting Number Of Investors'] : [])],
         async () => {
           const { values } = getState().form[completeFormName]
           token = {

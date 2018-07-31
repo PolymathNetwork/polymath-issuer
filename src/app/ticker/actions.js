@@ -41,7 +41,7 @@ export const reserve = () => async (dispatch: Function, getState: GetState) => {
       </p>
       <p>
       Please hit &laquo;CONFIRM&raquo; when you are ready to proceed. Once you hit &laquo;CONFIRM&raquo;,
-       your Token Symbol reservation will be sent to the blockchain and will be immutable until it expires.
+       your Token Symbol reservation will be sent to the blockchain and will be immutable unless it expires.
         Any change prior to your reservation expiry will require that you start the process over using another token
          symbol.<br /> If you do not wish to pay the token symbol reservation fee or wish to review your information,
           simply select &laquo;CANCEL&raquo;.
@@ -53,7 +53,7 @@ export const reserve = () => async (dispatch: Function, getState: GetState) => {
         return
       }
       dispatch(ui.tx(
-        ['Approving POLY Spend', 'Reserving'],
+        ['Approving POLY Spend', 'Reserving Token Symbol'],
         async () => {
           await TickerRegistry.registerTicker(details)
           if (isEmailConfirmed) {
