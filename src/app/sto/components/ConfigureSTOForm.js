@@ -167,7 +167,7 @@ class ConfigureSTOForm extends Component<Props, State> {
           {this.state.amountOfFunds} {this.state.currency}
         </FormGroup>
         <Button type='submit'>
-          Confirm & Launch STO
+          DEPLOY AND SCHEDULE STO
         </Button>
         <p className='pui-input-hint'>
           When you launch your security token offering, only whitelisted investors will be able to participate.
