@@ -67,15 +67,15 @@ export const issue = (isLimitNI: boolean) => async (dispatch: Function, getState
   dispatch(ui.confirm(
     <div>
       <p>Completion of your token creation will require {isLimitNI?'three':'two'} wallet transactions.</p>
-      <p>- The first transaction will be used to pay for the token creation cost of:</p>
+      <p>• The first transaction will be used to pay for the token creation cost of:</p>
       <div className='bx--details poly-cost'>{feeView} POLY</div>
       <p>
-        - The second transaction will be used to pay the mining fee (aka gas fee) to complete the creation of
+        • The second transaction will be used to pay the mining fee (aka gas fee) to complete the creation of
         your token.
       </p>
       {isLimitNI &&
       <p>
-        - The third transaction will be used to pay the mining fee (aka gas fee) to limit the number of investors who
+        • The third transaction will be used to pay the mining fee (aka gas fee) to limit the number of investors who
         can hold your token.
         <br />
       </p>

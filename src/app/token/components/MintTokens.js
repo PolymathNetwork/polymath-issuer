@@ -147,13 +147,13 @@ class MintTokens extends Component<Props> {
           be:
         </p>
         <p>
-          – Total number of tokens minted manually + total number of tokens
+          • Total number of tokens minted manually + total number of tokens
           sold during the STO.
           <br />
-          – If you achieve 100% of your fundraise objective, the total number
+          • If you achieve 100% of your fundraise objective, the total number
           of tokens sold during the STO will be equal to your hard cap.
           <br />
-          – If not, this number will be equal to the total number of tokens
+          • If not, this number will be equal to the total number of tokens
           sold.
         </p>
         <p>
@@ -186,8 +186,8 @@ class MintTokens extends Component<Props> {
             <span>
               Manual minting operations are disabled once an STO is configured and scheduled for your token.<br />
               This action will trigger multiple signing operations with your MetaMask wallet:<br />
-              – One for the initial whitelist upload;<br />
-              — One for the minting of tokens.
+              • One for the initial whitelist upload;<br />
+              • One for the minting of tokens.
             </span>
           </Remark>
           <h2 className='pui-h2'>
@@ -209,15 +209,15 @@ class MintTokens extends Component<Props> {
           </h4>
           <h4 className='pui-h4'>
             The format of the file should be as follow:<br />
-            – ETH Address (address to whitelist);<br />
-            — Sell Restriction Date mm/dd/yyyy (date when the resale restrictions
+            • ETH Address (address to whitelist);<br />
+            • Sell Restriction Date mm/dd/yyyy (date when the resale restrictions
             should be lifted for that address);
             <br />
-            — Buy Restriction Date mm/dd/yyyy (date when the buy restrictions should be
+            • Buy Restriction Date mm/dd/yyyy (date when the buy restrictions should be
             lifted for that address);<br />
             Empty cell will be considered as permanent lockup.<br />
-            — KYC/AML Expiry Date mm/dd/yyyy;<br />
-            – Number of tokens to mint for the ETH address (integer).<br />
+            • KYC/AML Expiry Date mm/dd/yyyy;<br />
+            • Number of tokens to mint for the ETH address (integer).<br />
             Maximum numbers of addresses per transaction is <strong>75</strong>.
           </h4>
           <h5 className='pui-h5'>
