@@ -225,7 +225,10 @@ export const togglePauseSto = (endDate: Date ) => async (dispatch: Function, get
 
 export const exportInvestorsList = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.confirm(
-    <p>Are you sure you want to export investors list?<br />It may take a while.</p>,
+    <p>
+      Are you sure you want to export investors list?<br />
+      Please be aware that the time to complete this operation will vary based on the number of entries in the list.
+    </p>,
     async () => {
       dispatch(ui.fetching())
       try {

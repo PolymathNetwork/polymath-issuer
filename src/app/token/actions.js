@@ -324,17 +324,19 @@ export const updateMaxHoldersCount = (count: number) => async (dispatch: Functio
 
 export const exportMintedTokensList = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.confirm(
-    <p>Are you sure you want to export minted tokens list?<br />It may take a while.</p>,
+    <p>
+      Are you sure you want to export minted tokens list?<br />
+      Please be aware that the time to complete this operation will vary based on the number of entries in the list.
+    </p>,
     async () => {
       dispatch(ui.fetching())
       try {
         const { token } = getState().token // $FlowFixMe
         const investors = await token.contract.getMinted()
 
-        let csvContent = 'data:text/csv;charset=utf-8,'
-        let isFirstLine = true
+        let csvContent = 'data:text/csv;charset=utf-8,Address,Sale Lockup,Purchase Lockup,KYC/AML Expiry,Minted'
         investors.forEach((investor: Investor) => {
-          csvContent += (!isFirstLine ? '\r\n' : '') + [
+          csvContent += '\r\n' + [
             investor.address, // $FlowFixMe
             investor.from.getTime() === PERMANENT_LOCKUP_TS ? '' : moment(investor.from).format('MM/DD/YYYY'),
             // $FlowFixMe
@@ -342,7 +344,6 @@ export const exportMintedTokensList = () => async (dispatch: Function, getState:
             moment(investor.expiry).format('MM/DD/YYYY'), // $FlowFixMe
             investor.minted.toString(10),
           ].join(',')
-          isFirstLine = false
         })
 
         window.open(encodeURI(csvContent))
