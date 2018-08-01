@@ -178,10 +178,7 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
 export const fetchPurchases = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
   try {
-    const contract = getState().sto.contract
-    if (!contract) {
-      return
-    }
+    const contract = getState().sto.contract // $FlowFixMe
     dispatch(purchases(await contract.getPurchases()))
     dispatch(ui.fetched())
   } catch (e) {
@@ -235,5 +232,35 @@ export const togglePauseSto = (endDate: Date ) => async (dispatch: Function, get
       ))
     },
     `Before You Proceed with ${isStoPaused ? 'Resuming' : 'Pausing'} the STO`
+  ))
+}
+
+export const exportInvestorsList = () => async (dispatch: Function, getState: GetState) => {
+  dispatch(ui.confirm(
+    <p>Are you sure you want to export investors list?<br />It may take a while.</p>,
+    async () => {
+      dispatch(ui.fetching())
+      try {
+        const contract = getState().sto.contract // $FlowFixMe
+        const purchases = await contract.getPurchases()
+
+        let csvContent = 'data:text/csv;charset=utf-8,Address,Transaction Hash,Tokens Purchased,Amount Invested'
+        purchases.forEach((purchase: STOPurchase) => {
+          csvContent += '\r\n' + [
+            purchase.investor,
+            purchase.txHash,
+            purchase.amount.toString(10),
+            purchase.paid.toString(10),
+          ].join(',')
+        })
+
+        window.open(encodeURI(csvContent))
+
+        dispatch(ui.fetched())
+      } catch (e) {
+        dispatch(ui.fetchingFailed(e))
+      }
+    },
+    'Proceeding with Investors List Export'
   ))
 }

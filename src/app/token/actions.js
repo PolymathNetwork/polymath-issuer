@@ -3,6 +3,7 @@
 import React from 'react'
 import { SecurityTokenRegistry, CountTransferManager } from 'polymathjs'
 import * as ui from 'polymath-ui'
+import moment from 'moment'
 import { ethereumAddress } from 'polymath-ui/dist/validate'
 import type { SecurityToken, Investor, Address } from 'polymathjs/types'
 
@@ -321,3 +322,36 @@ export const updateMaxHoldersCount = (count: number) => async (dispatch: Functio
   ))
 }
 
+export const exportMintedTokensList = () => async (dispatch: Function, getState: GetState) => {
+  dispatch(ui.confirm(
+    <p>Are you sure you want to export minted tokens list?<br />It may take a while.</p>,
+    async () => {
+      dispatch(ui.fetching())
+      try {
+        const { token } = getState().token // $FlowFixMe
+        const investors = await token.contract.getMinted()
+
+        let csvContent = 'data:text/csv;charset=utf-8,'
+        let isFirstLine = true
+        investors.forEach((investor: Investor) => {
+          csvContent += (!isFirstLine ? '\r\n' : '') + [
+            investor.address, // $FlowFixMe
+            investor.from.getTime() === PERMANENT_LOCKUP_TS ? '' : moment(investor.from).format('MM/DD/YYYY'),
+            // $FlowFixMe
+            investor.to.getTime() === PERMANENT_LOCKUP_TS ? '' : moment(investor.to).format('MM/DD/YYYY'),
+            moment(investor.expiry).format('MM/DD/YYYY'), // $FlowFixMe
+            investor.minted.toString(10),
+          ].join(',')
+          isFirstLine = false
+        })
+
+        window.open(encodeURI(csvContent))
+
+        dispatch(ui.fetched())
+      } catch (e) {
+        dispatch(ui.fetchingFailed(e))
+      }
+    },
+    'Proceeding with Minted Tokens List Export'
+  ))
+}

@@ -261,7 +261,8 @@ class ProvidersPage extends Component<Props, State> {
                           'provider' +
                           (this.state.selected.includes(p.id) ? ' provider-selected' : '') +
                           (p.progress && p.progress.isApplied ? ' provider-applied' : '') +
-                          (p.isToBeAnnounced ? ' provider-to-be-announced' : '')
+                          (p.isToBeAnnounced ? ' provider-to-be-announced' : '') +
+                          (p.isIncreasedHeight ? ' provider-increased-height' : '')
                         }
                       >
                         {p.progress && p.progress.isApplied ? (

@@ -300,7 +300,7 @@ class CompliancePage extends Component<Props, State> {
     )
   }
   
-  handleExport = () => { // $FlowFixMe TODO @bshevchenko: why?
+  handleExport = () => { // $FlowFixMe TODO @bshevchenko
     this.props.confirm(
       <p>Are you sure you want to export whitelist?<br />It may take a while.</p>,
       () => {
