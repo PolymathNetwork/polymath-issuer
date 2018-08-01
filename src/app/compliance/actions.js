@@ -140,11 +140,10 @@ export const exportWhitelist = () => async (dispatch: Function, getState: GetSta
         }
       }
     }
-
-    let csvContent = 'data:text/csv;charset=utf-8,'
-    let isFirstLine = true
+    // eslint-disable-next-line max-len
+    let csvContent = 'data:text/csv;charset=utf-8,Address,Sale Lockup,Purchase Lockup,KYC/AML Expiry,Can Buy From STO,Exempt From % Ownership'
     investors.forEach((investor: Investor) => {
-      csvContent += (!isFirstLine ? '\r\n' : '') + [
+      csvContent += '\r\n' + [
         investor.address, // $FlowFixMe
         investor.from.getTime() === PERMANENT_LOCKUP_TS ? '' : moment(investor.from).format('MM/DD/YYYY'), // $FlowFixMe
         investor.to.getTime() === PERMANENT_LOCKUP_TS ? '' : moment(investor.to).format('MM/DD/YYYY'),
@@ -152,7 +151,6 @@ export const exportWhitelist = () => async (dispatch: Function, getState: GetSta
         investor.canBuyFromSTO ? 'true' : '',
         investor.isPercentage ? 'true' : '',
       ].join(',')
-      isFirstLine = false
     })
 
     window.open(encodeURI(csvContent))

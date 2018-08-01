@@ -4,11 +4,11 @@ import React, { Component, Fragment } from 'react'
 import DocumentTitle from 'react-document-title'
 import { connect } from 'react-redux'
 import { STOStatus } from 'polymath-ui'
+import { Button } from 'carbon-components-react'
 import type { SecurityToken, STOPurchase, STODetails } from 'polymathjs'
 
 import NotFoundPage from '../../NotFoundPage'
-import InvestorTable from './InvestorTable'
-import { fetchPurchases, togglePauseSto  } from '../actions'
+import { togglePauseSto, exportInvestorsList  } from '../actions'
 import type { RootState } from '../../../redux/reducer'
 
 type StateProps = {|
@@ -19,8 +19,8 @@ type StateProps = {|
 |}
 
 type DispatchProps = {|
-  fetchPurchases: () => any,
   togglePauseSto: (endDate: Date) => any,
+  exportInvestorsList: () => any,
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -31,8 +31,8 @@ const mapStateToProps = (state: RootState): StateProps => ({
 })
 
 const mapDispatchToProps: DispatchProps = {
-  fetchPurchases,
   togglePauseSto,
+  exportInvestorsList,
 }
 
 type Props = {|
@@ -40,16 +40,16 @@ type Props = {|
 
 class OverviewSTO extends Component<Props> {
 
-  componentWillMount () {
-    this.props.fetchPurchases()
-  }
-
   handlePause = () => { // $FlowFixMe
     this.props.togglePauseSto(this.props.details.end)
   }
 
+  handleExport = () => {
+    this.props.exportInvestorsList()
+  }
+
   render () {
-    const { token, details, purchases } = this.props
+    const { token, details } = this.props
     if (!token || !details) {
       return <NotFoundPage />
     }
@@ -65,13 +65,18 @@ class OverviewSTO extends Component<Props> {
               token={token}
               isStoPaused={this.props.isStoPaused}
             />
-            <br />
-            <br />
-            <h2 className='pui-h2'>List of Investors</h2>
-            <div className={this.props.isStoPaused ? 'pui-paused' : ''}>
-              <InvestorTable isStoPaused={this.props.isStoPaused} rows={purchases} />
-            </div>
-            <p>&nbsp;</p>
+            <Button
+              icon='download'
+              kind='secondary'
+              onClick={this.handleExport}
+              style={{
+                float: 'left',
+                marginTop: '-89px',
+                marginLeft: '25px',
+              }}
+            >
+              Export List Of Investors
+            </Button>
           </Fragment>
         </div>
       </DocumentTitle>)

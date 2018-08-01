@@ -32,11 +32,11 @@ export const reserve = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.confirm(
     <div>
       <p>Completion of your token symbol reservation will require two wallet transactions.</p>
-      <p>- The first transaction will be used to pay for the token symbol reservation cost of:</p>
+      <p>• The first transaction will be used to pay for the token symbol reservation cost of:</p>
       <div className='bx--details poly-cost'>{feeView} POLY</div>
       <p>
-      - The second transaction will be used to pay the mining fee (aka gas fee) to complete the reservation of
-      your token symbol.
+        • The second transaction will be used to pay the mining fee (aka gas fee) to complete the reservation of
+        your token symbol.
         <br />
       </p>
       <p>

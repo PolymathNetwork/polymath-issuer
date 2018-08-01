@@ -93,10 +93,10 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
           Securities Offering Site.
       </p>
       <p>Completion of your STO smart contract deployment and scheduling will require two wallet transactions.</p>
-      <p>- The first transaction will be used to pay for the smart contract fee of:</p>
+      <p>• The first transaction will be used to pay for the smart contract fee of:</p>
       <div className='bx--details poly-cost'>{feeView} POLY</div>
       <p>
-        - The second transaction will be used to pay the mining fee (aka gas fee) to complete the
+        • The second transaction will be used to pay the mining fee (aka gas fee) to complete the
         scheduling of your STO.
       </p>
       <p>
@@ -166,10 +166,7 @@ export const configure = () => async (dispatch: Function, getState: GetState) =>
 export const fetchPurchases = () => async (dispatch: Function, getState: GetState) => {
   dispatch(ui.fetching())
   try {
-    const contract = getState().sto.contract
-    if (!contract) {
-      return
-    }
+    const contract = getState().sto.contract // $FlowFixMe
     dispatch(purchases(await contract.getPurchases()))
     dispatch(ui.fetched())
   } catch (e) {
@@ -223,5 +220,38 @@ export const togglePauseSto = (endDate: Date ) => async (dispatch: Function, get
       ))
     },
     `Before You Proceed with ${isStoPaused ? 'Resuming' : 'Pausing'} the STO`
+  ))
+}
+
+export const exportInvestorsList = () => async (dispatch: Function, getState: GetState) => {
+  dispatch(ui.confirm(
+    <p>
+      Are you sure you want to export investors list?<br />
+      Please be aware that the time to complete this operation will vary based on the number of entries in the list.
+    </p>,
+    async () => {
+      dispatch(ui.fetching())
+      try {
+        const contract = getState().sto.contract // $FlowFixMe
+        const purchases = await contract.getPurchases()
+
+        let csvContent = 'data:text/csv;charset=utf-8,Address,Transaction Hash,Tokens Purchased,Amount Invested'
+        purchases.forEach((purchase: STOPurchase) => {
+          csvContent += '\r\n' + [
+            purchase.investor,
+            purchase.txHash,
+            purchase.amount.toString(10),
+            purchase.paid.toString(10),
+          ].join(',')
+        })
+
+        window.open(encodeURI(csvContent))
+
+        dispatch(ui.fetched())
+      } catch (e) {
+        dispatch(ui.fetchingFailed(e))
+      }
+    },
+    'Proceeding with Investors List Export'
   ))
 }

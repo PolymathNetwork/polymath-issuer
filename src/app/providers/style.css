@@ -63,6 +63,8 @@
       -moz-filter: blur(8px);
       -o-filter: blur(8px);
       -ms-filter: blur(8px); }
+  .providers .provider.provider-increased-height {
+    height: 400px !important; }
 
 .bx--tabs {
   margin-top: 48px; }

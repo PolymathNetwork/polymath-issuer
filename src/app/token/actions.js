@@ -3,6 +3,7 @@
 import React from 'react'
 import { SecurityTokenRegistry, CountTransferManager } from 'polymathjs'
 import * as ui from 'polymath-ui'
+import moment from 'moment'
 import { ethereumAddress } from 'polymath-ui/dist/validate'
 import type { SecurityToken, Investor, Address } from 'polymathjs/types'
 
@@ -66,15 +67,15 @@ export const issue = (isLimitNI: boolean) => async (dispatch: Function, getState
   dispatch(ui.confirm(
     <div>
       <p>Completion of your token creation will require {isLimitNI?'three':'two'} wallet transactions.</p>
-      <p>- The first transaction will be used to pay for the token creation cost of:</p>
+      <p>• The first transaction will be used to pay for the token creation cost of:</p>
       <div className='bx--details poly-cost'>{feeView} POLY</div>
       <p>
-        - The second transaction will be used to pay the mining fee (aka gas fee) to complete the creation of
+        • The second transaction will be used to pay the mining fee (aka gas fee) to complete the creation of
         your token.
       </p>
       {isLimitNI &&
       <p>
-        - The third transaction will be used to pay the mining fee (aka gas fee) to limit the number of investors who
+        • The third transaction will be used to pay the mining fee (aka gas fee) to limit the number of investors who
         can hold your token.
         <br />
       </p>
@@ -321,3 +322,37 @@ export const updateMaxHoldersCount = (count: number) => async (dispatch: Functio
   ))
 }
 
+export const exportMintedTokensList = () => async (dispatch: Function, getState: GetState) => {
+  dispatch(ui.confirm(
+    <p>
+      Are you sure you want to export minted tokens list?<br />
+      Please be aware that the time to complete this operation will vary based on the number of entries in the list.
+    </p>,
+    async () => {
+      dispatch(ui.fetching())
+      try {
+        const { token } = getState().token // $FlowFixMe
+        const investors = await token.contract.getMinted()
+
+        let csvContent = 'data:text/csv;charset=utf-8,Address,Sale Lockup,Purchase Lockup,KYC/AML Expiry,Minted'
+        investors.forEach((investor: Investor) => {
+          csvContent += '\r\n' + [
+            investor.address, // $FlowFixMe
+            investor.from.getTime() === PERMANENT_LOCKUP_TS ? '' : moment(investor.from).format('MM/DD/YYYY'),
+            // $FlowFixMe
+            investor.to.getTime() === PERMANENT_LOCKUP_TS ? '' : moment(investor.to).format('MM/DD/YYYY'),
+            moment(investor.expiry).format('MM/DD/YYYY'), // $FlowFixMe
+            investor.minted.toString(10),
+          ].join(',')
+        })
+
+        window.open(encodeURI(csvContent))
+
+        dispatch(ui.fetched())
+      } catch (e) {
+        dispatch(ui.fetchingFailed(e))
+      }
+    },
+    'Proceeding with Minted Tokens List Export'
+  ))
+}

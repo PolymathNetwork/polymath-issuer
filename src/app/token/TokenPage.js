@@ -4,11 +4,17 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { FormGroup, Tooltip, Toggle, TextInput, Button } from 'carbon-components-react'
-import { etherscanTx, etherscanAddress, Countdown, Remark } from 'polymath-ui'
+import { etherscanTx, etherscanAddress, Countdown, Remark, confirm } from 'polymath-ui'
 import moment from 'moment'
 import type { SecurityToken } from 'polymathjs/types'
 
-import { issue, unlimitNumberOfInvestors, limitNumberOfInvestors, updateMaxHoldersCount } from './actions'
+import {
+  issue,
+  unlimitNumberOfInvestors,
+  limitNumberOfInvestors,
+  updateMaxHoldersCount,
+  exportMintedTokensList,
+} from './actions'
 import NotFoundPage from '../NotFoundPage'
 import Progress from './components/Progress'
 import CompleteTokenForm from './components/CompleteTokenForm'
@@ -31,6 +37,8 @@ type DispatchProps = {|
   unlimitNumberOfInvestors: () => any,
   limitNumberOfInvestors: (count?: number) => any,
   updateMaxHoldersCount: (count: number) => any,
+  exportMintedTokensList: () => any,
+  confirm: () => any,
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -47,6 +55,8 @@ const mapDispatchToProps: DispatchProps = {
   unlimitNumberOfInvestors,
   limitNumberOfInvestors,
   updateMaxHoldersCount,
+  exportMintedTokensList,
+  confirm,
 }
 
 type Props = {|
@@ -116,6 +126,10 @@ class TokenPage extends Component<Props, State> {
 
   handleIssue = () => {
     this.props.issue(this.state.isToggled)
+  }
+
+  handleExport = () => {
+    this.props.exportMintedTokensList()
   }
   // eslint-disable-next-line complexity
   render () {
@@ -255,6 +269,15 @@ class TokenPage extends Component<Props, State> {
                           Apply
                         </Button>
                       </div>
+                      <br />
+                      <hr />
+                      <Button
+                        icon='download'
+                        kind='secondary'
+                        onClick={this.handleExport}
+                      >
+                        Export Minted Tokens List
+                      </Button>
                     </div>
                   ) : ''}
                 </div>

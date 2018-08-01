@@ -17,6 +17,7 @@ export type ServiceProvider = {|
   progress?: SPProgress,
   disclosure?: string,
   isToBeAnnounced?: boolean,
+  isIncreasedHeight?: boolean,
 |}
 
 export type SPCategory = {|
@@ -106,29 +107,17 @@ const providers: Array<ServiceProvider> = [
 
   // LEGAL
   {
-    id: 4,
-    cat: 1,
-    title: 'PerkinsCoie',
-    logo: '/providers/legal/perkins.png',
-    desc: 'As a leading Canadian law firm with a focus on all principal areas of business law, we advise on a diverse' +
-    ' range of transactional and litigation matters for clients ranging from startups to multinational corporations.',
-  },
-  {
     id: 5,
     cat: 1,
     title: 'Homeier Law PC',
     logo: '/providers/legal/homierlaw.png',
-    desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et ' +
-    'dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea ' +
-    'commodo consequat.',
-  },
-  {
-    id: 8,
-    cat: 1,
-    title: 'Radix',
-    logo: '/providers/legal/radix.png',
-    desc: 'Radix Law offers legal services in the fields of business law, commercial litigation, bankruptcy, real ' +
-    'estate law and estate planning.',
+    desc: 'Homeier Law PC is a securities and corporate law firm with deep experience in exempt as well as ' +
+    'SEC-registered alternative finance offerings, having advised on hundreds of private offerings that have raised ' +
+    'billions of dollars for developers and entrepreneurs over the past decade.  As a leader and pioneer in ' +
+    'investment crowdfunding, Homeier Law serves the emerging blockchain and cryptocurrency industries in ' +
+    'structuring and documenting initial coin offerings (ICOs), tokenized security offerings and ' +
+    'other capital-raising initiatives.',
+    isIncreasedHeight: true,
   },
 
   // KYC/AML

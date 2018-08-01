@@ -96,6 +96,10 @@
         -ms-filter: blur(8px);
       }
     }
+
+    &.provider-increased-height {
+      height: 400px !important;
+    }
   }
 }
 
