@@ -58,6 +58,11 @@ export default class ConfiguredEmail extends Component<Props> {
             <strong>Amount of Funds the STO Will Raise</strong>
             <p>{amountOfFunds} {isPolyFundraise ? 'POLY' : 'ETH'}</p>
           </div>
+          <p align='center'>
+            <a href={window.location.origin + '/dashboard/' + ticker + '/sto'}>
+              <strong>Click here to access your Security Offering Dashboard</strong>
+            </a>
+          </p>
         </div>
       </Email>
     )
