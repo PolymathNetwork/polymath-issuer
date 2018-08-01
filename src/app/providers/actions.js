@@ -32,7 +32,7 @@ export const applyProviders = (ids: Array<number>) => async (dispatch: Function,
     }
     saveProgress(ticker, progress)
     // TODO @bshevchenko: send email
-    ui.offchainPost('/providers/apply')
+    // ui.offchainPost('/providers/apply')
     dispatch(ui.notify(
       'Your Application Has Been Sent',
       true
