@@ -70,14 +70,6 @@ export const categories: Array<SPCategory> = [
 const providers: Array<ServiceProvider> = [
 
   // ADVISORY
-  // {
-  //   id: 0,
-  //   cat: 0,
-  //   title: 'Above Board',
-  //   logo: '/providers/advisory/aboveboard.png',
-  //   desc: 'Enhance the collaboration between issuers and investors with the value of security rights, the ' +
-  //   'engagement of token economics, control of code, and the scope of global blockchains.',
-  // },
   {
     id: 1,
     cat: 0,
@@ -133,15 +125,6 @@ const providers: Array<ServiceProvider> = [
 
   // MARKETING
   {
-    id: 12,
-    cat: 3,
-    title: 'CrowdfundX',
-    logo: '/providers/marketing/crowdfundx.png',
-    desc: 'Built through insights gained from marketing the industry’s most successful equity crowdfunding ' +
-    'campaigns, Dara is a semi-autonomous machine that empowers public and private companies to streamline retail ' +
-    'investor acquisition. Dara works across marketing channels, optimizing paid...',
-  },
-  {
     id: 13,
     cat: 3,
     title: 'Wachsman PR',
@@ -149,15 +132,6 @@ const providers: Array<ServiceProvider> = [
     desc: 'Wachsman provides media relations, strategic communications, brand development, and corporate advisory ' +
     'services to many of the most indispensable companies in the financial technology, digital currency, and ' +
     'crypto-asset sectors.',
-  },
-  {
-    id: 14,
-    cat: 3,
-    title: 'Taurus Vision',
-    logo: '/providers/marketing/taurus.png',
-    desc: 'Taurus Visiwon specializes in identifying your unique selling points and builds a full-service marketing ' +
-    '& PR strategy around them. CONTENT & MARKETING. Working as an organic part of your team, Taurus Vision will ' +
-    'assist you in formulating and executing a full go-to market strategy.',
   },
 
   // CUSTODY SERVICE

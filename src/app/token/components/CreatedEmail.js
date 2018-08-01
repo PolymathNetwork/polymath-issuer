@@ -44,6 +44,11 @@ export default class CreatedEmail extends Component<Props> {
               Select a security token offering template and configure the specifics of your security token offering.
             </li>
           </ol>
+          <p align='center'>
+            <a href={window.location.origin + '/dashboard/' + ticker}>
+              <strong>Click here to proceed with your Token Minting</strong>
+            </a>
+          </p>
         </div>
       </Email>
     )

@@ -51,9 +51,9 @@ export default class ReservedEmail extends Component<Props> {
             If you are unsure of the above, please consult with your advisors or engage an advisory firm through
             the Polymath Token Studio marketplace before your reservation period expires.
           </p>
-          <p>
+          <p align='center'>
             <a href={window.location.origin + '/dashboard/' + ticker + '/providers'}>
-              <strong>Click here to continue with your Token creation</strong>
+              <strong>Click here to continue with your Token Creation</strong>
             </a>
           </p>
         </div>
