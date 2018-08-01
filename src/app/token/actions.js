@@ -82,8 +82,7 @@ export const issue = (isLimitNI: boolean) => async (dispatch: Function, getState
       }
       <p>
         Please hit &laquo;CONFIRM&raquo; when you are ready to proceed. Once you hit &laquo;CONFIRM&raquo;, your
-         security token will be created on the blockchain and will be immutable. Any change to the token structure
-          (divisibility or information link) will require that you start the process over using another token symbol.
+         security token will be created on the blockchain.
         <br />If you do not wish to pay the token creation fee or wish to review your information,
             simply select &laquo;CANCEL&raquo;.
       </p>
