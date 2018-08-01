@@ -82,96 +82,84 @@ const dateTimeFromDateAndTime = (date: Date, time: TwelveHourTime) =>
   new Date(date.valueOf() + ui.twelveHourTimeToMinutes(time) * 60000)
 
 export const configure = () => async (dispatch: Function, getState: GetState) => {
+  const fee = await CappedSTOFactory.setupCost()
+  const feeView = ui.thousandsDelimiter(fee)
   dispatch(ui.confirm(
     <div>
+      <p>Once submitted to the blockchain, the dates for your offering cannot be changed.
+        Please confirm dates with your Advisor and Legal providers before you click on &laquo;CONFIRM&raquo;.
+        Also, note that Investors must be added to the whitelist before or while the STO is live,
+         so they can participate to your fundraise and that all necessary documentation must be posted on your
+          Securities Offering Site.
+      </p>
+      <p>Completion of your STO smart contract deployment and scheduling will require two wallet transactions.</p>
+      <p>- The first transaction will be used to pay for the smart contract fee of:</p>
+      <div className='bx--details poly-cost'>{feeView} POLY</div>
       <p>
-        Once submitted to the blockchain, the dates for your
-        offering cannot be changed.
+        - The second transaction will be used to pay the mining fee (aka gas fee) to complete the
+        scheduling of your STO.
       </p>
       <p>
-        Please confirm dates with your Advisor and Legal
-        providers before you click on &laquo;CONTINUE&raquo;.
-      </p>
-      <p>
-        Investors must be added to the whitelist before or while
-        the STO is live, so they can participate to your
-        fundraise.
-      </p>
-      <p>
-        All necessary documentation must be posted on your
-        Securities Offering Site.
+        Hit &laquo;CANCEL&raquo; if you would like to edit the information provided or &laquo;CONFIRM&raquo; 
+        if you have confirmed the details of your STO with your Advisor and are ready to proceed.
       </p>
     </div>,
-    async () => {
-      const fee = await CappedSTOFactory.setupCost()
-      const feeView = ui.thousandsDelimiter(fee) // $FlowFixMe
+    async () => { // $FlowFixMe
       if (getState().pui.account.balance.lt(fee)) {
         dispatch(ui.faucet(`The launching of a STO has a fixed cost of ${feeView} POLY.`))
         return
       }
-      dispatch(ui.confirm(
-        <div>
-          <p>Completion of your STO smart contract deployment and scheduling will require two wallet transactions.</p>
-          <p>The first transaction will be used to pay for the smart contract fee of:</p>
-          <div className='bx--details poly-cost'>{feeView} POLY</div>
-          <p>
-            The second transaction will be used to pay the mining fee (aka gas fee) to complete the
-            scheduling of your STO. Please hit &laquo;CONFIRM&raquo; when you are ready to proceed.
-          </p>
-        </div>,
+      const { factory } = getState().sto
+      const { token } = getState().token
+      if (!factory || !token || !token.contract) {
+        return
+      }
+      dispatch(ui.tx(
+        ['Approving POLY Spend', 'Deploying And Scheduling'],
         async () => {
-          const { factory } = getState().sto
-          const { token } = getState().token
-          if (!factory || !token || !token.contract) {
-            return
-          }
-          dispatch(ui.tx(
-            ['Approving POLY Spend', 'Deploying And Scheduling'],
-            async () => {
-              const contract: SecurityToken = token.contract
-              const { values } = getState().form[configureFormName]
-              const [startDate, endDate] = values['start-end']
-              const startDateWithTime = dateTimeFromDateAndTime(startDate, values.startTime)
-              const endDateWithTime = dateTimeFromDateAndTime(endDate, values.endTime)
-              const isEthFundraise = values.currency === 'ETH'
+          const contract: SecurityToken = token.contract
+          const { values } = getState().form[configureFormName]
+          const [startDate, endDate] = values['start-end']
+          const startDateWithTime = dateTimeFromDateAndTime(startDate, values.startTime)
+          const endDateWithTime = dateTimeFromDateAndTime(endDate, values.endTime)
+          const isEthFundraise = values.currency === 'ETH'
 
-              const receipt = await contract.setCappedSTO(
-                startDateWithTime,
-                endDateWithTime,
-                values.cap,
-                values.rate,
-                isEthFundraise,
-                values.fundsReceiver,
-              )
+          const receipt = await contract.setCappedSTO(
+            startDateWithTime,
+            endDateWithTime,
+            values.cap,
+            values.rate,
+            isEthFundraise,
+            values.fundsReceiver,
+          )
 
-              dispatch(ui.email(
-                receipt.transactionHash,
-                token.ticker + ' STO Created on Polymath',
-                <ConfiguredEmail
-                  ticker={token.ticker}
-                  start={startDateWithTime}
-                  cap={values.cap}
-                  rate={values.rate}
-                  isPolyFundraise={!isEthFundraise}
-                  fundsReceiver={values.fundsReceiver}
-                  txHash={receipt.transactionHash}
-                />
-              ))
-            },
-            'STO Configured Successfully',
-            () => {
-              return dispatch(fetch())
-            },
-            `/dashboard/${token.ticker}/compliance`,
-            undefined,
-            false,
-            token.ticker.toUpperCase() + ' STO Creation'
+          dispatch(ui.email(
+            receipt.transactionHash,
+            token.ticker + ' STO Created on Polymath',
+            <ConfiguredEmail
+              ticker={token.ticker}
+              start={startDateWithTime}
+              cap={values.cap}
+              rate={values.rate}
+              isPolyFundraise={!isEthFundraise}
+              fundsReceiver={values.fundsReceiver}
+              txHash={receipt.transactionHash}
+            />
           ))
         },
-        'Proceeding with Smart Contract Deployment and Scheduling'
+        'STO Configured Successfully',
+        () => {
+          return dispatch(fetch())
+        },
+        `/dashboard/${token.ticker}/compliance`,
+        undefined,
+        false,
+        token.ticker.toUpperCase() + ' STO Creation'
       ))
     },
-    'Before You Launch Your Security Token Offering',
+    'Before You Proceed with your Security Token Offering Deployment and Scheduling',
+    undefined,
+    'pui-large-confirm-modal'
   ))
 }
 

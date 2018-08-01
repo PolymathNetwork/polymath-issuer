@@ -227,6 +227,23 @@ class CompliancePage extends Component<Props, State> {
     )
   }
 
+  handleUnFreezeModalOpen = () => {
+    // $FlowFixMe
+    this.props.confirm(
+      <div>
+        <p>
+        Once you hit &laquo;CONFIRM&raquo;, token transfers WILL BE ENABLED AGAIN, ALLOWING ANY AUTHORIZED INVESTOR
+         TO BUY OR SELL YOUR TOKENS. Consider notifying all your investors. If you wish to review with your Advisors,
+          please select &laquo;CANCEL&raquo;.
+        </p>
+      </div>,
+      () => {
+        this.props.toggleFreeze()
+      },
+      'Resume All Transfers?'
+    )
+  }
+
   handleUnfreezeConfirm = () =>{
     this.props.showFrozenModal(false)
     this.props.toggleFreeze()
@@ -539,6 +556,12 @@ class CompliancePage extends Component<Props, State> {
           <br />
 
           <div className='pui-page-box'>
+            <OverflowMenu floatingMenu flipped style={{ float: 'right' }}>
+              <OverflowMenuItem
+                itemText={this.props.isTokenFrozen ? 'Resume All Transfers':'Pause All Transfers'}
+                onClick={this.props.isTokenFrozen ? this.handleUnFreezeModalOpen:this.handleFreezeModalOpen}
+              />
+            </OverflowMenu>
             <div className='compliance-settings'>
               {/*
                 <DatePicker
@@ -596,6 +619,7 @@ class CompliancePage extends Component<Props, State> {
                   Apply
                 </Button>
               </div>
+
             </div>
 
             <Button
@@ -619,11 +643,6 @@ class CompliancePage extends Component<Props, State> {
             >
               Export Whitelist
             </Button>
-
-            <OverflowMenu floatingMenu flipped style={{ float: 'left', marginTop: '6px' }}>
-              <OverflowMenuItem itemText='Pause All Transfers' onClick={this.handleFreezeModalOpen} />
-            </OverflowMenu>
-
             <div className='pui-clearfix' />
           </div>
 
@@ -663,7 +682,7 @@ class CompliancePage extends Component<Props, State> {
           */}
           <Modal
             className='freeze-transfer-modal'
-            open={(this.props.isTokenFrozen && this.props.isFrozenModalOpen)}
+            open={this.props.isTokenFrozen && this.props.isFrozenModalOpen}
             modalHeading={
               <span>
                 <Icon name='icon--pause--outline' fill='#E71D32' width='24' height='24' />&nbsp;

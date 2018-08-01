@@ -139,22 +139,37 @@ class MintTokens extends Component<Props> {
     this.props.confirm(
       <div>
         <p>
-          Note that manual minting will no longer be available once you schedule an offering (STO) for this
-          token. All tokens sold during the offering will be minted as soon as the funds are received by the
-          smart contract and according to the rate you will define when scheduling your STO. Your Token&apos;s
-          total supply will therefore be: total number of tokens minted manually + total number of tokens
-          sold during the STO. If you achieve 100% of your fundraise objective, the total number of tokens
-          sold during the STO will be equal to your hard cap. If not, this number will be equal to the
-          total number of tokens sold.
+          Note that manual minting will no longer be available once you
+          schedule an offering (STO) for this token. All tokens sold during
+          the offering will be minted as soon as the funds are received by
+          the smart contract and according to the rate you will define when
+          scheduling your STO. Your Token&apos;s total supply will therefore
+          be:
         </p>
         <p>
-          Hit &laquo;CANCEL&raquo; if you would like to mint additional tokens.
-          Please proceed if you have minted all the tokens you need to mint outside of the STO.
+          – Total number of tokens minted manually + total number of tokens
+          sold during the STO.
+          <br />
+          – If you achieve 100% of your fundraise objective, the total number
+          of tokens sold during the STO will be equal to your hard cap.
+          <br />
+          – If not, this number will be equal to the total number of tokens
+          sold.
+        </p>
+        <p>
+          Hit &laquo;CANCEL&raquo; if you would like to mint additional
+          tokens or &laquo;CONFIRM&raquo; if you have minted all the tokens
+          you needed to mint outside of the STO.
         </p>
       </div>,
       () => {
-        this.props.pui.common.history.push(`/dashboard/${this.props.token.token.ticker}/sto`)
-      }
+        this.props.pui.common.history.push(
+          `/dashboard/${this.props.token.token.ticker}/sto`
+        )
+      },
+      undefined,
+      undefined,
+      'pui-large-confirm-modal'
     )
   }
 
@@ -171,7 +186,7 @@ class MintTokens extends Component<Props> {
             <span>
               Manual minting operations are disabled once an STO is configured and scheduled for your token.<br />
               This action will trigger multiple signing operations with your MetaMask wallet:<br />
-              — One for the initial whitelist upload;<br />
+              – One for the initial whitelist upload;<br />
               — One for the minting of tokens.
             </span>
           </Remark>
@@ -194,7 +209,7 @@ class MintTokens extends Component<Props> {
           </h4>
           <h4 className='pui-h4'>
             The format of the file should be as follow:<br />
-            — ETH Address (address to whitelist);<br />
+            – ETH Address (address to whitelist);<br />
             — Sell Restriction Date mm/dd/yyyy (date when the resale restrictions
             should be lifted for that address);
             <br />
