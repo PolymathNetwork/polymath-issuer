@@ -89,11 +89,11 @@ class App extends Component<Props> {
                   text={
                     <span>
                       You are now ready to continue with your Security Token.<br />
-                      We just sent you an email with the ticker reservation transaction details for your records.
+                      We just sent you an email with the token symbol reservation transaction details for your records.
                       Check your inbox.
                     </span>
                   }
-                  continueLabel='Continue with STO Process'
+                  continueLabel='CONTINUE WITH TOKEN CREATION'
                   onWillMount={this.handleSignUpSuccess}
                 /> :
                 <ConfirmEmailPage />

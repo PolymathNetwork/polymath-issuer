@@ -62,6 +62,30 @@ class ConfigureSTOForm extends Component<Props, State> {
     this.updateAmountOfFunds(this.state.cap / Number(newValue))
   }
 
+  pastCheck = (value, allValues) => {
+    const startTime=allValues.startTime
+    const dateRange=allValues['start-end']
+    if(!startTime || !dateRange ){
+      return null
+    }else{
+      let[hour, mins] =startTime.timeString.split(':')
+      if(startTime.dayPeriod==='PM'){
+        hour= parseInt(hour)+12
+      }
+      const startDateTime = new Date(dateRange[0].getFullYear(),
+        dateRange[0].getMonth(),
+        dateRange[0].getDate(),
+        hour,
+        parseInt(mins)
+      )
+      if ((new Date()).getTime() > startDateTime.getTime()) {
+        return 'Time is in the past.'
+      }else if ((new Date()).getTime()+600000 > startDateTime.getTime()) {
+        return 'Please allow for transaction processing time.'
+      }
+    }
+  }
+
   updateAmountOfFunds = (value: number) => {
     this.setState({ amountOfFunds: isNaN(value) || value === Infinity ? '0' : thousandsDelimiter(value) })
   }
@@ -81,7 +105,7 @@ class ConfigureSTOForm extends Component<Props, State> {
             name='startTime'
             component={TimePickerInput}
             label='Start Time'
-            validate={[twelveHourTime]}
+            validate={[twelveHourTime, this.pastCheck]}
           />
           <Field
             name='endTime'

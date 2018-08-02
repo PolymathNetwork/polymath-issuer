@@ -35,7 +35,7 @@ export default class Email extends Component<Props> {
             © 2018 Polymath
           </div>
           <div className='right'>
-            <a href='https://polymath.network/termsofservice.html'>Terms of use</a>
+            <a href='https://polymath.network/termsofservice.html'>Terms of service</a>
             <a href='https://polymath.network/privacypolicy.html'>Privacy policy</a>
           </div>
         </div>

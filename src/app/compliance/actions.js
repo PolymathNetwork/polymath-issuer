@@ -281,11 +281,11 @@ export const enableOwnershipRestrictions = (percentage?: number) => async (dispa
       const tm = getState().whitelist.percentageTM.contract
       if (tm) {
         dispatch(ui.tx(
-          'Resuming ownership restrictions',
+          'Re-enabling ownership restrictions',
           async () => {
             await tm.unpause()
           },
-          'Ownership restrictions has been resumed successfully',
+          'Ownership restrictions has been re-enabled successfully',
           () => {
             dispatch(percentageTransferManager(tm, false))
             return dispatch(fetchWhitelist())
@@ -331,11 +331,11 @@ export const disableOwnershipRestrictions = () => async (dispatch: Function, get
     async () => {
       const tm = getState().whitelist.percentageTM.contract
       dispatch(ui.tx(
-        'Pausing ownership restrictions',
+        'Disabling ownership restrictions',
         async () => { // $FlowFixMe
           await tm.pause()
         },
-        'Ownership restrictions has been paused successfully',
+        'Ownership restrictions has been disabled successfully',
         async () => {
           dispatch(percentageTransferManager(tm, true))
         },
