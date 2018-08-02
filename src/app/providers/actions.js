@@ -1,5 +1,6 @@
 import * as ui from 'polymath-ui'
 
+import { formName } from './ApplyForm'
 import { getProgress, getProviders, saveProgress } from './data'
 import type { GetState } from '../../redux/reducer'
 import type { SPStatus } from './data'
@@ -31,6 +32,10 @@ export const applyProviders = (ids: Array<number>) => async (dispatch: Function,
       }
     }
     saveProgress(ticker, progress)
+    dispatch(ui.providersApply({
+      ids,
+      ...getState().form[formName].values,
+    }))
     dispatch(ui.notify(
       'Your Application Has Been Sent',
       true

@@ -5,7 +5,7 @@ import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
 // eslint-disable-next-line no-unused-vars
 import { Sidebar, icoBriefcase, icoInbox, icoHandshake, icoHelp, icoWhitelist } from 'polymath-ui'
-import type { SecurityToken } from 'polymathjs/types'
+import type { SecurityToken, Address } from 'polymathjs/types'
 
 import { isProvidersPassed } from './providers/data'
 import NotFoundPage from './NotFoundPage'
@@ -18,6 +18,7 @@ type StateProps = {|
   token: ?SecurityToken,
   isTokenFetched: boolean,
   providers: ?Array<ServiceProvider>,
+  account: Address,
 |}
 
 type DispatchProps = {|
@@ -29,6 +30,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
   token: state.token.token,
   isTokenFetched: state.token.isFetched,
   providers: state.providers.data,
+  account: state.network.account,
 })
 
 const mapDispatchToProps: DispatchProps = {
@@ -53,18 +55,13 @@ class Dashboard extends Component<Props> {
   }
 
   render () {
-    const {
-      isTokenFetched,
-      providers,
-      route,
-      token,
-    } = this.props
+    const { isTokenFetched, providers, route, token, account } = this.props
 
     if (!isTokenFetched) { // TODO @bshevchenko: why is this here?
       return <span />
     }
-
-    if (isTokenFetched && token === null) {
+    // $FlowFixMe
+    if (isTokenFetched && (token === null || token.owner !== account)) {
       return <NotFoundPage />
     }
 

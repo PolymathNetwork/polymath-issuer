@@ -1556,7 +1556,7 @@ big.js@^3.1.3:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-3.2.0.tgz#a5fc298b81b9e0dca2e458824784b65c52ba588e"
 
-bignumber.js@5.0.0:
+bignumber.js@5.0.0, bignumber.js@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-5.0.0.tgz#fbce63f09776b3000a83185badcde525daf34833"
 
@@ -6333,10 +6333,6 @@ js-sha3@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.3.1.tgz#86122802142f0828502a0d1dee1d95e253bb0243"
 
-js-sha3@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.7.0.tgz#0a5c57b36f79882573b2d84051f8bb85dd1bd63a"
-
 js-tokens@^3.0.0, js-tokens@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"
@@ -7840,7 +7836,7 @@ onetime@^2.0.0:
   dependencies:
     mimic-fn "^1.0.0"
 
-openzeppelin-solidity@^1.9.0:
+openzeppelin-solidity@1.10.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/openzeppelin-solidity/-/openzeppelin-solidity-1.10.0.tgz#d77eee6653f5958d051318a61ba0b436f92216c0"
 
@@ -8194,9 +8190,9 @@ pn@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
 
-polymath-auth@1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/polymath-auth/-/polymath-auth-1.1.3.tgz#fe617fa63a8eb85c9c1d37f8216260d96d6ec67c"
+polymath-auth@1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/polymath-auth/-/polymath-auth-1.1.4.tgz#ff2852b2f6a85bdd17ff17cd215612bcde72618b"
   dependencies:
     react "16.2.0"
     react-redux "5.0.6"
@@ -8206,28 +8202,31 @@ polymath-auth@1.1.3:
     web3-core-method "github:bshevchenko/web3-core-method#master"
     web3-eth-contract "1.0.0-beta.30"
 
-polymath-core@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/polymath-core/-/polymath-core-1.1.1.tgz#7e5f458feae6322d01ec683f586f933b813ba09e"
+polymath-core@1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/polymath-core/-/polymath-core-1.3.3.tgz#7a6f45f661dfc49dd930ece1aa5eea65c0760fcd"
   dependencies:
     babel-polyfill "6.26.0"
     babel-preset-es2015 "6.24.1"
     babel-preset-stage-2 "6.24.1"
     babel-preset-stage-3 "6.24.1"
     babel-register "6.26.0"
-    bignumber.js "^6.0.0"
+    bignumber.js "^5.0.0"
+    chalk "^2.4.1"
     coveralls "^3.0.1"
     ethereumjs-testrpc "^6.0.3"
     ethers "^3.0.15"
-    openzeppelin-solidity "^1.9.0"
+    openzeppelin-solidity "1.10.0"
     readline-sync "^1.4.9"
+    shelljs "^0.8.2"
+    solc "^0.4.24"
     truffle-contract "^3.0.4"
     truffle-hdwallet-provider-privkey "^0.1.0"
     web3 "^1.0.0-beta.33"
 
-polymath-ui@5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-5.2.0.tgz#0c773fe8a2f25821087843c1d979446e1467a5c0"
+polymath-ui@5.5.9:
+  version "5.5.9"
+  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-5.5.9.tgz#b596ecbecd0a52e761ee351620bf2b5531e04ead"
   dependencies:
     axios "^0.18.0"
     babel-runtime "6.26.0"
@@ -8236,7 +8235,6 @@ polymath-ui@5.2.0:
     carbon-components-react "5.31.0"
     carbon-icons "6.3.2"
     eth-sig-util "^1.4.2"
-    js-sha3 "^0.7.0"
     react "16.2.0"
     react-document-title "2.0.3"
     react-dom "16.2.0"
@@ -8247,13 +8245,13 @@ polymath-ui@5.2.0:
     redux "3.7.2"
     redux-form "7.0.4"
 
-polymathjs@1.3.4:
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-1.3.4.tgz#c1db8c047f9ade27ace7944810d60b27657de956"
+polymathjs@1.5.9:
+  version "1.5.9"
+  resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-1.5.9.tgz#9902944fd5ffbe4b84cfbc8ddd2792f90e2e6a86"
   dependencies:
     bignumber.js "5.0.0"
     bs58 "^4.0.1"
-    polymath-core "1.1.1"
+    polymath-core "1.3.3"
     redux "3.7.2"
     redux-thunk "2.2.0"
     web3 "1.0.0-beta.30"
@@ -9073,6 +9071,12 @@ realpath-native@^1.0.0:
   dependencies:
     util.promisify "^1.0.0"
 
+rechoir@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/rechoir/-/rechoir-0.6.2.tgz#85204b54dba82d5742e28c96756ef43af50e3384"
+  dependencies:
+    resolve "^1.1.6"
+
 recursive-readdir@2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/recursive-readdir/-/recursive-readdir-2.2.1.tgz#90ef231d0778c5ce093c9a48d74e5c5422d13a99"
@@ -9390,6 +9394,12 @@ resolve-url@^0.2.1:
 resolve@1.1.7:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.1.7.tgz#203114d82ad2c5ed9e8e0411b3932875e889e97b"
+
+resolve@^1.1.6:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.8.1.tgz#82f1ec19a423ac1fbd080b0bab06ba36e84a7a26"
+  dependencies:
+    path-parse "^1.0.5"
 
 resolve@^1.3.2, resolve@^1.5.0, resolve@^1.6.0, resolve@~1.7.1:
   version "1.7.1"
@@ -9783,6 +9793,14 @@ shell-quote@1.6.1, shell-quote@^1.6.1:
     array-reduce "~0.0.0"
     jsonify "~0.0.0"
 
+shelljs@^0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/shelljs/-/shelljs-0.8.2.tgz#345b7df7763f4c2340d584abb532c5f752ca9e35"
+  dependencies:
+    glob "^7.0.0"
+    interpret "^1.0.0"
+    rechoir "^0.6.2"
+
 shellwords@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/shellwords/-/shellwords-0.1.1.tgz#d6b9181c1a48d397324c84871efbcfc73fc0654b"
@@ -9912,7 +9930,7 @@ sockjs@0.3.18:
     faye-websocket "^0.10.0"
     uuid "^2.0.2"
 
-solc@0.4.24, solc@^0.4.2:
+solc@0.4.24, solc@^0.4.2, solc@^0.4.24:
   version "0.4.24"
   resolved "https://registry.yarnpkg.com/solc/-/solc-0.4.24.tgz#354f14b269b38cbaa82a47d1ff151723502b954e"
   dependencies:

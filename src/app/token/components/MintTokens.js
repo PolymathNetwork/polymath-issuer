@@ -2,18 +2,8 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Remark, addressShortifier } from 'polymath-ui'
-import {
-  Icon,
-  FileUploader,
-  InlineNotification,
-  Button,
-  ComposedModal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from 'carbon-components-react'
-import type { Investor } from 'polymathjs'
+import { Remark, addressShortifier, confirm } from 'polymath-ui'
+import { Icon, FileUploader, InlineNotification, Button } from 'carbon-components-react'
 
 import { uploadCSV, mintTokens, mintResetUploaded } from '../actions'
 import type { RootState } from '../../../redux/reducer'
@@ -23,18 +13,16 @@ type StateProps = {|
   isTooMany: boolean,
   isReady: boolean,
   isInvalid: boolean,
-  criticals: Array<InvestorCSVRow>,
-  uploaded: Array<Investor>,
+  criticals: Array <InvestorCSVRow>,
+  token: Object,
+  pui: Object
 |}
 
 type DispatchProps = {|
   uploadCSV: (file: Object) => any,
-  mintTokens: (uploaded: Array<Investor>) => any,
+  mintTokens: () => any,
   mintResetUploaded: () => any,
-|}
-
-type State = {|
-  isConfirmModalOpen: boolean,
+  confirm: () => any,
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -42,23 +30,21 @@ const mapStateToProps = (state: RootState): StateProps => ({
   isReady: state.token.mint.uploaded.length > 0,
   isInvalid: state.token.mint.criticals.length > 0,
   criticals: state.token.mint.criticals,
-  uploaded: state.token.mint.uploaded,
+  token: state.token,
+  pui: state.pui,
 })
 
 const mapDispatchToProps = {
   uploadCSV,
   mintTokens,
   mintResetUploaded,
+  confirm,
 }
 
 type Props = {|
 |} & StateProps & DispatchProps
 
-class MintTokens extends Component<Props, State> {
-
-  state = {
-    isConfirmModalOpen: false,
-  }
+class MintTokens extends Component<Props> {
 
   handleReset = (withState = true) => {
     // TODO @bshevchenko: maybe there is a better way to reset FileUploader $FlowFixMe
@@ -83,15 +69,6 @@ class MintTokens extends Component<Props, State> {
     }
   }
 
-  handleConfirmModalOpen = () => {
-    this.setState({ isConfirmModalOpen: true })
-  }
-
-  handleConfirmModalClose = () => {
-    this.setState({ isConfirmModalOpen: false })
-    this.handleReset()
-  }
-
   handleUploaded = (file: Object) => {
     // eslint-disable-next-line
     file = file.target.files[0]
@@ -101,9 +78,99 @@ class MintTokens extends Component<Props, State> {
   }
 
   handleSubmit = () => {
-    this.setState({ isConfirmModalOpen: false })
-    this.props.mintTokens(this.props.uploaded)
-    this.handleReset(false)
+    const { criticals } = this.props // $FlowFixMe
+    this.props.confirm(
+      <div>
+        <p>
+          Please confirm that all previous information is correct.
+          Once you hit &laquo;CONFIRM&raquo;, data will be submitted to the blockchain.
+          Any change will require that you start the process over. If you wish to review your information,
+          please select &laquo;CANCEL&raquo;.
+        </p>
+        {criticals.length ? (
+          <div>
+            <InlineNotification
+              hideCloseButton
+              title={criticals.length + ' Error' + (criticals.length > 1 ? 's' : '') + ' in Your .csv File'}
+              subtitle={'Please note that the entries below contains error or duplicates another entry ' +
+              'that prevent their content to be committed to the blockchain.' +
+              'Entries were automatically deselected so they are not submitted ' +
+              'to the blockchain. You can also elect to cancel the operation to review the csv file offline.'}
+              kind='error'
+            />
+            <table className='import-criticals'>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Address</th>
+                  <th>Sale Lockup</th>
+                  <th>Purchase Lockup</th>
+                  <th>KYC/AML Expiry</th>
+                  <th>Tokens</th>
+                </tr>
+              </thead>
+              <tbody>
+                {criticals.map(([id, address, sale, purchase, expiry, tokens]: InvestorCSVRow) => (
+                  <tr key={id}>
+                    <td>{id}</td>
+                    <td>{addressShortifier(address)}</td>
+                    <td>{sale}</td>
+                    <td>{purchase}</td>
+                    <td>{expiry}</td>
+                    <td>{tokens}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : ''}
+      </div>,
+      () => {
+        this.props.mintTokens()
+        this.handleReset(false)
+      },
+      undefined,
+      undefined,
+      criticals.length > 0 ? 'mint-confirm-modal' : '',
+    )
+  }
+
+  handleSkip = () => { // $FlowFixMe
+    this.props.confirm(
+      <div>
+        <p>
+          Note that manual minting will no longer be available once you
+          schedule an offering (STO) for this token. All tokens sold during
+          the offering will be minted as soon as the funds are received by
+          the smart contract and according to the rate you will define when
+          scheduling your STO. Your Token&apos;s total supply will therefore
+          be:
+        </p>
+        <p>
+          • Total number of tokens minted manually + total number of tokens
+          sold during the STO.
+          <br />
+          • If you achieve 100% of your fundraise objective, the total number
+          of tokens sold during the STO will be equal to your hard cap.
+          <br />
+          • If not, this number will be equal to the total number of tokens
+          sold.
+        </p>
+        <p>
+          Hit &laquo;CANCEL&raquo; if you would like to mint additional
+          tokens or &laquo;CONFIRM&raquo; if you have minted all the tokens
+          you needed to mint outside of the STO.
+        </p>
+      </div>,
+      () => {
+        this.props.pui.common.history.push(
+          `/dashboard/${this.props.token.token.ticker}/sto`
+        )
+      },
+      undefined,
+      undefined,
+      'pui-large-confirm-modal'
+    )
   }
 
   fileUploaderRef = (el: ?Object) => { // $FlowFixMe
@@ -111,22 +178,24 @@ class MintTokens extends Component<Props, State> {
   }
 
   render () {
-    const { isTooMany, isReady, isInvalid, criticals } = this.props
-
+    const { isTooMany, isReady, isInvalid } = this.props
     return (
-      <div className='bx--col-xs-7'>
+      <div className='mint-tokens-wrapper'>
         <div className='pui-page-box'>
           <Remark title='Note'>
-            This action will trigger multiple signing operations with your MetaMask wallet:<br />
-            — One for the initial whitelist upload;<br />
-            — One for the minting of tokens.
+            <span>
+              Manual minting operations are disabled once an STO is configured and scheduled for your token.<br />
+              This action will trigger multiple signing operations with your MetaMask wallet:<br />
+              • One for the initial whitelist upload;<br />
+              • One for the minting of tokens.
+            </span>
           </Remark>
           <h2 className='pui-h2'>
             Mint Your Tokens
           </h2>
           <h3 className='pui-h3'>
             Your Security Token is now deployed to the blockchain.<br />
-            Let’s mint token for your reserve and your current shareholders.
+            As a next step, you may now elect to mint tokens for existing shareholders, affiliates or for your reserve.
           </h3>
           <br />
           <h4 className='pui-h4'>
@@ -140,15 +209,15 @@ class MintTokens extends Component<Props, State> {
           </h4>
           <h4 className='pui-h4'>
             The format of the file should be as follow:<br />
-            — ETH Address (address to whitelist);<br />
-            — Sell Restriction Date mm/dd/yyyy (date when the resale restrictions
+            • ETH Address (address to whitelist);<br />
+            • Sell Restriction Date mm/dd/yyyy (date when the resale restrictions
             should be lifted for that address);
             <br />
-            — Buy Restriction Date mm/dd/yyyy (date when the buy restrictions should be
+            • Buy Restriction Date mm/dd/yyyy (date when the buy restrictions should be
             lifted for that address);<br />
             Empty cell will be considered as permanent lockup.<br />
-            — KYC/AML Expiry Date mm/dd/yyyy;<br />
-            – Number of tokens to mint for the ETH address (integer).<br />
+            • KYC/AML Expiry Date mm/dd/yyyy;<br />
+            • Number of tokens to mint for the ETH address (integer).<br />
             Maximum numbers of addresses per transaction is <strong>75</strong>.
           </h4>
           <h5 className='pui-h5'>
@@ -183,77 +252,18 @@ class MintTokens extends Component<Props, State> {
               kind='error'
             />
           ) : ''}
-          <Button type='submit' disabled={!isReady} onClick={this.handleConfirmModalOpen} style={{ marginTop: '10px' }}>
+          <Button type='submit' disabled={!isReady} onClick={this.handleSubmit} style={{ marginTop: '10px' }}>
             Mint Tokens
           </Button>
 
-          <ComposedModal
-            open={this.state.isConfirmModalOpen}
-            className='pui-confirm-modal mint-confirm-modal'
+          <Button
+            type='submit'
+            kind='secondary'
+            onClick={this.handleSkip}
+            style={{ marginTop: '10px', marginLeft: '15px' }}
           >
-            <ModalHeader
-              label='Confirmation required'
-              title={(
-                <span>
-                  <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
-                  Before You Proceed
-                </span>
-              )}
-            />
-            <ModalBody>
-              <div className='bx--modal-content__text'>
-                <p>
-                  Please confirm that all previous information is correct.
-                  Once you hit &laquo;CONFIRM&raquo;, data will be submitted to the blockchain.
-                  Any change will require that you start the process over. If you wish to review your information,
-                  please select &laquo;CANCEL&raquo;.
-                </p>
-                {criticals.length ? (
-                  <div>
-                    <InlineNotification
-                      hideCloseButton
-                      title={criticals.length + ' Error' + (criticals.length > 1 ? 's' : '') + ' in Your .csv File'}
-                      subtitle={'Please note that the entries below contains error that prevent their content to be ' +
-                      'committed to the blockchain. Entries were automatically deselected so they are not submitted ' +
-                      'to the blockchain. You can also elect to cancel the operation to review the csv file offline.'}
-                      kind='error'
-                    />
-                    <table className='import-criticals'>
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Address</th>
-                          <th>Sale Lockup</th>
-                          <th>Purchase Lockup</th>
-                          <th>KYC/AML Expiry</th>
-                          <th>Tokens</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {criticals.map(([id, address, sale, purchase, expiry, tokens]: InvestorCSVRow) => (
-                          <tr key={id}>
-                            <td>{id}</td>
-                            <td>{addressShortifier(address)}</td>
-                            <td>{sale}</td>
-                            <td>{purchase}</td>
-                            <td>{expiry}</td>
-                            <td>{tokens}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : ''}
-              </div>
-            </ModalBody>
-
-            <ModalFooter>
-              <Button kind='secondary' onClick={this.handleConfirmModalClose}>
-                Cancel
-              </Button>
-              <Button onClick={this.handleSubmit}>Confirm</Button>
-            </ModalFooter>
-          </ComposedModal>
+            SKIP MINTING
+          </Button>
         </div>
       </div>
     )

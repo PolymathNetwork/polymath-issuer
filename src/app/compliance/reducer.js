@@ -1,6 +1,7 @@
 // @flow
 
-import { TransferManager } from 'polymathjs'
+import { TransferManager, PercentageTransferManager } from 'polymathjs'
+import { CONTINUE as TX_CONTINUE } from 'polymath-ui/dist/modules/tx/actions'
 import type { Investor } from 'polymathjs/types'
 
 import * as a from './actions'
@@ -8,28 +9,52 @@ import type { InvestorCSVRow } from './actions'
 
 export type WhitelistState = {|
   transferManager: TransferManager,
+  percentageTM: {
+    contract: ?PercentageTransferManager,
+    isPaused: boolean,
+    percentage: ?number,
+  },
   investors: Array<Investor>,
   uploaded: Array<Investor>,
   criticals: Array<InvestorCSVRow>,
   isTooMany: boolean,
   listLength: number,
+  freezeStatus: ?boolean,
+  isFrozenModalOpen: ?boolean,
 |}
 
 const defaultState: WhitelistState = {
   transferManager: null,
+  percentageTM: {
+    contract: null,
+    isPaused: true,
+    percentage: null,
+  },
   investors: [],
   uploaded: [],
   criticals: [],
   isTooMany: false,
   listLength: 10,
+  freezeStatus: null,
+  isFrozenModalOpen: null,
 }
-
+// eslint-disable-next-line complexity
 export default (state: WhitelistState = defaultState, action: Object) => {
   switch (action.type) {
     case a.TRANSFER_MANAGER:
       return {
         ...state,
         transferManager: action.transferManager,
+        percentageTM: defaultState.percentageTM,
+      }
+    case a.PERCENTAGE_TM:
+      return {
+        ...state,
+        percentageTM: {
+          contract: action.tm,
+          isPaused: action.isPaused,
+          percentage: action.percentage || state.percentageTM.percentage,
+        },
       }
     case a.LIST_LENGTH:
       return {
@@ -55,6 +80,24 @@ export default (state: WhitelistState = defaultState, action: Object) => {
         criticals: [],
         isTooMany: false,
       }
+    case a.FREEZE_STATUS:
+      return{
+        ...state,
+        freezeStatus: action.freezeStatus, 
+      }
+    case a.FROZEN_MODAL_STATUS:
+      return{
+        ...state,
+        isFrozenModalOpen: action.isFrozenModalOpen, 
+      }
+    case TX_CONTINUE:
+      if(state.freezeStatus){
+        return{
+          ...state,
+          isFrozenModalOpen: true, 
+        }
+      }else
+      {return state}
     default:
       return state
   }

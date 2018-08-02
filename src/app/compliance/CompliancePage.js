@@ -1,24 +1,24 @@
 // @flow
-/* eslint-disable react/jsx-no-bind */
+/* eslint-disable react/jsx-no-bind, react/no-unused-state */ // TODO @bshevchenko
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { reset } from 'redux-form'
 import DocumentTitle from 'react-document-title'
-import { etherscanAddress, addressShortifier } from 'polymath-ui'
+import { etherscanAddress, addressShortifier, confirm } from 'polymath-ui'
 import {
   Button,
   DataTable,
-  PaginationV2,
+  // PaginationV2,
   Modal,
-  DatePicker,
-  DatePickerInput,
+  // DatePicker,
+  // DatePickerInput,
   Icon,
-  ComposedModal,
-  ModalBody,
-  ModalHeader,
-  ModalFooter,
   InlineNotification,
+  Toggle,
+  TextInput,
+  OverflowMenu,
+  OverflowMenuItem,
 } from 'carbon-components-react'
 import type { Investor, Address, SecurityToken } from 'polymathjs/types'
 
@@ -26,16 +26,23 @@ import NotFoundPage from '../NotFoundPage'
 import Progress from '../token/components/Progress'
 import {
   importWhitelist,
+  exportWhitelist,
   addInvestor,
   fetchWhitelist,
   listLength,
   removeInvestors,
   editInvestors,
   resetUploaded,
+  disableOwnershipRestrictions,
+  enableOwnershipRestrictions,
+  updateOwnershipPercentage,
   PERMANENT_LOCKUP_TS,
+  getFreezeStatus,
+  toggleFreeze,
+  showFrozenModal,
 } from './actions'
 import AddInvestorForm, { formName as addInvestorFormName } from './components/AddInvestorForm'
-import EditInvestorsForm, { formName as editInvestorsFormName } from './components/EditInvestorsForm'
+import { formName as editInvestorsFormName } from './components/EditInvestorsForm'
 import ImportWhitelistModal from './components/ImportWhitelistModal'
 
 import type { RootState } from '../../redux/reducer'
@@ -64,6 +71,11 @@ type StateProps = {|
   criticals: Array<InvestorCSVRow>,
   stateListLength: number,
   token: SecurityToken,
+  isPercentageEnabled: boolean,
+  isPercentagePaused: boolean,
+  percentage: ?number,
+  isTokenFrozen: boolean,
+  isFrozenModalOpen: boolean
 |}
 
 type DispatchProps = {|
@@ -71,10 +83,18 @@ type DispatchProps = {|
   listLength: number => any,
   addInvestor: () => any,
   importWhitelist: () => any,
+  exportWhitelist: () => any,
   editInvestors: (investors: Array<Address>) => any,
   removeInvestors: (investors: Array<Address>) => any,
   reset: (formName: string) => any,
   resetUploaded: () => any,
+  confirm: () => any,
+  disableOwnershipRestrictions: () => any,
+  enableOwnershipRestrictions: (percentage?: number) => any,
+  updateOwnershipPercentage: (percentage: number) => any,
+  getFreezeStatus: () => any,
+  toggleFreeze: () => any,
+  showFrozenModal: (show: boolean) => any
 |}
 
 const mapStateToProps = (state: RootState) => ({
@@ -82,6 +102,11 @@ const mapStateToProps = (state: RootState) => ({
   criticals: state.whitelist.criticals,
   stateListLength: state.whitelist.listLength,
   token: state.token.token,
+  isPercentageEnabled: !!state.whitelist.percentageTM.contract,
+  isPercentagePaused: state.whitelist.percentageTM.isPaused,
+  percentage: state.whitelist.percentageTM.percentage,
+  isTokenFrozen: state.whitelist.freezeStatus,
+  isFrozenModalOpen:state.whitelist.isFrozenModalOpen,
 })
 
 const mapDispatchToProps = {
@@ -89,10 +114,18 @@ const mapDispatchToProps = {
   listLength,
   addInvestor,
   importWhitelist,
+  exportWhitelist,
   editInvestors,
   removeInvestors,
   resetUploaded,
   reset,
+  confirm,
+  disableOwnershipRestrictions,
+  enableOwnershipRestrictions,
+  updateOwnershipPercentage,
+  getFreezeStatus,
+  toggleFreeze,
+  showFrozenModal,
 }
 
 type Props = StateProps & DispatchProps
@@ -103,12 +136,16 @@ type State = {|
   isAddModalOpen: boolean,
   isEditModalOpen: boolean,
   isImportModalOpen: boolean,
-  isImportConfirmModalOpen: boolean,
   startDateAdded: ?Date,
   endDateAdded: ?Date,
+  isPercentageToggled: boolean,
+  percentage: ?number,
 |}
 
-const dateFormat = (date: Date): string => {
+const dateFormat = (date: ?Date): string => {
+  if (!date) {
+    return ''
+  }
   if (date.getTime() === PERMANENT_LOCKUP_TS) {
     return 'Permanent'
   }
@@ -123,13 +160,25 @@ class CompliancePage extends Component<Props, State> {
     isAddModalOpen: false,
     isEditModalOpen: false,
     isImportModalOpen: false,
-    isImportConfirmModalOpen: false,
     startDateAdded: null,
     endDateAdded: null,
+    isPercentageToggled: false,
+    percentage: undefined,
   }
 
   componentWillMount () {
     this.props.fetchWhitelist()
+    this.props.getFreezeStatus()
+
+    if (this.props.percentage) {
+      this.setState({ percentage: this.props.percentage })
+    }
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.percentage !== this.props.percentage && nextProps.percentage !== null) {
+      this.setState({ percentage: nextProps.percentage })
+    }
   }
 
   handleChangePages = (pc) => {
@@ -161,6 +210,45 @@ class CompliancePage extends Component<Props, State> {
     this.props.addInvestor()
   }
 
+  handleFreezeModalOpen = () => {
+    // $FlowFixMe
+    this.props.confirm(
+      <div>
+        <p>
+        Once you hit &laquo;CONFIRM&raquo;, the freeze on all transfers will PREVENT ANY INVESTOR FROM BUYING
+        OR SELLING YOUR TOKENS UNTIL YOU RESUME TRANSFERS. Consider notifying all your investors. If you wish
+        to review with your Advisors, please select &laquo;CANCEL&raquo;.
+        </p>
+      </div>,
+      () => {
+        this.props.toggleFreeze()
+      },
+      'Pause All Transfers?'
+    )
+  }
+
+  handleUnFreezeModalOpen = () => {
+    // $FlowFixMe
+    this.props.confirm(
+      <div>
+        <p>
+        Once you hit &laquo;CONFIRM&raquo;, token transfers WILL BE ENABLED AGAIN, ALLOWING ANY AUTHORIZED INVESTOR
+         TO BUY OR SELL YOUR TOKENS. Consider notifying all your investors. If you wish to review with your Advisors,
+          please select &laquo;CANCEL&raquo;.
+        </p>
+      </div>,
+      () => {
+        this.props.toggleFreeze()
+      },
+      'Resume All Transfers?'
+    )
+  }
+
+  handleUnfreezeConfirm = () =>{
+    this.props.showFrozenModal(false)
+    this.props.toggleFreeze()
+  }
+
   handleImportModalOpen = () => {
     this.props.resetUploaded()
     this.setState({ isImportModalOpen: true })
@@ -170,17 +258,76 @@ class CompliancePage extends Component<Props, State> {
     this.setState({ isImportModalOpen: false })
   }
 
-  handleImportConfirmModalClose = () => {
-    this.setState({ isImportConfirmModalOpen: false })
-  }
-
-  handleImportConfirm = () => {
-    this.setState({ isImportConfirmModalOpen: true })
-  }
-
   handleImport = () => {
-    this.setState({ isImportConfirmModalOpen: false })
-    this.props.importWhitelist()
+    const { criticals, isPercentagePaused } = this.props // $FlowFixMe
+    this.props.confirm(
+      <div>
+        <p>
+          Please confirm that all previous information is correct and all investors are approved.
+          Once you hit &laquo;CONFIRM&raquo;, investors will be submitted to the blockchain.
+          Any change will require that you start the process over. If you wish to review your information,
+          please select &laquo;CANCEL&raquo;.
+        </p>
+        {criticals.length ? (
+          <div>
+            <InlineNotification
+              hideCloseButton
+              title={criticals.length + ' Error' + (criticals.length > 1 ? 's' : '') + ' in Your .csv File'}
+              subtitle={'Please note that the entries below contains error or duplicates another entry that prevent ' +
+              'their content to be committed to the blockchain. Entries were automatically deselected so they are ' +
+              'not submitted to the blockchain. You can also elect to cancel the operation to review the csv ' +
+              'file offline.'}
+              kind='error'
+            />
+            <table className='import-criticals'>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Address</th>
+                  <th>Sale</th>
+                  <th>Purchase</th>
+                  <th>KYC/AML</th>
+                  <th>Can buy from STO</th>
+                  {!isPercentagePaused ? <th>Exempt From % Ownership</th> : ''}
+                </tr>
+              </thead>
+              <tbody>
+                {criticals.map(([id, address, sale, purchase, expiry, canBuyFromSTO, isPercentage]: InvestorCSVRow) => (
+                  <tr key={id}>
+                    <td>{id}</td>
+                    <td>{addressShortifier(address)}</td>
+                    <td>{sale}</td>
+                    <td>{purchase}</td>
+                    <td>{expiry}</td>
+                    <td>{canBuyFromSTO}</td>
+                    {!isPercentagePaused ? <td>{isPercentage}</td> : ''}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : ''}
+      </div>,
+      () => {
+        this.props.importWhitelist()
+      },
+      undefined,
+      undefined,
+      criticals.length > 0 ? 'whitelist-import-confirm-modal' : '',
+    )
+  }
+  
+  handleExport = () => { // $FlowFixMe TODO @bshevchenko
+    this.props.confirm(
+      <p>
+        Are you sure you want to export whitelist?<br />
+        Please be aware that the time to complete this operation will vary based on the number of entries in the list.
+      </p>,
+      () => {
+        this.props.exportWhitelist()
+      },
+      'Proceeding with Whitelist Export'
+    )
   }
 
   handleBatchEdit = (selectedRows: Array<Object>) => {
@@ -216,8 +363,42 @@ class CompliancePage extends Component<Props, State> {
     this.props.removeInvestors(addresses)
   }
 
+  handleTogglePercentage = (isToggled: boolean) => {
+    const { isPercentageEnabled, isPercentagePaused } = this.props
+    if (!isPercentageEnabled) {
+      this.setState({ isPercentageToggled: isToggled })
+    } else {
+      if (isPercentagePaused) {
+        this.props.enableOwnershipRestrictions()
+      } else {
+        this.props.disableOwnershipRestrictions()
+      }
+    }
+  }
+
+  handlePercentageChange = (event) => {
+    let value = parseInt(Number(event.target.value), 10)
+    if (!Number.isInteger(value) || value < 0 || value > 100) {
+      event.preventDefault()
+      return
+    }
+    if (event.target.value === '') {
+      value = undefined
+    }
+    this.setState({ percentage: value })
+  }
+
+  handleApplyPercentage = () => {
+    const { isPercentageEnabled } = this.props
+    if (isPercentageEnabled) { // $FlowFixMe
+      this.props.updateOwnershipPercentage(this.state.percentage)
+    } else { // $FlowFixMe
+      this.props.enableOwnershipRestrictions(this.state.percentage)
+    }
+  }
+
   paginationRendering () {
-    const { investors, stateListLength } = this.props
+    const { investors, stateListLength, isPercentagePaused, percentage } = this.props
     const pageNum = this.state.page
     const startSlice = pageNum * stateListLength
     const endSlice = (pageNum + 1) * stateListLength
@@ -240,7 +421,8 @@ class CompliancePage extends Component<Props, State> {
         addedBy: investor.addedBy,
         from: dateFormat(investor.from),
         to: dateFormat(investor.to),
-        expiry: dateFormat(investor.expiry),
+        expiry: dateFormat(investor.expiry), // $FlowFixMe
+        ...(!isPercentagePaused ? { percentage: investor.isPercentage ? percentage + '%' : 'No Limit' } : {}),
       })
     }
     return stringified
@@ -270,7 +452,7 @@ class CompliancePage extends Component<Props, State> {
             iconDescription='Edit Dates'
             onClick={() => this.handleBatchEdit(selectedRows)}
           >
-            Edit Dates
+            Edit
           </Button>
         </TableBatchActions>
         <TableToolbarSearch onChange={onInputChange} />
@@ -315,10 +497,15 @@ class CompliancePage extends Component<Props, State> {
               {row.cells.map((cell, i) => (
                 <TableCell key={cell.id}>
                   {i === 0 ? (
-                    <div>{etherscanAddress(cell.value, cell.value)}</div>
+                    <div>
+                      {etherscanAddress(
+                        cell.value,
+                        this.props.isPercentagePaused ? cell.value : addressShortifier(cell.value)
+                      )}
+                    </div>
                   ) : i === 2 ? (
                     <div>{etherscanAddress(cell.value, addressShortifier(cell.value))}</div>
-                  ) : i === 6 ? (
+                  ) : i === (this.props.isPercentagePaused ? 6 : 7) ? (
                     <div>
                       <Icon
                         name='edit--glyph'
@@ -354,144 +541,164 @@ class CompliancePage extends Component<Props, State> {
   )
 
   render () {
-    const { token, investors, criticals } = this.props
+    const { token, isPercentageEnabled, isPercentagePaused } = this.props
     if (!token || !token.address) {
       return <NotFoundPage />
     }
-    const paginatedRows = this.paginationRendering()
+    // const paginatedRows = this.paginationRendering()
     return (
       <DocumentTitle title='Compliance – Polymath'>
         <div>
           <Progress />
 
-          <Button
-            icon='upload'
-            onClick={this.handleImportModalOpen}
-            className='import-whitelist-btn'
-          >
-            Import Whitelist
-          </Button>
-          <ImportWhitelistModal
-            isOpen={this.state.isImportModalOpen}
-            onSubmit={this.handleImportConfirm}
-            onClose={this.handleImportModalClose}
-          />
-          <ComposedModal
-            open={this.state.isImportConfirmModalOpen}
-            className='pui-confirm-modal whitelist-import-confirm-modal'
-          >
-            <ModalHeader
-              label='Confirmation required'
-              title={(
-                <span>
-                  <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
-                  Before You Proceed
-                </span>
-              )}
-            />
-            <ModalBody>
-              <div className='bx--modal-content__text'>
-                <p>
-                  Please confirm that all previous information is correct and all investors are approved.
-                  Once you hit &laquo;CONFIRM&raquo;, investors will be submitted to the blockchain.
-                  Any change will require that you start the process over. If you wish to review your information,
-                  please select &laquo;CANCEL&raquo;.
-                </p>
-                {criticals.length ? (
-                  <div>
-                    <InlineNotification
-                      hideCloseButton
-                      title={criticals.length + ' Error' + (criticals.length > 1 ? 's' : '') + ' in Your .csv File'}
-                      subtitle={'Please note that the entries below contains error that prevent their content to be ' +
-                      'committed to the blockchain. Entries were automatically deselected so they are not submitted ' +
-                      'to the blockchain. You can also elect to cancel the operation to review the csv file offline.'}
-                      kind='error'
-                    />
-                    <table className='import-criticals'>
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Address</th>
-                          <th>Sale Lockup</th>
-                          <th>Purchase Lockup</th>
-                          <th>KYC/AML Expiry</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {criticals.map(([id, address, sale, purchase, expiry]: InvestorCSVRow) => (
-                          <tr key={id}>
-                            <td>{id}</td>
-                            <td>{addressShortifier(address)}</td>
-                            <td>{sale}</td>
-                            <td>{purchase}</td>
-                            <td>{expiry}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : ''}
+          <h1 className='pui-h1'>Token Whitelist</h1>
+          <h3 className='pui-h3'>
+            Whitelisted addresses may hold, buy, or sell the security token and may participate into the STO.
+            Security token buy/sell operations may be subject to restrictions.
+          </h3>
+          <br />
+
+          <div className='pui-page-box'>
+            <OverflowMenu floatingMenu flipped style={{ float: 'right' }}>
+              <OverflowMenuItem
+                itemText={this.props.isTokenFrozen ? 'Resume All Transfers':'Pause All Transfers'}
+                onClick={this.props.isTokenFrozen ? this.handleUnFreezeModalOpen:this.handleFreezeModalOpen}
+              />
+            </OverflowMenu>
+            <div className='compliance-settings'>
+              {/*
+                <DatePicker
+                  onChange={this.handleDateAddedChange}
+                  datePickerType='range'
+                >
+                  <DatePickerInput
+                    id='start-date-added'
+                    labelText='Start Date Added'
+                    placeholder='mm / dd / yyyy'
+                    onClick={() => {}}
+                    onChange={() => {}}
+                  />
+                  <DatePickerInput
+                    id='end-date-added'
+                    labelText='End Date Added'
+                    placeholder='mm / dd / yyyy'
+                    onClick={() => {}}
+                    onChange={() => {}}
+                  />
+                </DatePicker>
+              */}
+
+              <div className='bx--form-item'>
+                <label htmlFor='percentageToggle' className='bx--label'>Enable Ownership Restrictions</label>
+                <Toggle
+                  onToggle={this.handleTogglePercentage}
+                  toggled={isPercentageEnabled ? !isPercentagePaused : this.state.isPercentageToggled}
+                  id='percentageToggle'
+                />
               </div>
-            </ModalBody>
 
-            <ModalFooter>
-              <Button kind='secondary' onClick={this.handleImportConfirmModalClose}>
-                Cancel
-              </Button>
-              <Button onClick={this.handleImport}>Confirm</Button>
-            </ModalFooter>
-          </ComposedModal>
+              <div
+                className='bx--form-item'
+                style={!isPercentagePaused || (!isPercentageEnabled && this.state.isPercentageToggled) ? {} : {
+                  display: 'none',
+                }}
+              >
+                <label htmlFor='percentage' className='bx--label'>
+                  Each Individual Investor Can<br />Own Up To of Outstanding Tokens
+                </label>
+                <TextInput
+                  id='percentage'
+                  value={this.state.percentage}
+                  placeholder='–'
+                  onChange={this.handlePercentageChange}
+                />
+                <Button
+                  onClick={this.handleApplyPercentage}
+                  disabled={
+                    this.state.percentage === this.props.percentage ||
+                    typeof this.state.percentage === 'undefined'
+                  }
+                >
+                  Apply
+                </Button>
+              </div>
 
-          <DatePicker
-            onChange={this.handleDateAddedChange}
-            datePickerType='range'
-          >
-            <DatePickerInput
-              id='start-date-added'
-              labelText='Start Date Added'
-              placeholder='mm / dd / yyyy'
-              onClick={() => {}}
-              onChange={() => {}}
+            </div>
+
+            <Button
+              icon='upload'
+              onClick={this.handleImportModalOpen}
+              className='import-whitelist-btn'
+            >
+              Import Whitelist
+            </Button>
+            <ImportWhitelistModal
+              isOpen={this.state.isImportModalOpen}
+              onSubmit={this.handleImport}
+              onClose={this.handleImportModalClose}
             />
-            <DatePickerInput
-              id='end-date-added'
-              labelText='End Date Added'
-              placeholder='mm / dd / yyyy'
-              onClick={() => {}}
-              onChange={() => {}}
-            />
-          </DatePicker>
 
-          <DataTable
-            rows={paginatedRows}
-            headers={[
-              { key: 'address', header: 'Investor\'s ETH address' },
-              { key: 'added', header: 'Date added' },
-              { key: 'addedBy', header: 'Added by' },
-              { key: 'from', header: 'Sale lockup' },
-              { key: 'to', header: 'Purchase lockup' },
-              { key: 'expiry', header: 'KYC/AML Expiry' },
-              { key: 'actions', header: '' },
-            ]}
-            render={this.dataTableRender}
-          />
-          <PaginationV2
-            onChange={this.handleChangePages}
-            pageSizes={[10, 20, 30, 40, 50]}
-            totalItems={investors.length}
-          />
+            <Button
+              icon='download'
+              kind='secondary'
+              onClick={this.handleExport}
+              className='import-whitelist-btn'
+            >
+              Export Whitelist
+            </Button>
+            <div className='pui-clearfix' />
+          </div>
+
+          {/*
+            <DataTable
+              rows={paginatedRows}
+              headers={[
+                { key: 'address', header: 'Investor\'s ETH address' },
+                { key: 'added', header: 'Date added' },
+                { key: 'addedBy', header: 'Added by' },
+                { key: 'from', header: 'Sale lockup' },
+                { key: 'to', header: 'Purchase lockup' },
+                { key: 'expiry', header: 'KYC/AML Expiry' },
+                ...(!isPercentagePaused ? [{ key: 'percentage', header: 'Max % Ownership' }] : []),
+                { key: 'actions', header: '' },
+              ]}
+              render={this.dataTableRender}
+            />
+            <PaginationV2
+              onChange={this.handleChangePages}
+              pageSizes={[10, 20, 30, 40, 50]}
+              totalItems={investors.length}
+            />
+            <Modal
+              className='whitelist-investor-modal'
+              open={this.state.isEditModalOpen}
+              onRequestClose={this.handleEditModalClose}
+              modalHeading='Edit'
+              passiveModal
+            >
+              <p className='bx--modal-content__text'>
+                Please enter the information below to edit the chosen investors.
+              </p>
+              <br />
+              <EditInvestorsForm onSubmit={this.handleEditSubmit} onClose={this.handleEditModalClose} />
+            </Modal>
+          */}
           <Modal
-            className='whitelist-investor-modal'
-            open={this.state.isEditModalOpen}
-            onRequestClose={this.handleEditModalClose}
-            modalHeading='Edit Dates'
+            className='freeze-transfer-modal'
+            open={this.props.isTokenFrozen && this.props.isFrozenModalOpen}
+            modalHeading={
+              <span>
+                <Icon name='icon--pause--outline' fill='#E71D32' width='24' height='24' />&nbsp;
+                All Transfers Paused
+              </span>
+            }
             passiveModal
           >
             <p className='bx--modal-content__text'>
-              Please enter the information below to edit the chosen investors.
+            All transfers have been paused, including on-chain secondary markets.
             </p>
             <br />
-            <EditInvestorsForm onSubmit={this.handleEditSubmit} onClose={this.handleEditModalClose} />
+            <Button onClick={this.handleUnfreezeConfirm} icon='icon--play'>RESUME TRANSFERS&nbsp;</Button>
           </Modal>
         </div>
       </DocumentTitle>

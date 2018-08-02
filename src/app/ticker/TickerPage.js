@@ -4,42 +4,38 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { change } from 'redux-form'
-import { bull } from 'polymath-ui'
+import { bull, thousandsDelimiter } from 'polymath-ui'
 import { TickerRegistry } from 'polymathjs'
 import type { RouterHistory } from 'react-router'
-import {
-  Button,
-  ComposedModal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Icon,
-} from 'carbon-components-react'
 
 import TickerForm, { formName } from './components/TickerForm'
-import { reserve } from './actions'
+import { reserve, expiryLimit } from './actions'
 import { data as tokenData } from '../token/actions'
 
 type StateProps = {|
   account: ?string,
   token: Object,
+  expiryLimit: number,
 |}
 
 type DispatchProps = {|
   change: (?string) => any,
   reserve: () => any,
-  tokenData: (data: any) => any
+  tokenData: (data: any) => any,
+  getExpiryLimit: () => any,
 |}
 
 const mapStateToProps = (state): StateProps => ({
   account: state.network.account,
   token: state.token.token,
+  expiryLimit: state.ticker.expiryLimit,
 })
 
 const mapDispatchToProps: DispatchProps = {
   change: (value) => change(formName, 'owner', value, false, false),
   reserve,
   tokenData,
+  getExpiryLimit: expiryLimit,
 }
 
 type Props = {|
@@ -47,76 +43,32 @@ type Props = {|
 |} & StateProps & DispatchProps
 
 type State = {|
-  isModalOpen: boolean,
-  expiryLimit: number,
+  tickerRegistrationFee: string,
 |}
 
 class TickerPage extends Component<Props, State> {
 
   state = {
-    isModalOpen: false,
-    expiryLimit: 7,
+    tickerRegistrationFee: '-',
   }
 
   componentWillMount () {
-    // TODO @bshevchenko: probably we shouldn't call polymath.js directly from the components
-    TickerRegistry.expiryLimit().then((expiryLimit) => {
-      this.setState({ expiryLimit: expiryLimit / 24 / 60 / 60 })
-    })
     this.props.change(this.props.account)
     this.props.tokenData(null)
+    this.props.getExpiryLimit()
+    TickerRegistry.registrationFee().then((fee)=>{// $FlowFixMe
+      this.setState({ tickerRegistrationFee: thousandsDelimiter(fee) })
+    })
   }
 
   handleSubmit = () => {
-    this.setState({ isModalOpen: true })
-  }
-
-  handleConfirm = () => {
-    this.setState({ isModalOpen: false })
     this.props.reserve()
-  }
-
-  handleCancel = () => {
-    this.setState({ isModalOpen: false })
   }
 
   render () {
     return (
       <DocumentTitle title='Token Symbol Reservation – Polymath'>
         <Fragment>
-          <ComposedModal open={this.state.isModalOpen} className='pui-confirm-modal'>
-            <ModalHeader
-              label='Confirmation required'
-              title={(
-                <span>
-                  <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
-                  Before You Proceed with Your Token Symbol Reservation
-                </span>
-              )}
-            />
-            <ModalBody>
-              <div className='bx--modal-content__text'>
-                <p>
-                  Please confirm that all previous information is correct and that you are not
-                  violating any trademarks.
-                </p>
-                <p>
-                  Once you hit &laquo;RESERVE TICKER&raquo;, your Token Symbol
-                  reservation will be sent to the blockchain and will be
-                  immutable. Any change will require that you start the process
-                  over. If you wish to review your information, please select
-                  &laquo;CANCEL&raquo;.
-                </p>
-              </div>
-            </ModalBody>
-
-            <ModalFooter>
-              <Button kind='secondary' onClick={this.handleCancel}>
-                Cancel
-              </Button>
-              <Button onClick={this.handleConfirm}>Reserve Ticker</Button>
-            </ModalFooter>
-          </ComposedModal>
           <div className='pui-single-box'>
             <div className='pui-single-box-header'>
               <div className='pui-single-box-bull'>
@@ -124,14 +76,20 @@ class TickerPage extends Component<Props, State> {
               </div>
               <h1 className='pui-h1'>Reserve Your Token Symbol</h1>
               <h4 className='pui-h4'>
-                Your token symbol will be reserved for {this.state.expiryLimit} days, and
+                If your organization has a CUSIP number, please enter the<br />5-letter symbol assigned to you by FINRA.
+                Otherwise, please enter your desired token symbol provided that
+                 it does not infringe on registered trademarks.
+                Your token symbol will be reserved for {this.props.expiryLimit} days, and is
                 permanently yours once you create your Token.<br />
-                This reservation ensures that no other organization can use
-                your brand or create an identical token symbol using the
-                Polymath platform.
               </h4>
               <div className='pui-clearfix' />
             </div>
+            <h4 className='pui-h4' style={{ marginTop: '-20px' }}>
+              This reservation ensures that no other organization can use
+              your brand or create an identical token symbol using the
+              Polymath platform. 
+              <br />This operation carries a cost of: {this.state.tickerRegistrationFee} POLY.
+            </h4>
             <TickerForm onSubmit={this.handleSubmit} />
           </div>
         </Fragment>

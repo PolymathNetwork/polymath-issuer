@@ -2,6 +2,7 @@
 
 import { CONNECTED } from 'polymath-auth'
 import { setHelpersNetwork } from 'polymath-ui'
+import { CountTransferManager } from 'polymathjs'
 import type { SecurityToken, Investor } from 'polymathjs/types'
 
 import * as a from './actions'
@@ -18,7 +19,12 @@ export type TokenState = {
     uploadedTokens: Array<number>,
     criticals: Array<InvestorCSVRow>,
     isTooMany: boolean,
-  }
+  },
+  countTM: {
+    contract: ?CountTransferManager,
+    isPaused: boolean,
+    count: ?number,
+  },
 }
 
 const defaultState: TokenState = {
@@ -31,6 +37,11 @@ const defaultState: TokenState = {
     criticals: [],
     isTooMany: false,
   },
+  countTM: {
+    contract: null,
+    isPaused: true,
+    count: null,
+  },
 }
 
 export default (state: TokenState = defaultState, action: Action) => {
@@ -40,6 +51,15 @@ export default (state: TokenState = defaultState, action: Action) => {
         ...state,
         token: action.token,
         isFetched: true,
+      }
+    case a.COUNT_TM:
+      return {
+        ...state,
+        countTM: {
+          contract: action.tm,
+          isPaused: action.isPaused,
+          count: action.count || state.countTM.count,
+        },
       }
     case a.MINT_UPLOADED:
       return {

@@ -18,6 +18,7 @@ import {
   twelveHourTime,
   dateRange,
   dateRangeTodayOrLater,
+  ethereumAddress,
   gt,
 } from 'polymath-ui/dist/validate'
 
@@ -61,6 +62,30 @@ class ConfigureSTOForm extends Component<Props, State> {
     this.updateAmountOfFunds(this.state.cap / Number(newValue))
   }
 
+  pastCheck = (value, allValues) => {
+    const startTime=allValues.startTime
+    const dateRange=allValues['start-end']
+    if(!startTime || !dateRange ){
+      return null
+    }else{
+      let[hour, mins] =startTime.timeString.split(':')
+      if(startTime.dayPeriod==='PM'){
+        hour= parseInt(hour)+12
+      }
+      const startDateTime = new Date(dateRange[0].getFullYear(),
+        dateRange[0].getMonth(),
+        dateRange[0].getDate(),
+        hour,
+        parseInt(mins)
+      )
+      if ((new Date()).getTime() > startDateTime.getTime()) {
+        return 'Time is in the past.'
+      }else if ((new Date()).getTime()+600000 > startDateTime.getTime()) {
+        return 'Please allow for transaction processing time.'
+      }
+    }
+  }
+
   updateAmountOfFunds = (value: number) => {
     this.setState({ amountOfFunds: isNaN(value) || value === Infinity ? '0' : thousandsDelimiter(value) })
   }
@@ -80,7 +105,7 @@ class ConfigureSTOForm extends Component<Props, State> {
             name='startTime'
             component={TimePickerInput}
             label='Start Time'
-            validate={[twelveHourTime]}
+            validate={[twelveHourTime, this.pastCheck]}
           />
           <Field
             name='endTime'
@@ -143,6 +168,22 @@ class ConfigureSTOForm extends Component<Props, State> {
           onChange={this.handleRateChange}
           validate={[required, integer, gt0]}
         />
+        <Field
+          name='fundsReceiver'
+          component={TextInput}
+          label={
+            <Tooltip triggerText='ETH Address to receive the funds raised during the STO'>
+              <p className='bx--tooltip__label'>
+                Fund Receiver Address
+              </p>
+              <p>
+                The ethereum address that will receive the funds raised through the STO.
+              </p>
+            </Tooltip>
+          }
+          placeholder='Enter address'
+          validate={[required, ethereumAddress]}
+        />
         <FormGroup
           legendText='Amount Of Funds The STO Will Raise'
           style={{ marginTop: '20px', fontSize: '14px' }}
@@ -150,7 +191,7 @@ class ConfigureSTOForm extends Component<Props, State> {
           {this.state.amountOfFunds} {this.state.currency}
         </FormGroup>
         <Button type='submit'>
-          Confirm & Launch STO
+          DEPLOY AND SCHEDULE STO
         </Button>
         <p className='pui-input-hint'>
           When you launch your security token offering, only whitelisted investors will be able to participate.

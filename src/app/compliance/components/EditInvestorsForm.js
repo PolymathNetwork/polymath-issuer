@@ -2,14 +2,16 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { reduxForm, formValueSelector } from 'redux-form'
+import { Field, reduxForm, formValueSelector } from 'redux-form'
 import { Form, Button } from 'carbon-components-react'
+import { CheckboxInput } from 'polymath-ui'
 
 import LockupDatesFields, { validate } from './LockupDatesFields'
 
 type StateProps = {|
   isSalePermanent: boolean,
   isPurchasePermanent: boolean,
+  isPercentagePaused: boolean,
 |}
 
 type Props = {|
@@ -24,6 +26,7 @@ const formValue = formValueSelector(formName)
 const mapStateToProps = (state) => ({
   isSalePermanent: !!formValue(state, 'e_permanentSale'),
   isPurchasePermanent: !!formValue(state, 'e_permanentPurchase'),
+  isPercentagePaused: state.whitelist.percentageTM.isPaused,
 })
 
 class EditInvestorsForm extends Component<Props> {
@@ -35,13 +38,23 @@ class EditInvestorsForm extends Component<Props> {
           isSalePermanent={this.props.isSalePermanent}
           isPurchasePermanent={this.props.isPurchasePermanent}
         />
+        {!this.props.isPercentagePaused ? (
+          <div>
+            <br />
+            <Field
+              name='e_isPercentage'
+              component={CheckboxInput}
+              label='Exempt from % ownership restriction'
+            />
+          </div>
+        ) : ''}
         <br />
         <p align='right'>
           <Button kind='secondary' onClick={this.props.onClose}>
             Cancel
           </Button>
           <Button type='submit'>
-            Edit Dates
+            Submit
           </Button>
         </p>
       </Form>

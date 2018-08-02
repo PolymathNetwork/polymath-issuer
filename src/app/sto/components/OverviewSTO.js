@@ -4,31 +4,35 @@ import React, { Component, Fragment } from 'react'
 import DocumentTitle from 'react-document-title'
 import { connect } from 'react-redux'
 import { STOStatus } from 'polymath-ui'
+import { Button } from 'carbon-components-react'
 import type { SecurityToken, STOPurchase, STODetails } from 'polymathjs'
 
 import NotFoundPage from '../../NotFoundPage'
-import InvestorTable from './InvestorTable'
-import { fetchPurchases } from '../actions'
+import { togglePauseSto, exportInvestorsList  } from '../actions'
 import type { RootState } from '../../../redux/reducer'
 
 type StateProps = {|
   token: ?SecurityToken,
   details: ?STODetails,
   purchases: Array<STOPurchase>,
+  isStoPaused: boolean,
 |}
 
 type DispatchProps = {|
-  fetchPurchases: () => any
+  togglePauseSto: (endDate: Date) => any,
+  exportInvestorsList: () => any,
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
   token: state.token.token,
   details: state.sto.details,
   purchases: state.sto.purchases,
+  isStoPaused: state.sto.pauseStatus,
 })
 
 const mapDispatchToProps: DispatchProps = {
-  fetchPurchases,
+  togglePauseSto,
+  exportInvestorsList,
 }
 
 type Props = {|
@@ -36,12 +40,16 @@ type Props = {|
 
 class OverviewSTO extends Component<Props> {
 
-  componentWillMount () {
-    this.props.fetchPurchases()
+  handlePause = () => { // $FlowFixMe
+    this.props.togglePauseSto(this.props.details.end)
+  }
+
+  handleExport = () => {
+    this.props.exportInvestorsList()
   }
 
   render () {
-    const { token, details, purchases } = this.props
+    const { token, details } = this.props
     if (!token || !details) {
       return <NotFoundPage />
     }
@@ -51,16 +59,27 @@ class OverviewSTO extends Component<Props> {
           <Fragment>
             <h1 className='pui-h1'>Security Token Overview</h1>
             <br />
-            <STOStatus details={details} token={token} />
-            <br />
-            <br />
-            <h2 className='pui-h2'>List of Investors</h2>
-            <InvestorTable rows={purchases} />
-            <p>&nbsp;</p>
+            <STOStatus // eslint-disable-next-line react/jsx-handler-names
+              toggleStoPause={this.handlePause}
+              details={details}
+              token={token}
+              isStoPaused={this.props.isStoPaused}
+            />
+            <Button
+              icon='download'
+              kind='secondary'
+              onClick={this.handleExport}
+              style={{
+                float: 'left',
+                marginTop: '-89px',
+                marginLeft: '25px',
+              }}
+            >
+              Export List Of Investors
+            </Button>
           </Fragment>
         </div>
-      </DocumentTitle>
-    )
+      </DocumentTitle>)
   }
 }
 

@@ -71,3 +71,7 @@
   height: 60px;
   text-align: center;
   font-size: 18px; }
+
+.poly-cost {
+  font-size: 20px !important;
+  padding: 12px 15px !important; }

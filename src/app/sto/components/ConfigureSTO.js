@@ -1,16 +1,10 @@
 // @flow
 
+import BigNumber from 'bignumber.js'
 import React, { Component } from 'react'
 import DocumentTitle from 'react-document-title'
 import { connect } from 'react-redux'
-import {
-  Button,
-  ComposedModal,
-  ModalBody,
-  ModalFooter,
-  ModalHeader,
-  Icon,
-} from 'carbon-components-react'
+import { Button } from 'carbon-components-react'
 import type { SecurityToken, STOFactory } from 'polymathjs/types'
 
 import NotFoundPage from '../../NotFoundPage'
@@ -20,18 +14,24 @@ import { configure, goBack } from '../actions'
 import type { RootState } from '../../../redux/reducer'
 
 type StateProps = {|
+  account: ?string,
   token: ?SecurityToken,
-  factory: ?STOFactory
+  factory: ?STOFactory,
+  networkName: string,
+  polyBalance: BigNumber
 |}
 
 type DispatchProps = {|
   configure: () => any,
-  goBack: () => any
+  goBack: () => any,
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
+  account: state.network.account,
   token: state.token.token,
   factory: state.sto.factory,
+  networkName: state.network.name,
+  polyBalance: state.pui.account.balance,
 })
 
 const mapDispatchToProps: DispatchProps = {
@@ -39,33 +39,17 @@ const mapDispatchToProps: DispatchProps = {
   goBack,
 }
 
-type Props = {||} & StateProps & DispatchProps
+type Props = {|
+|} & StateProps & DispatchProps
 
-type State = {|
-  isModalOpen: boolean,
-|}
-
-class ConfigureSTO extends Component<Props, State> {
-
-  state = {
-    isModalOpen: false,
-  }
-
-  handleSubmit = () => {
-    this.setState({ isModalOpen: true })
-  }
+class ConfigureSTO extends Component<Props> {
 
   handleGoBack = () => {
     this.props.goBack()
   }
 
-  handleConfirm = () => {
-    this.setState({ isModalOpen: false })
+  handleSubmit = () => {
     this.props.configure()
-  }
-
-  handleCancel = () => {
-    this.setState({ isModalOpen: false })
   }
 
   render () {
@@ -78,45 +62,6 @@ class ConfigureSTO extends Component<Props, State> {
         <div>
           <div className='bx--row'>
             <div className='bx--col-xs-12'>
-              <ComposedModal open={this.state.isModalOpen} className='pui-confirm-modal'>
-                <ModalHeader
-                  label='Confirmation required'
-                  title={(
-                    <span>
-                      <Icon name='warning--glyph' fill='#E71D32' width='24' height='24' />&nbsp;
-                      Before You Launch Your Security Token Offering
-                    </span>
-                  )}
-                />
-                <ModalBody>
-                  <div className='bx--modal-content__text'>
-                    <p>
-                      Once submitted to the blockchain, the dates for your
-                      offering cannot be changed.
-                    </p>
-                    <p>
-                      Please confirm dates with your Advisor and Legal
-                      providers before you click on &laquo;LAUNCH&raquo;.
-                    </p>
-                    <p>
-                      Investors must be added to the whitelist before or while
-                      the STO is live, so they can participate to your
-                      fundraise.
-                    </p>
-                    <p>
-                      All necessary documentation must be posted on your
-                      Securities Offering Site.
-                    </p>
-                  </div>
-                </ModalBody>
-
-                <ModalFooter>
-                  <Button kind='secondary' onClick={this.handleCancel}>
-                    Cancel
-                  </Button>
-                  <Button onClick={this.handleConfirm}>LAUNCH</Button>
-                </ModalFooter>
-              </ComposedModal>
               <Button
                 kind='ghost'
                 onClick={this.handleGoBack}

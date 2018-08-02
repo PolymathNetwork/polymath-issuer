@@ -17,6 +17,7 @@ export type ServiceProvider = {|
   progress?: SPProgress,
   disclosure?: string,
   isToBeAnnounced?: boolean,
+  isIncreasedHeight?: boolean,
 |}
 
 export type SPCategory = {|
@@ -56,19 +57,19 @@ export const categories: Array<SPCategory> = [
     desc: 'Apply for Marketing/PR Agency to help drive engagement and promote your STO. ' +
     'Alternatively, you can elect to use your own Marketing/PR firm or staff.',
   },
+  {
+    id: 4,
+    title: 'Custody Service',
+    desc: 'Apply for Custody services for the funds you raised and/or your investors\' ' +
+    'security tokens to be held for safekeeping and minimize the risk of theft or loss. Alternatively, ' +
+    'you and/or your Investors can elect to self custody funds and security tokens.'
+    ,
+  },
 ]
 
 const providers: Array<ServiceProvider> = [
 
   // ADVISORY
-  // {
-  //   id: 0,
-  //   cat: 0,
-  //   title: 'Above Board',
-  //   logo: '/providers/advisory/aboveboard.png',
-  //   desc: 'Enhance the collaboration between issuers and investors with the value of security rights, the ' +
-  //   'engagement of token economics, control of code, and the scope of global blockchains.',
-  // },
   {
     id: 1,
     cat: 0,
@@ -98,68 +99,17 @@ const providers: Array<ServiceProvider> = [
 
   // LEGAL
   {
-    id: 4,
-    cat: 1,
-    title: 'PerkinsCoie',
-    logo: '/providers/legal/perkins.png',
-    desc: 'As a leading Canadian law firm with a focus on all principal areas of business law, we advise on a diverse' +
-    ' range of transactional and litigation matters for clients ranging from startups to multinational corporations.',
-  },
-  {
     id: 5,
     cat: 1,
     title: 'Homeier Law PC',
     logo: '/providers/legal/homierlaw.png',
-    desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et ' +
-    'dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea ' +
-    'commodo consequat.',
-  },
-  {
-    id: 6,
-    cat: 1,
-    title: 'Cassels',
-    logo: '/providers/legal/cassels-blackwell.png',
-    desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et ' +
-    'dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea ' +
-    'commodo consequat.',
-    isToBeAnnounced: true,
-  },
-  {
-    id: 7,
-    cat: 1,
-    title: 'Fisher Broyles',
-    logo: '/providers/legal/fisherbroyles.png',
-    desc: 'FisherBroyles, LLP is a full-service law firm for the twenty-first century. Our Law Firm 2.0® business ' +
-    'model prioritizes the highest quality of legal services by partners who have the most relevant expertise, while ' +
-    'our structure maximizes efficiency, responsiveness, and value.',
-    isToBeAnnounced: true,
-  },
-  {
-    id: 8,
-    cat: 1,
-    title: 'Radix',
-    logo: '/providers/legal/radix.png',
-    desc: 'Radix Law offers legal services in the fields of business law, commercial litigation, bankruptcy, real ' +
-    'estate law and estate planning.',
-  },
-  {
-    id: 9,
-    cat: 1,
-    title: 'Paul Hastings',
-    logo: '/providers/legal/paul-hastings.png',
-    desc: 'Founded in 1951, Paul Hastings has grown strategically to anticipate and respond to our clients\' needs ' +
-    'in markets across the globe. We have a strong presence throughout Asia, Europe, Latin America, and the U.S.',
-    isToBeAnnounced: true,
-  },
-  {
-    id: 10,
-    cat: 1,
-    title: 'Aird & Berlis',
-    logo: '/providers/legal/aird-berlis.png',
-    desc: 'As a leading Canadian law firm with a focus on all principal areas of business law, we advise on a ' +
-    'diverse range of transactional and litigation matters for clients ranging from startups to multinational ' +
-    'corporations.',
-    isToBeAnnounced: true,
+    desc: 'Homeier Law PC is a securities and corporate law firm with deep experience in exempt as well as ' +
+    'SEC-registered alternative finance offerings, having advised on hundreds of private offerings that have raised ' +
+    'billions of dollars for developers and entrepreneurs over the past decade.  As a leader and pioneer in ' +
+    'investment crowdfunding, Homeier Law serves the emerging blockchain and cryptocurrency industries in ' +
+    'structuring and documenting initial coin offerings (ICOs), tokenized security offerings and ' +
+    'other capital-raising initiatives.',
+    isIncreasedHeight: true,
   },
 
   // KYC/AML
@@ -175,15 +125,6 @@ const providers: Array<ServiceProvider> = [
 
   // MARKETING
   {
-    id: 12,
-    cat: 3,
-    title: 'CrowdfundX',
-    logo: '/providers/marketing/crowdfundx.png',
-    desc: 'Built through insights gained from marketing the industry’s most successful equity crowdfunding ' +
-    'campaigns, Dara is a semi-autonomous machine that empowers public and private companies to streamline retail ' +
-    'investor acquisition. Dara works across marketing channels, optimizing paid...',
-  },
-  {
     id: 13,
     cat: 3,
     title: 'Wachsman PR',
@@ -192,15 +133,16 @@ const providers: Array<ServiceProvider> = [
     'services to many of the most indispensable companies in the financial technology, digital currency, and ' +
     'crypto-asset sectors.',
   },
+
+  // CUSTODY SERVICE
   {
-    id: 14,
-    cat: 3,
-    title: 'Taurus Vision',
-    logo: '/providers/marketing/taurus.png',
-    desc: 'Taurus Visiwon specializes in identifying your unique selling points and builds a full-service marketing ' +
-    '& PR strategy around them. CONTENT & MARKETING. Working as an organic part of your team, Taurus Vision will ' +
-    'assist you in formulating and executing a full go-to market strategy.',
-    isToBeAnnounced: true,
+    id: 15,
+    cat: 4,
+    title: 'BitGo',
+    logo: '/providers/custody/bitgo.png',
+    desc: 'BitGo is a blockchain software company that secures digital currency for institutional investors. Its ' +
+    'technology solves the most difficult security, compliance and custodial problems '+ 
+    'associated with blockchain-based currencies, enabling the integration of digital currency into the global…',
   },
 ]
 

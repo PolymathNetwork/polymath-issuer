@@ -10,7 +10,7 @@ import type { RouterHistory } from 'react-router-dom'
 
 import Root from './Root'
 import ConfirmEmailPage from './ConfirmEmailPage'
-import { tickerReservationEmail } from './ticker/actions'
+import { getMyTokens, tickerReservationEmail } from './ticker/actions'
 import type { RootState } from '../redux/reducer'
 
 type StateProps = {|
@@ -28,6 +28,7 @@ type DispatchProps = {|
   txHash: (hash: string) => any,
   txEnd: (receipt: any) => any,
   signIn: () => any,
+  getMyTokens: () => any,
   tickerReservationEmail: () => any,
 |}
 
@@ -46,6 +47,7 @@ const mapDispatchToProps: DispatchProps = {
   txHash,
   txEnd,
   signIn,
+  getMyTokens,
   tickerReservationEmail,
 }
 
@@ -62,6 +64,7 @@ class App extends Component<Props> {
       txHashCallback: (hash) => this.props.txHash(hash),
       txEndCallback: (receipt) => this.props.txEnd(receipt),
     })
+    this.props.getMyTokens()
   }
 
   componentDidMount () {
@@ -73,6 +76,7 @@ class App extends Component<Props> {
   }
 
   render () {
+
     const { history, ticker, isSignedIn, isSignedUp, isTickerReserved, isEmailConfirmed, isSignUpSuccess } = this.props
     return (
       <Root>
@@ -85,11 +89,11 @@ class App extends Component<Props> {
                   text={
                     <span>
                       You are now ready to continue with your Security Token.<br />
-                      We just sent you an email with the ticker reservation transaction details for your records.
+                      We just sent you an email with the token symbol reservation transaction details for your records.
                       Check your inbox.
                     </span>
                   }
-                  continueLabel='Continue with STO Process'
+                  continueLabel='CONTINUE WITH TOKEN CREATION'
                   onWillMount={this.handleSignUpSuccess}
                 /> :
                 <ConfirmEmailPage />
