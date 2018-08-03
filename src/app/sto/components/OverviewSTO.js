@@ -8,6 +8,7 @@ import { Button } from 'carbon-components-react'
 import type { SecurityToken, STOPurchase, STODetails } from 'polymathjs'
 
 import NotFoundPage from '../../NotFoundPage'
+import PausedBar from '../../compliance/components/PausedBar'
 import { togglePauseSto, exportInvestorsList  } from '../actions'
 import type { RootState } from '../../../redux/reducer'
 
@@ -56,6 +57,7 @@ class OverviewSTO extends Component<Props> {
     return (
       <DocumentTitle title={`${token.ticker} STO Overview – Polymath`}>
         <div>
+          <PausedBar />
           <Fragment>
             <h1 className='pui-h1'>Security Token Overview</h1>
             <br />
