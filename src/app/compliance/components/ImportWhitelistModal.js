@@ -67,6 +67,7 @@ class ImportWhitelistModal extends Component<Props> {
     console.log('handleUploaded event.target.files[0]', event.target.files[0]) // eslint-disable-next-line no-console
     // eslint-disable-next-line
     const file = event.target.files[0] // eslint-disable-next-line no-console
+    console.log('handleUploaded file.type', file.type) // eslint-disable-next-line no-console
     console.log('handleUploaded file.type.match', file.type.match(/csv.*/))
     if (file.type.match(/csv.*/)) { // eslint-disable-next-line no-console
       console.log('handleUploaded matched file', file)
