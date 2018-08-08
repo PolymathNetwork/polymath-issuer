@@ -69,10 +69,9 @@ class MintTokens extends Component<Props> {
     }
   }
 
-  handleUploaded = (file: Object) => {
-    // eslint-disable-next-line
-    file = file.target.files[0]
-    if (file.type.match(/csv.*/)) {
+  handleUploaded = (event: Object) => {
+    const file = event.target.files[0]
+    if (file.type.match(/csv.*/) || file.name.match(/.*\.csv$/i)) {
       this.props.uploadCSV(file)
     }
   }

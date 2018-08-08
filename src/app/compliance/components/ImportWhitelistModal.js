@@ -59,18 +59,9 @@ class ImportWhitelistModal extends Component<Props> {
     this.props.onSubmit()
   }
 
-  handleUploaded = (event) => { // eslint-disable-next-line no-console
-    console.log('HANDLE UPLOADED') // eslint-disable-next-line no-console
-    console.log('handleUploaded event', event) // eslint-disable-next-line no-console
-    console.log('handleUploaded event.target', event.target) // eslint-disable-next-line no-console
-    console.log('handleUploaded event.target.files', event.target.files) // eslint-disable-next-line no-console
-    console.log('handleUploaded event.target.files[0]', event.target.files[0]) // eslint-disable-next-line no-console
-    // eslint-disable-next-line
-    const file = event.target.files[0] // eslint-disable-next-line no-console
-    console.log('handleUploaded file.type', file.type) // eslint-disable-next-line no-console
-    console.log('handleUploaded file.type.match', file.type.match(/csv.*/))
-    if (file.type.match(/csv.*/)) { // eslint-disable-next-line no-console
-      console.log('handleUploaded matched file', file)
+  handleUploaded = (event: Object) => {
+    const file = event.target.files[0]
+    if (file.type.match(/csv.*/) || file.name.match(/.*\.csv$/i)) {
       this.props.uploadCSV(file)
     }
   }
