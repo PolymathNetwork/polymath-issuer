@@ -551,22 +551,24 @@ class CompliancePage extends Component<Props, State> {
         <div>
           <Progress />
 
-          <h1 className='pui-h1'>Token Whitelist</h1>
-          <h3 className='pui-h3'>
+          <div className='bx--row'>
+            <div className='bx--col-xs-6' >
+              <h1 className='pui-h1'>Token Whitelist</h1>
+              <h3 className='pui-h3'>
             Whitelisted addresses may hold, buy, or sell the security token and may participate into the STO.
             Security token buy/sell operations may be subject to restrictions.
-          </h3>
-          <br />
+              </h3>
+              <br />
 
-          <div className='pui-page-box'>
-            <OverflowMenu floatingMenu flipped style={{ float: 'right' }}>
-              <OverflowMenuItem
-                itemText={this.props.isTokenFrozen ? 'Resume All Transfers':'Pause All Transfers'}
-                onClick={this.props.isTokenFrozen ? this.handleUnFreezeModalOpen:this.handleFreezeModalOpen}
-              />
-            </OverflowMenu>
-            <div className='compliance-settings'>
-              {/*
+              <div className='pui-page-box'>
+                <OverflowMenu floatingMenu flipped style={{ float: 'right' }}>
+                  <OverflowMenuItem
+                    itemText={this.props.isTokenFrozen ? 'Resume All Transfers':'Pause All Transfers'}
+                    onClick={this.props.isTokenFrozen ? this.handleUnFreezeModalOpen:this.handleFreezeModalOpen}
+                  />
+                </OverflowMenu>
+                <div className='compliance-settings'>
+                  {/*
                 <DatePicker
                   onChange={this.handleDateAddedChange}
                   datePickerType='range'
@@ -588,65 +590,67 @@ class CompliancePage extends Component<Props, State> {
                 </DatePicker>
               */}
 
-              <div className='bx--form-item'>
-                <label htmlFor='percentageToggle' className='bx--label'>Enable Ownership Restrictions</label>
-                <Toggle
-                  onToggle={this.handleTogglePercentage}
-                  toggled={isPercentageEnabled ? !isPercentagePaused : this.state.isPercentageToggled}
-                  id='percentageToggle'
-                />
-              </div>
+                  <div className='bx--form-item'>
+                    <label htmlFor='percentageToggle' className='bx--label'>Enable Ownership Restrictions</label>
+                    <Toggle
+                      onToggle={this.handleTogglePercentage}
+                      toggled={isPercentageEnabled ? !isPercentagePaused : this.state.isPercentageToggled}
+                      id='percentageToggle'
+                    />
+                  </div>
 
-              <div
-                className='bx--form-item'
-                style={!isPercentagePaused || (!isPercentageEnabled && this.state.isPercentageToggled) ? {} : {
-                  display: 'none',
-                }}
-              >
-                <label htmlFor='percentage' className='bx--label'>
+                  <div
+                    className='bx--form-item'
+                    style={!isPercentagePaused || (!isPercentageEnabled && this.state.isPercentageToggled) ? {} : {
+                      display: 'block',
+                    }}
+                  >
+                    <label htmlFor='percentage' className='bx--label'>
                   Each Individual Investor Can<br />Own Up To of Outstanding Tokens
-                </label>
-                <TextInput
-                  id='percentage'
-                  value={this.state.percentage}
-                  placeholder='–'
-                  onChange={this.handlePercentageChange}
-                />
-                <Button
-                  onClick={this.handleApplyPercentage}
-                  disabled={
-                    this.state.percentage === this.props.percentage ||
+                    </label>
+                    <TextInput
+                      id='percentage'
+                      value={this.state.percentage}
+                      placeholder='–'
+                      onChange={this.handlePercentageChange}
+                    />
+                    <Button
+                      onClick={this.handleApplyPercentage}
+                      disabled={
+                        this.state.percentage === this.props.percentage ||
                     typeof this.state.percentage === 'undefined'
-                  }
-                >
+                      }
+                    >
                   Apply
-                </Button>
-              </div>
+                    </Button>
+                  </div>
 
-            </div>
+                </div>
 
-            <Button
-              icon='upload'
-              onClick={this.handleImportModalOpen}
-              className='import-whitelist-btn'
-            >
+                <Button
+                  icon='upload'
+                  onClick={this.handleImportModalOpen}
+                  className='import-whitelist-btn'
+                >
               Import Whitelist
-            </Button>
-            <ImportWhitelistModal
-              isOpen={this.state.isImportModalOpen}
-              onSubmit={this.handleImport}
-              onClose={this.handleImportModalClose}
-            />
+                </Button>
+                <ImportWhitelistModal
+                  isOpen={this.state.isImportModalOpen}
+                  onSubmit={this.handleImport}
+                  onClose={this.handleImportModalClose}
+                />
 
-            <Button
-              icon='download'
-              kind='secondary'
-              onClick={this.handleExport}
-              className='import-whitelist-btn'
-            >
+                <Button
+                  icon='download'
+                  kind='secondary'
+                  onClick={this.handleExport}
+                  className='import-whitelist-btn'
+                >
               Export Whitelist
-            </Button>
-            <div className='pui-clearfix' />
+                </Button>
+                <div className='pui-clearfix' />
+              </div>
+            </div>
           </div>
 
           {/*
