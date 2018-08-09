@@ -166,7 +166,7 @@ class ProvidersPage extends Component<Props, State> {
     if (!isLastCat) {
       tabSelected++
     }
-    let { catName } = this.state
+    let { catName } = this.state // eslint-disable-next-line array-callback-return
     categories.map((cat: SPCategory) => {
       if (cat.id === tabSelected) {
         catName = cat.title
