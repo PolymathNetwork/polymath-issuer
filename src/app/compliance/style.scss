@@ -1,55 +1,59 @@
-.compliance-settings {
-  display: flex;
-  margin-top: 20px;
-  margin-bottom: 20px;
+.compliance-form{
+  width: 60%;
 
-  > .bx--form-item {
-    max-width: 220px;
-
-    //&:first-child {
-    //  max-width: 325px;
-    //}
-
-    &:last-child {
-      margin-top: -22px;
-      margin-bottom: 0 !important;
-      height: 100px;
-
-      .bx--form-item {
-        float: left;
-
-        input {
-          width: 84px;
-          min-width: 84px;
-
-          &::-webkit-outer-spin-button,
-          &::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+  .compliance-settings {
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  
+    > .bx--form-item {
+      max-width: 220px;
+  
+      //&:first-child {
+      //  max-width: 325px;
+      //}
+  
+      &:last-child {
+        margin-top: -22px;
+        margin-bottom: 0 !important;
+        height: 100px;
+  
+        .bx--form-item {
+          float: left;
+  
+          input {
+            width: 84px;
+            min-width: 84px;
+  
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+              -webkit-appearance: none;
+              margin: 0;
+            }
+          }
+  
+          &:after {
+            content: '%';
+            position: relative;
+            top: -28px;
+            left: 55px;
+            color: #8C9BA5;
+            font-size: 14px;
           }
         }
-
-        &:after {
-          content: '%';
-          position: relative;
-          top: -28px;
-          left: 55px;
-          color: #8C9BA5;
-          font-size: 14px;
-        }
-      }
-
-      button {
-        margin-top: 0;
-        background: transparent !important;
-        color: #252E6A;
-
-        &:hover:not(:disabled) {
-          color: #58468E;
-        }
-
-        &:hover {
+  
+        button {
+          margin-top: 0;
           background: transparent !important;
+          color: #252E6A;
+  
+          &:hover:not(:disabled) {
+            color: #58468E;
+          }
+  
+          &:hover {
+            background: transparent !important;
+          }
         }
       }
     }
