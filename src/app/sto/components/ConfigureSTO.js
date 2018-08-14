@@ -9,6 +9,7 @@ import type { SecurityToken, STOFactory } from 'polymathjs/types'
 
 import NotFoundPage from '../../NotFoundPage'
 import STODetails from './STODetails'
+import PausedBar from '../../compliance/components/PausedBar'
 import ConfigureSTOForm from './ConfigureSTOForm'
 import { configure, goBack } from '../actions'
 import type { RootState } from '../../../redux/reducer'
@@ -60,6 +61,7 @@ class ConfigureSTO extends Component<Props> {
     return (
       <DocumentTitle title={`Configure ${token.ticker} STO – Polymath`}>
         <div>
+          <PausedBar />
           <div className='bx--row'>
             <div className='bx--col-xs-12'>
               <Button

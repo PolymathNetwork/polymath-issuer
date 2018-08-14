@@ -37,13 +37,12 @@ import {
   enableOwnershipRestrictions,
   updateOwnershipPercentage,
   PERMANENT_LOCKUP_TS,
-  getFreezeStatus,
   toggleFreeze,
-  showFrozenModal,
 } from './actions'
 import AddInvestorForm, { formName as addInvestorFormName } from './components/AddInvestorForm'
 import { formName as editInvestorsFormName } from './components/EditInvestorsForm'
 import ImportWhitelistModal from './components/ImportWhitelistModal'
+import PausedBar from './components/PausedBar'
 
 import type { RootState } from '../../redux/reducer'
 import type { InvestorCSVRow } from './actions'
@@ -74,8 +73,7 @@ type StateProps = {|
   isPercentageEnabled: boolean,
   isPercentagePaused: boolean,
   percentage: ?number,
-  isTokenFrozen: boolean,
-  isFrozenModalOpen: boolean
+  isTokenFrozen: boolean
 |}
 
 type DispatchProps = {|
@@ -92,9 +90,7 @@ type DispatchProps = {|
   disableOwnershipRestrictions: () => any,
   enableOwnershipRestrictions: (percentage?: number) => any,
   updateOwnershipPercentage: (percentage: number) => any,
-  getFreezeStatus: () => any,
   toggleFreeze: () => any,
-  showFrozenModal: (show: boolean) => any
 |}
 
 const mapStateToProps = (state: RootState) => ({
@@ -106,7 +102,6 @@ const mapStateToProps = (state: RootState) => ({
   isPercentagePaused: state.whitelist.percentageTM.isPaused,
   percentage: state.whitelist.percentageTM.percentage,
   isTokenFrozen: state.whitelist.freezeStatus,
-  isFrozenModalOpen:state.whitelist.isFrozenModalOpen,
 })
 
 const mapDispatchToProps = {
@@ -123,9 +118,7 @@ const mapDispatchToProps = {
   disableOwnershipRestrictions,
   enableOwnershipRestrictions,
   updateOwnershipPercentage,
-  getFreezeStatus,
   toggleFreeze,
-  showFrozenModal,
 }
 
 type Props = StateProps & DispatchProps
@@ -168,8 +161,6 @@ class CompliancePage extends Component<Props, State> {
 
   componentWillMount () {
     this.props.fetchWhitelist()
-    this.props.getFreezeStatus()
-
     if (this.props.percentage) {
       this.setState({ percentage: this.props.percentage })
     }
@@ -242,11 +233,6 @@ class CompliancePage extends Component<Props, State> {
       },
       'Resume All Transfers?'
     )
-  }
-
-  handleUnfreezeConfirm = () =>{
-    this.props.showFrozenModal(false)
-    this.props.toggleFreeze()
   }
 
   handleImportModalOpen = () => {
@@ -549,8 +535,8 @@ class CompliancePage extends Component<Props, State> {
     return (
       <DocumentTitle title='Compliance – Polymath'>
         <div>
+          <PausedBar />
           <Progress />
-
           <h1 className='pui-h1'>Token Whitelist</h1>
           <h3 className='pui-h3'>
             Whitelisted addresses may hold, buy, or sell the security token and may participate into the STO.
@@ -683,23 +669,6 @@ class CompliancePage extends Component<Props, State> {
               <EditInvestorsForm onSubmit={this.handleEditSubmit} onClose={this.handleEditModalClose} />
             </Modal>
           */}
-          <Modal
-            className='freeze-transfer-modal'
-            open={this.props.isTokenFrozen && this.props.isFrozenModalOpen}
-            modalHeading={
-              <span>
-                <Icon name='icon--pause--outline' fill='#E71D32' width='24' height='24' />&nbsp;
-                All Transfers Paused
-              </span>
-            }
-            passiveModal
-          >
-            <p className='bx--modal-content__text'>
-            All transfers have been paused, including on-chain secondary markets.
-            </p>
-            <br />
-            <Button onClick={this.handleUnfreezeConfirm} icon='icon--play'>RESUME TRANSFERS&nbsp;</Button>
-          </Modal>
         </div>
       </DocumentTitle>
     )

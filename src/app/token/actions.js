@@ -25,6 +25,7 @@ export const COUNT_TM = 'token/COUNT_TM'
 export const countTransferManager = (tm: CountTransferManager, isPaused: boolean, count?: ?number) =>
   ({ type: COUNT_TM, tm, isPaused, count })
 
+export const FREEZE_STATUS = 'compliance/FREEZE_STATUS'
 export type Action =
   | ExtractReturn<typeof data>
 
@@ -46,6 +47,12 @@ export const fetch = (ticker: string, _token?: SecurityToken) => async (dispatch
           await countTM.maxHolderCount()
         ))
       }
+      // $FlowFixMe
+      token.contract.subscribe('LogFreezeTransfers', {}, (event) => { // eslint-disable-next-line
+        dispatch({ type: FREEZE_STATUS, freezeStatus: !!event.returnValues._freeze })
+      }) // $FlowFixMe
+      const frozenInit = await token.contract.freeze()
+      dispatch({ type: FREEZE_STATUS, freezeStatus: frozenInit })
     }
 
     if (!token.contract || !countTM) {
