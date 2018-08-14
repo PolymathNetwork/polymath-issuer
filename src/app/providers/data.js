@@ -75,8 +75,10 @@ const providers: Array<ServiceProvider> = [
     cat: 0,
     title: 'GenesisBlock',
     logo: '/providers/advisory/genesisblock.png',
-    desc: 'Genesis Block is a venture production studio focused on developing decentralized protocols, ' +
-    'infrastructure, and applications leveraging blockchain technology.',
+    desc: 'Genesis Block provides strategic business and regulatory advisory, financial services,' + 
+    'and technology solutions to companies seeking to leverage blockchain technology in their core ' +
+    'business and capital strategy. Our mission is to realize the disruptive potential of blockchain ' + 
+    'and foster its growth and adoption in every aspect of life.',
   },
   {
     id: 2,
@@ -95,6 +97,26 @@ const providers: Array<ServiceProvider> = [
     logo: '/providers/advisory/pegasus.png',
     desc: 'The Pegasus Accelerator Program provides Blockchain and Token consulting and support services. ' +
     'Token offerings are compliant with jurisdictional regulations through the PIBCO process.',
+  },
+  {
+    id: 16,
+    cat: 0,
+    title: 'Prime Trust',
+    logo: '/providers/advisory/primetrust.png',
+    desc: 'Prime Trust is chartered, insured financial institution that as a "Qualified Custodian" provides ' +
+    'token and FIAT custody, funds processing, AML/KYC compliance, and transaction technology for the new ' +
+    'digital economy. As a blockchain-based trust company our mission is to provide ICO and SCO issuers with ' +
+    'the best-in-class solutions to frictionlessly meet the needs of their offerings and of exchanges ' +
+    'and secondary markets.',
+    isIncreasedHeight: true,
+  },
+  {
+    id: 17,
+    cat: 0,
+    title: 'Tokenizo',
+    logo: '/providers/advisory/tokenizo.png',
+    desc: 'We are an end-to-end service for the tokenization of assets using blockchain, focused on the ' +
+    'Latin American and Southern Europe markets.',
   },
 
   // LEGAL

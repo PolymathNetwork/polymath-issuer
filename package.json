@@ -62,7 +62,7 @@
     "test": "react-scripts test --useStderr --forceExit --runInBand",
     "precommit": "lint-staged && npm run typecheck",
     "build": "npm run build-css && react-scripts build && cp build/index.html build/404.html",
-    "ganache-cli": "node_modules/polymath-core/node_modules/.bin/ganache-cli -i 15 --gasLimit 90000000",
+    "ganache-cli": "node_modules/polymath-core/node_modules/.bin/ganache-cli --gasLimit 90000000",
     "contracts": "cd node_modules/polymath-core && yarn && node ../truffle/build/cli.bundled.js migrate --reset --all --network development",
     "tconsole": "cd node_modules/polymath-core && yarn && node ../truffle/build/cli.bundled.js console"
   },

@@ -38,10 +38,6 @@ const mapDispatchToProps = {
 
 class ImportWhitelistModal extends Component<Props> {
 
-  constructor (props) {
-    super(props) // $FloFixMe
-  }
-
   handleClose = () => {
     // TODO @bshevchenko: maybe there is a better way to reset FileUploader $FlowFixMe
     const node = this.fileUploader.nodes[0]
@@ -59,10 +55,9 @@ class ImportWhitelistModal extends Component<Props> {
     this.props.onSubmit()
   }
 
-  handleUploaded = (file: Object) => {
-    // eslint-disable-next-line
-    file = file.target.files[0]
-    if (file.type.match(/csv.*/)) {
+  handleUploaded = (event: Object) => {
+    const file = event.target.files[0]
+    if (file.type.match(/csv.*/) || file.name.match(/.*\.csv$/i)) {
       this.props.uploadCSV(file)
     }
   }

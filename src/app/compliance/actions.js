@@ -15,6 +15,8 @@ export const PERMANENT_LOCKUP_TS = 67184812800000 // milliseconds
 
 export const TRANSFER_MANAGER = 'compliance/TRANSFER_MANAGER'
 export const WHITELIST = 'compliance/WHITELIST'
+export const UPLOAD_START = 'compliance/UPLOAD_START'
+export const UPLOAD_ONLOAD = 'compliance/UPLOAD_ONLOAD'
 export const UPLOADED = 'compliance/UPLOADED'
 
 export const PERCENTAGE_TM = 'compliance/PERCENTAGE_TM'
@@ -57,9 +59,11 @@ export const fetchWhitelist = () => async (dispatch: Function, getState: GetStat
 }
 
 export const uploadCSV = (file: Object) => async (dispatch: Function) => {
+  dispatch({ type: UPLOAD_START })
   const reader = new FileReader()
   reader.readAsText(file)
   reader.onload = () => {
+    dispatch({ type: UPLOAD_ONLOAD })
     const investors: Array<Investor> = []
     const criticals: Array<InvestorCSVRow> = []
     let isTooMany = false

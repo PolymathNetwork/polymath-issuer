@@ -544,7 +544,7 @@ class CompliancePage extends Component<Props, State> {
           </h3>
           <br />
 
-          <div className='pui-page-box'>
+          <div className='pui-page-box compliance-form'>
             <OverflowMenu floatingMenu flipped style={{ float: 'right' }}>
               <OverflowMenuItem
                 itemText={this.props.isTokenFrozen ? 'Resume All Transfers':'Pause All Transfers'}
