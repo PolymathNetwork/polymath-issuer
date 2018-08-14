@@ -42,7 +42,6 @@ import {
 import AddInvestorForm, { formName as addInvestorFormName } from './components/AddInvestorForm'
 import { formName as editInvestorsFormName } from './components/EditInvestorsForm'
 import ImportWhitelistModal from './components/ImportWhitelistModal'
-import PausedBar from './components/PausedBar'
 
 import type { RootState } from '../../redux/reducer'
 import type { InvestorCSVRow } from './actions'
@@ -218,8 +217,7 @@ class CompliancePage extends Component<Props, State> {
     )
   }
 
-  handleUnFreezeModalOpen = () => {
-    // $FlowFixMe
+  handleUnFreezeModalOpen = () => { // $FlowFixMe
     this.props.confirm(
       <div>
         <p>
@@ -535,7 +533,6 @@ class CompliancePage extends Component<Props, State> {
     return (
       <DocumentTitle title='Compliance – Polymath'>
         <div>
-          <PausedBar />
           <Progress />
           <h1 className='pui-h1'>Token Whitelist</h1>
           <h3 className='pui-h3'>

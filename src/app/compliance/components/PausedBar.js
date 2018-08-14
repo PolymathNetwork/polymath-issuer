@@ -14,10 +14,10 @@ type StateProps = {|
 
 type DispatchProps = {|
   confirm: () => any,
-  toggleFreeze: ()=> any
+  toggleFreeze: () => any
 |}
 
-const mapStateToProps = (state: RootState): StateProps => ({// $FlowFixMe
+const mapStateToProps = (state: RootState): StateProps => ({ // $FlowFixMe
   isTokenFrozen: state.whitelist.freezeStatus,
 })
 
@@ -26,17 +26,16 @@ const mapDispatchToProps = {
   toggleFreeze,
 }
 
-type Props = StateProps & DispatchProps;
+type Props = StateProps & DispatchProps
 
 class PausedBar extends Component<Props> {
 
-  handleUnFreezeModalOpen = () => {
-    // $FlowFixMe
+  handleUnFreezeModalOpen = () => { // $FlowFixMe
     this.props.confirm(
       <div>
         <p>
-        Once you hit &laquo;CONFIRM&raquo;, token transfers WILL BE ENABLED AGAIN, ALLOWING ANY AUTHORIZED INVESTOR
-         TO BUY OR SELL YOUR TOKENS. Consider notifying all your investors. If you wish to review with your Advisors,
+          Once you hit &laquo;CONFIRM&raquo;, token transfers WILL BE ENABLED AGAIN, ALLOWING ANY AUTHORIZED INVESTOR
+          TO BUY OR SELL YOUR TOKENS. Consider notifying all your investors. If you wish to review with your Advisors,
           please select &laquo;CANCEL&raquo;.
         </p>
       </div>,
@@ -49,7 +48,7 @@ class PausedBar extends Component<Props> {
 
   render () {
     return (
-      (this.props.isTokenFrozen===true) ?
+      this.props.isTokenFrozen === true ?
         <div className='pui-pausebar'>
           <div className='pui-pausebar-warning'>
             <Icon name='icon--pause--outline' fill='#E71D32' width='24' height='24' />
@@ -60,14 +59,13 @@ class PausedBar extends Component<Props> {
             <li>
               <Button small onClick={this.handleUnFreezeModalOpen}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                RESUME TRANSFERS &nbsp;
+                  RESUME TRANSFERS &nbsp;
                   <Icon name='icon--play' fill='#FFFFFF' width='16' height='16' />
                 </div>
               </Button>
             </li>
           </ul>
-        </div>
-        :''
+        </div> : ''
     )
   }
 }

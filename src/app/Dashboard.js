@@ -11,6 +11,7 @@ import { isProvidersPassed } from './providers/data'
 import NotFoundPage from './NotFoundPage'
 import { fetch as fetchToken } from './token/actions'
 import { fetchProviders } from './providers/actions'
+import PausedBar from './compliance/components/PausedBar'
 import type { RootState } from '../redux/reducer'
 import type { ServiceProvider } from './providers/data'
 
@@ -109,6 +110,7 @@ class Dashboard extends Component<Props> {
     ]
     return (
       <div className='dashboard'>
+        <PausedBar />
         <Sidebar topItems={topSidebarItems} bottomItems={bottomSidebarItems} />
         {renderRoutes(route.routes)}
       </div>

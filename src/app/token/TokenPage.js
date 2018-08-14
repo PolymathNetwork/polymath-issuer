@@ -17,7 +17,6 @@ import {
 } from './actions'
 import NotFoundPage from '../NotFoundPage'
 import Progress from './components/Progress'
-import PausedBar from '../compliance/components/PausedBar'
 import CompleteTokenForm from './components/CompleteTokenForm'
 import MintTokens from './components/MintTokens'
 import type { RootState } from '../../redux/reducer'
@@ -141,7 +140,6 @@ class TokenPage extends Component<Props, State> {
     return (
       <DocumentTitle title={`${token.ticker} Token – Polymath`}>
         <div>
-          <PausedBar />
           <Progress />
           <div>
             <div className='bx--row'>

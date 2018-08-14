@@ -15,7 +15,6 @@ import { applyProviders, iHaveMyOwnProviders, setProviderStatus } from './action
 import ApplyModal from './ApplyModal'
 import NotFoundPage from '../NotFoundPage'
 import Progress from '../token/components/Progress'
-import PausedBar from '../compliance/components/PausedBar'
 import { categories } from './data'
 import type { RootState } from '../../redux/reducer'
 import type { SPStatus, SPCategory, ServiceProvider } from './data'
@@ -184,7 +183,6 @@ class ProvidersPage extends Component<Props, State> {
     return (
       <DocumentTitle title={`${token.ticker} Providers – Polymath`}>
         <div>
-          <PausedBar />
           <Progress />
           <Remark title='Data Privacy'>
             None of your data entered in the application form(s) is stored on

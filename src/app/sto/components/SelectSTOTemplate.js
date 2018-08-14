@@ -7,7 +7,6 @@ import { Remark } from 'polymath-ui'
 import type { SecurityToken, STOFactory } from 'polymathjs/types'
 
 import Progress from '../../token/components/Progress'
-import PausedBar from '../../compliance/components/PausedBar'
 import STODetails from './STODetails'
 import { fetchFactories, useFactory } from '../actions'
 import type { RootState } from '../../../redux/reducer'
@@ -48,7 +47,6 @@ class SelectSTOTemplate extends Component<Props> {
     return ( // $FlowFixMe
       <DocumentTitle title={`Select ${token.ticker} STO Template – Polymath`}>
         <div>
-          <PausedBar />
           <Progress />
           <div className='bx--row'>
             <div className='bx--col-xs-12'>
