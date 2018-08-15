@@ -8,7 +8,7 @@ services:
 before_install:
   - "export DISPLAY=:99.0"
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1920x1080x16"
-  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.7.0
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s --
   - export PATH="$HOME/.yarn/bin:$PATH"
 
 install: yarn
@@ -24,6 +24,7 @@ before_script:
     export METAMASK_SECRET="cotton trap squeeze wealth aunt fork hungry notice entry early combine chalk"
     export METAMASK_NETWORK=l
     export GANACHE_NETWORK=100000015
+    export REACT_APP_POLYMATH_OFFCHAIN_ADDRESS="http://localhost:3001"
   - |
     git clone --depth=1 --branch=master https://github.com/PolymathNetwork/polymath-offchain.git polymath-offchain
     cd polymath-offchain
@@ -31,7 +32,6 @@ before_script:
     yarn start &> "$OFFCHAIN_LOG"
   - |
     cd "$ISSUER_PATH"
-    REACT_APP_POLYMATH_OFFCHAIN_ADDRESS="http://localhost:3001"
     yarn start &> "$ISSUER_LOG"
   - |
     cd node_modules/polymath-core
