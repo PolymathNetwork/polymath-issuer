@@ -1,7 +1,7 @@
 language: node_js
 dist: trusty
 node_js:
-  - v10
+  - v8
 services:
   - mongodb
 
@@ -15,7 +15,6 @@ install: yarn
 
 before_script:
   - |
-    nvm install v8
     ISSUER_PATH="$(pwd)"
     ISSUER_LOG="$ISSUER_PATH/issuer.log"
     GANACHE_LOG="$ISSUER_PATH/ganache.log"
@@ -29,12 +28,13 @@ before_script:
   - |
     git clone --depth=1 --branch=master https://github.com/PolymathNetwork/polymath-offchain.git polymath-offchain
     cd polymath-offchain
-    # Offchain gets stuck
     yarn
     yarn start &> "$OFFCHAIN_LOG" &
+    OFFCHAIN_PID=$!
   - |
     cd "$ISSUER_PATH"
     yarn start &> "$ISSUER_LOG" &
+    ISSUER_PID=$!
   - |
     cd node_modules/polymath-core
     npm install -g truffle
@@ -46,9 +46,9 @@ before_script:
     sh -c 'tail -n +0 -f "$GANACHE_LOG" | { sed "/Listening on/ q" && kill $$ ;}'
     export GANACHE_CONTRACTS="{"$(truffle migrate --reset --all --network development | tee "$MIGRATION_LOG" | sed  -e "1,/^Using network \'.*\'.$/ d; /----- Polymath Core Contracts -----/,\$d; /^[^:]*$/ d; /^.*\.js$/ d; s/^ *\([^:]*\): *\([^ ]*\) *$/ \"\1\" : { \"$GANACHE_NETWORK\" : \"\2\" }/g" | tr '\n' ', ' | sed 's/,$//')" }"
     cat "$MIGRATION_LOG"
-    nvm use v10
   - |
     cd "$ISSUER_PATH"
+    nvm install v10
     git clone --depth=1 --branch=master https://github.com/PolymathNetwork/Polymath-Tests.git Polymath-Tests
     cd Polymath-Tests
     yarn
@@ -56,10 +56,12 @@ before_script:
 script: npm test
 
 after_script:
+  - kill -9 $OFFCHAIN_PID
+  - kill -9 $ISSUER_PID
   - kill -9 $GANACHE_PID
-  - cat "$GANACHE_LOG"
-  - cat "$ISSUER_LOG"
   - cat "$OFFCHAIN_LOG"
+  - cat "$ISSUER_LOG"
+  - cat "$GANACHE_LOG"
 
 notifications:
   email:
