@@ -24,12 +24,13 @@ before_script:
     export METAMASK_SECRET="cotton trap squeeze wealth aunt fork hungry notice entry early combine chalk"
     export METAMASK_NETWORK=l
     export GANACHE_NETWORK=100000015
-    export REACT_APP_POLYMATH_OFFCHAIN_ADDRESS="http://localhost:3001"
+    #export REACT_APP_POLYMATH_OFFCHAIN_ADDRESS="http://localhost:3001"
   - |
     git clone --depth=1 --branch=master https://github.com/PolymathNetwork/polymath-offchain.git polymath-offchain
     cd polymath-offchain
-    yarn
-    yarn start &> "$OFFCHAIN_LOG"
+    # Offchain gets stuck
+    #yarn
+    #yarn start &> "$OFFCHAIN_LOG"
   - |
     cd "$ISSUER_PATH"
     yarn start &> "$ISSUER_LOG"
