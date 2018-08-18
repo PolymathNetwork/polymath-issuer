@@ -25,7 +25,22 @@ before_script:
     export METAMASK_NETWORK=l
     export GANACHE_NETWORK=100000015
     export REACT_APP_POLYMATH_OFFCHAIN_ADDRESS="http://localhost:3001"
+    export GANACHE_PORT=8080
   - |
+    cd "$ISSUER_PATH"
+    cd node_modules/polymath-core
+    npm install -g truffle
+    npm install
+    rm -rf "$GANACHE_DB"
+    mkdir -p "$GANACHE_DB"
+    ganache-cli -i $GANACHE_NETWORK -l 9000000 -m "$METAMASK_SECRET" --db "$GANACHE_DB" -p $GANACHE_PORT &> "$GANACHE_LOG" &
+    GANACHE_PID=$!
+    sleep 1 # wait for ganache to start
+    sh -c 'tail -n +0 -f "$GANACHE_LOG" | { sed "/Listening on/ q" && kill $$ ;}'
+    export GANACHE_CONTRACTS="{"$(truffle migrate --reset --all --network development | tee "$MIGRATION_LOG" | sed  -e "1,/^Using network \'.*\'.$/ d; /----- Polymath Core Contracts -----/,\$d; /^[^:]*$/ d; /^.*\.js$/ d; s/^ *\([^:]*\): *\([^ ]*\) *$/ \"\1\" : { \"$GANACHE_NETWORK\" : \"\2\" }/g" | tr '\n' ', ' | sed 's/,$//')" }"
+    cat "$MIGRATION_LOG"
+  - |
+    cd "$ISSUER_PATH"
     git clone --depth=1 --branch=master https://github.com/PolymathNetwork/polymath-offchain.git polymath-offchain
     cd polymath-offchain
     yarn
@@ -35,18 +50,6 @@ before_script:
     cd "$ISSUER_PATH"
     yarn start &> "$ISSUER_LOG" &
     ISSUER_PID=$!
-  - |
-    cd node_modules/polymath-core
-    npm install -g truffle
-    npm install
-    rm -rf "$GANACHE_DB"
-    mkdir -p "$GANACHE_DB"
-    ganache-cli -i $GANACHE_NETWORK -l 9000000 -m "$METAMASK_SECRET" --db "$GANACHE_DB" &> "$GANACHE_LOG" &
-    GANACHE_PID=$!
-    sleep 1 # wait for ganache to start
-    sh -c 'tail -n +0 -f "$GANACHE_LOG" | { sed "/Listening on/ q" && kill $$ ;}'
-    export GANACHE_CONTRACTS="{"$(truffle migrate --reset --all --network development | tee "$MIGRATION_LOG" | sed  -e "1,/^Using network \'.*\'.$/ d; /----- Polymath Core Contracts -----/,\$d; /^[^:]*$/ d; /^.*\.js$/ d; s/^ *\([^:]*\): *\([^ ]*\) *$/ \"\1\" : { \"$GANACHE_NETWORK\" : \"\2\" }/g" | tr '\n' ', ' | sed 's/,$//')" }"
-    cat "$MIGRATION_LOG"
   - |
     cd "$ISSUER_PATH"
     nvm install v10
