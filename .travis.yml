@@ -17,7 +17,7 @@ before_script:
   - |
     ISSUER_PATH="$(pwd)"
     ISSUER_LOG="$ISSUER_PATH/issuer.log"
-    GANACHE_LOG="$ISSUER_PATH/ganache.log"
+    export GANACHE_LOG="$ISSUER_PATH/ganache.log"
     GANACHE_DB="/tmp/ganache.db"
     OFFCHAIN_LOG="$ISSUER_PATH/offchain.log"
     MIGRATION_LOG="$ISSUER_PATH/migration.log"
