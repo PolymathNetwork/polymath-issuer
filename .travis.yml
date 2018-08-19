@@ -38,7 +38,6 @@ before_script:
     ganache-cli -e 100000 -i $GANACHE_NETWORK -l $GANACHE_GAS --db "$GANACHE_DB" -p $GANACHE_PORT -m "$METAMASK_SECRET" &> "$GANACHE_LOG" &
     GANACHE_PID=$!
     while [ ! -f "$GANACHE_LOG" ]; do sleep 1 ; done
-    echo "$GANACHE_LOG created"
     sh -c 'tail -n +0 -f "$GANACHE_LOG" | { sed "/Listening on/ q" && kill $$ ;}'
     export GANACHE_CONTRACTS="{"$(truffle migrate --reset --all --network development | tee "$MIGRATION_LOG" | sed  -e "1,/^Using network \'.*\'.$/ d; /----- Polymath Core Contracts -----/,\$d; /^[^:]*$/ d; /^.*\.js$/ d; s/^ *\([^:]*\): *\([^ ]*\) *$/ \"\1\" : { \"$GANACHE_NETWORK\" : \"\2\" }/g" | tr '\n' ', ' | sed 's/,$//')" }"
     cat "$MIGRATION_LOG"
