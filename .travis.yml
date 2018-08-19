@@ -25,7 +25,6 @@ before_script:
     export METAMASK_NETWORK=l
     export REACT_APP_POLYMATH_OFFCHAIN_ADDRESS="http://localhost:3001"
     export GANACHE_GAS=9000000
-    export GANACHE_NETWORK_NAME="devTEST"
     export GANACHE_NETWORK=100000015
     export GANACHE_PORT=8080
   - |
@@ -35,12 +34,13 @@ before_script:
     npm install
     rm -rf "$GANACHE_DB"
     mkdir -p "$GANACHE_DB"
-    perl -0777 -pe "s/(development: {[^}]*})/\1\,'$GANACHE_NETWORK_NAME': { host: 'localhost', network_id: '$GANACHE_NETWORK', port: $GANACHE_PORT, gas: $GANACHE_GAS }/" -i truffle.js
-    ganache-cli -i $GANACHE_NETWORK -l $GANACHE_GAS --db "$GANACHE_DB" -p $GANACHE_PORT -m "$METAMASK_SECRET" &> "$GANACHE_LOG" &
+    perl -0777 -pe "s/(development: {[^}]*})/development: { host: 'localhost', network_id: '$GANACHE_NETWORK', port: $GANACHE_PORT, gas: $GANACHE_GAS }/" -i truffle.js
+    ganache-cli -e 100000 -i $GANACHE_NETWORK -l $GANACHE_GAS --db "$GANACHE_DB" -p $GANACHE_PORT -m "$METAMASK_SECRET" &> "$GANACHE_LOG" &
     GANACHE_PID=$!
     while [ ! -f "$GANACHE_LOG" ]; do sleep 1 ; done
+    echo "$GANACHE_LOG created"
     sh -c 'tail -n +0 -f "$GANACHE_LOG" | { sed "/Listening on/ q" && kill $$ ;}'
-    export GANACHE_CONTRACTS="{"$(truffle migrate --reset --all --network "$GANACHE_NETWORK_NAME" | tee "$MIGRATION_LOG" | sed  -e "1,/^Using network \'.*\'.$/ d; /----- Polymath Core Contracts -----/,\$d; /^[^:]*$/ d; /^.*\.js$/ d; s/^ *\([^:]*\): *\([^ ]*\) *$/ \"\1\" : { \"$GANACHE_NETWORK\" : \"\2\" }/g" | tr '\n' ', ' | sed 's/,$//')" }"
+    export GANACHE_CONTRACTS="{"$(truffle migrate --reset --all --network development | tee "$MIGRATION_LOG" | sed  -e "1,/^Using network \'.*\'.$/ d; /----- Polymath Core Contracts -----/,\$d; /^[^:]*$/ d; /^.*\.js$/ d; s/^ *\([^:]*\): *\([^ ]*\) *$/ \"\1\" : { \"$GANACHE_NETWORK\" : \"\2\" }/g" | tr '\n' ', ' | sed 's/,$//')" }"
     cat "$MIGRATION_LOG"
   - |
     cd "$ISSUER_PATH"
