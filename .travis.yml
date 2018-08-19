@@ -1,0 +1,74 @@
+language: node_js
+dist: trusty
+node_js:
+  - v8
+services:
+  - mongodb
+
+before_install:
+  - "export DISPLAY=:99.0"
+  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1920x1080x16"
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s --
+  - export PATH="$HOME/.yarn/bin:$PATH"
+
+install: yarn
+
+before_script:
+  - |
+    ISSUER_PATH="$(pwd)"
+    ISSUER_LOG="$ISSUER_PATH/issuer.log"
+    export GANACHE_LOG="$ISSUER_PATH/ganache.log"
+    GANACHE_DB="/tmp/ganache.db"
+    OFFCHAIN_LOG="$ISSUER_PATH/offchain.log"
+    MIGRATION_LOG="$ISSUER_PATH/migration.log"
+    export METAMASK_SECRET="cotton trap squeeze wealth aunt fork hungry notice entry early combine chalk"
+    export METAMASK_NETWORK=l
+    export REACT_APP_POLYMATH_OFFCHAIN_ADDRESS="http://localhost:3001"
+    export GANACHE_GAS=9000000
+    export GANACHE_NETWORK=100000015
+    export GANACHE_PORT=8545
+  - |
+    cd "$ISSUER_PATH"
+    cd node_modules/polymath-core
+    npm install -g truffle
+    npm install
+    rm -rf "$GANACHE_DB"
+    mkdir -p "$GANACHE_DB"
+    perl -0777 -pe "s/(development: {[^}]*})/development: { host: 'localhost', network_id: '$GANACHE_NETWORK', port: $GANACHE_PORT, gas: $GANACHE_GAS }/" -i truffle.js
+    ganache-cli -e 100000 -i $GANACHE_NETWORK -l $GANACHE_GAS --db "$GANACHE_DB" -p $GANACHE_PORT -m "$METAMASK_SECRET" &> "$GANACHE_LOG" &
+    GANACHE_PID=$!
+    while [ ! -f "$GANACHE_LOG" ]; do sleep 1 ; done
+    sh -c 'tail -n +0 -f "$GANACHE_LOG" | { sed "/Listening on/ q" && kill $$ ;}'
+    export GANACHE_CONTRACTS="{"$(truffle migrate --reset --all --network development | tee "$MIGRATION_LOG" | sed  -e "1,/^Using network \'.*\'.$/ d; /----- Polymath Core Contracts -----/,\$d; /^[^:]*$/ d; /^.*\.js$/ d; s/^ *\([^:]*\): *\([^ ]*\) *$/ \"\1\" : { \"$GANACHE_NETWORK\" : \"\2\" }/g" | tr '\n' ', ' | sed 's/,$//')" }"
+    cat "$MIGRATION_LOG"
+  - |
+    cd "$ISSUER_PATH"
+    git clone --depth=1 --branch=master https://github.com/PolymathNetwork/polymath-offchain.git polymath-offchain
+    cd polymath-offchain
+    yarn
+    yarn start &> "$OFFCHAIN_LOG" &
+    OFFCHAIN_PID=$!
+  - |
+    cd "$ISSUER_PATH"
+    yarn start &> "$ISSUER_LOG" &
+    ISSUER_PID=$!
+  - |
+    cd "$ISSUER_PATH"
+    nvm install v10
+    git clone --depth=1 --branch=master https://github.com/PolymathNetwork/Polymath-Tests.git Polymath-Tests
+    cd Polymath-Tests
+    yarn
+
+script: npm test
+
+after_script:
+  - kill -9 $OFFCHAIN_PID
+  - kill -9 $ISSUER_PID
+  - kill -9 $GANACHE_PID
+  - cat "$OFFCHAIN_LOG"
+  - cat "$ISSUER_LOG"
+  - cat "$GANACHE_LOG"
+
+notifications:
+  email:
+    - josep@polymath.network
