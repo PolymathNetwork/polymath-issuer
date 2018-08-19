@@ -35,6 +35,7 @@ before_script:
     npm install
     rm -rf "$GANACHE_DB"
     mkdir -p "$GANACHE_DB"
+    touch "$GANACHE_LOG"
     perl -0777 -pe "s/(development: {[^}]*})/\1\,'$GANACHE_NETWORK_NAME': { host: 'localhost', network_id: '$GANACHE_NETWORK', port: $GANACHE_PORT, gas: $GANACHE_GAS }/" truffle.js > truffle.js
     ganache-cli -i $GANACHE_NETWORK -l $GANACHE_GAS --db "$GANACHE_DB" -p $GANACHE_PORT -m "$METAMASK_SECRET" &> "$GANACHE_LOG" &
     GANACHE_PID=$!
