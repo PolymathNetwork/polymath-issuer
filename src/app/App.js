@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import Contract from 'polymathjs'
 import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
-import { PolymathUI, SignUpPage, SignInPage, SignUpSuccessPage, signIn, txHash, txEnd } from 'polymath-ui'
+import { PolymathUI, SignUpPage, SignInPage, SignUpSuccessPage, signIn, txHash, txEnd, getNotice } from 'polymath-ui'
 import type { RouterHistory } from 'react-router-dom'
 
 import Root from './Root'
@@ -30,6 +30,7 @@ type DispatchProps = {|
   txEnd: (receipt: any) => any,
   signIn: () => any,
   getMyTokens: () => any,
+  getNotice: (scope: string) => any,
   tickerReservationEmail: () => any,
   toggleFreeze: () => any,
 |}
@@ -50,6 +51,7 @@ const mapDispatchToProps: DispatchProps = {
   txEnd,
   signIn,
   getMyTokens,
+  getNotice,
   tickerReservationEmail,
   toggleFreeze,
 }
@@ -68,6 +70,7 @@ class App extends Component<Props> {
       txEndCallback: (receipt) => this.props.txEnd(receipt),
     })
     this.props.getMyTokens()
+    this.props.getNotice('issuers')
   }
 
   componentDidMount () {
