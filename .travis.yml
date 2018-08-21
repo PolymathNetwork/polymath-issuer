@@ -26,7 +26,7 @@ before_script:
     export REACT_APP_POLYMATH_OFFCHAIN_ADDRESS="http://localhost:3001"
     export GANACHE_GAS=9000000
     export GANACHE_NETWORK=100000015
-    export GANACHE_PORT=8080
+    export GANACHE_PORT=8545
   - |
     cd "$ISSUER_PATH"
     cd node_modules/polymath-core
