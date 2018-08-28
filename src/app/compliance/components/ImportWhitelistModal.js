@@ -38,10 +38,6 @@ const mapDispatchToProps = {
 
 class ImportWhitelistModal extends Component<Props> {
 
-  constructor (props) {
-    super(props) // $FloFixMe
-  }
-
   handleClose = () => {
     // TODO @bshevchenko: maybe there is a better way to reset FileUploader $FlowFixMe
     const node = this.fileUploader.nodes[0]

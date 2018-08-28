@@ -63,24 +63,24 @@ class ConfigureSTOForm extends Component<Props, State> {
   }
 
   pastCheck = (value, allValues) => {
-    const startTime=allValues.startTime
-    const dateRange=allValues['start-end']
-    if(!startTime || !dateRange ){
+    const startTime = allValues.startTime
+    const dateRange = allValues['start-end']
+    if (!startTime || !dateRange) {
       return null
-    }else{
-      let[hour, mins] =startTime.timeString.split(':')
-      if(startTime.dayPeriod==='PM'){
-        hour= parseInt(hour)+12
+    } else {
+      let [hours, minutes] = startTime.timeString.split(':')
+      if (startTime.dayPeriod === 'PM') {
+        hours = parseInt(hours, 10) + 12
       }
       const startDateTime = new Date(dateRange[0].getFullYear(),
         dateRange[0].getMonth(),
         dateRange[0].getDate(),
-        hour,
-        parseInt(mins)
+        hours,
+        parseInt(minutes, 10)
       )
       if ((new Date()).getTime() > startDateTime.getTime()) {
         return 'Time is in the past.'
-      }else if ((new Date()).getTime()+600000 > startDateTime.getTime()) {
+      } else if ((new Date()).getTime() + 600000 > startDateTime.getTime()) {
         return 'Please allow for transaction processing time.'
       }
     }

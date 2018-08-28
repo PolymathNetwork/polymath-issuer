@@ -1,36 +1,38 @@
-.compliance-settings {
-  display: flex;
-  margin-top: 20px;
-  margin-bottom: 20px; }
-  .compliance-settings > .bx--form-item {
-    max-width: 220px; }
-    .compliance-settings > .bx--form-item:last-child {
-      margin-top: -22px;
-      margin-bottom: 0 !important;
-      height: 100px; }
-      .compliance-settings > .bx--form-item:last-child .bx--form-item {
-        float: left; }
-        .compliance-settings > .bx--form-item:last-child .bx--form-item input {
-          width: 84px;
-          min-width: 84px; }
-          .compliance-settings > .bx--form-item:last-child .bx--form-item input::-webkit-outer-spin-button, .compliance-settings > .bx--form-item:last-child .bx--form-item input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0; }
-        .compliance-settings > .bx--form-item:last-child .bx--form-item:after {
-          content: '%';
-          position: relative;
-          top: -28px;
-          left: 55px;
-          color: #8C9BA5;
-          font-size: 14px; }
-      .compliance-settings > .bx--form-item:last-child button {
-        margin-top: 0;
-        background: transparent !important;
-        color: #252E6A; }
-        .compliance-settings > .bx--form-item:last-child button:hover:not(:disabled) {
-          color: #58468E; }
-        .compliance-settings > .bx--form-item:last-child button:hover {
-          background: transparent !important; }
+.compliance-form {
+  width: 60%; }
+  .compliance-form .compliance-settings {
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: 20px; }
+    .compliance-form .compliance-settings > .bx--form-item {
+      max-width: 220px; }
+      .compliance-form .compliance-settings > .bx--form-item:last-child {
+        margin-top: -22px;
+        margin-bottom: 0 !important;
+        height: 100px; }
+        .compliance-form .compliance-settings > .bx--form-item:last-child .bx--form-item {
+          float: left; }
+          .compliance-form .compliance-settings > .bx--form-item:last-child .bx--form-item input {
+            width: 84px;
+            min-width: 84px; }
+            .compliance-form .compliance-settings > .bx--form-item:last-child .bx--form-item input::-webkit-outer-spin-button, .compliance-form .compliance-settings > .bx--form-item:last-child .bx--form-item input::-webkit-inner-spin-button {
+              -webkit-appearance: none;
+              margin: 0; }
+          .compliance-form .compliance-settings > .bx--form-item:last-child .bx--form-item:after {
+            content: '%';
+            position: relative;
+            top: -28px;
+            left: 55px;
+            color: #8C9BA5;
+            font-size: 14px; }
+        .compliance-form .compliance-settings > .bx--form-item:last-child button {
+          margin-top: 0;
+          background: transparent !important;
+          color: #252E6A; }
+          .compliance-form .compliance-settings > .bx--form-item:last-child button:hover:not(:disabled) {
+            color: #58468E; }
+          .compliance-form .compliance-settings > .bx--form-item:last-child button:hover {
+            background: transparent !important; }
 
 .whitelist-investor-modal .bx--modal-container {
   width: 500px;
