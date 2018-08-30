@@ -50,14 +50,18 @@ export default class STODetails extends Component<Props> {
         )}
       </div>
     )
-    // const securityAuditLink = (
-    //   <div className='bx--form-item'>
-    //     <label className='bx--label'>Contract Audit</label>
-    //     <p>
-    //       <a href={item.securityAuditLink.url} target='_blank'>Link to Security Audit</a>
-    //     </p>
-    //   </div>
-    // )
+    const securityAuditLink = (
+      <div className='bx--form-item'>
+        <label className='bx--label'>Third Party Audit</label>
+        <p>
+          <Icon
+            name='checkmark--glyph'
+            fill='#00AA5E'
+          />
+          <a href={item.securityAuditLink.url} target='_blank'>Click here to see report</a>
+        </p>
+      </div>
+    )
     return (
       <div className='pui-page-box sto-factory'>
         <h2 className='pui-h2 pui-h-tags'>
@@ -77,6 +81,7 @@ export default class STODetails extends Component<Props> {
             </div>
             <div className='bx--col-xs-2'>
               {verifiedOnEtherscan}
+              {securityAuditLink}
             </div>
           </div>
         ) : (
@@ -87,6 +92,7 @@ export default class STODetails extends Component<Props> {
             </div>
             <div className='bx--col-xs-3'>
               {verifiedOnEtherscan}
+              {securityAuditLink}
             </div>
           </div>
         )}
