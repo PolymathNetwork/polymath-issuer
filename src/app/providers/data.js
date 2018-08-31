@@ -1,29 +1,29 @@
 export type SPStatus = {|
   title: string,
-    message: string,
+  message: string,
 |}
 
 export type SPProgress = {|
   isApplied: boolean,
-    status ?: SPStatus,
+  status?: SPStatus,
 |}
 
 export type ServiceProvider = {|
   id: number,
-    cat: number,
-      title: string,
-        logo: string,
-          desc: string,
-            progress ?: SPProgress,
-            disclosure ?: string,
-            isToBeAnnounced ?: boolean,
-            isIncreasedHeight ?: boolean,
+  cat: number,
+  title: string,
+  logo: string,
+  desc: string,
+  progress?: SPProgress,
+  disclosure?: string,
+  isToBeAnnounced?: boolean,
+  isIncreasedHeight?: boolean,
 |}
 
 export type SPCategory = {|
   id: number,
-    title: string,
-      desc: string,
+  title: string,
+  desc: string,
 |}
 
 export const statuses = [
@@ -108,7 +108,8 @@ const providers: Array<ServiceProvider> = [
     logo: '/providers/advisory/tokenizo.png',
     background:'/providers/advisory/bg/img-tokenizo.png',
     desc: 'We are an end-to-end service for the tokenization of assets using blockchain, focused on the ' +
-      'Latin American and Southern Europe markets.\nTokenizo is an Investment Bank 2.0. We combine in-country ' + 'affiliates with world class technology partners. This new way of Banking will preserve the high ' +
+      'Latin American and Southern Europe markets.\nTokenizo is an Investment Bank 2.0. We combine ' + 
+      'in-country affiliates with world class technology partners. This new way of Banking will preserve the high ' +
       'standards of personalized service with the added benefit of  technology in a way that has never '+
       'been done before:\n- We will continually develop a technology ecosystem and partner with best of ' +
       'class service providers that will allow to meet regulatory requirements to issue securities by using ' +
@@ -129,6 +130,50 @@ const providers: Array<ServiceProvider> = [
       'pioneer ininvestment crowdfunding, Homeier Law serves the emerging blockchain and cryptocurrency industries ' +
       'in structuring and documenting initial coin offerings (ICOs), tokenized security offerings and ' +
       'other capital-raising initiatives.',
+  },
+  {
+    id: 18,
+    cat: 1,
+    title: 'Security Token Lawyers',
+    logo: '/providers/legal/ST.png',
+    background: '/providers/legal/bg/img-stlawyers.png',
+    desc: 'Security Token Lawyers is a partnership between US and Israeli legal experts.  We advise security ' + 
+    'token issuers, exchanges and investors, bringing extensive securities and funds experience in the US and ' +
+    'Israel, a deep understanding of the technology and creativity and innovation to build a new type of ' +
+    'asset class in a new mark. Our counseling includes various regulatory matters, including compliance ' + 
+    'with securities, privacy and AML/KYC. We are deeply connected within the international security token ' +
+    'ecosystem, including issuance platforms, exchanges, service providers and beyond.  This allows us to ' + 
+    'help our clients through the entire process of a security token offering, from initial structuring ' + 
+    'through issuance and closing and then beyond to exchange listing and trading. We are also very involved ' + 
+    'Tel Aviv, Israel, with our New York office set to open in September 2018.',
+  },
+  {
+    id: 19,
+    cat: 1,
+    title: 'Aird & Berlis',
+    logo: '/providers/legal/airdberlis.jpg',
+    background: '/providers/legal/bg/img-airdberlis.jpg',
+    desc: 'Aird & Berlis provides strategic legal and business advice in all principal areas of corporate and '+
+    'commercial law, including Canadian capital markets activities. Members of the Aird & Berlis Capital Markets '+
+    'Group regularly provide Canadian securities law advice to all participants in the Canadian capital markets, '+
+    'including foreign and domestic issuers, dealers and investors. We have advised these capital markets '+
+    'participants on Canadian law matters affecting coin, token and other types of offerings.',
+  },
+  {
+    id: 20,
+    cat: 1,
+    title: 'Cassels Brock Lawyers',
+    logo: '/providers/legal/casselsbrock.jpg',
+    background: '/providers/legal/bg/img-casselsbrock.jpg',
+    desc: 'Cassels Brock & Blackwell LLP is a Canadian law firm focused on serving the transaction, advocacy and '+
+    'advisory needs of the country’s most dynamic business sectors. Our Emerging Companies Group draws on the '+
+    'expertise of partners across key areas of the firm including private equity, restructuring, tax, IP and M&A. '+
+    'Each team member also offers an in-depth understanding of the technology sector and this enables our team to '+
+    'not only provide high quality legal advice, but also act as a trusted business advisor. Our lawyers have a deep '+
+    'understanding of the regulatory landscape and the legal implications and requirements for use of cryptocurrency '+
+    'and blockchain, including securities, fintech, white-collar crime, tax and financial regulation issues. Whether '+
+    'your company is public or private, a start-up or a mature company, big or small, looking for venture capital, '+
+    'equity financing, debt financing or something more esoteric, our lawyers can help.',
   },
 
   // KYC/AML
@@ -164,7 +209,10 @@ const providers: Array<ServiceProvider> = [
     background: '/providers/custody/bg/img-bitgo.png',
     desc: 'BitGo is a blockchain software company that secures digital currency for institutional investors. Its ' +
       'technology solves the most difficult security, compliance and custodial problems ' +
-      'associated with blockchain-based currencies, enabling the integration of digital currency into the global…',
+      'associated with blockchain-based currencies, enabling the integration of digital currency into the global ' +
+      'financial system. BitGo\'s customers, which include the world\'s largest cryptocurrency exchanges and ' +
+      'financial institutions, conduct more than $10 billion in transactions monthly. BitGo\'s global headquarters '+
+      'is located in Palo Alto, California with offices in New York, London, Tokyo and Singapore.',
   },
   {
     id: 16,

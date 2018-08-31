@@ -53,9 +53,7 @@ type State = {|
   isApply: boolean,
   isModalOpen: boolean,
   catName: string,
-  providerTitle: string,
-  providerDesc: string,
-  providerImage: string,
+  providerInfo: {title: string, desc: string, background: string, logo: string},
 |}
 
 type Props = {|
@@ -71,9 +69,7 @@ class ProvidersPage extends Component<Props, State> {
     isApply: false,
     isModalOpen: false,
     catName: '',
-    providerTitle: '',
-    providerDesc: '',
-    providerImage: '',
+    providerInfo: { title:'', desc:'', background:'', logo:'' },
   }
 
   componentWillMount = () => {
@@ -102,15 +98,13 @@ class ProvidersPage extends Component<Props, State> {
     } else {
       selected.push(provider.id)
     }
-    this.setState({ selected, tabSelected: provider.cat })
+    this.setState({ selected, tabSelected: provider.cat, isModalOpen: false })
   }
 
-  handleOpenModal =(evt,provider) =>{
+  handleOpenModal =(evt, provider) =>{
     evt.stopPropagation()
     this.setState({ 
-      providerTitle: provider.title, 
-      providerDesc: provider.desc, 
-      providerImage: provider.background, 
+      providerInfo: provider, 
       isModalOpen: true, 
     })
   }
@@ -297,9 +291,12 @@ class ProvidersPage extends Component<Props, State> {
                             />
                           </div>
                         ) : ''}
-                        <div className='provider-img'><img src={p.logo} alt={p.title} /></div>
+                        <div className='provider-img'>
+                          <img src={p.logo} alt={p.title} style={{ width:'100%', height:'70px' }} />
+                        </div>
                         <h3 className='pui-h3'>{p.isToBeAnnounced ? 'SOON...' : p.title}</h3>
-                        <p className='provider-description'>{p.isToBeAnnounced ? 'To Be Announced' : p.desc.substring(0, 250) + `.... `}
+                        <p className='provider-description'>
+                          {p.isToBeAnnounced ? 'To Be Announced' : p.desc.substring(0, 250) + '.... '}
                           <span role='button' onClick={(e) => this.handleOpenModal(e, p)}> Read More
                             <Icon
                               name='icon--arrow--right'
@@ -327,10 +324,10 @@ class ProvidersPage extends Component<Props, State> {
             onSubmit={this.handleApply}
           />
           <ProviderModal
-            providerInfo={{ title: this.state.providerTitle, desc: this.state.providerDesc, image: this.state.providerImage }}
+            providerInfo={this.state.providerInfo}
             isOpen={this.state.isModalOpen}
             onClose={this.handleCloseModal}
-            onSubmit={this.handleCloseModal}
+            onSubmit={() => this.handleProviderClick(this.state.providerInfo)}
           />
           <div className='pui-clearfix' />
         </div>

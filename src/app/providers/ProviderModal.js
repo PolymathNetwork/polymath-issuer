@@ -29,11 +29,9 @@ export default class ProviderModal extends Component<Props> {
         onRequestSubmit={onSubmit}
         onSecondarySubmit={onClose}
       >
-        <img src={providerInfo.image} alt={providerInfo.title} style={{ width: '100%' }} />
+        <img src={providerInfo.background} alt={providerInfo.title} style={{ width: '100%' }} />
         <p className='bx--modal-content__text'>
-          {providerInfo.desc.split("\n").map((element) => {
-            return <div key={element.id} />
-          })}
+          {providerInfo.desc}
         </p>
       </Modal>
     )
