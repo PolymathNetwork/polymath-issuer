@@ -135,7 +135,7 @@ const providers: Array<ServiceProvider> = [
     id: 18,
     cat: 1,
     title: 'Security Token Lawyers',
-    logo: '/providers/legal/ST.png',
+    logo: '/providers/legal/STL.png',
     background: '/providers/legal/bg/img-stlawyers.png',
     desc: 'Security Token Lawyers is a partnership between US and Israeli legal experts.  We advise security ' + 
     'token issuers, exchanges and investors, bringing extensive securities and funds experience in the US and ' +
@@ -151,8 +151,8 @@ const providers: Array<ServiceProvider> = [
     id: 19,
     cat: 1,
     title: 'Aird & Berlis',
-    logo: '/providers/legal/airdberlis.jpg',
-    background: '/providers/legal/bg/img-airdberlis.jpg',
+    logo: '/providers/legal/aird-berlis.png',
+    background: '/providers/legal/bg/img-airdberlis.png',
     desc: 'Aird & Berlis provides strategic legal and business advice in all principal areas of corporate and '+
     'commercial law, including Canadian capital markets activities. Members of the Aird & Berlis Capital Markets '+
     'Group regularly provide Canadian securities law advice to all participants in the Canadian capital markets, '+
@@ -163,8 +163,8 @@ const providers: Array<ServiceProvider> = [
     id: 20,
     cat: 1,
     title: 'Cassels Brock Lawyers',
-    logo: '/providers/legal/casselsbrock.jpg',
-    background: '/providers/legal/bg/img-casselsbrock.jpg',
+    logo: '/providers/legal/cassels-2.png',
+    background: '/providers/legal/bg/img-blackwell.png',
     desc: 'Cassels Brock & Blackwell LLP is a Canadian law firm focused on serving the transaction, advocacy and '+
     'advisory needs of the country’s most dynamic business sectors. Our Emerging Companies Group draws on the '+
     'expertise of partners across key areas of the firm including private equity, restructuring, tax, IP and M&A. '+

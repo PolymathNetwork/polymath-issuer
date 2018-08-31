@@ -26,6 +26,12 @@
   }
 }
 
+.providers-display-modal {
+  .img {
+    width: 100%;
+  }
+}
+
 .providers {
   .provider {
     width: 297px;
@@ -45,6 +51,10 @@
       display: flex;
       align-items: flex-end;
       margin-bottom: 23px;
+      
+      img{
+        height:46px;
+      }
     }
 
     .provider-description{

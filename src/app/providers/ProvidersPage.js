@@ -292,7 +292,7 @@ class ProvidersPage extends Component<Props, State> {
                           </div>
                         ) : ''}
                         <div className='provider-img'>
-                          <img src={p.logo} alt={p.title} style={{ width:'100%', height:'70px' }} />
+                          <img src={p.logo} alt={p.title} />
                         </div>
                         <h3 className='pui-h3'>{p.isToBeAnnounced ? 'SOON...' : p.title}</h3>
                         <p className='provider-description'>

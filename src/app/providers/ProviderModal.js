@@ -28,8 +28,9 @@ export default class ProviderModal extends Component<Props> {
         secondaryButtonText='Cancel'
         onRequestSubmit={onSubmit}
         onSecondarySubmit={onClose}
+        className='providers-display-modal'
       >
-        <img src={providerInfo.background} alt={providerInfo.title} style={{ width: '100%' }} />
+        <img src={providerInfo.background} alt={providerInfo.title} />
         <p className='bx--modal-content__text'>
           {providerInfo.desc}
         </p>
