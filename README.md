@@ -28,6 +28,9 @@ By default application works with Kovan testnet.
 
 ## Working with contracts locally
 
+Start the ganache cli
+
+**Important: The `contracts` command will fail if `ganache-cli` is not running**
 ```
 npm run ganache-cli
 ```
