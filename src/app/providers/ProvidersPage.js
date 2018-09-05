@@ -13,6 +13,7 @@ import type { RouterHistory } from 'react-router-dom'
 
 import { applyProviders, iHaveMyOwnProviders, setProviderStatus } from './actions'
 import ApplyModal from './ApplyModal'
+import ProviderModal from './ProviderModal'
 import NotFoundPage from '../NotFoundPage'
 import Progress from '../token/components/Progress'
 import { categories } from './data'
@@ -50,7 +51,9 @@ type State = {|
   tabSelected: number,
   selectAll: boolean,
   isApply: boolean,
+  isModalOpen: boolean,
   catName: string,
+  providerInfo: {title: string, desc: string, background: string, logo: string},
 |}
 
 type Props = {|
@@ -64,7 +67,9 @@ class ProvidersPage extends Component<Props, State> {
     tabSelected: 0,
     selectAll: false,
     isApply: false,
+    isModalOpen: false,
     catName: '',
+    providerInfo: { title:'', desc:'', background:'', logo:'' },
   }
 
   componentWillMount = () => {
@@ -93,7 +98,19 @@ class ProvidersPage extends Component<Props, State> {
     } else {
       selected.push(provider.id)
     }
-    this.setState({ selected, tabSelected: provider.cat })
+    this.setState({ selected, tabSelected: provider.cat, isModalOpen: false })
+  }
+
+  handleOpenModal =(evt, provider) =>{
+    evt.stopPropagation()
+    this.setState({ 
+      providerInfo: provider, 
+      isModalOpen: true, 
+    })
+  }
+
+  handleCloseModal = () => {
+    this.setState({ isModalOpen: false })
   }
 
   handleSelectAll = () => {
@@ -274,9 +291,20 @@ class ProvidersPage extends Component<Props, State> {
                             />
                           </div>
                         ) : ''}
-                        <div className='provider-img'><img src={p.logo} alt={p.title} /></div>
+                        <div className='provider-img'>
+                          <img src={p.logo} alt={p.title} />
+                        </div>
                         <h3 className='pui-h3'>{p.isToBeAnnounced ? 'SOON...' : p.title}</h3>
-                        <p>{p.isToBeAnnounced ? 'To Be Announced' : p.desc}</p>
+                        <p className='provider-description'>
+                          {p.isToBeAnnounced ? 'To Be Announced' : p.desc.substring(0, 250) + '.... '}
+                          <span role='button' onClick={(e) => this.handleOpenModal(e, p)}> Read More
+                            <Icon
+                              name='icon--arrow--right'
+                              height='8'
+                              fill='#3D70B2'
+                            />
+                          </span>
+                        </p>
                         {p.disclosure ? (
                           <Remark title='Disclosure' small>
                             {p.disclosure}
@@ -294,6 +322,12 @@ class ProvidersPage extends Component<Props, State> {
             isOpen={this.state.isApply}
             onClose={this.handleCancelApply}
             onSubmit={this.handleApply}
+          />
+          <ProviderModal
+            providerInfo={this.state.providerInfo}
+            isOpen={this.state.isModalOpen}
+            onClose={this.handleCloseModal}
+            onSubmit={() => this.handleProviderClick(this.state.providerInfo)}
           />
           <div className='pui-clearfix' />
         </div>

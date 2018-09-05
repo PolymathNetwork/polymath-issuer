@@ -15,6 +15,9 @@
   width: 736px;
   max-width: 736px; }
 
+.providers-display-modal .img {
+  width: 100%; }
+
 .providers .provider {
   width: 297px;
   height: 323px;
@@ -32,6 +35,10 @@
     display: flex;
     align-items: flex-end;
     margin-bottom: 23px; }
+    .providers .provider .provider-img img {
+      height: 46px; }
+  .providers .provider .provider-description span {
+    color: #3D70B2; }
   .providers .provider .provider-applied {
     font-size: 12px;
     font-weight: 300;
