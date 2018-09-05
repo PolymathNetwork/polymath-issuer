@@ -4,7 +4,7 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import DocumentTitle from 'react-document-title'
 import { change } from 'redux-form'
-import { bull, thousandsDelimiter } from 'polymath-ui'
+import { Remark, bull, thousandsDelimiter } from 'polymath-ui'
 import { TickerRegistry } from 'polymathjs'
 import type { RouterHistory } from 'react-router'
 
@@ -75,21 +75,19 @@ class TickerPage extends Component<Props, State> {
                 <img src={bull} alt='Bull' />
               </div>
               <h1 className='pui-h1'>Reserve Your Token Symbol</h1>
-              <h4 className='pui-h4'>
-                If your organization has a CUSIP number, please enter the<br />5-letter symbol assigned to you by FINRA.
-                Otherwise, please enter your desired token symbol provided that
-                 it does not infringe on registered trademarks.
+              <h4 className='pui-h4'> 
                 Your token symbol will be reserved for {this.props.expiryLimit} days, and is
-                permanently yours once you create your Token.<br />
+                permanently yours once you create your Token. This reservation ensures that 
+                no other organization can create a token symbol identical token to yours using 
+                the Polymath platform. This operation carries a cost of: {this.state.tickerRegistrationFee} POLY.
               </h4>
               <div className='pui-clearfix' />
+              <Remark title='Note'>
+                If your organization has a CUSIP number, please enter the 5-letter symbol assigned to you by FINRA.
+                Otherwise, please enter your desired token symbol provided that it does not infringe on registered 
+                trademarks.
+              </Remark>
             </div>
-            <h4 className='pui-h4' style={{ marginTop: '-20px' }}>
-              This reservation ensures that no other organization can use
-              your brand or create an identical token symbol using the
-              Polymath platform. 
-              <br />This operation carries a cost of: {this.state.tickerRegistrationFee} POLY.
-            </h4>
             <TickerForm onSubmit={this.handleSubmit} />
           </div>
         </Fragment>
