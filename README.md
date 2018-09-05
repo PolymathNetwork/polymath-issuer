@@ -16,12 +16,12 @@ We only use Yarn as our official Node package manager, so we will only commit ya
 
 To start development run:
 ```
-npm start
+yarn start
 ```
 
 To build application run:
 ```
-npm run build
+yarn build
 ```
 
 By default application works with Kovan testnet.
@@ -32,19 +32,19 @@ Start the ganache cli
 
 **Important: The `contracts` command will fail if `ganache-cli` is not running**
 ```
-npm run ganache-cli
+yarn ganache-cli
 ```
 
 In a separate terminal:
 ```
-npm run contracts
+yarn contracts
 ```
 
 Turn off MetaMask or any other Web3 provider and start/build application.
 
 To open Truffle Console and play with contracts directly:
 ```
-npm run tconsole
+yarn tconsole
 ```
 
 [Read more about Truffle Console](http://truffleframework.com/docs/getting_started/console)
