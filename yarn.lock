@@ -3603,10 +3603,10 @@ eslint-plugin-jsx-a11y@6.0.2:
     eslint-config-airbnb "16.1.0"
     eslint-plugin-import "^2.7.0"
     eslint-plugin-jsx-a11y "6.0.2"
-    eslint-plugin-polymath PolymathNetwork/eslint-plugin-polymath
+    eslint-plugin-polymath PolymathNetwork/eslint-plugin-polymath#3.0.0
     eslint-plugin-react "^7.4.0"
 
-eslint-plugin-polymath@PolymathNetwork/eslint-plugin-polymath#3.0.0:
+eslint-plugin-polymath@PolymathNetwork/eslint-plugin-polymath:
   version "1.0.0"
   resolved "https://codeload.github.com/PolymathNetwork/eslint-plugin-polymath/tar.gz/0d48ee281faddae343a67088fbbeead0052ad310"
   dependencies:
@@ -8190,7 +8190,7 @@ pn@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
 
-polymath-auth@1.1.5:
+polymath-auth@1.1.5, polymath-auth@^1.1.5:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/polymath-auth/-/polymath-auth-1.1.5.tgz#c17e43aadd8a075b1f05558b2c771d2c778d9e25"
   dependencies:
@@ -8224,9 +8224,9 @@ polymath-core@1.4.0:
     truffle-hdwallet-provider-privkey "^0.1.0"
     web3 "^1.0.0-beta.33"
 
-polymath-ui@5.6.4:
-  version "5.6.4"
-  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-5.6.4.tgz#d68796a365fa5c98902d003debe0fec46436618d"
+polymath-ui@5.7.0:
+  version "5.7.0"
+  resolved "https://registry.yarnpkg.com/polymath-ui/-/polymath-ui-5.7.0.tgz#e3ec57f77fe267fba0e798fc33ff3e23322ea143"
   dependencies:
     axios "^0.18.0"
     babel-runtime "6.26.0"
@@ -8235,6 +8235,8 @@ polymath-ui@5.6.4:
     carbon-components-react "5.31.0"
     carbon-icons "6.3.2"
     eth-sig-util "^1.4.2"
+    polymath-auth "^1.1.5"
+    polymathjs "^1.6.0"
     react "16.2.0"
     react-document-title "2.0.3"
     react-dom "16.2.0"
@@ -8245,7 +8247,7 @@ polymath-ui@5.6.4:
     redux "3.7.2"
     redux-form "7.0.4"
 
-polymathjs@1.6.0:
+polymathjs@1.6.0, polymathjs@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/polymathjs/-/polymathjs-1.6.0.tgz#8eee1a58849fe6594464a35876dc4040f8c5b1d1"
   dependencies:
@@ -11100,7 +11102,7 @@ web3-core-helpers@1.0.0-beta.34:
     web3-eth-iban "1.0.0-beta.34"
     web3-utils "1.0.0-beta.34"
 
-web3-core-method@1.0.0-beta.30, web3-core-method@bshevchenko/web3-core-method#master, "web3-core-method@github:bshevchenko/web3-core-method#master":
+web3-core-method@1.0.0-beta.30, "web3-core-method@github:bshevchenko/web3-core-method#master":
   version "1.0.0-beta.30"
   resolved "https://codeload.github.com/bshevchenko/web3-core-method/tar.gz/9199df8b1ea8658503ee48ba7ad391fec8e61838"
   dependencies:
