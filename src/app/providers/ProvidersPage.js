@@ -296,7 +296,7 @@ class ProvidersPage extends Component<Props, State> {
                         </div>
                         <h3 className='pui-h3'>{p.isToBeAnnounced ? 'SOON...' : p.title}</h3>
                         <p className='provider-description'>
-                          {p.isToBeAnnounced ? 'To Be Announced' : p.desc.substring(0, 250) + '.... '}
+                          {p.isToBeAnnounced ? 'To Be Announced' : p.desc.substring(0, 280) + '.... '}
                           <span role='button' onClick={(e) => this.handleOpenModal(e, p)}> Read More
                             <Icon
                               name='icon--arrow--right'
