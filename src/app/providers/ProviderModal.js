@@ -32,7 +32,9 @@ export default class ProviderModal extends Component<Props> {
       >
         <img src={providerInfo.background} alt={providerInfo.title} />
         <p className='bx--modal-content__text'>
-          {providerInfo.desc}
+          {providerInfo.desc.split('\n').map((item) => {
+            return <span>{item}<br /></span>
+          })}
         </p>
       </Modal>
     )
