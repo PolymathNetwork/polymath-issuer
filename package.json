@@ -30,12 +30,13 @@
     "jest-enzyme": "^4.0.1",
     "moment": "2.20.1",
     "normalize.css": "7.0.0",
-    "polymath-auth": "1.1.4",
-    "polymath-ui": "5.5.11",
-    "polymathjs": "1.5.9",
+    "polymath-auth": "1.1.5",
+    "polymath-ui": "5.7.0",
+    "polymathjs": "1.6.0",
     "react": "16.2.0",
     "react-addons-css-transition-group": "15.0.1",
     "react-copy-to-clipboard": "5.0.1",
+    "react-device-detect": "^1.5.9",
     "react-document-title": "2.0.3",
     "react-dom": "16.2.0",
     "react-dropzone": "^4.2.9",
@@ -60,11 +61,12 @@
     "lint": "eslint --fix src",
     "typecheck": "flow",
     "test": "react-scripts test --useStderr --forceExit --runInBand",
-    "precommit": "lint-staged && npm run typecheck",
     "build": "npm run build-css && react-scripts build && cp build/index.html build/404.html",
     "ganache-cli": "node_modules/polymath-core/node_modules/.bin/ganache-cli --gasLimit 90000000",
-    "contracts": "cd node_modules/polymath-core && yarn && node ../truffle/build/cli.bundled.js migrate --reset --all --network development",
-    "tconsole": "cd node_modules/polymath-core && yarn && node ../truffle/build/cli.bundled.js console"
+    "contracts": "cd node_modules/polymath-core && node ../truffle/build/cli.bundled.js migrate --reset --all --network development",
+    "tconsole": "cd node_modules/polymath-core && node ../truffle/build/cli.bundled.js console",
+    "precommit": "lint-staged && npm run typecheck",
+    "postinstall": "cd node_modules/polymath-core && yarn"
   },
   "lint-staged": {
     "src/**/*.js": [

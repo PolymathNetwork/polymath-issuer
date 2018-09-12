@@ -1,17 +1,14 @@
 // @flow
-
-import BigNumber from 'bignumber.js'
 import React, { Component } from 'react'
 import Contract from 'polymathjs'
 import { renderRoutes } from 'react-router-config'
 import { connect } from 'react-redux'
-import { PolymathUI, SignUpPage, SignInPage, SignUpSuccessPage, signIn, txHash, txEnd } from 'polymath-ui'
+import { PolymathUI, SignUpPage, SignInPage, SignUpSuccessPage, signIn, txHash, txEnd, getNotice } from 'polymath-ui'
 import type { RouterHistory } from 'react-router-dom'
 
 import Root from './Root'
 import ConfirmEmailPage from './ConfirmEmailPage'
 import { getMyTokens, tickerReservationEmail } from './ticker/actions'
-import { toggleFreeze } from './compliance/actions'
 import type { RootState } from '../redux/reducer'
 
 type StateProps = {|
@@ -21,7 +18,6 @@ type StateProps = {|
   isTickerReserved: ?boolean,
   isEmailConfirmed: ?boolean,
   isSignUpSuccess: boolean,
-  balance: ?BigNumber,
   ticker: ?string,
 |}
 
@@ -30,8 +26,8 @@ type DispatchProps = {|
   txEnd: (receipt: any) => any,
   signIn: () => any,
   getMyTokens: () => any,
+  getNotice: (scope: string) => any,
   tickerReservationEmail: () => any,
-  toggleFreeze: () => any,
 |}
 
 const mapStateToProps = (state: RootState): StateProps => ({
@@ -41,7 +37,6 @@ const mapStateToProps = (state: RootState): StateProps => ({
   isTickerReserved: state.ticker.isTickerReserved,
   isEmailConfirmed: state.pui.account.isEmailConfirmed,
   isSignUpSuccess: state.pui.account.isEnterPINSuccess,
-  balance: state.pui.account.balance,
   ticker: state.token.token ? state.token.token.ticker : null,
 })
 
@@ -50,8 +45,8 @@ const mapDispatchToProps: DispatchProps = {
   txEnd,
   signIn,
   getMyTokens,
+  getNotice,
   tickerReservationEmail,
-  toggleFreeze,
 }
 
 type Props = {|
@@ -68,6 +63,7 @@ class App extends Component<Props> {
       txEndCallback: (receipt) => this.props.txEnd(receipt),
     })
     this.props.getMyTokens()
+    this.props.getNotice('issuers')
   }
 
   componentDidMount () {
@@ -83,7 +79,7 @@ class App extends Component<Props> {
     const { history, ticker, isSignedIn, isSignedUp, isTickerReserved, isEmailConfirmed, isSignUpSuccess } = this.props
     return (
       <Root>
-        <PolymathUI history={history} ticker={ticker} handleResume={this.props.toggleFreeze} />
+        <PolymathUI history={history} ticker={ticker} />
         {!isSignedIn ? <SignInPage /> : (
           !isSignedUp ? <SignUpPage /> : (
             isTickerReserved && !isEmailConfirmed ? (

@@ -66,8 +66,9 @@ export const fetchFactories = () => async (dispatch: Function) => {
       'will not be minted.',
       isVerified: true,
       securityAuditLink: {
-        title: 'Zeppelin Solutions',
-        url: 'https://zeppelin.solutions/',
+        title: 'Solidified',
+        url: 'https://github.com/PolymathNetwork/polymath-core/blob/master/audit%20reports/'
+        +'Polymath%20Audit%20Report%20Final.pdf',
       },
       address: CappedSTOFactory.address,
       owner: await CappedSTOFactory.owner(),
