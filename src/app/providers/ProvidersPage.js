@@ -269,49 +269,54 @@ class ProvidersPage extends Component<Props, State> {
                   </div>
                   <div className='pui-clearfix' />
                   <div className='providers pui-no-select'>
-                    {providers.map((p: ServiceProvider) => p.cat !== cat.id ? '' : (
-                      <div
-                        role='button'
-                        key={p.id}
-                        onClick={() => this.handleProviderClick(p)}
-                        className={
-                          'provider' +
+                    {
+                      // eslint-disable-next-line complexity
+                      providers.map((p: ServiceProvider) => p.cat !== cat.id ? '' : (
+                        <div
+                          role='button'
+                          key={p.id}
+                          onClick={() => this.handleProviderClick(p)}
+                          className={
+                            'provider' +
                           (this.state.selected.includes(p.id) ? ' provider-selected' : '') +
                           (p.progress && p.progress.isApplied ? ' provider-applied' : '') +
                           (p.isToBeAnnounced ? ' provider-to-be-announced' : '') +
                           (p.isIncreasedHeight ? ' provider-increased-height' : '')
-                        }
-                      >
-                        {p.progress && p.progress.isApplied ? (
-                          <div className='provider-applied'>
+                          }
+                        >
+                          {p.progress && p.progress.isApplied ? (
+                            <div className='provider-applied'>
                             Applied
-                            <Icon
-                              name='checkmark--glyph'
-                              fill='#00AA5E'
-                            />
+                              <Icon
+                                name='checkmark--glyph'
+                                fill='#00AA5E'
+                              />
+                            </div>
+                          ) : ''}
+                          <div className='provider-img'>
+                            <img src={p.logo} alt={p.title} />
                           </div>
-                        ) : ''}
-                        <div className='provider-img'>
-                          <img src={p.logo} alt={p.title} />
+                          <h3 className='pui-h3'>{p.isToBeAnnounced ? 'SOON...' : p.title}</h3>
+                          <p className='provider-description'>
+                            {p.isToBeAnnounced ? 'To Be Announced' : p.desc.substring(0, 300)}
+                            {p.desc.length > 300 ? (
+                              <span role='button' onClick={(e) => this.handleOpenModal(e, p)}>... Read More
+                                <Icon
+                                  name='icon--arrow--right'
+                                  height='8'
+                                  fill='#3D70B2'
+                                />
+                              </span>
+                            ):''}
+                          
+                          </p>
+                          {p.disclosure ? (
+                            <Remark title='Disclosure' small>
+                              {p.disclosure}
+                            </Remark>
+                          ) : ''}
                         </div>
-                        <h3 className='pui-h3'>{p.isToBeAnnounced ? 'SOON...' : p.title}</h3>
-                        <p className='provider-description'>
-                          {p.isToBeAnnounced ? 'To Be Announced' : p.desc.substring(0, 280) + '.... '}
-                          <span role='button' onClick={(e) => this.handleOpenModal(e, p)}> Read More
-                            <Icon
-                              name='icon--arrow--right'
-                              height='8'
-                              fill='#3D70B2'
-                            />
-                          </span>
-                        </p>
-                        {p.disclosure ? (
-                          <Remark title='Disclosure' small>
-                            {p.disclosure}
-                          </Remark>
-                        ) : ''}
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 </div>
               </Tab>
