@@ -95,6 +95,7 @@ class ProvidersPage extends Component<Props, State> {
     const index = selected.indexOf(provider.id)
     if (index > -1) {
       selected.splice(index, 1)
+      this.setState({ selectAll: false })
     } else {
       selected.push(provider.id)
     }
