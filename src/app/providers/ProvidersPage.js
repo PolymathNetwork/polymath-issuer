@@ -53,7 +53,7 @@ type State = {|
   isApply: boolean,
   isModalOpen: boolean,
   catName: string,
-  providerInfo: {title: string, desc: string, background: string, logo: string},
+  providerInfo: {id: string, title: string, desc: string, background: string, logo: string},
 |}
 
 type Props = {|
@@ -69,7 +69,7 @@ class ProvidersPage extends Component<Props, State> {
     isApply: false,
     isModalOpen: false,
     catName: '',
-    providerInfo: { title:'', desc:'', background:'', logo:'' },
+    providerInfo: { id: '', title:'', desc:'', background:'', logo:'' },
   }
 
   componentWillMount = () => {
@@ -329,6 +329,7 @@ class ProvidersPage extends Component<Props, State> {
             onSubmit={this.handleApply}
           />
           <ProviderModal
+            selected={this.state.selected.includes(this.state.providerInfo.id)}
             providerInfo={this.state.providerInfo}
             isOpen={this.state.isModalOpen}
             onClose={this.handleCloseModal}
