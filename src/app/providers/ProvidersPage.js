@@ -195,6 +195,7 @@ class ProvidersPage extends Component<Props, State> {
 
   render () {
     const { token, providers } = this.props
+    let isProviderModalSelected = this.state.selected.includes(this.state.providerInfo.id)
     if (!token || !providers) {
       return <NotFoundPage />
     }
@@ -330,7 +331,7 @@ class ProvidersPage extends Component<Props, State> {
             onSubmit={this.handleApply}
           />
           <ProviderModal
-            selected={this.state.selected.includes(this.state.providerInfo.id)}
+            selected={isProviderModalSelected}
             providerInfo={this.state.providerInfo}
             isOpen={this.state.isModalOpen}
             onClose={this.handleCloseModal}
