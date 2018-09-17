@@ -3603,10 +3603,10 @@ eslint-plugin-jsx-a11y@6.0.2:
     eslint-config-airbnb "16.1.0"
     eslint-plugin-import "^2.7.0"
     eslint-plugin-jsx-a11y "6.0.2"
-    eslint-plugin-polymath PolymathNetwork/eslint-plugin-polymath#3.0.0
+    eslint-plugin-polymath PolymathNetwork/eslint-plugin-polymath
     eslint-plugin-react "^7.4.0"
 
-eslint-plugin-polymath@PolymathNetwork/eslint-plugin-polymath:
+eslint-plugin-polymath@PolymathNetwork/eslint-plugin-polymath#3.0.0:
   version "1.0.0"
   resolved "https://codeload.github.com/PolymathNetwork/eslint-plugin-polymath/tar.gz/0d48ee281faddae343a67088fbbeead0052ad310"
   dependencies:
@@ -11102,7 +11102,7 @@ web3-core-helpers@1.0.0-beta.34:
     web3-eth-iban "1.0.0-beta.34"
     web3-utils "1.0.0-beta.34"
 
-web3-core-method@1.0.0-beta.30, "web3-core-method@github:bshevchenko/web3-core-method#master":
+web3-core-method@1.0.0-beta.30, web3-core-method@bshevchenko/web3-core-method#master, "web3-core-method@github:bshevchenko/web3-core-method#master":
   version "1.0.0-beta.30"
   resolved "https://codeload.github.com/bshevchenko/web3-core-method/tar.gz/9199df8b1ea8658503ee48ba7ad391fec8e61838"
   dependencies:

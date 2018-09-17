@@ -15,8 +15,13 @@
   width: 736px;
   max-width: 736px; }
 
-.providers-display-modal .img {
+.providers-display-modal .providers-background {
   width: 100%; }
+
+.providers-display-modal .bx--modal-content__text {
+  padding-top: 14px;
+  font-size: 16px;
+  line-height: 24px; }
 
 .providers .provider {
   width: 297px;
